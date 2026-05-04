@@ -1,7 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pax Systemic | Dijital Gelecek</title>
+    <style>
+        body {
+            background-color: #07090E;
+            color: #F0F4FA;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .container { padding: 40px; }
+        h1 { font-size: 3rem; font-weight: 900; letter-spacing: -1px; margin-bottom: 10px; color: #00F0FF; }
+        p { color: #6B7A99; font-size: 1.2rem; margin-bottom: 40px; }
+        
+        .brands { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; margin-bottom: 50px; }
+        .brand-item { border: 1px solid #1A2130; padding: 20px 30px; border-radius: 12px; background: #0D111A; min-width: 150px; }
+        .brand-item span { display: block; font-size: 0.8rem; color: #00F0FF; margin-bottom: 8px; font-weight: bold; }
+
+        .btn-download {
+            background: linear-gradient(135deg, #00F0FF 0%, #0080FF 100%);
+            color: #000;
+            text-decoration: none;
+            padding: 18px 35px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.2);
+            display: inline-block;
+        }
+        .btn-download:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0, 240, 255, 0.4); }
+    </style>
+</head>
 <body>
-    <h1>Pax Systemic Çok Yakında</h1>
-    <p>BarisByte Games ve Systemic Pro'nun yeni evi.</p>
+    <div class="container">
+        <div style="font-weight: bold; color: #6B7A99; margin-bottom: 10px;">PAX SYSTEMIC</div>
+        <h1>Dijital Ekosistem</h1>
+        <p>Geleceği sistemli ve barışçıl kodlarla inşa ediyoruz.</p>
+
+        <div class="brands">
+            <div class="brand-item"><span>OYUN</span>BarisByte Games</div>
+            <div class="brand-item"><span>YAZILIM</span>Systemic Pro</div>
+            <div class="brand-item"><span>İŞLETME</span>IsletmeTakip</div>
+        </div>
+
+        <!-- Burayı birazdan dolduracağız -->
+        <a href="#" id="download-link" class="btn-download">
+            Systemic Pro v2026.1 İndir
+        </a>
+    </div>
 </body>
 </html>
