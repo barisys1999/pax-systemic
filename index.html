@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pax Systemic | Dijital Gelecek</title>
     <style>
+        /* GENEL SAYFA AYARLARI */
         body {
             background-color: #07090E;
             color: #F0F4FA;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -16,44 +17,163 @@
             justify-content: center;
             min-height: 100vh;
             text-align: center;
+            overflow-x: hidden;
         }
-        .container { padding: 40px; }
-        h1 { font-size: 3rem; font-weight: 900; letter-spacing: -1px; margin-bottom: 10px; color: #00F0FF; }
-        p { color: #6B7A99; font-size: 1.2rem; margin-bottom: 40px; }
-        
-        .brands { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; margin-bottom: 50px; }
-        .brand-item { border: 1px solid #1A2130; padding: 20px 30px; border-radius: 12px; background: #0D111A; min-width: 150px; }
-        .brand-item span { display: block; font-size: 0.8rem; color: #00F0FF; margin-bottom: 8px; font-weight: bold; }
 
-        .btn-download {
-            background: linear-gradient(135deg, #00F0FF 0%, #0080FF 100%);
-            color: #000;
-            text-decoration: none;
-            padding: 18px 35px;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.2);
-            display: inline-block;
+        .container { 
+            padding: 40px; 
+            max-width: 800px;
         }
-        .btn-download:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0, 240, 255, 0.4); }
+
+        /* LOGO VE BAŞLIK */
+        .sup-title {
+            font-weight: bold; 
+            color: #6B7A99; 
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        h1 { 
+            font-size: 3.5rem; 
+            font-weight: 900; 
+            letter-spacing: -2px; 
+            margin-bottom: 15px; 
+            color: #00F0FF;
+            text-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+        }
+
+        p { 
+            color: #6B7A99; 
+            font-size: 1.2rem; 
+            margin-bottom: 50px;
+            line-height: 1.6;
+        }
+        
+        /* MARKALAR (CARDS) */
+        .brands { 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 25px; 
+            margin-bottom: 60px; 
+        }
+
+        .brand-item { 
+            border: 1px solid #1A2130; 
+            padding: 25px 40px; 
+            border-radius: 16px; 
+            background: #0D111A; 
+            min-width: 180px;
+            transition: all 0.3s ease;
+        }
+
+        .brand-item:hover {
+            border-color: #00F0FF;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .brand-item span { 
+            display: block; 
+            font-size: 0.75rem; 
+            color: #00F0FF; 
+            margin-bottom: 10px; 
+            font-weight: 800; 
+            letter-spacing: 1px;
+        }
+
+        .brand-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* ÖZEL NEON İNDİR BUTONU */
+        .btn-download {
+            background: rgba(0, 240, 255, 0.05);
+            color: #00F0FF;
+            text-decoration: none;
+            padding: 22px 50px;
+            border-radius: 15px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: 2px solid #00F0FF;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.15);
+        }
+
+        /* Parlama Animasyonu */
+        .btn-download::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.6s;
+        }
+
+        .btn-download:hover::before {
+            left: 100%;
+        }
+
+        .btn-download:hover {
+            background: #00F0FF;
+            color: #07090E;
+            transform: scale(1.05);
+            box-shadow: 0 0 50px rgba(0, 240, 255, 0.6);
+        }
+
+        .btn-download::after {
+            content: "↓";
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* ALT BİLGİ */
+        .footer-note {
+            margin-top: 30px;
+            font-size: 0.8rem;
+            color: #334155;
+        }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <div style="font-weight: bold; color: #6B7A99; margin-bottom: 10px;">PAX SYSTEMIC</div>
+        <div class="sup-title">PAX SYSTEMIC</div>
         <h1>Dijital Ekosistem</h1>
-        <p>Geleceği sistemli ve barışçıl kodlarla inşa ediyoruz.</p>
+        <p>Geleceği sistemli, hızlı ve barışçıl kodlarla inşa ediyoruz.</p>
 
         <div class="brands">
-            <div class="brand-item"><span>OYUN</span>BarisByte Games</div>
-            <div class="brand-item"><span>YAZILIM</span>Systemic Pro</div>
+            <div class="brand-item">
+                <span>OYUN</span>
+                <div class="brand-name">BarisByte Games</div>
+            </div>
+            <div class="brand-item">
+                <span>YAZILIM</span>
+                <div class="brand-name">Systemic Pro</div>
+            </div>
         </div>
 
-        <a href="https://github.com/barisys1999/pax-systemic/releases/download/v1.0.0/Systemic_Pro_v2026.2_Setup.exe"> 
-            Systemic Pro v2026.1 İndir
+        <!-- İNDİRME BUTONU -->
+        <a href="https://github.com/barisys1999/pax-systemic/releases/download/v1.0.0/Systemic_Pro_v2026.2_Setup.exe" class="btn-download">
+            Systemic Pro v2026.2 İndir
         </a>
+
+        <div class="footer-note">
+            © 2026 Pax Systemic. Tüm hakları saklıdır.
+        </div>
     </div>
+
 </body>
 </html>
