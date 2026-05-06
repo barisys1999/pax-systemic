@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="favicon.png">
     <title>Pax Systemic | Dijital Portal</title>
+    
+    <link rel="preload" as="image" href="games-background.png">
+    <link rel="preload" as="image" href="software-background.png">
+
     <style>
         /* GENEL AYARLAR */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -13,141 +17,83 @@
             font-family: 'Segoe UI', system-ui, sans-serif;
             background-color: #05070A;
             color: #F0F4FA;
-            overflow: hidden; /* Kaydırma çubuğunu gizler, tam ekran portal */
+            overflow: hidden;
         }
 
         /* HEADER / LOGO */
         header {
-            position: absolute;
-            top: 0;
-            width: 100%;
-            padding: 30px 50px;
-            z-index: 100;
-            display: flex;
-            justify-content: center;
-            pointer-events: none; /* Logonun arkasındaki tıklamaları engellememesi için */
+            position: absolute; top: 0; width: 100%; padding: 30px 50px;
+            z-index: 100; display: flex; justify-content: center;
+            pointer-events: none;
         }
 
         .logo-text {
-            font-size: 2rem;
-            font-weight: 900;
-            letter-spacing: 4px;
+            font-size: 2rem; font-weight: 900; letter-spacing: 4px;
             text-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
         }
         .logo-text span { color: #00F0FF; }
 
-        /* PORTAL BÖLÜMÜ (SPLIT SCREEN) */
-        .portal-container {
-            display: flex;
-            width: 100vw;
-            height: 100vh;
-        }
+        /* PORTAL BÖLÜMÜ */
+        .portal-container { display: flex; width: 100vw; height: 100vh; }
 
-        /* ORTAK KAPI (DEPARTMAN) AYARLARI */
         .split {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            text-decoration: none;
-            color: white;
-            position: relative;
-            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
-            overflow: hidden;
-            cursor: pointer;
+            flex: 1; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; text-align: center; text-decoration: none; color: white;
+            position: relative; transition: flex 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            overflow: hidden; cursor: pointer;
+            will-change: flex; /* Animasyon hızlandırma */
         }
 
         .split::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover;
-            background-position: center;
-            transition: transform 0.8s ease;
-            z-index: -2;
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            transition: transform 0.8s ease; z-index: -2;
+            will-change: transform;
         }
 
         .split::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            transition: background 0.6s ease;
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; transition: background 0.6s ease;
         }
 
-        /* OYUN DEPARTMANI KISMI (SOL) */
+        /* OYUN DEPARTMANI (SOL) */
         .split.games::before {
-            background-image: url('games-background.png'); /* Oyun evreni arka planı */
+            background-image: url('./games-background.png');
+            background-color: #1a0b2e; /* Resim inene kadar gösterilecek yedek renk */
         }
-        .split.games::after { background: rgba(10, 5, 20, 0.7); } /* Üzerindeki karanlık morumsu filtre */
+        .split.games::after { background: rgba(10, 5, 20, 0.7); }
         
-        /* YAZILIM DEPARTMANI KISMI (SAĞ) */
+        /* YAZILIM DEPARTMANI (SAĞ) */
         .split.software::before {
-            background-image: url('software-background.png'); /* Yazılım evreni arka planı */
+            background-image: url('./software-background.png');
+            background-color: #002b33; /* Resim inene kadar gösterilecek yedek renk */
         }
-        .split.software::after { background: rgba(0, 15, 20, 0.7); } /* Üzerindeki karanlık mavimsi filtre */
+        .split.software::after { background: rgba(0, 15, 20, 0.7); }
 
-        /* HOVER (ÜZERİNE GELİNCE GENİŞLEME) EFEKTİ */
+        /* HOVER EFEKTLERİ */
         .split:hover { flex: 1.5; }
         .split:hover::before { transform: scale(1.05); }
-        
-        .split.games:hover::after { background: rgba(138, 43, 226, 0.4); } /* Vurgulanan Mor Filtre */
-        .split.software:hover::after { background: rgba(0, 240, 255, 0.3); } /* Vurgulanan Mavi Filtre */
+        .split.games:hover::after { background: rgba(138, 43, 226, 0.4); }
+        .split.software:hover::after { background: rgba(0, 240, 255, 0.3); }
 
         /* İÇERİK TEXT AYARLARI */
-        .content {
-            z-index: 10;
-            transition: transform 0.4s ease;
-        }
+        .content { z-index: 10; transition: transform 0.4s ease; }
         .split:hover .content { transform: translateY(-10px); }
 
-        .sup-title {
-            font-size: 0.9rem;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-            color: #8A9BB8;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-        }
-
+        .sup-title { font-size: 0.9rem; letter-spacing: 5px; text-transform: uppercase; margin-bottom: 15px; color: #8A9BB8; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
         .split.games:hover .sup-title { color: #b47dff; }
         .split.software:hover .sup-title { color: #00F0FF; }
 
-        h2 {
-            font-size: 4rem;
-            font-weight: 900;
-            margin-bottom: 20px;
-            letter-spacing: -1px;
-            text-shadow: 0 5px 15px rgba(0,0,0,0.8);
-        }
+        h2 { font-size: 4rem; font-weight: 900; margin-bottom: 20px; letter-spacing: -1px; text-shadow: 0 5px 15px rgba(0,0,0,0.8); }
 
         .btn-enter {
-            display: inline-block;
-            padding: 15px 40px;
-            border: 2px solid rgba(255,255,255,0.4);
-            border-radius: 30px;
-            font-size: 1rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            backdrop-filter: blur(5px);
-            transition: all 0.3s;
-            background: rgba(0,0,0,0.3);
+            display: inline-block; padding: 15px 40px; border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 30px; font-size: 1rem; font-weight: bold; text-transform: uppercase;
+            letter-spacing: 2px; backdrop-filter: blur(5px); transition: all 0.3s; background: rgba(0,0,0,0.3);
         }
 
-        .split.games:hover .btn-enter {
-            border-color: #b47dff;
-            background: rgba(180, 125, 255, 0.2);
-            box-shadow: 0 0 20px rgba(180, 125, 255, 0.4);
-        }
-
-        .split.software:hover .btn-enter {
-            border-color: #00F0FF;
-            background: rgba(0, 240, 255, 0.2);
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
-        }
+        .split.games:hover .btn-enter { border-color: #b47dff; background: rgba(180, 125, 255, 0.2); box-shadow: 0 0 20px rgba(180, 125, 255, 0.4); }
+        .split.software:hover .btn-enter { border-color: #00F0FF; background: rgba(0, 240, 255, 0.2); box-shadow: 0 0 20px rgba(0, 240, 255, 0.4); }
 
         /* MOBİL UYUM */
         @media (max-width: 768px) {
@@ -165,7 +111,6 @@
     </header>
 
     <div class="portal-container">
-        
         <a href="games.html" class="split games">
             <div class="content">
                 <div class="sup-title">Eğlence ve Atmosfer</div>
@@ -181,7 +126,6 @@
                 <div class="btn-enter">Sisteme Gir</div>
             </div>
         </a>
-
     </div>
 
 </body>
