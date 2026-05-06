@@ -45,7 +45,6 @@
         .hero h1 { font-size: 3rem; font-weight: 900; margin-bottom: 10px; color: var(--primary); text-shadow: 0 0 20px rgba(0,240,255,0.2); }
         .hero p { color: var(--text-dim); font-size: 1.1rem; }
 
-        /* Controls */
         .controls-container {
             width: 100%; max-width: 800px; padding: 0 20px; margin-bottom: 50px;
             display: flex; flex-direction: column; gap: 25px; align-items: center;
@@ -76,7 +75,6 @@
             color: var(--primary); box-shadow: 0 0 15px var(--primary-glow);
         }
 
-        /* List */
         .grid-container {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 25px; width: 100%; max-width: 1100px; padding: 0 20px; margin-bottom: 80px;
@@ -100,7 +98,6 @@
 
         #no-results { display: none; width: 100%; text-align: center; color: var(--text-dim); padding: 40px; font-size: 1.2rem; }
 
-        /* Details */
         #detail-view { display: none; max-width: 1000px; margin: 40px auto; padding: 0 20px; animation: slideUpFade 0.5s ease forwards; }
         .back-btn { background: none; color: var(--text-dim); border: none; font-size: 1rem; cursor: pointer; margin-bottom: 30px; transition: color 0.3s; }
         .back-btn:hover { color: var(--primary); }
@@ -140,15 +137,15 @@
 <body>
 
     <header>
-        <a href="index.html" class="logo-container">
+        <a href="#" class="logo-container">
             <div class="logo-text">PAX <span>SYSTEMIC</span></div>
         </a>
-        <a href="index.html" class="return-btn">Ana Portal</a>
+        <a href="#" class="return-btn">Ana Portal</a>
     </header>
 
     <div id="main-view">
         <div class="hero">
-            <h1>Systemic Pro</h1>
+            <h1>Yazılım Kataloğu</h1>
             <p>Sistemli, güvenilir ve minimalist yazılım çözümleri.</p>
         </div>
 
@@ -166,7 +163,6 @@
         </div>
 
         <div class="grid-container" id="product-grid">
-            
             <div class="product-card" data-category="medya" onclick="openProduct('bstreamer')">
                 <span class="category-label">Medya Araçları</span>
                 <h3>B-Streamer</h3>
@@ -185,12 +181,11 @@
                 <p>Geliştiriciler için hata ayıklama ve kod derleme optimizasyon motoru.</p>
             </div>
 
-            <div class="product-card" data-category="yonetim" onclick="openProduct('dummy2')">
-                <span class="category-label">Yönetim / İşletme</span>
+            <div class="product-card" data-category="sistem" onclick="openProduct('dummy2')">
+                <span class="category-label">Sistem Araçları</span>
                 <h3>Systemic Pro</h3>
-                <p>Systemic Pro, cihazınızın performansını ve verimliliğini en üst düzeye çıkarmak için tasarlanmış modern bir sistem yönetim aracıdır.</p>
+                <p>Cihazınızın performansını ve verimliliğini en üst düzeye çıkarmak için modern bir araç.</p>
             </div>
-
         </div>
 
         <div id="no-results">Aradığınız kriterlere uygun bir yazılım bulunamadı.</div>
@@ -203,8 +198,8 @@
             <h4 id="det-sub">Alt Başlık</h4>
         </div>
         <div class="detail-tabs">
-            <button class="d-tab active" onclick="switchDetailTab('overview')">Genel Bakış</button>
-            <button class="d-tab" onclick="switchDetailTab('changelog')">Sürüm Notları</button>
+            <button class="d-tab active" onclick="switchDetailTab('overview', event)">Genel Bakış</button>
+            <button class="d-tab" onclick="switchDetailTab('changelog', event)">Sürüm Notları</button>
         </div>
         <div id="pane-overview" class="d-content-pane active">
             <div class="detail-content">
@@ -225,6 +220,45 @@
 
     <script>
         let currentCategory = 'all';
+
+        const products = {
+            'bstreamer': { 
+                title: "B-Streamer", 
+                subtitle: "Gelişmiş Medya İndirme Aracı", 
+                description: "C# altyapısıyla geliştirilmiş, yüksek performanslı video ve ses indirme yöneticisi.", 
+                features: ["Özel kurulum sihirbazı", "Çoklu format dönüşüm", "Düşük kaynak kullanımı"], 
+                btnText: "B-Streamer İndir", 
+                link: "#", 
+                changelog: [{ version: "v1.0.0", date: "Mayıs 2026", notes: ["İlk sürüm yayınlandı."] }] 
+            },
+            'isletme': { 
+                title: "İşletme Takip Sistemi", 
+                subtitle: "Kurumsal Yönetim Paneli", 
+                description: "WPF/C# tabanlı, işletmelerin envanter ve veri takibini yapan yönetim yazılımı.", 
+                features: ["Sleek arayüz", "Gerçek zamanlı veri", "Hızlı raporlama"], 
+                btnText: "Demo Kurulumu", 
+                link: "#", 
+                changelog: [{ version: "v2.0", date: "Nisan 2026", notes: ["Arayüz yenilendi."] }] 
+            },
+            'dummy1': { 
+                title: "Pax Code Engine", 
+                subtitle: "Optimizasyon Motoru", 
+                description: "Kod analiz motoru.", 
+                features: ["Gerçek zamanlı analiz", "Hata ayıklama"], 
+                btnText: "Aracı İndir", 
+                link: "#", 
+                changelog: [] 
+            },
+            'dummy2': { 
+                title: "Systemic Pro", 
+                subtitle: "Performans Aracı", 
+                description: "Sisteminizi hızlı, temiz ve kontrol altında tutan hepsi bir arada optimizasyon çözümüdür.", 
+                features: ["Temizleme", "Hız Testi", "Sistem Bilgisi"], 
+                btnText: "Download", 
+                link: "https://github.com/barisys1999/pax-systemic/releases/download/v1.0.0/SystemicPro_Installer.exe",
+                changelog: [{ version: "v1.0.0", date: "Mayıs 2026", notes: ["Lansman sürümü."] }]
+            }
+        };
 
         function setCategory(category, buttonElement) {
             currentCategory = category;
@@ -254,30 +288,21 @@
                 }
             });
 
-            if (visibleCount === 0) {
-                document.getElementById('no-results').style.display = 'block';
-            } else {
-                document.getElementById('no-results').style.display = 'none';
-            }
+            document.getElementById('no-results').style.display = visibleCount === 0 ? 'block' : 'none';
         }
 
-        // Db
-        const products = {
-            'bstreamer': { title: "B-Streamer", subtitle: "Gelişmiş Medya İndirme Aracı", description: "C# altyapısıyla geliştirilmiş, yüksek performanslı video ve ses indirme yöneticisi. Minimalist arayüzü sayesinde arka planda sessizce çalışır.", features: ["Özel derlenmiş kurulum sihirbazı", "Çoklu format dönüşüm desteği", "Düşük sistem kaynağı kullanımı"], btnText: "B-Streamer İndir", link: "#", changelog: [{ version: "v1.0.0", date: "Mayıs 2026", notes: ["Özel kurulum arayüzü eklendi.", "Video/Ses dönüştürme hataları giderildi."] }] },
-            'isletme': { title: "İşletme Takip Sistemi", subtitle: "Kurumsal Yönetim Paneli", description: "Masaüstü ortamında çalışan (WPF/C#), işletmelerin envanter ve veri takibini pürüzsüz bir şekilde yapmasını sağlayan yönetim yazılımı.", features: ["Sleek ve modern arayüz tasarımı", "Gerçek zamanlı veri listeleme", "Hızlı raporlama sistemi"], btnText: "Demo Kurulumu", link: "#", changelog: [{ version: "v2.0", date: "Nisan 2026", notes: ["Tamamen yeni, minimalist arayüze geçildi.", "Veri çekme performansı artırıldı."] }] },
-            'dummy1': { title: "Pax Code Engine", subtitle: "Optimizasyon Motoru", description: "Yazılımcılar için kodları analiz edip bellek sızıntılarını bulan gelişmiş motor.", features: ["Gerçek zamanlı analiz", "Gelişmiş hata ayıklama"], btnText: "Aracı İndir", link: "#", changelog: [] },
-            'dummy2': { title: "Systemic Pro", subtitle: "Performans Aracı", description: "Sisteminizi hızlı, temiz ve kontrol altında tutan hepsi bir arada bir optimizasyon çözümüdür.", features: ["Temizleme", "Hız Testi", "Sistem Bilgisi"], btnText: "Download", link: "https://github.com/barisys1999/pax-systemic/releases/download/v1.0.0/SystemicPro_Installer.exe",
-        };
-
-        function switchDetailTab(tabName) {
+        function switchDetailTab(tabName, event) {
             document.querySelectorAll('.d-tab').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            if(event) event.target.classList.add('active');
+            
             document.querySelectorAll('.d-content-pane').forEach(pane => pane.classList.remove('active'));
             document.getElementById('pane-' + tabName).classList.add('active');
         }
 
         function openProduct(id) {
             const data = products[id];
+            if(!data) return;
+
             document.getElementById('det-title').innerText = data.title;
             document.getElementById('det-sub').innerText = data.subtitle;
             document.getElementById('det-desc').innerText = data.description;
@@ -286,16 +311,28 @@
 
             const featuresList = document.getElementById('det-features');
             featuresList.innerHTML = '';
-            data.features.forEach(f => { let li = document.createElement('li'); li.innerText = f; featuresList.appendChild(li); });
+            data.features.forEach(f => { 
+                let li = document.createElement('li'); 
+                li.innerText = f; 
+                featuresList.appendChild(li); 
+            });
 
             const changelogBox = document.getElementById('det-changelog');
             changelogBox.innerHTML = '';
-            if(data.changelog.length === 0) changelogBox.innerHTML = '<p style="color:var(--text-dim)">Bu sürüm için not girilmemiş.</p>';
-            data.changelog.forEach(log => {
-                changelogBox.innerHTML += `<div class="timeline-item"><div class="tl-version">${log.version}</div><span class="tl-date">${log.date}</span><ul class="tl-notes">${log.notes.map(n => `<li>${n}</li>`).join('')}</ul></div>`;
-            });
+            if(!data.changelog || data.changelog.length === 0) {
+                changelogBox.innerHTML = '<p style="color:var(--text-dim)">Bu sürüm için not girilmemiş.</p>';
+            } else {
+                data.changelog.forEach(log => {
+                    changelogBox.innerHTML += `
+                        <div class="timeline-item">
+                            <div class="tl-version">${log.version}</div>
+                            <span class="tl-date">${log.date}</span>
+                            <ul class="tl-notes">${log.notes.map(n => `<li>${n}</li>`).join('')}</ul>
+                        </div>`;
+                });
+            }
 
-            document.querySelector('.d-tab[onclick="switchDetailTab(\'overview\')"]').click();
+            switchDetailTab('overview');
             document.getElementById('main-view').style.display = 'none';
             document.getElementById('detail-view').style.display = 'block';
             window.scrollTo(0, 0);
@@ -304,8 +341,6 @@
         function closeProduct() {
             document.getElementById('detail-view').style.display = 'none';
             document.getElementById('main-view').style.display = 'flex';
-            document.getElementById('searchInput').value = "";
-            document.querySelector('.filter-btn[onclick="setCategory(\'all\', this)"]').click();
         }
     </script>
 </body>
