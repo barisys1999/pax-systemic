@@ -3,177 +3,348 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FAVICON AYARI: Kendi ikonunuzun adını buraya yazın -->
+    <link rel="icon" type="image/png" href="favicon.png">
     <title>Pax Systemic | Dijital Gelecek</title>
     <style>
         /* GENEL SAYFA AYARLARI */
-        body {
-            background-color: #07090E;
-            color: #F0F4FA;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        :root {
+            --primary: #00F0FF;
+            --primary-dark: #008b99;
+            --bg-color: #05070A;
+            --card-bg: rgba(13, 17, 26, 0.7);
+            --text-main: #F0F4FA;
+            --text-muted: #8A9BB8;
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            text-align: center;
             overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.05) 0%, transparent 50%);
         }
 
-        .container { 
-            padding: 40px; 
-            max-width: 800px;
+        /* HEADER & LOGO */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: rgba(5, 7, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        /* LOGO VE BAŞLIK */
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+        }
+
+        .logo-container img {
+            width: 40px; /* Logo boyutunu buradan ayarlayabilirsiniz */
+            height: 40px;
+            border-radius: 8px;
+            /* background: #fff; Eğer logonuz şeffafsa arkaplan verebilirsiniz */
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: var(--text-main);
+        }
+
+        .logo-text span {
+            color: var(--primary);
+        }
+
+        /* ANA İÇERİK (HERO) */
+        .hero {
+            text-align: center;
+            padding: 80px 20px 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
         .sup-title {
             font-weight: bold; 
-            color: #6B7A99; 
-            margin-bottom: 10px;
-            letter-spacing: 2px;
+            color: var(--primary); 
+            margin-bottom: 15px;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         h1 { 
-            font-size: 3.5rem; 
+            font-size: 4rem; 
             font-weight: 900; 
-            letter-spacing: -2px; 
-            margin-bottom: 15px; 
-            color: #00F0FF;
-            text-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+            letter-spacing: -1px; 
+            margin-bottom: 20px; 
+            line-height: 1.1;
         }
 
-        p { 
-            color: #6B7A99; 
+        p.subtitle { 
+            color: var(--text-muted); 
             font-size: 1.2rem; 
             margin-bottom: 50px;
             line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        
-        /* MARKALAR (CARDS) */
-        .brands { 
+
+        /* ETKİLEŞİMLİ KARTLAR (SEKMELER) */
+        .categories { 
             display: flex; 
             flex-wrap: wrap; 
             justify-content: center; 
-            gap: 25px; 
-            margin-bottom: 60px; 
+            gap: 30px; 
+            margin-bottom: 50px; 
         }
 
-        .brand-item { 
-            border: 1px solid #1A2130; 
-            padding: 25px 40px; 
+        .category-card { 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            padding: 30px 40px; 
             border-radius: 16px; 
-            background: #0D111A; 
-            min-width: 180px;
+            background: var(--card-bg); 
+            min-width: 250px;
+            cursor: pointer;
             transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            text-align: center;
         }
 
-        .brand-item:hover {
-            border-color: #00F0FF;
+        .category-card:hover, .category-card.active {
+            border-color: var(--primary);
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.15);
+            background: rgba(0, 240, 255, 0.03);
         }
 
-        .brand-item span { 
+        .category-card span { 
             display: block; 
-            font-size: 0.75rem; 
-            color: #00F0FF; 
+            font-size: 0.8rem; 
+            color: var(--primary); 
             margin-bottom: 10px; 
             font-weight: 800; 
-            letter-spacing: 1px;
+            letter-spacing: 2px;
         }
 
-        .brand-name {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        /* ÖZEL NEON İNDİR BUTONU */
-        .btn-download {
-            background: rgba(0, 240, 255, 0.05);
-            color: #00F0FF;
-            text-decoration: none;
-            padding: 22px 50px;
-            border-radius: 15px;
-            font-weight: 800;
-            font-size: 1.1rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            border: 2px solid #00F0FF;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: inline-flex;
-            align-items: center;
-            gap: 15px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.15);
-        }
-
-        /* Parlama Animasyonu */
-        .btn-download::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: 0.6s;
-        }
-
-        .btn-download:hover::before {
-            left: 100%;
-        }
-
-        .btn-download:hover {
-            background: #00F0FF;
-            color: #07090E;
-            transform: scale(1.05);
-            box-shadow: 0 0 50px rgba(0, 240, 255, 0.6);
-        }
-
-        .btn-download::after {
-            content: "↓";
+        .category-card h3 {
             font-size: 1.5rem;
             font-weight: bold;
         }
 
+        /* İÇERİK ALANLARI (OYUNLAR VE YAZILIMLAR) */
+        .content-section {
+            display: none;
+            max-width: 1000px;
+            margin: 0 auto 80px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        /* İÇERİK LİSTELERİ */
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .item-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .item-card:hover {
+            border-color: rgba(0, 240, 255, 0.5);
+        }
+
+        .item-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .item-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        /* BUTONLAR */
+        .btn-download {
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--primary);
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            border: 1px solid var(--primary);
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-align: center;
+            width: 100%;
+        }
+
+        .btn-download:hover {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+        }
+
         /* ALT BİLGİ */
-        .footer-note {
-            margin-top: 30px;
-            font-size: 0.8rem;
-            color: #334155;
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 30px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* MOBİL UYUM */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            header { padding: 15px 20px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="sup-title">PAX SYSTEMIC</div>
-        <h1>Dijital Ekosistem</h1>
-        <p>Geleceği sistemli, hızlı ve barışçıl kodlarla inşa ediyoruz.</p>
+    <!-- ÜST MENÜ VE LOGO -->
+    <header>
+        <div class="logo-container" onclick="location.reload()">
+            <!-- LOGO GÖRSELİ: src kısmına kendi logonuzun yolunu yazın -->
+            <img src="logo.png" alt="Pax Systemic Logo" onerror="this.style.display='none'">
+            <div class="logo-text">PAX <span>SYSTEMIC</span></div>
+        </div>
+    </header>
 
-        <div class="brands">
-            <div class="brand-item">
-                <span>OYUN</span>
-                <div class="brand-name">BarisByte Games</div>
+    <!-- ANA KARŞILAMA EKRANI -->
+    <main>
+        <div class="hero">
+            <div class="sup-title">Dijital Ekosistem</div>
+            <h1>Geleceği Kodluyoruz</h1>
+            <p class="subtitle">Sistemli, hızlı ve yenilikçi mimarilerle sınırları zorluyoruz. İncelemek istediğiniz departmanı seçin.</p>
+        </div>
+
+        <!-- DEPARTMAN KARTLARI -->
+        <div class="categories">
+            <div class="category-card" onclick="showSection('games')" id="card-games">
+                <span>DEPARTMAN</span>
+                <h3>BarisByte Games</h3>
             </div>
-            <div class="brand-item">
-                <span>YAZILIM</span>
-                <div class="brand-name">Systemic Pro</div>
+            <div class="category-card" onclick="showSection('software')" id="card-software">
+                <span>DEPARTMAN</span>
+                <h3>Systemic Pro</h3>
             </div>
         </div>
 
-        <!-- İNDİRME BUTONU -->
-<a href="https://github.com/barisys1999/pax-systemic/releases/download/v1.0.0/SystemicPro_Installer.exe" class="btn-download">
-    Systemic Pro v2026.2 İndir
-</a>
-
-        <div class="footer-note">
-            © 2026 Pax Systemic. Tüm hakları saklıdır.
+        <!-- OYUNLAR İÇERİK ALANI (Başlangıçta Gizli) -->
+        <div id="section-games" class="content-section">
+            <h2 class="section-header">BarisByte Games: Yayınlanan Oyunlar</h2>
+            <div class="item-grid">
+                <!-- Oyun 1 -->
+                <div class="item-card">
+                    <h4>CyberQuest 2026</h4>
+                    <p>Açık dünya aksiyon ve RPG deneyimi. Geleceğin sokaklarında hayatta kal.</p>
+                    <a href="#" class="btn-download">Oyunu İndir</a>
+                </div>
+                <!-- Oyun 2 -->
+                <div class="item-card">
+                    <h4>Neon Drift</h4>
+                    <p>Yüksek hızlı, fütüristik arcade yarış oyunu. Rekabeti hisset.</p>
+                    <a href="#" class="btn-download">Oyunu İndir</a>
+                </div>
+            </div>
         </div>
-    </div>
 
+        <!-- YAZILIMLAR İÇERİK ALANI (Başlangıçta Gizli) -->
+        <div id="section-software" class="content-section">
+            <h2 class="section-header">Systemic Pro: Yazılım Araçları</h2>
+            <div class="item-grid">
+                <!-- Yazılım 1 -->
+                <div class="item-card">
+                    <h4>Systemic Pro v2026.2</h4>
+                    <p>Gelişmiş sistem optimizasyon ve yönetim paneli. Tüm kontrol elinizde.</p>
+                    <a href="https://github.com/barisys1999/pax-systemic/releases/download/v1.0.0/SystemicPro_Installer.exe" class="btn-download">Yazılımı İndir</a>
+                </div>
+                <!-- Yazılım 2 -->
+                <div class="item-card">
+                    <h4>Pax Code Engine</h4>
+                    <p>Geliştiriciler için hızlı ve güvenilir derleme motoru.</p>
+                    <a href="#" class="btn-download">Yazılımı İndir</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        © 2026 Pax Systemic. Tüm hakları saklıdır.
+    </footer>
+
+    <!-- ETKİLEŞİM İÇİN JAVASCRIPT -->
+    <script>
+        function showSection(sectionName) {
+            // Tüm içerik alanlarını gizle
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Tüm kartların aktiflik durumunu kaldır
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.classList.remove('active');
+            });
+
+            // Seçilen içeriği göster ve karta aktif stili ver
+            document.getElementById('section-' + sectionName).classList.add('active');
+            document.getElementById('card-' + sectionName).classList.add('active');
+
+            // Kullanıcı tıkladığında yavaşça o alana kaydır
+            setTimeout(() => {
+                document.getElementById('section-' + sectionName).scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+    </script>
 </body>
 </html>
