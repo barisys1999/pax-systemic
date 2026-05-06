@@ -4,374 +4,184 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="favicon.png">
-    <title>Pax Systemic | Dijital Gelecek</title>
+    <title>Pax Systemic | Dijital Portal</title>
     <style>
-        /* GENEL AYARLAR VE RENK PALETİ */
-        :root {
-            --primary: #00F0FF;
-            --primary-glow: rgba(0, 240, 255, 0.4);
-            --bg-dark: #05070A;
-            --panel-bg: rgba(13, 17, 26, 0.6);
-            --text-main: #F0F4FA;
-            --text-dim: #8A9BB8;
+        /* GENEL AYARLAR */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #05070A;
+            color: #F0F4FA;
+            overflow: hidden; /* Kaydırma çubuğunu gizler, tam ekran portal */
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* HEADER / LOGO */
+        header {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            padding: 30px 50px;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            pointer-events: none; /* Logonun arkasındaki tıklamaları engellememesi için */
+        }
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            min-height: 100vh;
+        .logo-text {
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+        .logo-text span { color: #00F0FF; }
+
+        /* PORTAL BÖLÜMÜ (SPLIT SCREEN) */
+        .portal-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* ORTAK KAPI (DEPARTMAN) AYARLARI */
+        .split {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(0, 240, 255, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 85% 30%, rgba(0, 240, 255, 0.02) 0%, transparent 50%);
-        }
-
-        /* HEADER */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 50px;
-            background: rgba(5, 7, 10, 0.85);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(0, 240, 255, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        
-        .logo-container:hover { transform: scale(1.05); }
-
-        .logo-text { font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; }
-        .logo-text span { color: var(--primary); }
-
-        /* ANA EKRAN KAPSAYICI */
-        #main-view {
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
-
-        .hero { text-align: center; padding: 80px 20px 40px; }
-        .hero h1 { font-size: 3.5rem; font-weight: 900; margin-bottom: 15px; }
-        .hero p { color: var(--text-dim); font-size: 1.2rem; }
-
-        /* KATEGORİ SEKMELERİ */
-        .categories {
-            display: flex; justify-content: center; gap: 20px; margin-bottom: 40px;
-        }
-        .tab-btn {
-            background: transparent;
-            color: var(--text-dim);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .tab-btn.active, .tab-btn:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            box-shadow: 0 0 15px var(--primary-glow);
-        }
-
-        /* LİSTELEME EKRANI (GRID) */
-        .grid-container {
-            display: none;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            max-width: 1100px;
-            margin: 0 auto 80px;
-            padding: 0 20px;
-            animation: fadeIn 0.4s ease;
-        }
-        .grid-container.active { display: grid; }
-
-        .product-card {
-            background: var(--panel-bg);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .product-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-5px);
-        }
-        .product-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--primary); opacity: 0; transition: opacity 0.3s;
-        }
-        .product-card:hover::before { opacity: 1; }
-
-        .product-card h3 { font-size: 1.5rem; margin-bottom: 10px; }
-        .product-card p { color: var(--text-dim); font-size: 0.95rem; }
-
-        /* ÜRÜN DETAY EKRANI (AAA SİNEMATİK GÖRÜNÜM) */
-        #detail-view {
-            display: none;
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 0 20px;
-            animation: slideUpFade 0.5s ease forwards;
-        }
-
-        .back-btn {
-            background: transparent;
-            color: var(--text-dim);
-            border: none;
-            font-size: 1rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 30px;
-            transition: color 0.3s;
-        }
-        .back-btn:hover { color: var(--primary); }
-
-        .detail-header { margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
-        .detail-header h2 { font-size: 3rem; color: var(--primary); margin-bottom: 10px; }
-        .detail-header h4 { font-size: 1.2rem; color: var(--text-dim); font-weight: normal; }
-
-        .detail-content {
-            display: flex;
-            gap: 40px;
-            align-items: flex-start;
-            margin-bottom: 50px;
-        }
-
-        .detail-text { flex: 1; }
-        .detail-text p { font-size: 1.1rem; line-height: 1.8; color: #C0C8D6; margin-bottom: 20px; }
-        
-        .feature-list { list-style: none; margin-top: 20px; }
-        .feature-list li {
-            margin-bottom: 10px;
-            padding-left: 20px;
-            position: relative;
-            color: var(--text-main);
-        }
-        .feature-list li::before {
-            content: '▹'; color: var(--primary); position: absolute; left: 0; font-size: 1.2rem;
-        }
-
-        .detail-media {
-            flex: 1;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            aspect-ratio: 16/9;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            color: var(--text-dim);
-            font-style: italic;
-        }
-
-        /* İNDİRME BÖLÜMÜ */
-        .download-section {
-            background: rgba(0, 240, 255, 0.02);
-            border: 1px solid rgba(0, 240, 255, 0.2);
-            border-radius: 16px;
-            padding: 40px;
+            align-items: center;
             text-align: center;
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.05);
+            text-decoration: none;
+            color: white;
+            position: relative;
+            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            overflow: hidden;
+            cursor: pointer;
         }
 
-        .btn-massive {
-            display: inline-block;
-            background: var(--primary);
-            color: #000;
-            text-decoration: none;
-            padding: 18px 50px;
-            font-size: 1.2rem;
+        .split::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.8s ease;
+            z-index: -2;
+        }
+
+        .split::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            transition: background 0.6s ease;
+        }
+
+        /* OYUN DEPARTMANI KISMI (SOL) */
+        .split.games::before {
+            /* Buraya karanlık/oyun temalı bir arkaplan resmi ekleyebilirsiniz */
+            background-image: radial-gradient(circle at center, #1a0b2e 0%, #05070A 100%);
+        }
+        .split.games::after { background: rgba(10, 5, 20, 0.7); }
+        
+        /* YAZILIM DEPARTMANI KISMI (SAĞ) */
+        .split.software::before {
+            /* Buraya teknolojik/kod temalı bir arkaplan resmi ekleyebilirsiniz */
+            background-image: radial-gradient(circle at center, #002b33 0%, #05070A 100%);
+        }
+        .split.software::after { background: rgba(0, 15, 20, 0.7); }
+
+        /* HOVER (ÜZERİNE GELİNCE GENİŞLEME) EFEKTİ */
+        .split:hover { flex: 1.5; }
+        .split:hover::before { transform: scale(1.05); }
+        
+        .split.games:hover::after { background: rgba(138, 43, 226, 0.2); }
+        .split.software:hover::after { background: rgba(0, 240, 255, 0.15); }
+
+        /* İÇERİK TEXT AYARLARI */
+        .content {
+            z-index: 10;
+            transition: transform 0.4s ease;
+        }
+        .split:hover .content { transform: translateY(-10px); }
+
+        .sup-title {
+            font-size: 0.9rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            color: #8A9BB8;
+        }
+
+        .split.games:hover .sup-title { color: #b47dff; }
+        .split.software:hover .sup-title { color: #00F0FF; }
+
+        h2 {
+            font-size: 4rem;
             font-weight: 900;
-            border-radius: 8px;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .btn-enter {
+            display: inline-block;
+            padding: 15px 40px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 2px;
+            backdrop-filter: blur(5px);
             transition: all 0.3s;
-            box-shadow: 0 0 20px var(--primary-glow);
         }
-        .btn-massive:hover { transform: scale(1.05); box-shadow: 0 0 40px var(--primary-glow); }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUpFade { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .split.games:hover .btn-enter {
+            border-color: #b47dff;
+            background: rgba(180, 125, 255, 0.1);
+        }
 
+        .split.software:hover .btn-enter {
+            border-color: #00F0FF;
+            background: rgba(0, 240, 255, 0.1);
+        }
+
+        /* MOBİL UYUM */
         @media (max-width: 768px) {
-            .detail-content { flex-direction: column; }
-            .hero h1 { font-size: 2.5rem; }
+            .portal-container { flex-direction: column; }
+            h2 { font-size: 2.5rem; }
+            .split:hover { flex: 1.2; }
+            header { padding: 15px; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo-container" onclick="resetView()">
-            <div class="logo-text">PAX <span>SYSTEMIC</span></div>
-        </div>
+        <div class="logo-text">PAX <span>SYSTEMIC</span></div>
     </header>
 
-    <!-- ANA LİSTELEME EKRANI -->
-    <div id="main-view">
-        <div class="hero">
-            <h1>Geleceği Kodluyoruz</h1>
-            <p>Projelerimizi incelemek için bir departman seçin.</p>
-        </div>
-
-        <div class="categories">
-            <button class="tab-btn active" onclick="switchTab('games')">BarisByte Games</button>
-            <button class="tab-btn" onclick="switchTab('software')">Systemic Pro</button>
-        </div>
-
-        <!-- OYUNLAR -->
-        <div id="grid-games" class="grid-container active">
-            <div class="product-card" onclick="openProduct('karanliktan')">
-                <h3>Karanlıktan Işığa</h3>
-                <p>Birinci şahıs atmosferik keşif ve gerilim deneyimi.</p>
-            </div>
-            <div class="product-card" onclick="openProduct('cosmohop')">
-                <h3>CosmoHop!</h3>
-                <p>Dinamik fizik dinamiklerine sahip mobil arcade macerası.</p>
-            </div>
-        </div>
-
-        <!-- YAZILIMLAR -->
-        <div id="grid-software" class="grid-container">
-            <div class="product-card" onclick="openProduct('bstreamer')">
-                <h3>B-Streamer</h3>
-                <p>Yüksek performanslı, entegre medya indirme ve dönüştürme aracı.</p>
-            </div>
-            <div class="product-card" onclick="openProduct('isletme')">
-                <h3>İşletme Takip Sistemi</h3>
-                <p>WPF tabanlı, kurumsal veri ve envanter yönetim paneli.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ÜRÜN DETAY EKRANI (Dinamik olarak dolar) -->
-    <div id="detail-view">
-        <button class="back-btn" onclick="closeProduct()">← Portfolyoya Dön</button>
+    <div class="portal-container">
         
-        <div class="detail-header">
-            <h2 id="det-title">Ürün Adı</h2>
-            <h4 id="det-sub">Alt Başlık</h4>
-        </div>
-
-        <div class="detail-content">
-            <div class="detail-text">
-                <p id="det-desc">Ürün açıklaması buraya gelecek.</p>
-                <ul class="feature-list" id="det-features">
-                    <!-- Özellikler JS ile eklenecek -->
-                </ul>
+        <!-- OYUNLAR PORTALI (games.html sayfasına gider) -->
+        <a href="games.html" class="split games">
+            <div class="content">
+                <div class="sup-title">Eğlence ve Atmosfer</div>
+                <h2>BarisByte Games</h2>
+                <div class="btn-enter">Evrene Gir</div>
             </div>
-            <div class="detail-media">
-                [Oyun/Yazılım Görseli veya Tanıtım Videosu]
-            </div>
-        </div>
+        </a>
 
-        <div class="download-section">
-            <h3 style="margin-bottom: 20px;">Sisteme Entegre Ol</h3>
-            <a href="#" id="det-btn" class="btn-massive">İndir</a>
-        </div>
+        <!-- YAZILIM PORTALI (software.html sayfasına gider) -->
+        <a href="software.html" class="split software">
+            <div class="content">
+                <div class="sup-title">Araçlar ve Mimari</div>
+                <h2>Systemic Pro</h2>
+                <div class="btn-enter">Sisteme Gir</div>
+            </div>
+        </a>
+
     </div>
 
-    <script>
-        // ÜRÜN VERİTABANI (JSON Mantığı)
-        const products = {
-            'karanliktan': {
-                title: "Karanlıktan Işığa",
-                subtitle: "Atmosferik Keşif ve Hayatta Kalma",
-                description: "Karanlığın derinliklerinde geçen bu hikaye odaklı birinci şahıs oyununda, kendi yolunuzu bulmalı ve sırları çözmelisiniz. Gelişmiş çevre etkileşimi ve gerilim dolu anlar sizi bekliyor.",
-                features: ["Sürükleyici karanlık atmosfer", "Gelişmiş fizik ve envanter sistemi", "Derin hikaye anlatımı"],
-                btnText: "Detayları İncele",
-                link: "#"
-            },
-            'cosmohop': {
-                title: "CosmoHop!",
-                subtitle: "Mobil Arcade Zıplama Macerası",
-                description: "Zorlu platformlar arasında hassas atlayışlar yapın. Reflekslerinizi test eden, bağımlılık yapıcı mekanikleriyle Google Play Store'da yerini almış bir mobil deneyim.",
-                features: ["Google Play entegrasyonu", "Dinamik zorluk eğrisi", "Minimalist ve akıcı grafikler"],
-                btnText: "Google Play'den İndir",
-                link: "#"
-            },
-            'bstreamer': {
-                title: "B-Streamer",
-                subtitle: "Gelişmiş Medya İndirme Aracı",
-                description: "İçeriklerinizi hızlı ve kayıpsız bir şekilde indirin. C# altyapısıyla geliştirilmiş B-Streamer, özel kurulum sihirbazı ve optimize edilmiş arka plan motoruyla kusursuz çalışır.",
-                features: ["Çoklu format desteği", "Özel derlenmiş kurulum sihirbazı", "Düşük sistem kaynağı tüketimi"],
-                btnText: "v1.0 Kurulumunu İndir",
-                link: "#"
-            },
-            'isletme': {
-                title: "İşletme Takip Sistemi",
-                subtitle: "Gelişmiş Veri Yönetimi",
-                description: "İşletmenizin kalbini tek bir ekrandan yönetin. WPF ve C# ile modern bir mimaride tasarlanmış bu masaüstü uygulaması, veri takibini minimalist bir arayüzle sunar.",
-                features: ["Gerçek zamanlı veri işleme", "Kullanıcı dostu minimalist arayüz", "Güvenilir mimari"],
-                btnText: "Demo Talep Et",
-                link: "#"
-            }
-        };
-
-        // SEKMELERİ DEĞİŞTİRME
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            document.querySelectorAll('.grid-container').forEach(grid => grid.classList.remove('active'));
-            document.getElementById('grid-' + tabName).classList.add('active');
-        }
-
-        // DETAY EKRANINI AÇMA
-        function openProduct(id) {
-            const data = products[id];
-            
-            // Verileri doldur
-            document.getElementById('det-title').innerText = data.title;
-            document.getElementById('det-sub').innerText = data.subtitle;
-            document.getElementById('det-desc').innerText = data.description;
-            document.getElementById('det-btn').innerText = data.btnText;
-            document.getElementById('det-btn').href = data.link;
-
-            // Özellikleri listele
-            const featuresList = document.getElementById('det-features');
-            featuresList.innerHTML = '';
-            data.features.forEach(f => {
-                let li = document.createElement('li');
-                li.innerText = f;
-                featuresList.appendChild(li);
-            });
-
-            // Ekranlar arası geçiş
-            document.getElementById('main-view').style.display = 'none';
-            document.getElementById('detail-view').style.display = 'block';
-            window.scrollTo(0, 0);
-        }
-
-        // ANA EKRANA DÖNÜŞ
-        function closeProduct() {
-            document.getElementById('detail-view').style.display = 'none';
-            document.getElementById('main-view').style.display = 'block';
-        }
-
-        function resetView() {
-            closeProduct();
-        }
-    </script>
 </body>
 </html>
