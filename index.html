@@ -79,24 +79,22 @@
 
         /* OYUN DEPARTMANI KISMI (SOL) */
         .split.games::before {
-            /* Buraya karanlık/oyun temalı bir arkaplan resmi ekleyebilirsiniz */
-            background-image: radial-gradient(circle at center, #1a0b2e 0%, #05070A 100%);
+            background-image: url('games-background.jpg'); /* Oyun evreni arka planı */
         }
-        .split.games::after { background: rgba(10, 5, 20, 0.7); }
+        .split.games::after { background: rgba(10, 5, 20, 0.7); } /* Üzerindeki karanlık morumsu filtre */
         
         /* YAZILIM DEPARTMANI KISMI (SAĞ) */
         .split.software::before {
-            /* Buraya teknolojik/kod temalı bir arkaplan resmi ekleyebilirsiniz */
-            background-image: radial-gradient(circle at center, #002b33 0%, #05070A 100%);
+            background-image: url('software-background.jpg'); /* Yazılım evreni arka planı */
         }
-        .split.software::after { background: rgba(0, 15, 20, 0.7); }
+        .split.software::after { background: rgba(0, 15, 20, 0.7); } /* Üzerindeki karanlık mavimsi filtre */
 
         /* HOVER (ÜZERİNE GELİNCE GENİŞLEME) EFEKTİ */
         .split:hover { flex: 1.5; }
         .split:hover::before { transform: scale(1.05); }
         
-        .split.games:hover::after { background: rgba(138, 43, 226, 0.2); }
-        .split.software:hover::after { background: rgba(0, 240, 255, 0.15); }
+        .split.games:hover::after { background: rgba(138, 43, 226, 0.4); } /* Vurgulanan Mor Filtre */
+        .split.software:hover::after { background: rgba(0, 240, 255, 0.3); } /* Vurgulanan Mavi Filtre */
 
         /* İÇERİK TEXT AYARLARI */
         .content {
@@ -111,6 +109,7 @@
             text-transform: uppercase;
             margin-bottom: 15px;
             color: #8A9BB8;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
 
         .split.games:hover .sup-title { color: #b47dff; }
@@ -121,12 +120,13 @@
             font-weight: 900;
             margin-bottom: 20px;
             letter-spacing: -1px;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.8);
         }
 
         .btn-enter {
             display: inline-block;
             padding: 15px 40px;
-            border: 2px solid rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.4);
             border-radius: 30px;
             font-size: 1rem;
             font-weight: bold;
@@ -134,16 +134,19 @@
             letter-spacing: 2px;
             backdrop-filter: blur(5px);
             transition: all 0.3s;
+            background: rgba(0,0,0,0.3);
         }
 
         .split.games:hover .btn-enter {
             border-color: #b47dff;
-            background: rgba(180, 125, 255, 0.1);
+            background: rgba(180, 125, 255, 0.2);
+            box-shadow: 0 0 20px rgba(180, 125, 255, 0.4);
         }
 
         .split.software:hover .btn-enter {
             border-color: #00F0FF;
-            background: rgba(0, 240, 255, 0.1);
+            background: rgba(0, 240, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
         }
 
         /* MOBİL UYUM */
@@ -163,7 +166,6 @@
 
     <div class="portal-container">
         
-        <!-- OYUNLAR PORTALI (games.html sayfasına gider) -->
         <a href="games.html" class="split games">
             <div class="content">
                 <div class="sup-title">Eğlence ve Atmosfer</div>
@@ -172,7 +174,6 @@
             </div>
         </a>
 
-        <!-- YAZILIM PORTALI (software.html sayfasına gider) -->
         <a href="software.html" class="split software">
             <div class="content">
                 <div class="sup-title">Araçlar ve Mimari</div>
