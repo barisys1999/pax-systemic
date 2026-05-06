@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="favicon.png">
-    <title>Systemic Software | Yazılım Evreni</title>
+    <title>PAX Systemic | Yazılım Dünyası</title>
     <style>
         :root {
             --primary: #00F0FF;
@@ -16,7 +16,6 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             background-color: var(--bg-dark); color: var(--text-main);
             font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh;
@@ -31,107 +30,76 @@
             position: sticky; top: 0; z-index: 1000;
         }
 
-        .logo-container { text-decoration: none; display: flex; align-items: center; gap: 15px; transition: transform 0.3s; }
-        .logo-container:hover { transform: scale(1.05); }
+        .logo-container { text-decoration: none; display: flex; align-items: center; gap: 15px; }
         .logo-text { font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; color: var(--text-main); }
         .logo-text span { color: var(--primary); }
-
-        .return-btn { color: var(--text-dim); text-decoration: none; font-size: 0.9rem; border: 1px solid rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; transition: all 0.3s; }
+        .return-btn { color: var(--text-dim); text-decoration: none; font-size: 0.9rem; border: 1px solid rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; transition: 0.3s; }
         .return-btn:hover { color: var(--primary); border-color: var(--primary); }
 
-        #main-view { transition: opacity 0.4s ease; width: 100%; display: flex; flex-direction: column; align-items: center;}
-        
+        #main-view { width: 100%; display: flex; flex-direction: column; align-items: center; animation: fadeIn 0.5s ease; }
         .hero { text-align: center; padding: 60px 20px 30px; }
-        .hero h1 { font-size: 3rem; font-weight: 900; margin-bottom: 10px; color: var(--primary); text-shadow: 0 0 20px rgba(0,240,255,0.2); }
-        .hero p { color: var(--text-dim); font-size: 1.1rem; }
-
-        .controls-container {
-            width: 100%; max-width: 800px; padding: 0 20px; margin-bottom: 50px;
-            display: flex; flex-direction: column; gap: 25px; align-items: center;
-        }
-
-        .search-box { width: 100%; max-width: 500px; position: relative; }
+        .hero h1 { font-size: 3.5rem; font-weight: 900; margin-bottom: 10px; color: var(--primary); }
+        
+        .controls-container { width: 100%; max-width: 800px; padding: 0 20px; margin-bottom: 50px; display: flex; flex-direction: column; gap: 25px; align-items: center; }
+        .search-box { width: 100%; max-width: 500px; }
         .search-box input {
             width: 100%; padding: 15px 25px; background: rgba(0, 240, 255, 0.02);
             border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 30px;
-            color: var(--text-main); font-size: 1.1rem; outline: none;
-            transition: all 0.3s ease; box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            color: var(--text-main); font-size: 1.1rem; outline: none; transition: 0.3s;
         }
-        .search-box input::placeholder { color: #4A5B78; }
-        .search-box input:focus {
-            border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow);
-            background: rgba(0, 240, 255, 0.05);
-        }
+        .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow); }
 
-        .filter-tags { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-        .filter-btn {
-            background: transparent; border: 1px solid rgba(255,255,255,0.1);
-            color: var(--text-dim); padding: 8px 22px; border-radius: 20px;
-            font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: all 0.3s;
-        }
-        .filter-btn:hover { border-color: rgba(0, 240, 255, 0.5); color: #FFF; }
-        .filter-btn.active {
-            background: rgba(0, 240, 255, 0.1); border-color: var(--primary);
-            color: var(--primary); box-shadow: 0 0 15px var(--primary-glow);
-        }
+        .filter-tags { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .filter-btn { background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--text-dim); padding: 8px 20px; border-radius: 20px; cursor: pointer; transition: 0.3s; font-weight: bold; }
+        .filter-btn.active { background: rgba(0, 240, 255, 0.1); border-color: var(--primary); color: var(--primary); }
 
-        .grid-container {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px; width: 100%; max-width: 1100px; padding: 0 20px; margin-bottom: 80px;
-        }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; width: 100%; max-width: 1200px; padding: 0 20px 80px; }
+        .product-card { background: var(--panel-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 15px; padding: 30px; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
+        .product-card:hover { border-color: var(--primary); transform: translateY(-5px); background: rgba(0, 240, 255, 0.03); }
+        .category-label { font-size: 0.7rem; color: var(--primary); font-weight: bold; text-transform: uppercase; margin-bottom: 10px; display: block; opacity: 0.8; }
+        .product-card h3 { font-size: 1.6rem; margin-bottom: 12px; }
+        .product-card p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.5; }
 
-        .product-card {
-            background: var(--panel-bg); border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 12px; padding: 30px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;
-            animation: fadeIn 0.5s ease;
-        }
-        .product-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .product-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--primary); opacity: 0; transition: opacity 0.3s;
-        }
-        .product-card:hover::before { opacity: 1; }
-        
-        .category-label { font-size: 0.75rem; color: var(--primary); font-weight: bold; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; display: block;}
-        .product-card h3 { font-size: 1.5rem; margin-bottom: 10px; }
-        .product-card p { color: var(--text-dim); font-size: 0.95rem; }
-
-        #no-results { display: none; width: 100%; text-align: center; color: var(--text-dim); padding: 40px; font-size: 1.2rem; }
-
-        #detail-view { display: none; max-width: 1000px; margin: 40px auto; padding: 0 20px; animation: slideUpFade 0.5s ease forwards; }
-        .back-btn { background: none; color: var(--text-dim); border: none; font-size: 1rem; cursor: pointer; margin-bottom: 30px; transition: color 0.3s; }
+        #detail-view { display: none; max-width: 1100px; margin: 40px auto; padding: 0 20px; animation: slideUp 0.4s ease; }
+        .back-btn { background: none; color: var(--text-dim); border: none; font-size: 1rem; cursor: pointer; margin-bottom: 25px; transition: 0.3s; }
         .back-btn:hover { color: var(--primary); }
-        .detail-header { margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
-        .detail-header h2 { font-size: 3rem; color: var(--primary); margin-bottom: 10px; }
-        .detail-header h4 { font-size: 1.2rem; color: var(--text-dim); font-weight: normal; }
-        .detail-tabs { display: flex; gap: 30px; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .d-tab { background: none; border: none; color: var(--text-dim); font-size: 1.1rem; padding-bottom: 10px; font-weight: bold; cursor: pointer; transition: all 0.3s; border-bottom: 2px solid transparent; }
-        .d-tab.active, .d-tab:hover { color: var(--primary); border-bottom: 2px solid var(--primary); }
-        .d-content-pane { display: none; animation: fadeIn 0.4s ease; }
-        .d-content-pane.active { display: block; }
-        .detail-content { display: flex; gap: 40px; align-items: flex-start; margin-bottom: 50px; }
-        .detail-text { flex: 1; }
-        .detail-text p { font-size: 1.1rem; line-height: 1.8; color: #C0C8D6; margin-bottom: 20px; }
-        .feature-list { list-style: none; margin-top: 20px; }
-        .feature-list li { margin-bottom: 10px; padding-left: 20px; position: relative; }
-        .feature-list li::before { content: '▹'; color: var(--primary); position: absolute; left: 0; font-size: 1.2rem; }
-        .detail-media { flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; color: var(--text-dim); }
-        .timeline { border-left: 2px solid rgba(0, 240, 255, 0.2); padding-left: 30px; margin-left: 10px; margin-bottom: 50px; }
-        .timeline-item { position: relative; margin-bottom: 40px; }
-        .timeline-item::before { content: ''; position: absolute; left: -37px; top: 5px; width: 12px; height: 12px; background: var(--bg-dark); border: 2px solid var(--primary); border-radius: 50%; box-shadow: 0 0 10px var(--primary-glow); transition: all 0.3s; }
-        .timeline-item:hover::before { background: var(--primary); box-shadow: 0 0 20px var(--primary); }
-        .tl-version { font-size: 1.3rem; font-weight: bold; color: var(--primary); display: inline-block; margin-right: 15px; }
-        .tl-date { color: var(--text-dim); font-size: 0.9rem; }
-        .tl-notes { margin-top: 15px; list-style: none; }
-        .tl-notes li { margin-bottom: 8px; color: #C0C8D6; position: relative; padding-left: 15px; }
-        .tl-notes li::before { content: '-'; position: absolute; left: 0; color: var(--text-dim); }
-        .download-section { background: rgba(0, 240, 255, 0.02); border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 16px; padding: 40px; text-align: center; }
-        .btn-massive { display: inline-block; background: var(--primary); color: #000; text-decoration: none; padding: 15px 40px; font-size: 1.1rem; font-weight: 900; border-radius: 8px; text-transform: uppercase; transition: all 0.3s; box-shadow: 0 0 20px var(--primary-glow); }
-        .btn-massive:hover { transform: scale(1.05); box-shadow: 0 0 40px var(--primary-glow); }
+        
+        .detail-header { margin-bottom: 30px; }
+        .detail-header h2 { font-size: 3.5rem; color: var(--primary); }
+        .detail-header h4 { font-size: 1.3rem; color: var(--text-dim); font-weight: 400; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
-        @keyframes slideUpFade { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 768px) { .detail-content { flex-direction: column; } .filter-tags { padding: 0 10px;} }
+        .detail-tabs { display: flex; gap: 30px; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .d-tab { background: none; border: none; color: var(--text-dim); font-size: 1.1rem; padding-bottom: 12px; cursor: pointer; transition: 0.3s; border-bottom: 2px solid transparent; }
+        .d-tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: bold; }
+
+        .detail-content { display: grid; grid-template-columns: 1fr 1.2fr; gap: 50px; align-items: start; margin-bottom: 50px; }
+        .detail-text p { font-size: 1.15rem; line-height: 1.8; color: #C0C8D6; margin-bottom: 25px; }
+        .feature-list { list-style: none; }
+        .feature-list li { margin-bottom: 12px; padding-left: 25px; position: relative; color: var(--text-main); }
+        .feature-list li::before { content: '▹'; color: var(--primary); position: absolute; left: 0; font-weight: bold; }
+
+        .detail-media { 
+            background: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; 
+            aspect-ratio: 16/10; overflow: hidden; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .detail-media img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+
+        .timeline { border-left: 2px solid rgba(0, 240, 255, 0.2); padding-left: 30px; margin: 20px 0 50px 10px; }
+        .timeline-item { position: relative; margin-bottom: 40px; }
+        .timeline-item::before { content: ''; position: absolute; left: -37px; top: 8px; width: 12px; height: 12px; background: var(--bg-dark); border: 2px solid var(--primary); border-radius: 50%; }
+        .tl-version { font-size: 1.3rem; font-weight: bold; color: var(--primary); margin-right: 15px; }
+        .tl-date { color: var(--text-dim); font-size: 0.9rem; }
+        .tl-notes { margin-top: 15px; list-style: none; padding-left: 10px; }
+        .tl-notes li { margin-bottom: 8px; color: #C0C8D6; font-size: 0.95rem; }
+
+        .download-section { background: rgba(0, 240, 255, 0.03); border: 1px solid rgba(0, 240, 255, 0.1); border-radius: 20px; padding: 50px; text-align: center; }
+        .btn-massive { display: inline-block; background: var(--primary); color: #000; text-decoration: none; padding: 18px 60px; font-size: 1.2rem; font-weight: 900; border-radius: 12px; transition: 0.3s; box-shadow: 0 10px 30px var(--primary-glow); }
+        .btn-massive:hover { transform: scale(1.05); box-shadow: 0 15px 40px var(--primary-glow); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 900px) { .detail-content { grid-template-columns: 1fr; } .detail-header h2 { font-size: 2.5rem; } }
     </style>
 </head>
 <body>
@@ -146,19 +114,18 @@
     <div id="main-view">
         <div class="hero">
             <h1>Yazılım Kataloğu</h1>
-            <p>Sistemli, güvenilir ve minimalist yazılım çözümleri.</p>
+            <p>Yüksek performanslı, minimalist ve güvenilir araçlar.</p>
         </div>
 
         <div class="controls-container">
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Sistemde Ara... (Örn: İndirme, Veri, WPF)" onkeyup="filterProducts()">
+                <input type="text" id="searchInput" placeholder="Yazılım ara..." onkeyup="filterProducts()">
             </div>
-            
             <div class="filter-tags">
                 <button class="filter-btn active" onclick="setCategory('all', this)">Tümü</button>
-                <button class="filter-btn" onclick="setCategory('medya', this)">Medya Araçları</button>
-                <button class="filter-btn" onclick="setCategory('yonetim', this)">Yönetim / İşletme</button>
-                <button class="filter-btn" onclick="setCategory('sistem', this)">Sistem Araçları</button>
+                <button class="filter-btn" onclick="setCategory('medya', this)">Medya</button>
+                <button class="filter-btn" onclick="setCategory('yonetim', this)">Yönetim</button>
+                <button class="filter-btn" onclick="setCategory('sistem', this)">Sistem</button>
             </div>
         </div>
 
@@ -166,181 +133,145 @@
             <div class="product-card" data-category="medya" onclick="openProduct('bstreamer')">
                 <span class="category-label">Medya Araçları</span>
                 <h3>B-Streamer</h3>
-                <p>Yüksek performanslı, entegre medya indirme ve dönüştürme aracı.</p>
+                <p>Gelişmiş medya indirme ve çoklu format dönüştürme yöneticisi.</p>
             </div>
-            
+
             <div class="product-card" data-category="yonetim" onclick="openProduct('isletme')">
                 <span class="category-label">Yönetim / İşletme</span>
-                <h3>İşletme Takip Sistemi</h3>
-                <p>WPF tabanlı, kurumsal veri ve envanter yönetim paneli.</p>
+                <h3>İşletme Takibi</h3>
+                <p>Kurumsal veriler için modern arayüzlü envanter yönetim sistemi.</p>
             </div>
 
-            <div class="product-card" data-category="sistem" onclick="openProduct('dummy1')">
-                <span class="category-label">Sistem Araçları</span>
-                <h3>Pax Code Engine</h3>
-                <p>Geliştiriciler için hata ayıklama ve kod derleme optimizasyon motoru.</p>
-            </div>
-
-            <div class="product-card" data-category="sistem" onclick="openProduct('dummy2')">
+            <div class="product-card" data-category="sistem" onclick="openProduct('systemic')">
                 <span class="category-label">Sistem Araçları</span>
                 <h3>Systemic Pro</h3>
-                <p>Cihazınızın performansını ve verimliliğini en üst düzeye çıkarmak için modern bir araç.</p>
+                <p>Cihaz temizliği, hız testi ve sistem bilgilerini içeren hepsi bir arada araç.</p>
             </div>
         </div>
 
-        <div id="no-results">Aradığınız kriterlere uygun bir yazılım bulunamadı.</div>
+        <div id="no-results" style="display:none; padding: 50px; color: var(--text-dim);">Sonuç bulunamadı.</div>
     </div>
 
     <div id="detail-view">
-        <button class="back-btn" onclick="closeProduct()">← Yazılımlara Dön</button>
+        <button class="back-btn" onclick="closeProduct()">← Kataloğa Dön</button>
         <div class="detail-header">
-            <h2 id="det-title">Ürün Adı</h2>
+            <h2 id="det-title">Ürün</h2>
             <h4 id="det-sub">Alt Başlık</h4>
         </div>
         <div class="detail-tabs">
-            <button class="d-tab active" onclick="switchDetailTab('overview', event)">Genel Bakış</button>
-            <button class="d-tab" onclick="switchDetailTab('changelog', event)">Sürüm Notları</button>
+            <button class="d-tab active" onclick="switchTab('overview', event)">Genel Bakış</button>
+            <button class="d-tab" onclick="switchTab('changelog', event)">Sürüm Notları</button>
         </div>
-        <div id="pane-overview" class="d-content-pane active">
+
+        <div id="pane-overview" class="tab-pane" style="display:block;">
             <div class="detail-content">
                 <div class="detail-text">
                     <p id="det-desc"></p>
                     <ul class="feature-list" id="det-features"></ul>
                 </div>
-                <div class="detail-media">Yazılım Arayüz Görüntüsü</div>
+                <div class="detail-media" id="det-media"></div>
             </div>
         </div>
-        <div id="pane-changelog" class="d-content-pane">
+
+        <div id="pane-changelog" class="tab-pane" style="display:none;">
             <div class="timeline" id="det-changelog"></div>
         </div>
+
         <div class="download-section">
             <a href="#" id="det-btn" class="btn-massive">İndir</a>
         </div>
     </div>
 
     <script>
-        let currentCategory = 'all';
-
         const products = {
-            'bstreamer': { 
-                title: "B-Streamer", 
-                subtitle: "Gelişmiş Medya İndirme Aracı", 
-                description: "C# altyapısıyla geliştirilmiş, yüksek performanslı video ve ses indirme yöneticisi.", 
-                features: ["Özel kurulum sihirbazı", "Çoklu format dönüşüm", "Düşük kaynak kullanımı"], 
-                btnText: "B-Streamer İndir", 
-                link: "#", 
-                changelog: [{ version: "v1.0.0", date: "Mayıs 2026", notes: ["İlk sürüm yayınlandı."] }] 
+            'bstreamer': {
+                title: "B-Streamer",
+                subtitle: "Gelişmiş Medya İndirme Aracı",
+                description: "C# altyapısıyla geliştirilmiş, yüksek performanslı video ve ses indirme yöneticisi. Minimalist arayüzü sayesinde arka planda sessizce çalışır.",
+                features: ["Özel derlenmiş kurulum sihirbazı", "Çoklu format dönüşüm desteği", "Düşük sistem kaynağı kullanımı"],
+                image: "gorseller/bstreamer.png", // Buraya görsel yolunu yaz
+                btnText: "B-Streamer İndir",
+                link: "#",
+                changelog: [{ version: "v1.0.0", date: "Mayıs 2026", notes: ["Sürüm yayınlandı."] }]
             },
-            'isletme': { 
-                title: "İşletme Takip Sistemi", 
-                subtitle: "Kurumsal Yönetim Paneli", 
-                description: "WPF/C# tabanlı, işletmelerin envanter ve veri takibini yapan yönetim yazılımı.", 
-                features: ["Sleek arayüz", "Gerçek zamanlı veri", "Hızlı raporlama"], 
-                btnText: "Demo Kurulumu", 
-                link: "#", 
-                changelog: [{ version: "v2.0", date: "Nisan 2026", notes: ["Arayüz yenilendi."] }] 
+            'isletme': {
+                title: "İşletme Takip Sistemi",
+                subtitle: "Kurumsal Yönetim Paneli",
+                description: "Masaüstü ortamında çalışan (WPF), işletmelerin envanter ve veri takibini pürüzsüz yapmasını sağlayan yazılım.",
+                features: ["Sleek modern tasarım", "Gerçek zamanlı veri listeleme", "Hızlı raporlama sistemi"],
+                image: "gorseller/isletme.png", 
+                btnText: "Demo Kurulumu",
+                link: "#",
+                changelog: [{ version: "v2.0", date: "Nisan 2026", notes: ["Arayüz güncellendi."] }]
             },
-            'dummy1': { 
-                title: "Pax Code Engine", 
-                subtitle: "Optimizasyon Motoru", 
-                description: "Kod analiz motoru.", 
-                features: ["Gerçek zamanlı analiz", "Hata ayıklama"], 
-                btnText: "Aracı İndir", 
-                link: "#", 
-                changelog: [] 
-            },
-            'dummy2': { 
-                title: "Systemic Pro", 
-                subtitle: "Performans Aracı", 
-                description: "Sisteminizi hızlı, temiz ve kontrol altında tutan hepsi bir arada optimizasyon çözümüdür.", 
-                features: ["Temizleme", "Hız Testi", "Sistem Bilgisi"], 
-                btnText: "Download", 
+            'systemic': {
+                title: "Systemic Pro",
+                subtitle: "Hepsi Bir Arada Sistem Aracı",
+                description: "Sisteminizi hızlı, temiz ve kontrol altında tutan, hız testi ve sistem bilgisi sunan optimizasyon aracıdır.",
+                features: ["Akıllı Sistem Temizleme", "Anlık Ağ Hız Testi", "Donanım Bilgisi İzleme"],
+                image: "gorseller/systemic.png", 
+                btnText: "Hemen İndir",
                 link: "https://github.com/barisys1999/pax-systemic/releases/download/v1.0.0/SystemicPro_Installer.exe",
-                changelog: [{ version: "v1.0.0", date: "Mayıs 2026", notes: ["Lansman sürümü."] }]
+                changelog: [{ version: "v1.0.0", date: "Mayıs 2026", notes: ["İlk stabil sürüm."] }]
             }
         };
 
-        function setCategory(category, buttonElement) {
-            currentCategory = category;
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            buttonElement.classList.add('active');
-            filterProducts();
-        }
-
-        function filterProducts() {
-            const searchText = document.getElementById('searchInput').value.toLowerCase();
-            const cards = document.querySelectorAll('.product-card');
-            let visibleCount = 0;
-
-            cards.forEach(card => {
-                const title = card.querySelector('h3').innerText.toLowerCase();
-                const desc = card.querySelector('p').innerText.toLowerCase();
-                const category = card.getAttribute('data-category');
-
-                const matchesSearch = title.includes(searchText) || desc.includes(searchText);
-                const matchesCategory = currentCategory === 'all' || category === currentCategory;
-
-                if (matchesSearch && matchesCategory) {
-                    card.style.display = 'block';
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-
-            document.getElementById('no-results').style.display = visibleCount === 0 ? 'block' : 'none';
-        }
-
-        function switchDetailTab(tabName, event) {
-            document.querySelectorAll('.d-tab').forEach(btn => btn.classList.remove('active'));
-            if(event) event.target.classList.add('active');
-            
-            document.querySelectorAll('.d-content-pane').forEach(pane => pane.classList.remove('active'));
-            document.getElementById('pane-' + tabName).classList.add('active');
-        }
-
         function openProduct(id) {
-            const data = products[id];
-            if(!data) return;
+            const p = products[id];
+            document.getElementById('det-title').innerText = p.title;
+            document.getElementById('det-sub').innerText = p.subtitle;
+            document.getElementById('det-desc').innerText = p.description;
+            document.getElementById('det-btn').innerText = p.btnText;
+            document.getElementById('det-btn').href = p.link;
+            
+            // Görsel Alanı
+            const media = document.getElementById('det-media');
+            media.innerHTML = p.image ? `<img src="${p.image}" alt="Arayüz">` : '<span style="color:var(--text-dim)">Görsel Hazırlanıyor</span>';
 
-            document.getElementById('det-title').innerText = data.title;
-            document.getElementById('det-sub').innerText = data.subtitle;
-            document.getElementById('det-desc').innerText = data.description;
-            document.getElementById('det-btn').innerText = data.btnText;
-            document.getElementById('det-btn').href = data.link;
+            // Özellikler
+            const flist = document.getElementById('det-features');
+            flist.innerHTML = p.features.map(f => `<li>${f}</li>`).join('');
 
-            const featuresList = document.getElementById('det-features');
-            featuresList.innerHTML = '';
-            data.features.forEach(f => { 
-                let li = document.createElement('li'); 
-                li.innerText = f; 
-                featuresList.appendChild(li); 
-            });
+            // Changelog
+            const cbox = document.getElementById('det-changelog');
+            cbox.innerHTML = p.changelog.length ? p.changelog.map(l => `
+                <div class="timeline-item">
+                    <span class="tl-version">${l.version}</span><span class="tl-date">${l.date}</span>
+                    <ul class="tl-notes">${l.notes.map(n => `<li>${n}</li>`).join('')}</ul>
+                </div>`).join('') : '<p>Not bulunamadı.</p>';
 
-            const changelogBox = document.getElementById('det-changelog');
-            changelogBox.innerHTML = '';
-            if(!data.changelog || data.changelog.length === 0) {
-                changelogBox.innerHTML = '<p style="color:var(--text-dim)">Bu sürüm için not girilmemiş.</p>';
-            } else {
-                data.changelog.forEach(log => {
-                    changelogBox.innerHTML += `
-                        <div class="timeline-item">
-                            <div class="tl-version">${log.version}</div>
-                            <span class="tl-date">${log.date}</span>
-                            <ul class="tl-notes">${log.notes.map(n => `<li>${n}</li>`).join('')}</ul>
-                        </div>`;
-                });
-            }
-
-            switchDetailTab('overview');
             document.getElementById('main-view').style.display = 'none';
             document.getElementById('detail-view').style.display = 'block';
-            window.scrollTo(0, 0);
+            window.scrollTo(0,0);
         }
 
         function closeProduct() {
             document.getElementById('detail-view').style.display = 'none';
             document.getElementById('main-view').style.display = 'flex';
+        }
+
+        function switchTab(tab, e) {
+            document.querySelectorAll('.d-tab').forEach(t => t.classList.remove('active'));
+            e.target.classList.add('active');
+            document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
+            document.getElementById('pane-' + tab).style.display = 'block';
+        }
+
+        function filterProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach(c => {
+                const text = c.innerText.toLowerCase();
+                c.style.display = text.includes(query) ? 'block' : 'none';
+            });
+        }
+
+        function setCategory(cat, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.product-card').forEach(c => {
+                c.style.display = (cat === 'all' || c.dataset.category === cat) ? 'block' : 'none';
+            });
         }
     </script>
 </body>
