@@ -77,28 +77,28 @@
         .feature-list li { margin-bottom: 12px; padding-left: 25px; position: relative; color: var(--text-main); }
         .feature-list li::before { content: '▹'; color: var(--primary); position: absolute; left: 0; font-weight: bold; }
 
-        /* RESİM BÜYÜTME EFEKTLERİ */
+        /* RESİM EFEKTLERİ */
         .detail-media { position: relative; background: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; aspect-ratio: 16/10; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 40px rgba(0,0,0,0.4); cursor: zoom-in; }
         .detail-media img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
-        /* Resim üzerine gelince büyüteç yerine yazı çıksın */
+        
+        /* Hover Yazı Efekti */
         .detail-media::after {
-            content: 'GÖRÜNTÜLE'; /* Simge yerine yazı */
+            content: 'GÖRÜNTÜLE';
             position: absolute; 
             font-size: 1rem;
             font-weight: bold;
             letter-spacing: 2px;
             color: var(--primary);
-            background: rgba(5, 7, 10, 0.6); /* Hafif koyu arka plan */
+            background: rgba(5, 7, 10, 0.6);
             width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center;
             opacity: 0; transition: 0.3s; 
-            backdrop-filter: blur(4px); /* Arkayı bulanıklaştırır */
+            backdrop-filter: blur(4px);
         }
         .detail-media:hover::after { opacity: 1; }
-        .detail-media:hover::after { opacity: 1; }
 
-        /* TAM EKRAN PANEL (LIGHTBOX) */
-        #lightbox { display: none; position: fixed; z-index: 10000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 7, 10, 0.95); align-items: center; justify-content: center; cursor: zoom-out; animation: fadeIn 0.3s ease; }
+        /* LIGHTBOX */
+        #lightbox { display: none; position: fixed; z-index: 10000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.98); align-items: center; justify-content: center; cursor: zoom-out; animation: fadeIn 0.3s ease; }
         #lightbox img { max-width: 90%; max-height: 90%; border: 1px solid var(--primary); box-shadow: 0 0 50px var(--primary-glow); border-radius: 4px; }
 
         .timeline { border-left: 2px solid rgba(0, 240, 255, 0.2); padding-left: 30px; margin: 20px 0 50px 10px; }
@@ -115,7 +115,7 @@
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 900px) { .detail-content { grid-template-columns: 1fr; } .detail-header h2 { font-size: 2.5rem; } .header { padding: 20px; } }
+        @media (max-width: 900px) { .detail-content { grid-template-columns: 1fr; } .detail-header h2 { font-size: 2.5rem; } }
     </style>
 </head>
 <body>
@@ -178,7 +178,6 @@
     </div>
 </div>
 
-<!-- Tam Ekran Resim Paneli -->
 <div id="lightbox" onclick="this.style.display='none'">
     <img id="lightbox-img" src="">
 </div>
