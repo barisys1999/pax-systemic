@@ -33,7 +33,7 @@
         .logo-container { text-decoration: none; display: flex; align-items: center; gap: 15px; }
         .logo-text { font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; color: var(--text-main); }
         .logo-text span { color: var(--primary); }
-        .return-btn { color: var(--text-dim); text-decoration: none; font-size: 0.9rem; border: 1px solid rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; transition: 0.3s; }
+        .return-btn { color: var(--text-dim); text-decoration: none; font-size: 0.9rem; border: 1px solid rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; transition: 0.3s; cursor: pointer; }
         .return-btn:hover { color: var(--primary); border-color: var(--primary); }
 
         #main-view { width: 100%; display: flex; flex-direction: column; align-items: center; animation: fadeIn 0.5s ease; }
@@ -83,7 +83,7 @@
             aspect-ratio: 16/10; overflow: hidden; display: flex; align-items: center; justify-content: center;
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
-        .detail-media img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .detail-media img { width: 100%; height: 100%; object-fit: cover; }
 
         .timeline { border-left: 2px solid rgba(0, 240, 255, 0.2); padding-left: 30px; margin: 20px 0 50px 10px; }
         .timeline-item { position: relative; margin-bottom: 40px; }
@@ -99,16 +99,16 @@
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 900px) { .detail-content { grid-template-columns: 1fr; } .detail-header h2 { font-size: 2.5rem; } }
+        @media (max-width: 900px) { .detail-content { grid-template-columns: 1fr; } .detail-header h2 { font-size: 2.5rem; } .header { padding: 20px; } }
     </style>
 </head>
 <body>
 
     <header>
-    <a href="index.html" class="logo-container" onclick="closeProduct()">
-        <div class="logo-text">PAX <span>SYSTEMIC</span></div>
-    </a>
-    <a href="index.html" class="return-btn" onclick="closeProduct()">Ana Portal</a>
+        <div class="logo-container" onclick="closeProduct()" style="cursor:pointer">
+            <div class="logo-text">PAX <span>SYSTEMIC</span></div>
+        </div>
+        <div class="return-btn" onclick="closeProduct()">Ana Portal</div>
     </header>
 
     <div id="main-view">
@@ -119,34 +119,18 @@
 
         <div class="controls-container">
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Yazılım ara..." onkeyup="filterProducts()">
+                <input type="text" id="searchInput" placeholder="Yazılım ara..." onkeyup="updateUI()">
             </div>
             <div class="filter-tags">
-                <button class="filter-btn active" onclick="setCategory('all', this)">Tümü</button>
-                <button class="filter-btn" onclick="setCategory('medya', this)">Medya</button>
-                <button class="filter-btn" onclick="setCategory('yonetim', this)">Yönetim</button>
-                <button class="filter-btn" onclick="setCategory('sistem', this)">Sistem</button>
+                <button class="filter-btn active" data-cat="all" onclick="setCategory('all', this)">Tümü</button>
+                <button class="filter-btn" data-cat="medya" onclick="setCategory('medya', this)">Medya</button>
+                <button class="filter-btn" data-cat="yonetim" onclick="setCategory('yonetim', this)">Yönetim</button>
+                <button class="filter-btn" data-cat="sistem" onclick="setCategory('sistem', this)">Sistem</button>
             </div>
         </div>
 
         <div class="grid-container" id="product-grid">
-            <div class="product-card" data-category="medya" onclick="openProduct('bstreamer')">
-                <span class="category-label">Medya Araçları</span>
-                <h3>B-Streamer</h3>
-                <p>Gelişmiş medya indirme ve çoklu format dönüştürme yöneticisi.</p>
-            </div>
-
-            <div class="product-card" data-category="yonetim" onclick="openProduct('isletme')">
-                <span class="category-label">Yönetim / İşletme</span>
-                <h3>İşletme Takibi</h3>
-                <p>Kurumsal veriler için modern arayüzlü envanter yönetim sistemi.</p>
-            </div>
-
-            <div class="product-card" data-category="sistem" onclick="openProduct('systemic')">
-                <span class="category-label">Sistem Araçları</span>
-                <h3>Systemic Pro</h3>
-                <p>Cihaz temizliği, hız testi ve sistem bilgilerini içeren hepsi bir arada araç.</p>
-            </div>
+            <!-- JavaScript ile otomatik doldurulacak -->
         </div>
 
         <div id="no-results" style="display:none; padding: 50px; color: var(--text-dim);">Sonuç bulunamadı.</div>
@@ -155,8 +139,8 @@
     <div id="detail-view">
         <button class="back-btn" onclick="closeProduct()">← Kataloğa Dön</button>
         <div class="detail-header">
-            <h2 id="det-title">Ürün</h2>
-            <h4 id="det-sub">Alt Başlık</h4>
+            <h2 id="det-title"></h2>
+            <h4 id="det-sub"></h4>
         </div>
         <div class="detail-tabs">
             <button class="d-tab active" onclick="switchTab('overview', event)">Genel Bakış</button>
@@ -183,115 +167,117 @@
     </div>
 
     <script>
-        const products = {
-            'bstreamer': {
-                title: "B-Streamer",
-                subtitle: "Gelişmiş Medya İndirme & Dönüştürme Yöneticisi",
-                description: "C# ve .NET 8.0 altyapısıyla geliştirilmiş, yüksek performanslı medya yöneticisi. Minimalist arayüzü sayesinde arka planda kaynak tüketmeden çalışır ve kompleks indirme işlemlerini sistemleştirir.",
-                features: [
-                    "PAX SYSTEMIC Özel Derleme Sihirbazı", 
-                    "Çoklu Format (MP4, MP3) Dönüşüm Desteği", 
-                    "Yüksek Hızlı Paralel İndirme Kuyruğu",
-                    "Düşük İşlemci ve RAM Kullanımı"
-                ],
-                image: "gorseller/bstreamer.png", 
-                btnText: "Hemen İndir",
-                link: "#",
+        // --- YENİ UYGULAMA EKLEME ALANI ---
+        const products = [
+            {
+                id: 'bstreamer',
+                category: 'medya',
+                catName: 'Medya Araçları',
+                title: 'B-Streamer',
+                subtitle: 'Gelişmiş Medya İndirme & Dönüştürme Yöneticisi',
+                shortDesc: 'Gelişmiş medya indirme ve çoklu format dönüştürme yöneticisi.',
+                fullDesc: 'C# ve .NET 8.0 altyapısıyla geliştirilmiş, yüksek performanslı medya yöneticisi. Minimalist arayüzü sayesinde arka planda kaynak tüketmeden çalışır ve kompleks indirme işlemlerini sistemleştirir.',
+                features: ['PAX SYSTEMIC Özel Derleme Sihirbazı', 'Çoklu Format (MP4, MP3) Dönüşüm Desteği', 'Yüksek Hızlı Paralel İndirme Kuyruğu', 'Düşük İşlemci ve RAM Kullanımı'],
+                image: 'gorseller/bstreamer.png',
+                link: '#',
                 changelog: [
-                    { 
-                        version: "v1.2.0", 
-                        date: "Mayıs 2026", 
-                        notes: ["İndirme motoru stabilize edildi.", "Arayüz hızı artırıldı."] 
-                    },
-                    { 
-                        version: "v1.0.0", 
-                        date: "Mart 2026", 
-                        notes: ["İlk stabil sürüm yayınlandı."] 
-                    }
+                    { version: 'v1.2.0', date: 'Mayıs 2026', notes: ['İndirme motoru stabilize edildi.', 'Arayüz hızı artırıldı.'] },
+                    { version: 'v1.0.0', date: 'Mart 2026', notes: ['İlk stabil sürüm yayınlandı.'] }
                 ]
             },
-            'isletme': {
-                title: "PAX Business Dynamics",
-                subtitle: "Kurumsal Yönetim & Muhasebe Paneli",
-                description: "İşletmenizin finansal damarlarını tek merkezden yönetin. WPF mimarisi ile geliştirilen bu sistem, envanter hareketlerinden cari hesap takibine kadar her süreci yüksek performans ve sıfır gecikme ile dijitalleştirir.",
-                features: [
-                    "Minimalist & Cyberpunk Dark Arayüz", 
-                    "Anlık Veritabanı Senkronizasyonu (Real-time)", 
-                    "Gelişmiş Filtreleme ve Dinamik Raporlama",
-                    "Entegre Stok Uyarı Sistemi",
-                    "SQL Tabanlı Güçlü Veri Güvenliği"
-                ],
-                image: "gorseller/isletme.png", 
-                btnText: "İşletme Sistemini Dene",
-                link: "#",
+            {
+                id: 'isletme',
+                category: 'yonetim',
+                catName: 'Yönetim / İşletme',
+                title: 'PAX Business Dynamics',
+                subtitle: 'Kurumsal Yönetim & Muhasebe Paneli',
+                shortDesc: 'Kurumsal veriler için modern arayüzlü envanter yönetim sistemi.',
+                fullDesc: 'İşletmenizin finansal damarlarını tek merkezden yönetin. WPF mimarisi ile geliştirilen bu sistem, envanter hareketlerinden cari hesap takibine kadar her süreci yüksek performans ve sıfır gecikme ile dijitalleştirir.',
+                features: ['Minimalist & Cyberpunk Dark Arayüz', 'Anlık Veritabanı Senkronizasyonu', 'Gelişmiş Filtreleme ve Raporlama', 'SQL Tabanlı Güçlü Veri Güvenliği'],
+                image: 'gorseller/isletme.png',
+                link: '#',
                 changelog: [
-                    { 
-                        version: "v2.5", 
-                        date: "Mayıs 2026", 
-                        notes: [
-                            "UI/UX tamamen modernize edildi.",
-                            "SQL sorgu optimizasyonu ile liste hızı %40 artırıldı.",
-                            "PDF Export modülü eklendi."
-                        ] 
-                    },
-                    { 
-                        version: "v2.0", 
-                        date: "Nisan 2026", 
-                        notes: ["Cari hesap yönetim modülü devreye alındı."] 
-                    }
+                    { version: 'v2.5', date: 'Mayıs 2026', notes: ['UI/UX tamamen modernize edildi.', 'Hız %40 artırıldı.'] }
                 ]
             },
-            'systemic': {
-                title: "Systemic Pro",
-                subtitle: "Hepsi Bir Arada Optimizasyon Aracı",
-                description: "Sisteminizi hızlı, temiz ve kontrol altında tutan profesyonel bir araç setidir. Cihaz temizliği, anlık ağ hız testi ve detaylı donanım izleme özelliklerini tek bir mühür altında toplar.",
-                features: [
-                    "Akıllı Kayıt Defteri ve Sistem Temizleme", 
-                    "Anlık Ağ Gecikme ve Hız Analizi", 
-                    "Detaylı Donanım ve Sensör İzleme",
-                    "Tek Tıkla Sistem Hızlandırma Modu"
-                ],
-                image: "gorseller/systemic.png", 
-                btnText: "Hemen İndir",
-                link: "https://github.com/barisys1999/pax-systemic/releases/download/v1.0.0/SystemicPro_Installer.exe",
+            {
+                id: 'systemic',
+                category: 'sistem',
+                catName: 'Sistem Araçları',
+                title: 'Systemic Pro',
+                subtitle: 'Hepsi Bir Arada Optimizasyon Aracı',
+                shortDesc: 'Cihaz temizliği, hız testi ve sistem bilgilerini içeren hepsi bir arada araç.',
+                fullDesc: 'Sisteminizi hızlı, temiz ve kontrol altında tutan profesyonel bir araç setidir. Cihaz temizliği, anlık ağ hız testi ve detaylı donanım izleme özelliklerini tek bir mühür altında toplar.',
+                features: ['Akıllı Kayıt Defteri Temizleme', 'Anlık Ağ Gecikme Analizi', 'Detaylı Donanım İzleme', 'Tek Tıkla Sistem Hızlandırma'],
+                image: 'gorseller/systemic.png',
+                link: 'https://github.com/barisys1999/pax-systemic/releases/download/v1.0.0/SystemicPro_Installer.exe',
                 changelog: [
-                    { 
-                        version: "v1.1.0", 
-                        date: "Mayıs 2026", 
-                        notes: ["Hız testi algoritması güncellendi.", "Yeni ikon seti eklendi."] 
-                    },
-                    { 
-                        version: "v1.0.0", 
-                        date: "Mayıs 2026", 
-                        notes: ["İlk stabil sürüm."] 
-                    }
+                    { version: 'v1.1.0', date: 'Mayıs 2026', notes: ['Hız testi algoritması güncellendi.'] }
                 ]
             }
-        };
+        ];
+
+        let currentCategory = 'all';
+
+        function initGrid() {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = products.map(p => `
+                <div class="product-card" data-category="${p.category}" onclick="openProduct('${p.id}')">
+                    <span class="category-label">${p.catName}</span>
+                    <h3>${p.title}</h3>
+                    <p>${p.shortDesc}</p>
+                </div>
+            `).join('');
+        }
+
+        function updateUI() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.product-card');
+            let found = 0;
+
+            cards.forEach(card => {
+                const title = card.querySelector('h3').innerText.toLowerCase();
+                const cat = card.dataset.category;
+                const matchesSearch = title.includes(query);
+                const matchesCat = (currentCategory === 'all' || cat === currentCategory);
+
+                if (matchesSearch && matchesCat) {
+                    card.style.display = 'block';
+                    found++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            document.getElementById('no-results').style.display = found === 0 ? 'block' : 'none';
+        }
+
+        function setCategory(cat, btn) {
+            currentCategory = cat;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            updateUI();
+        }
 
         function openProduct(id) {
-            const p = products[id];
+            const p = products.find(x => x.id === id);
+            if (!p) return;
+
             document.getElementById('det-title').innerText = p.title;
             document.getElementById('det-sub').innerText = p.subtitle;
-            document.getElementById('det-desc').innerText = p.description;
-            document.getElementById('det-btn').innerText = p.btnText;
+            document.getElementById('det-desc').innerText = p.fullDesc;
             document.getElementById('det-btn').href = p.link;
             
-            // Görsel Alanı
             const media = document.getElementById('det-media');
-            media.innerHTML = p.image ? `<img src="${p.image}" alt="Arayüz">` : '<span style="color:var(--text-dim)">Görsel Hazırlanıyor</span>';
+            media.innerHTML = `<img src="${p.image}" alt="${p.title}" onerror="this.parentElement.innerHTML='Görsel Hazırlanıyor'">`;
 
-            // Özellikler
-            const flist = document.getElementById('det-features');
-            flist.innerHTML = p.features.map(f => `<li>${f}</li>`).join('');
+            document.getElementById('det-features').innerHTML = p.features.map(f => `<li>${f}</li>`).join('');
 
-            // Changelog
-            const cbox = document.getElementById('det-changelog');
-            cbox.innerHTML = p.changelog.length ? p.changelog.map(l => `
+            document.getElementById('det-changelog').innerHTML = p.changelog.map(l => `
                 <div class="timeline-item">
                     <span class="tl-version">${l.version}</span><span class="tl-date">${l.date}</span>
                     <ul class="tl-notes">${l.notes.map(n => `<li>${n}</li>`).join('')}</ul>
-                </div>`).join('') : '<p>Not bulunamadı.</p>';
+                </div>`).join('');
 
             document.getElementById('main-view').style.display = 'none';
             document.getElementById('detail-view').style.display = 'block';
@@ -301,31 +287,18 @@
         function closeProduct() {
             document.getElementById('detail-view').style.display = 'none';
             document.getElementById('main-view').style.display = 'flex';
+            switchTab('overview', {target: document.querySelector('.d-tab')});
         }
 
         function switchTab(tab, e) {
             document.querySelectorAll('.d-tab').forEach(t => t.classList.remove('active'));
-            e.target.classList.add('active');
+            if(e) e.target.classList.add('active');
             document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
             document.getElementById('pane-' + tab).style.display = 'block';
         }
 
-        function filterProducts() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const cards = document.querySelectorAll('.product-card');
-            cards.forEach(c => {
-                const text = c.innerText.toLowerCase();
-                c.style.display = text.includes(query) ? 'block' : 'none';
-            });
-        }
-
-        function setCategory(cat, btn) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.querySelectorAll('.product-card').forEach(c => {
-                c.style.display = (cat === 'all' || c.dataset.category === cat) ? 'block' : 'none';
-            });
-        }
+        // Başlangıç
+        initGrid();
     </script>
 </body>
 </html>
