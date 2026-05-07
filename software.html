@@ -24,17 +24,16 @@
         }
 
         header {
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; justify-content: flex-start; align-items: center;
             padding: 20px 50px; background: rgba(5, 7, 10, 0.85);
             backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0, 240, 255, 0.1);
             position: sticky; top: 0; z-index: 1000;
         }
 
-        .logo-container { text-decoration: none; display: flex; align-items: center; gap: 15px; }
+        .logo-container { text-decoration: none; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.3s; }
+        .logo-container:hover { opacity: 0.8; }
         .logo-text { font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; color: var(--text-main); }
         .logo-text span { color: var(--primary); }
-        .return-btn { color: var(--text-dim); text-decoration: none; font-size: 0.9rem; border: 1px solid rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; transition: 0.3s; cursor: pointer; }
-        .return-btn:hover { color: var(--primary); border-color: var(--primary); }
 
         #main-view { width: 100%; display: flex; flex-direction: column; align-items: center; animation: fadeIn 0.5s ease; }
         .hero { text-align: center; padding: 60px 20px 30px; }
@@ -105,10 +104,9 @@
 <body>
 
     <header>
-        <div class="logo-container" onclick="closeProduct()" style="cursor:pointer">
+        <div class="logo-container" onclick="closeProduct()">
             <div class="logo-text">PAX <span>SYSTEMIC</span></div>
         </div>
-        <div class="return-btn" onclick="closeProduct()">Ana Portal</div>
     </header>
 
     <div id="main-view">
@@ -167,7 +165,6 @@
     </div>
 
     <script>
-        // --- YENİ UYGULAMA EKLEME ALANI ---
         const products = [
             {
                 id: 'bstreamer',
@@ -287,17 +284,20 @@
         function closeProduct() {
             document.getElementById('detail-view').style.display = 'none';
             document.getElementById('main-view').style.display = 'flex';
-            switchTab('overview', {target: document.querySelector('.d-tab')});
+            switchTab('overview', null);
         }
 
         function switchTab(tab, e) {
             document.querySelectorAll('.d-tab').forEach(t => t.classList.remove('active'));
-            if(e) e.target.classList.add('active');
+            if(e) {
+                e.target.classList.add('active');
+            } else {
+                document.querySelector('.d-tab').classList.add('active');
+            }
             document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
             document.getElementById('pane-' + tab).style.display = 'block';
         }
 
-        // Başlangıç
         initGrid();
     </script>
 </body>
