@@ -77,11 +77,9 @@
         .feature-list li { margin-bottom: 12px; padding-left: 25px; position: relative; color: var(--text-main); }
         .feature-list li::before { content: '▹'; color: var(--primary); position: absolute; left: 0; font-weight: bold; }
 
-        /* RESİM EFEKTLERİ */
         .detail-media { position: relative; background: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; aspect-ratio: 16/10; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 40px rgba(0,0,0,0.4); cursor: zoom-in; }
         .detail-media img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
         
-        /* Hover Yazı Efekti */
         .detail-media::after {
             content: 'GÖRÜNTÜLE';
             position: absolute; 
@@ -97,7 +95,6 @@
         }
         .detail-media:hover::after { opacity: 1; }
 
-        /* LIGHTBOX */
         #lightbox { display: none; position: fixed; z-index: 10000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.98); align-items: center; justify-content: center; cursor: zoom-out; animation: fadeIn 0.3s ease; }
         #lightbox img { max-width: 90%; max-height: 90%; border: 1px solid var(--primary); box-shadow: 0 0 50px var(--primary-glow); border-radius: 4px; }
 
@@ -183,6 +180,7 @@
 </div>
 
 <script>
+    // Ürün verileri
     const products = [
         {
             id: 'bstreamer',
@@ -207,10 +205,10 @@
             title: 'NetKasa Pro',
             subtitle: 'Kurumsal Yönetim & Muhasebe Paneli',
             shortDesc: 'Kurumsal veriler için modern arayüzlü envanter yönetim sistemi.',
-            fullDesc: 'İşletmenizin finansal damarlarını tek merkezden yönetin. Pax Systemic ile geliştirilen bu sistem, envanter hareketlerinden cari hesap takibine kadar her süreci yüksek performans ve sıfır gecikme ile dijitalleştirir.',
+            fullDesc: 'İşletmenizin finansal damarlarını tek merkezden yönetin. Pax Systemic ile geliştirilen bu sistem, envanter hareketlerinden cari hesap takibine kadar her süreci dijitalleştirir.',
             features: ['Minimalist Dark Arayüz', 'Anlık Veritabanı Senkronizasyonu', 'Gelişmiş Filtreleme ve Raporlama', 'SQL Tabanlı Güçlü Veri Güvenliği'],
             image: 'gorseller/isletme.png',
-            link: 'mailto:paxsystemic@gmail.com?subject=NetKasa Pro Lisans Talebi&body=Merhaba, NetKasa Pro yazılımınız hakkında bilgi almak ve lisans talep etmek istiyorum.',
+            link: 'mailto:paxsystemic@gmail.com?subject=NetKasa Pro Lisans Talebi&body=Merhaba, NetKasa Pro hakkında bilgi almak istiyorum.',
             changelog: [
                 { version: 'v2.5', date: 'Mayıs 2026', notes: ['UI/UX tamamen modernize edildi.', 'Hız %40 artırıldı.'] }
             ]
@@ -222,7 +220,7 @@
             title: 'Systemic Pro',
             subtitle: 'Hepsi Bir Arada Optimizasyon Aracı',
             shortDesc: 'Cihaz temizliği, hız testi ve sistem bilgilerini içeren hepsi bir arada araç.',
-            fullDesc: 'Sisteminizi hızlı, temiz ve kontrol altında tutan profesyonel bir araç setidir. Cihaz temizliği, anlık ağ hız testi ve detaylı donanım izleme özelliklerini tek bir mühür altında toplar.',
+            fullDesc: 'Sisteminizi hızlı, temiz ve kontrol altında tutan profesyonel bir araç setidir. Cihaz temizliği, anlık ağ hız testi ve detaylı donanım izleme özelliklerini içerir.',
             features: ['Akıllı Kayıt Defteri Temizleme', 'Anlık Ağ Gecikme Analizi', 'Detaylı Donanım İzleme', 'Tek Tıkla Sistem Hızlandırma'],
             image: 'gorseller/systemic.png',
             link: 'https://github.com/barisys1999/pax-systemic/releases/download/SystemicPro/SystemicPro_Installer.exe',
@@ -234,8 +232,10 @@
 
     let currentCategory = 'all';
 
+    // Grid başlatma
     function initGrid() {
         const grid = document.getElementById('product-grid');
+        if(!grid) return;
         grid.innerHTML = products.map(p => `
             <div class="product-card" data-category="${p.category}" onclick="openProduct('${p.id}')">
                 <span class="category-label">${p.catName}</span>
@@ -245,15 +245,18 @@
         `).join('');
     }
 
+    // Arama ve Filtreleme
     function updateUI() {
         const query = document.getElementById('searchInput').value.toLowerCase();
         const cards = document.querySelectorAll('.product-card');
         let found = 0;
+
         cards.forEach(card => {
             const title = card.querySelector('h3').innerText.toLowerCase();
             const cat = card.dataset.category;
             const matchesSearch = title.includes(query);
             const matchesCat = (currentCategory === 'all' || cat === currentCategory);
+
             if (matchesSearch && matchesCat) {
                 card.style.display = 'block';
                 found++;
@@ -261,7 +264,9 @@
                 card.style.display = 'none';
             }
         });
-        document.getElementById('no-results').style.display = found === 0 ? 'block' : 'none';
+
+        const noRes = document.getElementById('no-results');
+        if(noRes) noRes.style.display = found === 0 ? 'block' : 'none';
     }
 
     function setCategory(cat, btn) {
@@ -271,89 +276,22 @@
         updateUI();
     }
 
-    const products = [
-    {
-        id: 'bstreamer',
-        category: 'medya',
-        catName: 'Medya Araçları',
-        title: 'B-Streamer',
-        subtitle: 'Gelişmiş Medya İndirme & Dönüştürme Yöneticisi',
-        shortDesc: 'Gelişmiş medya indirme ve çoklu format dönüştürme yöneticisi.',
-        fullDesc: 'Yüksek performanslı medya yöneticisi. Minimalist arayüzü sayesinde arka planda kaynak tüketmeden çalışır ve kompleks indirme işlemlerini sistemleştirir.',
-        features: ['Çoklu Format (MP4, MP3) Dönüşüm Desteği', 'Youtube Hızlı Müzik ve Video İndirme ', 'Düşük İşlemci ve RAM Kullanımı'],
-        image: 'gorseller/bstreamer.png',
-        link: 'https://github.com/barisys1999/pax-systemic/releases/download/B-Streamer/B_Streamer_Installer.exe',
-        changelog: [
-            { version: 'v1.2.0', date: 'Mayıs 2026', notes: ['İndirme motoru stabilize edildi.', 'Arayüz hızı artırıldı.'] },
-            { version: 'v1.0.0', date: 'Mart 2026', notes: ['İlk stabil sürüm yayınlandı.'] }
-        ]
-    },
-    {
-        id: 'isletme',
-        category: 'yonetim',
-        catName: 'Yönetim / İşletme',
-        title: 'NetKasa Pro',
-        subtitle: 'Kurumsal Yönetim & Muhasebe Paneli',
-        shortDesc: 'Kurumsal veriler için modern arayüzlü envanter yönetim sistemi.',
-        fullDesc: 'İşletmenizin finansal damarlarını tek merkezden yönetin. Pax Systemic ile geliştirilen bu sistem, envanter hareketlerinden cari hesap takibine kadar her süreci yüksek performans ve sıfır gecikme ile dijitalleştirir.',
-        features: ['Minimalist Dark Arayüz', 'Anlık Veritabanı Senkronizasyonu', 'Gelişmiş Filtreleme ve Raporlama', 'SQL Tabanlı Güçlü Veri Güvenliği'],
-        image: 'gorseller/isletme.png',
-        // ÇÖZÜM: Başına mailto: eklendi
-        link: 'mailto:paxsystemic@gmail.com?subject=NetKasa Pro Lisans Talebi&body=Merhaba, NetKasa Pro yazılımınız hakkında bilgi almak ve lisans talep etmek istiyorum.',
-        changelog: [
-            { version: 'v2.5', date: 'Mayıs 2026', notes: ['UI/UX tamamen modernize edildi.', 'Hız %40 artırıldı.'] }
-        ]
-    },
-    {
-        id: 'systemic',
-        category: 'sistem',
-        catName: 'Sistem Araçları',
-        title: 'Systemic Pro',
-        subtitle: 'Hepsi Bir Arada Optimizasyon Aracı',
-        shortDesc: 'Cihaz temizliği, hız testi ve sistem bilgilerini içeren hepsi bir arada araç.',
-        fullDesc: 'Sisteminizi hızlı, temiz ve kontrol altında tutan profesyonel bir araç setidir. Cihaz temizliği, anlık ağ hız testi ve detaylı donanım izleme özelliklerini tek bir mühür altında toplar.',
-        features: ['Akıllı Kayıt Defteri Temizleme', 'Anlık Ağ Gecikme Analizi', 'Detaylı Donanım İzleme', 'Tek Tıkla Sistem Hızlandırma'],
-        image: 'gorseller/systemic.png',
-        link: 'https://github.com/barisys1999/pax-systemic/releases/download/SystemicPro/SystemicPro_Installer.exe',
-        changelog: [
-            { version: 'v1.1.0', date: 'Mayıs 2026', notes: ['Hız testi algoritması güncellendi.'] }
-        ]
-    }
-];
+    // Ürün Detay Görünümü
+    function openProduct(id) {
+        const p = products.find(x => x.id === id);
+        if (!p) return;
+        
+        const downloadBtn = document.getElementById('det-btn');
+        document.getElementById('det-title').innerText = p.title;
+        document.getElementById('det-sub').innerText = p.subtitle;
+        document.getElementById('det-desc').innerText = p.fullDesc;
+        downloadBtn.href = p.link;
 
-// openProduct fonksiyonu aynı kalabilir, yukarıdaki link değiştiği için artık çalışacaktır.
-function openProduct(id) {
-    const p = products.find(x => x.id === id);
-    if (!p) return;
-    
-    const downloadBtn = document.getElementById('det-btn');
-    document.getElementById('det-title').innerText = p.title;
-    document.getElementById('det-sub').innerText = p.subtitle;
-    document.getElementById('det-desc').innerText = p.fullDesc;
-    downloadBtn.href = p.link;
-
-    // Artık p.link "mailto:" ile başladığı için bu kontrol çalışacak
-    if (p.link.startsWith('mailto:')) {
-        downloadBtn.innerText = 'Talep Et';
-    } else {
-        downloadBtn.innerText = 'İndir';
-    }
-    
-    const media = document.getElementById('det-media');
-    media.onclick = () => openLightbox(p.image); 
-    media.innerHTML = `<img src="${p.image}" alt="${p.title}" onerror="this.parentElement.innerHTML='Görsel Hazırlanıyor'">`;
-
-    document.getElementById('det-features').innerHTML = p.features.map(f => `<li>${f}</li>`).join('');
-    document.getElementById('det-changelog').innerHTML = p.changelog.map(l => `
-        <div class="timeline-item">
-            <span class="tl-version">${l.version}</span><span class="tl-date">${l.date}</span>
-            <ul class="tl-notes">${l.notes.map(n => `<li>${n}</li>`).join('')}</ul>
-        </div>`).join('');
-
-    document.getElementById('main-view').style.display = 'none';
-    document.getElementById('detail-view').style.display = 'block';
-    window.scrollTo(0,0);
-}
+        // Dinamik Buton Metni
+        if (p.link.startsWith('mailto:')) {
+            downloadBtn.innerText = 'Talep Et';
+        } else {
+            downloadBtn.innerText = 'İndir';
         }
         
         const media = document.getElementById('det-media');
@@ -392,7 +330,8 @@ function openProduct(id) {
         document.getElementById('lightbox').style.display = 'flex';
     }
 
-    initGrid();
+    // Sayfa yüklendiğinde çalıştır
+    window.onload = initGrid;
 </script>
 </body>
 </html>
