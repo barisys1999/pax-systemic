@@ -210,7 +210,8 @@
             fullDesc: 'İşletmenizin finansal damarlarını tek merkezden yönetin. Pax Systemic ile geliştirilen bu sistem, envanter hareketlerinden cari hesap takibine kadar her süreci yüksek performans ve sıfır gecikme ile dijitalleştirir.',
             features: ['Minimalist Dark Arayüz', 'Anlık Veritabanı Senkronizasyonu', 'Gelişmiş Filtreleme ve Raporlama', 'SQL Tabanlı Güçlü Veri Güvenliği'],
             image: 'gorseller/isletme.png',
-            link: 'https://github.com/barisys1999/pax-systemic/releases/download/NetKasaProv2.0/NetKasaPro_Installer.exe',
+            // MAILTO linki buraya eklendi:
+            link: 'paxsystemic@gmail.com?subject=NetKasa Pro Lisans Talebi&body=Merhaba, NetKasa Pro yazılımınız hakkında bilgi almak ve lisans talep etmek istiyorum.',
             changelog: [
                 { version: 'v2.5', date: 'Mayıs 2026', notes: ['UI/UX tamamen modernize edildi.', 'Hız %40 artırıldı.'] }
             ]
@@ -274,10 +275,19 @@
     function openProduct(id) {
         const p = products.find(x => x.id === id);
         if (!p) return;
+        
+        const downloadBtn = document.getElementById('det-btn');
         document.getElementById('det-title').innerText = p.title;
         document.getElementById('det-sub').innerText = p.subtitle;
         document.getElementById('det-desc').innerText = p.fullDesc;
-        document.getElementById('det-btn').href = p.link;
+        downloadBtn.href = p.link;
+
+        // Buton metni dinamik kontrolü
+        if (p.link.startsWith('mailto:')) {
+            downloadBtn.innerText = 'Talep Et';
+        } else {
+            downloadBtn.innerText = 'İndir';
+        }
         
         const media = document.getElementById('det-media');
         media.onclick = () => openLightbox(p.image); 
