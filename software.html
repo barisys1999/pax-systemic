@@ -209,7 +209,7 @@
             shortDesc: 'Gelişmiş medya indirme ve çoklu format dönüştürme yöneticisi.',
             fullDesc: 'Yüksek performanslı medya yöneticisi. Minimalist arayüzü sayesinde arka planda kaynak tüketmeden çalışır ve kompleks indirme işlemlerini sistemleştirir.',
             features: ['Çoklu Format (MP4, MP3) Dönüşüm Desteği', 'Youtube Hızlı Müzik ve Video İndirme ', 'Düşük İşlemci ve RAM Kullanımı'],
-            images: ['gorseller/bstreamer.png', 'gorseller/bstreamer_2.png', 'gorseller/bstreamer_3.png'], 
+            images:   ['gorseller/bstreamer/1.png'], 
             link: 'https://github.com/barisys1999/pax-systemic/releases/download/B-Streamer/B_Streamer_Installer.exe',
             changelog: [
                 { version: 'v1.2.0', date: 'Mayıs 2026', notes: ['İndirme motoru stabilize edildi.', 'Arayüz hızı artırıldı.'] },
@@ -296,7 +296,7 @@
         updateUI();
     }
 
-   
+    
     function openProduct(id) {
         const p = products.find(x => x.id === id);
         if (!p) return;
@@ -307,7 +307,7 @@
         document.getElementById('det-desc').innerText = p.fullDesc;
         downloadBtn.href = p.link;
 
-       
+        
         if (p.link.startsWith('https://mail.google.com/')) {
             downloadBtn.innerText = 'Talep Et';
         } else {
@@ -330,7 +330,7 @@
         window.scrollTo(0,0);
     }
 
-   
+    
     function updateMediaView() {
         const media = document.getElementById('det-media');
         if (currentImages.length === 0) {
@@ -338,7 +338,8 @@
             return;
         }
 
-        let html = `<img src="${currentImages[currentImageIndex]}" onerror="this.src=''; this.parentElement.innerHTML='Görsel Hazırlanıyor'">`;
+        
+        let html = `<img src="${currentImages[currentImageIndex]}" loading="lazy" onerror="this.src=''; this.parentElement.innerHTML='Görsel Hazırlanıyor'">`;
         html += `<div class="media-overlay" onclick="openLightbox()">GÖRÜNTÜLE</div>`;
 
         
@@ -389,7 +390,8 @@
         if(currentImages.length === 0) return;
         const lb = document.getElementById('lightbox');
         
-        let html = `<img id="lightbox-img" src="${currentImages[currentImageIndex]}" onclick="event.stopPropagation()">`;
+       
+        let html = `<img id="lightbox-img" src="${currentImages[currentImageIndex]}" loading="lazy" onclick="event.stopPropagation()">`;
         
         if (currentImages.length > 1) {
             html += `<button class="slider-btn prev" style="position:fixed; left: 5%;" onclick="changeLightboxImage(-1, event)">&#10094;</button>`;
