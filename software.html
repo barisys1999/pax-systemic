@@ -77,26 +77,43 @@
         .feature-list li { margin-bottom: 12px; padding-left: 25px; position: relative; color: var(--text-main); }
         .feature-list li::before { content: '▹'; color: var(--primary); position: absolute; left: 0; font-weight: bold; }
 
-        .detail-media { position: relative; background: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; aspect-ratio: 16/10; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 40px rgba(0,0,0,0.4); cursor: zoom-in; }
+        .detail-media { position: relative; background: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; aspect-ratio: 16/10; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
         .detail-media img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
         
-        .detail-media::after {
-            content: 'GÖRÜNTÜLE';
-            position: absolute; 
-            font-size: 1rem;
-            font-weight: bold;
-            letter-spacing: 2px;
-            color: var(--primary);
-            background: rgba(5, 7, 10, 0.6);
-            width: 100%; height: 100%;
+        /* Slider ve Overlay Stilleri */
+        .media-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 7, 10, 0.6); backdrop-filter: blur(4px);
+            color: var(--primary); font-size: 1rem; font-weight: bold; letter-spacing: 2px;
             display: flex; align-items: center; justify-content: center;
-            opacity: 0; transition: 0.3s; 
-            backdrop-filter: blur(4px);
+            opacity: 0; transition: 0.3s; cursor: zoom-in; z-index: 5;
         }
-        .detail-media:hover::after { opacity: 1; }
+        .detail-media:hover .media-overlay { opacity: 1; }
+
+        .slider-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(5, 7, 10, 0.7); color: var(--primary);
+            border: 1px solid rgba(0, 240, 255, 0.3); padding: 12px 18px;
+            cursor: pointer; z-index: 10; font-size: 1.5rem;
+            border-radius: 8px; transition: 0.3s; backdrop-filter: blur(4px);
+        }
+        .slider-btn:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary-glow); }
+        .slider-btn.prev { left: 15px; }
+        .slider-btn.next { right: 15px; }
+
+        .slider-dots {
+            position: absolute; bottom: 15px; width: 100%;
+            display: flex; justify-content: center; gap: 8px; z-index: 10;
+        }
+        .dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: rgba(255,255,255,0.3); cursor: pointer; transition: 0.3s;
+        }
+        .dot.active { background: var(--primary); box-shadow: 0 0 10px var(--primary-glow); }
+        .dot:hover { background: rgba(0, 240, 255, 0.6); }
 
         #lightbox { display: none; position: fixed; z-index: 10000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.98); align-items: center; justify-content: center; cursor: zoom-out; animation: fadeIn 0.3s ease; }
-        #lightbox img { max-width: 90%; max-height: 90%; border: 1px solid var(--primary); box-shadow: 0 0 50px var(--primary-glow); border-radius: 4px; }
+        #lightbox img { max-width: 90%; max-height: 90%; border: 1px solid var(--primary); box-shadow: 0 0 50px var(--primary-glow); border-radius: 4px; cursor: default; }
 
         .timeline { border-left: 2px solid rgba(0, 240, 255, 0.2); padding-left: 30px; margin: 20px 0 50px 10px; }
         .timeline-item { position: relative; margin-bottom: 40px; }
@@ -162,6 +179,7 @@
                 <p id="det-desc"></p>
                 <ul class="feature-list" id="det-features"></ul>
             </div>
+            <!-- Slider'ın oluşturulacağı medya kapsayıcısı -->
             <div class="detail-media" id="det-media"></div>
         </div>
     </div>
@@ -176,11 +194,11 @@
 </div>
 
 <div id="lightbox" onclick="this.style.display='none'">
-    <img id="lightbox-img" src="">
+    <!-- İçerik JS ile dinamik oluşturulur -->
 </div>
 
 <script>
-    // Ürün verileri
+    // Ürün verileri (images dizisi desteği eklendi)
     const products = [
         {
             id: 'bstreamer',
@@ -191,7 +209,8 @@
             shortDesc: 'Gelişmiş medya indirme ve çoklu format dönüştürme yöneticisi.',
             fullDesc: 'Yüksek performanslı medya yöneticisi. Minimalist arayüzü sayesinde arka planda kaynak tüketmeden çalışır ve kompleks indirme işlemlerini sistemleştirir.',
             features: ['Çoklu Format (MP4, MP3) Dönüşüm Desteği', 'Youtube Hızlı Müzik ve Video İndirme ', 'Düşük İşlemci ve RAM Kullanımı'],
-            image: 'gorseller/bstreamer.png',
+            // Çoklu resim eklendi
+            images: ['gorseller/bstreamer.png', 'gorseller/bstreamer_2.png', 'gorseller/bstreamer_3.png'], 
             link: 'https://github.com/barisys1999/pax-systemic/releases/download/B-Streamer/B_Streamer_Installer.exe',
             changelog: [
                 { version: 'v1.2.0', date: 'Mayıs 2026', notes: ['İndirme motoru stabilize edildi.', 'Arayüz hızı artırıldı.'] },
@@ -207,7 +226,7 @@
             shortDesc: 'Kurumsal veriler için modern arayüzlü envanter yönetim sistemi.',
             fullDesc: 'İşletmenizin finansal damarlarını tek merkezden yönetin. Pax Systemic ile geliştirilen bu sistem, envanter hareketlerinden cari hesap takibine kadar her süreci dijitalleştirir.',
             features: ['Minimalist Dark Arayüz', 'Anlık Veritabanı Senkronizasyonu', 'Gelişmiş Filtreleme ve Raporlama', 'SQL Tabanlı Güçlü Veri Güvenliği'],
-            image: 'gorseller/isletme.png',
+            images: ['gorseller/isletme.png'], // Tek resim de yazılsa sorunsuz çalışır
             link: 'https://mail.google.com/mail/?view=cm&fs=1&to=paxsystemic@gmail.com&su=NetKasa%20Pro%20Lisans%20Talebi&body=Merhaba%2C%20NetKasa%20Pro%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum.', 
             changelog: [
                 { version: 'v2.5', date: 'Mayıs 2026', notes: ['UI/UX tamamen modernize edildi.', 'Hız %40 artırıldı.'] }
@@ -222,7 +241,7 @@
             shortDesc: 'Cihaz temizliği, hız testi ve sistem bilgilerini içeren hepsi bir arada araç.',
             fullDesc: 'Sisteminizi hızlı, temiz ve kontrol altında tutan profesyonel bir araç setidir. Cihaz temizliği, anlık ağ hız testi ve detaylı donanım izleme özelliklerini içerir.',
             features: ['Akıllı Kayıt Defteri Temizleme', 'Anlık Ağ Gecikme Analizi', 'Detaylı Donanım İzleme', 'Tek Tıkla Sistem Hızlandırma'],
-            image: 'gorseller/systemic.png',
+            images: ['gorseller/systemic.png'],
             link: 'https://github.com/barisys1999/pax-systemic/releases/download/SystemicPro/SystemicPro_Installer.exe',
             changelog: [
                 { version: 'v1.1.0', date: 'Mayıs 2026', notes: ['Hız testi algoritması güncellendi.'] }
@@ -231,6 +250,8 @@
     ];
 
     let currentCategory = 'all';
+    let currentImages = [];
+    let currentImageIndex = 0;
 
     // Grid başlatma
     function initGrid() {
@@ -294,9 +315,10 @@
             downloadBtn.innerText = 'İndir';
         }
         
-        const media = document.getElementById('det-media');
-        media.onclick = () => openLightbox(p.image); 
-        media.innerHTML = `<img src="${p.image}" alt="${p.title}" onerror="this.parentElement.innerHTML='Görsel Hazırlanıyor'">`;
+        // Çoklu Resim Ayarları
+        currentImages = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : []);
+        currentImageIndex = 0;
+        updateMediaView();
 
         document.getElementById('det-features').innerHTML = p.features.map(f => `<li>${f}</li>`).join('');
         document.getElementById('det-changelog').innerHTML = p.changelog.map(l => `
@@ -308,6 +330,46 @@
         document.getElementById('main-view').style.display = 'none';
         document.getElementById('detail-view').style.display = 'block';
         window.scrollTo(0,0);
+    }
+
+    // Medya görünümünü güncelleyen fonksiyon
+    function updateMediaView() {
+        const media = document.getElementById('det-media');
+        if (currentImages.length === 0) {
+            media.innerHTML = 'Görsel Bulunamadı';
+            return;
+        }
+
+        let html = `<img src="${currentImages[currentImageIndex]}" onerror="this.src=''; this.parentElement.innerHTML='Görsel Hazırlanıyor'">`;
+        html += `<div class="media-overlay" onclick="openLightbox()">GÖRÜNTÜLE</div>`;
+
+        // Birden fazla resim varsa butonları ve noktaları ekle
+        if (currentImages.length > 1) {
+            html += `<button class="slider-btn prev" onclick="changeImage(-1, event)">&#10094;</button>`;
+            html += `<button class="slider-btn next" onclick="changeImage(1, event)">&#10095;</button>`;
+            
+            html += `<div class="slider-dots">`;
+            currentImages.forEach((_, i) => {
+                html += `<span class="dot ${i === currentImageIndex ? 'active' : ''}" onclick="setImage(${i}, event)"></span>`;
+            });
+            html += `</div>`;
+        }
+
+        media.innerHTML = html;
+    }
+
+    function changeImage(dir, event) {
+        if(event) event.stopPropagation(); // Butona tıklayınca zoom açılmasını engeller
+        currentImageIndex += dir;
+        if (currentImageIndex < 0) currentImageIndex = currentImages.length - 1;
+        if (currentImageIndex >= currentImages.length) currentImageIndex = 0;
+        updateMediaView();
+    }
+
+    function setImage(idx, event) {
+        if(event) event.stopPropagation();
+        currentImageIndex = idx;
+        updateMediaView();
     }
 
     function closeProduct() {
@@ -324,10 +386,30 @@
         document.getElementById('pane-' + tab).style.display = 'block';
     }
 
-    function openLightbox(src) {
-        if(!src) return;
-        document.getElementById('lightbox-img').src = src;
-        document.getElementById('lightbox').style.display = 'flex';
+    // Lightbox güncellendi (İçinde de sağ/sol kaydırma yapılabilsin diye)
+    function openLightbox() {
+        if(currentImages.length === 0) return;
+        const lb = document.getElementById('lightbox');
+        
+        let html = `<img id="lightbox-img" src="${currentImages[currentImageIndex]}" onclick="event.stopPropagation()">`;
+        
+        if (currentImages.length > 1) {
+            html += `<button class="slider-btn prev" style="position:fixed; left: 5%;" onclick="changeLightboxImage(-1, event)">&#10094;</button>`;
+            html += `<button class="slider-btn next" style="position:fixed; right: 5%;" onclick="changeLightboxImage(1, event)">&#10095;</button>`;
+        }
+
+        lb.innerHTML = html;
+        lb.style.display = 'flex';
+    }
+
+    function changeLightboxImage(dir, event) {
+        if(event) event.stopPropagation();
+        currentImageIndex += dir;
+        if (currentImageIndex < 0) currentImageIndex = currentImages.length - 1;
+        if (currentImageIndex >= currentImages.length) currentImageIndex = 0;
+        
+        document.getElementById('lightbox-img').src = currentImages[currentImageIndex];
+        updateMediaView(); // Arka plandaki ana görseli de senkronize eder
     }
 
     // Sayfa yüklendiğinde çalıştır
