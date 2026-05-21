@@ -194,11 +194,11 @@
 </div>
 
 <div id="lightbox" onclick="this.style.display='none'">
-    <!-- İçerik JS ile dinamik oluşturulur -->
+    
 </div>
 
 <script>
-    // Ürün verileri (images dizisi desteği eklendi)
+    // Ürün verileri
     const products = [
         {
             id: 'bstreamer',
@@ -209,7 +209,6 @@
             shortDesc: 'Gelişmiş medya indirme ve çoklu format dönüştürme yöneticisi.',
             fullDesc: 'Yüksek performanslı medya yöneticisi. Minimalist arayüzü sayesinde arka planda kaynak tüketmeden çalışır ve kompleks indirme işlemlerini sistemleştirir.',
             features: ['Çoklu Format (MP4, MP3) Dönüşüm Desteği', 'Youtube Hızlı Müzik ve Video İndirme ', 'Düşük İşlemci ve RAM Kullanımı'],
-            // Çoklu resim eklendi
             images: ['gorseller/bstreamer.png', 'gorseller/bstreamer_2.png', 'gorseller/bstreamer_3.png'], 
             link: 'https://github.com/barisys1999/pax-systemic/releases/download/B-Streamer/B_Streamer_Installer.exe',
             changelog: [
@@ -226,7 +225,7 @@
             shortDesc: 'Kurumsal veriler için modern arayüzlü envanter yönetim sistemi.',
             fullDesc: 'İşletmenizin finansal damarlarını tek merkezden yönetin. Pax Systemic ile geliştirilen bu sistem, envanter hareketlerinden cari hesap takibine kadar her süreci dijitalleştirir.',
             features: ['Minimalist Dark Arayüz', 'Anlık Veritabanı Senkronizasyonu', 'Gelişmiş Filtreleme ve Raporlama', 'SQL Tabanlı Güçlü Veri Güvenliği'],
-            images: ['gorseller/isletme.png'], // Tek resim de yazılsa sorunsuz çalışır
+            images: ['gorseller/systemic.png', 'gorseller/systemic2.png', 'gorseller/systemic3.png', 'gorseller/systemic4.png', 'gorseller/systemic5.png', 'gorseller/systemic6.png'], 
             link: 'https://mail.google.com/mail/?view=cm&fs=1&to=paxsystemic@gmail.com&su=NetKasa%20Pro%20Lisans%20Talebi&body=Merhaba%2C%20NetKasa%20Pro%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum.', 
             changelog: [
                 { version: 'v2.5', date: 'Mayıs 2026', notes: ['UI/UX tamamen modernize edildi.', 'Hız %40 artırıldı.'] }
@@ -253,7 +252,7 @@
     let currentImages = [];
     let currentImageIndex = 0;
 
-    // Grid başlatma
+    
     function initGrid() {
         const grid = document.getElementById('product-grid');
         if(!grid) return;
@@ -266,7 +265,7 @@
         `).join('');
     }
 
-    // Arama ve Filtreleme
+   
     function updateUI() {
         const query = document.getElementById('searchInput').value.toLowerCase();
         const cards = document.querySelectorAll('.product-card');
@@ -297,7 +296,7 @@
         updateUI();
     }
 
-    // Ürün Detay Görünümü
+   
     function openProduct(id) {
         const p = products.find(x => x.id === id);
         if (!p) return;
@@ -308,14 +307,13 @@
         document.getElementById('det-desc').innerText = p.fullDesc;
         downloadBtn.href = p.link;
 
-        // Dinamik Buton Metni
+       
         if (p.link.startsWith('https://mail.google.com/')) {
             downloadBtn.innerText = 'Talep Et';
         } else {
             downloadBtn.innerText = 'İndir';
         }
         
-        // Çoklu Resim Ayarları
         currentImages = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : []);
         currentImageIndex = 0;
         updateMediaView();
@@ -332,7 +330,7 @@
         window.scrollTo(0,0);
     }
 
-    // Medya görünümünü güncelleyen fonksiyon
+   
     function updateMediaView() {
         const media = document.getElementById('det-media');
         if (currentImages.length === 0) {
@@ -343,7 +341,7 @@
         let html = `<img src="${currentImages[currentImageIndex]}" onerror="this.src=''; this.parentElement.innerHTML='Görsel Hazırlanıyor'">`;
         html += `<div class="media-overlay" onclick="openLightbox()">GÖRÜNTÜLE</div>`;
 
-        // Birden fazla resim varsa butonları ve noktaları ekle
+        
         if (currentImages.length > 1) {
             html += `<button class="slider-btn prev" onclick="changeImage(-1, event)">&#10094;</button>`;
             html += `<button class="slider-btn next" onclick="changeImage(1, event)">&#10095;</button>`;
@@ -359,7 +357,7 @@
     }
 
     function changeImage(dir, event) {
-        if(event) event.stopPropagation(); // Butona tıklayınca zoom açılmasını engeller
+        if(event) event.stopPropagation(); 
         currentImageIndex += dir;
         if (currentImageIndex < 0) currentImageIndex = currentImages.length - 1;
         if (currentImageIndex >= currentImages.length) currentImageIndex = 0;
@@ -386,7 +384,7 @@
         document.getElementById('pane-' + tab).style.display = 'block';
     }
 
-    // Lightbox güncellendi (İçinde de sağ/sol kaydırma yapılabilsin diye)
+    
     function openLightbox() {
         if(currentImages.length === 0) return;
         const lb = document.getElementById('lightbox');
@@ -409,7 +407,7 @@
         if (currentImageIndex >= currentImages.length) currentImageIndex = 0;
         
         document.getElementById('lightbox-img').src = currentImages[currentImageIndex];
-        updateMediaView(); // Arka plandaki ana görseli de senkronize eder
+        updateMediaView(); 
     }
 
     // Sayfa yüklendiğinde çalıştır
