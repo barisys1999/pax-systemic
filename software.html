@@ -262,7 +262,7 @@
                 'JSON Tabanlı Otomatik Ayar Kaydı'
             ],
             images: ['gorseller/makroapp/1.png', 'gorseller/makroapp/2.png', 'gorseller/makroapp/3.png'],
-            link: '#',
+            link: '#', // İndirme linkini buraya ekle
             changelog: [
                 { version: 'v1.0.0', date: 'Mayıs 2026', notes: ['İlk sürüm yayınlandı.', 'Klavye ve mouse kancalama sistemi eklendi.'] }
             ]
@@ -309,6 +309,28 @@
             link: '#', // İndirme linkini buraya ekle
             changelog: [
                 { version: 'v1.0.0', date: 'Temmuz 2026', notes: ['İlk stabil sürüm yayınlandı.', 'Gerçek zamanlı EQ motoru eklendi.', 'Smart Loop algoritması optimize edildi.'] }
+            ]
+        },
+        {
+            id: 'paxvault',
+            category: 'yonetim',
+            catName: 'Güvenlik & Yönetim',
+            title: 'Password Vault',
+            subtitle: 'Ultra Güvenli Yerel Şifre Kasası',
+            shortDesc: 'Şifrelerinizi yerel diskinizde AES-GCM ile şifreleyin. 2FA, ekran kaydı koruması ve otomatik kilit ile tam güvenlik.',
+            fullDesc: 'Password Vault, bulut tabanlı şifre yöneticilerinin aksine verilerinizi cihazınızın dışına asla çıkarmaz. Ekran görüntüsü alınmasını engelleyen özel koruması, 15 saniyelik otomatik pano (clipboard) temizleyicisi ve Google Authenticator (2FA) desteği ile dijital kimliklerinizi askeri düzeyde korur.',
+            features: [
+                'AES-GCM 256-bit ve PBKDF2 Şifreleme Altyapısı',
+                'Anti-Screen Capture (Ekran Kaydı/Paylaşımı Koruması)',
+                'Google Authenticator / TOTP (2FA) Desteği',
+                '15 Saniyelik Otomatik Pano (Clipboard) Temizleme',
+                'Hareketsizlik (AFK) Algılayıcı ve Otomatik Kilit',
+                'Acil Durumlar İçin Kurtarma Anahtarı ve Nükleer Sıfırlama'
+            ],
+            images: ['gorseller/PasswordVault/1.png','gorseller/PasswordVault/2.png','gorseller/PasswordVault/3.png','gorseller/PasswordVault/4.png'], 
+            link: '#', // İndirme linkini buraya ekle
+            changelog: [
+                { version: 'v2.0.0', date: 'Eylül 2026', notes: ['İlk sürüm yayınlandı.', 'Windows DPAPI ile güvenli yedekleme (.pvault) eklendi.', 'Ekran okuyucu koruması (WDA_MONITOR) aktif edildi.'] }
             ]
         }
     ];
