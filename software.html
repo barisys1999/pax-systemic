@@ -331,6 +331,31 @@
             changelog: [
                 { version: 'v2.0.0', date: 'Eylül 2026', notes: ['İlk sürüm yayınlandı.', 'Windows DPAPI ile güvenli yedekleme (.pvault) eklendi.', 'Ekran okuyucu koruması (WDA_MONITOR) aktif edildi.'] }
             ]
+        },
+        {
+            id: 'paxdownloader',
+            category: 'medya',
+            catName: 'Medya & İndirme Araçları',
+            title: 'PAX Downloader',
+            subtitle: 'Yeni Nesil Multi-Thread Evrensel İndirme Yöneticisi',
+            shortDesc: 'Gelişmiş multi-thread indirme mimarisi, tarayıcı uzantısı entegrasyonu ve akıllı mini ilerleme paneli.',
+            fullDesc: 'PAX Downloader, en yüksek veri aktarım hızlarına ulaşmak için optimize edilmiş HttpClient çekirdeği, aria2c entegrasyonu ve multi-thread paralel bağlantı mimarisini temel alan modern bir indirme yöneticisidir. Proje şu anda aktif geliştirme aşamasındadır; kararlı indirme çekirdeği, uzantı haberleşme protokolleri ve sağ alt köşeye kenetlenen dinamik kullanıcı arayüzü başarıyla tamamlanmıştır. Yeni özellikler eklenmeye devam etmektedir.',
+            features: [
+                'Evrensel İndirmeler İçin Ultra Hızlı Çekirdek (-N 32 Paralel Bağlantı Desteği)',
+                'Sosyal Medya Videoları İçin Çift Kanallı aria2c Entegrasyonu (-N 16 Desteği)',
+                'Tarayıcı Uzantısından (ExtensionMessage) Gelen Medya Akışlarını Anlık Yakalama',
+                'Masaüstü Sağ Alt Köşesine Sabitlenen, Canlı Aşama (Stage) Göstergeli Mini Progress Penceresi',
+                'Hız Göstergelerinde %/s Yerine Gerçek Zamanlı MB/s - KB/s Ölçümü ve Akıllı Kalan Süre (ETA) Algoritması',
+                'download_history.json Tabanlı Otomatik Geçmiş Yönetimi (Waiting, Downloading, Paused, Completed, Error)'
+            ],
+            images: ['gorseller/paxdownloader/1.png'], 
+            link: '#', 
+            isDev: true, // Geliştirilme aşamasında olduğunu belirtmek için özel bayrak
+            changelog: [
+                { version: 'v4.4 (Mevcut Aşama)', date: 'Mayıs 2026', notes: ['MainWindow uzantı entegrasyon katmanı ve aksiyon yakalayıcılar tamamlandı.', 'Hız göstergeleri gerçek MB/s ve KB/s değerlerine uyarlandı.', 'Çift mini progress penceresi açılmasını önleyen hata düzeltmeleri (double-close fix) uygulandı.'] },
+                { version: 'v4.2 (Arayüz & Kontroller)', date: 'Mayıs 2026', notes: ['Sağ alt köşeye otomatik konumlanan (PositionWindow) akıllı MiniProgressWindow tasarlandı.', 'Pause (Duraklat), Resume (Devam Et) ve Cancel (İptal) tetikleyicileri prototiplendi.'] },
+                { version: 'v1.0.0 (Temel Çekirdek)', date: 'Nisan 2026', notes: ['DownloadItem veri modeli ve INotifyPropertyChanged arayüz mimarisi kurgulandı.', 'Durum renk kodlamaları ve dinamik ProgressBar veri bağlamaları eklendi.'] }
+            ]
         }
     ];
 
