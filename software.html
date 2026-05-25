@@ -55,6 +55,11 @@
         .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; width: 100%; max-width: 1200px; padding: 0 20px 80px; }
         .product-card { background: var(--panel-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 15px; padding: 30px; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
         .product-card:hover { border-color: var(--primary); transform: translateY(-5px); background: rgba(0, 240, 255, 0.03); }
+        
+        /* Geliştirilen ürünler için özel kart stili */
+        .product-card.dev-card { border-style: dashed; border-color: rgba(0, 240, 255, 0.3); }
+        .product-card.dev-card:hover { border-color: var(--primary); }
+
         .category-label { font-size: 0.7rem; color: var(--primary); font-weight: bold; text-transform: uppercase; margin-bottom: 10px; display: block; opacity: 0.8; }
         .product-card h3 { font-size: 1.6rem; margin-bottom: 12px; }
         .product-card p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.5; }
@@ -179,7 +184,6 @@
                 <p id="det-desc"></p>
                 <ul class="feature-list" id="det-features"></ul>
             </div>
-            <!-- Slider'ın oluşturulacağı medya kapsayıcısı -->
             <div class="detail-media" id="det-media"></div>
         </div>
     </div>
@@ -363,19 +367,28 @@
     let currentImages = [];
     let currentImageIndex = 0;
 
-    
     function initGrid() {
         const grid = document.getElementById('product-grid');
         if(!grid) return;
-        grid.innerHTML = products.map(p => `
-            <div class="product-card" data-category="${p.category}" onclick="openProduct('${p.id}')">
-                <span class="category-label">${p.catName}</span>
-                <h3>${p.title}</h3>
-                <p>${p.shortDesc}</p>
-            </div>
-        `).join('');
-    }
+        grid.innerHTML = products.map(p => {
+            // Detay sayfasındaki sürüm notlarını görebilmek adına tüm kartları tıklanabilir yapıyoruz.
+            const clickAction = `onclick="openProduct('${p.id}')"`;
+            
+            // Geliştirilen ürünün yanına şık bir ibare ekliyoruz
+            const devBadge = p.isDev ? ` <span style="color: var(--text-dim); font-size: 0.9rem; font-weight: normal;">(Geliştiriliyor)</span>` : '';
+            
+            // Geliştirilen ürünün hover ve kenarlık stilini ayırt etmek için dev-card sınıfını ekliyoruz
+            const cardClass = p.isDev ? 'product-card dev-card' : 'product-card';
 
+            return `
+                <div class="${cardClass}" data-category="${p.category}" ${clickAction}>
+                    <span class="category-label">${p.catName}</span>
+                    <h3>${p.title}${devBadge}</h3>
+                    <p>${p.shortDesc}</p>
+                </div>
+            `;
+        }).join('');
+    }
    
     function updateUI() {
         const query = document.getElementById('searchInput').value.toLowerCase();
@@ -407,10 +420,12 @@
         updateUI();
     }
 
-    
     function openProduct(id) {
         const p = products.find(x => x.id === id);
         if (!p) return;
+        
+        // Her yeni ürün açıldığında sekmeyi Genel Bakış'a sıfırlıyoruz.
+        switchTab('overview', null);
         
         const downloadBtn = document.getElementById('det-btn');
         document.getElementById('det-title').innerText = p.title;
@@ -418,11 +433,28 @@
         document.getElementById('det-desc').innerText = p.fullDesc;
         downloadBtn.href = p.link;
 
-        
-        if (p.link.startsWith('https://mail.google.com/')) {
+        // --- BUTON DURUMU AYARLAMA ---
+        if (p.isDev) { 
+            // Eğer ürün geliştirme aşamasındaysa
+            downloadBtn.innerText = 'Geliştirilme Aşamasında';
+            downloadBtn.style.pointerEvents = 'none'; // Tıklamayı kapatır
+            downloadBtn.style.background = '#1A2333'; // Butonu soluk/koyu renk yapar
+            downloadBtn.style.color = 'var(--text-dim)';
+            downloadBtn.style.boxShadow = 'none'; // Parlama efektini kaldırır
+        } else if (p.link.startsWith('https://mail.google.com/')) {
+            // Eğer mail talebiyse
             downloadBtn.innerText = 'Talep Et';
+            downloadBtn.style.pointerEvents = 'auto';
+            downloadBtn.style.background = 'var(--primary)';
+            downloadBtn.style.color = '#000';
+            downloadBtn.style.boxShadow = '0 10px 30px var(--primary-glow)';
         } else {
+            // Normal indirmeyse
             downloadBtn.innerText = 'İndir';
+            downloadBtn.style.pointerEvents = 'auto';
+            downloadBtn.style.background = 'var(--primary)';
+            downloadBtn.style.color = '#000';
+            downloadBtn.style.boxShadow = '0 10px 30px var(--primary-glow)';
         }
         
         currentImages = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : []);
@@ -440,7 +472,6 @@
         document.getElementById('detail-view').style.display = 'block';
         window.scrollTo(0,0);
     }
-
     
     function updateMediaView() {
         const media = document.getElementById('det-media');
@@ -449,11 +480,10 @@
             return;
         }
 
-        
-        let html = `<img src="${currentImages[currentImageIndex]}" loading="lazy" onerror="this.src=''; this.parentElement.innerHTML='Görsel Hazırlanıyor'">`;
+        // Slider yapısının kırılmaması için onerror durumunda tüm elementleri yok etmek yerine sadece resmi gizleyen güvenli yaklaşım uygulandı.
+        let html = `<img src="${currentImages[currentImageIndex]}" loading="lazy" onerror="this.onerror=null; this.style.display='none'; const p=document.createElement('p'); p.innerText='Görsel Hazırlanıyor'; p.style.color='var(--text-dim)'; this.parentElement.appendChild(p);">`;
         html += `<div class="media-overlay" onclick="openLightbox()">GÖRÜNTÜLE</div>`;
 
-        
         if (currentImages.length > 1) {
             html += `<button class="slider-btn prev" onclick="changeImage(-1, event)">&#10094;</button>`;
             html += `<button class="slider-btn next" onclick="changeImage(1, event)">&#10095;</button>`;
@@ -490,18 +520,25 @@
 
     function switchTab(tab, e) {
         document.querySelectorAll('.d-tab').forEach(t => t.classList.remove('active'));
-        if(e) e.target.classList.add('active');
-        else document.querySelector('.d-tab').classList.add('active');
+        
+        if(e && e.target) {
+            e.target.classList.add('active');
+        } else {
+            // Programatik tetiklemeler için hedef tab otomatik seçilir
+            const targetIndex = tab === 'overview' ? 0 : 1;
+            const targetTab = document.querySelectorAll('.d-tab')[targetIndex];
+            if(targetTab) targetTab.classList.add('active');
+        }
+        
         document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
-        document.getElementById('pane-' + tab).style.display = 'block';
+        const targetPane = document.getElementById('pane-' + tab);
+        if(targetPane) targetPane.style.display = 'block';
     }
 
-    
     function openLightbox() {
         if(currentImages.length === 0) return;
         const lb = document.getElementById('lightbox');
         
-       
         let html = `<img id="lightbox-img" src="${currentImages[currentImageIndex]}" loading="lazy" onclick="event.stopPropagation()">`;
         
         if (currentImages.length > 1) {
@@ -519,7 +556,8 @@
         if (currentImageIndex < 0) currentImageIndex = currentImages.length - 1;
         if (currentImageIndex >= currentImages.length) currentImageIndex = 0;
         
-        document.getElementById('lightbox-img').src = currentImages[currentImageIndex];
+        const lbImg = document.getElementById('lightbox-img');
+        if(lbImg) lbImg.src = currentImages[currentImageIndex];
         updateMediaView(); 
     }
 
