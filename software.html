@@ -384,7 +384,37 @@
                 { version: 'v1.5 (Arayüz & Animasyon)', date: 'Önceki Aşama', notes: ['Robot yüz mimikleri (Idle motoru, kafa yaylanması, fare takibi) eklendi.', 'Sistem komutlarını JSON üzerinden yöneten KomutModel altyapısı kuruldu.'] },
                 { version: 'v1.0 (Çekirdek)', date: 'Başlangıç', notes: ['Vosk ve Whisper ses motorları sisteme entegre edildi.'] }
             ]
+        },
+        {
+    id: 'paxlink',
+    category: 'sistem',
+    catName: 'İletişim & Nöral Ağ',
+    title: 'Pax Link',
+    subtitle: 'Nöral Bağlantı Tabanlı Sesli İletişim',
+    shortDesc: 'WebRTC tabanlı, Opus codec destekli yüksek sadakatli sesli iletişim platformu.',
+    fullDesc: 'Pax Link, Pax Systemic ekosisteminin mevcut iletişim katmanıdır. Opus codec entegrasyonlu yüksek sadakatli ses işleme (DSP), WebRTC üzerinden gerçek zamanlı sesli veri aktarımı ve socket.io tabanlı otonom çağrı yönetim sistemini içerir. Tamamen yerel (native) WPF mimarisi üzerine kurgulanmıştır.',
+    features: [
+        'WebRTC P2P (ICE/STUN/TURN) Sinyalleşme ve Görüşme Yönetimi',
+        'Opus Tabanlı Düşük Gecikmeli Ses İşleme (Jitter Buffer & PLC)',
+        'Socket.io ile Otonom Çağrı (Incoming/Outgoing) Sinyalleşme Motoru',
+        'Gelişmiş Gürültü Engelleme, EQ ve Dinamik Gain Kontrolü',
+        'Minimalist, Kaynak Dostu Masaüstü İstemcisi'
+    ],
+    images: ['gorseller/paxlink/1.png', 'gorseller/paxlink/2.png', 'gorseller/paxlink/3.png', 'gorseller/paxlink/4.png', 'gorseller/paxlink/5.png'],
+    link: '#',
+    isDev: true,
+    changelog: [
+        { 
+            version: 'v0.1.0 (Alfa)', 
+            date: 'Mayıs 2026', 
+            notes: [
+                'WebRTC sinyalleşme katmanı (Offer/Answer/Candidate) başarıyla tamamlandı.',
+                'Socket.io (Auth Token) ile güvenli oda bağlantıları kurgulandı.',
+                'JitterBufferWaveProvider mimarisi ile ses akış senkronizasyonu sağlandı.'
+            ] 
         }
+    ]
+}
     ];
 
     let currentCategory = 'all';
