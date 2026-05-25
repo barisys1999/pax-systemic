@@ -354,11 +354,35 @@
             ],
             images: ['gorseller/paxdownloader/1.png','gorseller/paxdownloader/2.png','gorseller/paxdownloader/3.png'], 
             link: '#', 
-            isDev: true, // Geliştirilme aşamasında olduğunu belirtmek için özel bayrak
+            isDev: true, 
             changelog: [
                 { version: 'v4.4 (Mevcut Aşama)', date: 'Mayıs 2026', notes: ['MainWindow uzantı entegrasyon katmanı ve aksiyon yakalayıcılar tamamlandı.', 'Hız göstergeleri gerçek MB/s ve KB/s değerlerine uyarlandı.', 'Çift mini progress penceresi açılmasını önleyen hata düzeltmeleri (double-close fix) uygulandı.'] },
                 { version: 'v4.2 (Arayüz & Kontroller)', date: 'Mayıs 2026', notes: ['Sağ alt köşeye otomatik konumlanan (PositionWindow) akıllı MiniProgressWindow tasarlandı.', 'Pause (Duraklat), Resume (Devam Et) ve Cancel (İptal) tetikleyicileri prototiplendi.'] },
                 { version: 'v1.0.0 (Temel Çekirdek)', date: 'Nisan 2026', notes: ['DownloadItem veri modeli ve INotifyPropertyChanged arayüz mimarisi kurgulandı.', 'Durum renk kodlamaları ve dinamik ProgressBar veri bağlamaları eklendi.'] }
+            ]
+        },
+        {
+            id: 'paxasistan',
+            category: 'sistem',
+            catName: 'Yapay Zeka & Sistem',
+            title: 'PAX Asistan',
+            subtitle: 'Otonom Masaüstü Yapay Zeka Asistanı',
+            shortDesc: 'Yerel AI (Ollama), 2 katmanlı ses tanıma (Vosk+Whisper) ve kamera ile el takibi sunan interaktif robot asistan.',
+            fullDesc: 'PAX Asistan; farenizi takip eden dinamik bir robot yüze sahip, tamamen çevrimdışı çalışabilen otonom bir sistem asistanıdır. Gelişmiş 3 katmanlı algılama mimarisi ile sizi hem duyar (Vosk & Whisper), hem görür (MediaPipe El Takibi), hem de anlar (Ollama LLM). Proje, anlık donanım entegrasyonları ve komut sistemleriyle aktif geliştirme aşamasındadır.',
+            features: [
+                'Katman 1 & 2 Ses Motoru: Vosk (Hızlı anlık tanıma) ve Whisper (Yüksek doğruluk) paralel entegrasyonu',
+                'Katman 3 LLM (Ollama): Qwen/Llama modelleriyle JSON tabanlı doğal dil işleme ve sohbet yeteneği',
+                'Bilgisayarlı Görü: Python/MediaPipe üzerinden UDP soketleriyle 0 gecikmeli jest (el hareketi) algılama',
+                'Canlı Robot Arayüzü: Fare imlecini takip eden gözler, otomatik göz kırpma, mutlu/kızgın/şaşkın mimikler ve Idle (bekleme) motoru',
+                'Gelişmiş Komut Yöneticisi: Özel klavye/makro kombinasyonları, sistem kontrolü ve "Sabit Dinleme" modu'
+            ],
+            images: ['gorseller/paxasistan/1.png'], 
+            link: '#', 
+            isDev: true, 
+            changelog: [
+                { version: 'v2.5 (Mevcut Aşama)', date: 'Güncel', notes: ['Ollama LLM entegrasyonu tamamlandı ve Tool Calling (JSON ayrıştırma) aktif edildi.', 'Python tabanlı el hareketleri (GestureService) WPF UI ile bağlandı.'] },
+                { version: 'v1.5 (Arayüz & Animasyon)', date: 'Önceki Aşama', notes: ['Robot yüz mimikleri (Idle motoru, kafa yaylanması, fare takibi) eklendi.', 'Sistem komutlarını JSON üzerinden yöneten KomutModel altyapısı kuruldu.'] },
+                { version: 'v1.0 (Çekirdek)', date: 'Başlangıç', notes: ['Vosk ve Whisper ses motorları sisteme entegre edildi.'] }
             ]
         }
     ];
@@ -371,13 +395,13 @@
         const grid = document.getElementById('product-grid');
         if(!grid) return;
         grid.innerHTML = products.map(p => {
-            // Detay sayfasındaki sürüm notlarını görebilmek adına tüm kartları tıklanabilir yapıyoruz.
+            
             const clickAction = `onclick="openProduct('${p.id}')"`;
             
-            // Geliştirilen ürünün yanına şık bir ibare ekliyoruz
+            
             const devBadge = p.isDev ? ` <span style="color: var(--text-dim); font-size: 0.9rem; font-weight: normal;">(Geliştiriliyor)</span>` : '';
             
-            // Geliştirilen ürünün hover ve kenarlık stilini ayırt etmek için dev-card sınıfını ekliyoruz
+            
             const cardClass = p.isDev ? 'product-card dev-card' : 'product-card';
 
             return `
@@ -424,7 +448,7 @@
         const p = products.find(x => x.id === id);
         if (!p) return;
         
-        // Her yeni ürün açıldığında sekmeyi Genel Bakış'a sıfırlıyoruz.
+        
         switchTab('overview', null);
         
         const downloadBtn = document.getElementById('det-btn');
@@ -435,21 +459,21 @@
 
         // --- BUTON DURUMU AYARLAMA ---
         if (p.isDev) { 
-            // Eğer ürün geliştirme aşamasındaysa
+            // geliştirme aşamasında
             downloadBtn.innerText = 'Geliştirilme Aşamasında';
-            downloadBtn.style.pointerEvents = 'none'; // Tıklamayı kapatır
-            downloadBtn.style.background = '#1A2333'; // Butonu soluk/koyu renk yapar
+            downloadBtn.style.pointerEvents = 'none'; 
+            downloadBtn.style.background = '#1A2333'; 
             downloadBtn.style.color = 'var(--text-dim)';
-            downloadBtn.style.boxShadow = 'none'; // Parlama efektini kaldırır
+            downloadBtn.style.boxShadow = 'none'; 
         } else if (p.link.startsWith('https://mail.google.com/')) {
-            // Eğer mail talebiyse
+            // mail talebi
             downloadBtn.innerText = 'Talep Et';
             downloadBtn.style.pointerEvents = 'auto';
             downloadBtn.style.background = 'var(--primary)';
             downloadBtn.style.color = '#000';
             downloadBtn.style.boxShadow = '0 10px 30px var(--primary-glow)';
         } else {
-            // Normal indirmeyse
+            // Normal indirme
             downloadBtn.innerText = 'İndir';
             downloadBtn.style.pointerEvents = 'auto';
             downloadBtn.style.background = 'var(--primary)';
@@ -480,7 +504,7 @@
             return;
         }
 
-        // Slider yapısının kırılmaması için onerror durumunda tüm elementleri yok etmek yerine sadece resmi gizleyen güvenli yaklaşım uygulandı.
+       
         let html = `<img src="${currentImages[currentImageIndex]}" loading="lazy" onerror="this.onerror=null; this.style.display='none'; const p=document.createElement('p'); p.innerText='Görsel Hazırlanıyor'; p.style.color='var(--text-dim)'; this.parentElement.appendChild(p);">`;
         html += `<div class="media-overlay" onclick="openLightbox()">GÖRÜNTÜLE</div>`;
 
@@ -524,7 +548,7 @@
         if(e && e.target) {
             e.target.classList.add('active');
         } else {
-            // Programatik tetiklemeler için hedef tab otomatik seçilir
+            
             const targetIndex = tab === 'overview' ? 0 : 1;
             const targetTab = document.querySelectorAll('.d-tab')[targetIndex];
             if(targetTab) targetTab.classList.add('active');
