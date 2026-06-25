@@ -3,61 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="favicon.png">
-    <title>Pax Systemic | Dijital Portal</title>
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <title>Systemic Software | Yazılım Kataloğu</title>
 
-    <link rel="preload" as="image" href="games-background.png">
-    <link rel="preload" as="image" href="software-background.png">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/catalog.css">
 
-    <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/portal.css">
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "Pax Systemic",
-      "url": "https://barisys1999.github.io/pax-systemic/",
-      "logo": "https://barisys1999.github.io/pax-systemic/favicon.png",
-      "founder": { "@type": "Person", "name": "Barış Yurdunuseven" }
-    }
-    </script>
+    <!-- Yazılım teması: cyan -->
+    <style>
+        body {
+            background-image: radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.04) 0%, transparent 55%);
+        }
+        .download-section {
+            background: rgba(0, 240, 255, 0.03);
+            border-color: rgba(0, 240, 255, 0.10);
+        }
+    </style>
 </head>
-<body class="portal-page">
+<body>
 
-    <!-- Orta çizgi -->
-    <div class="portal-divider"></div>
+<!-- ── HEADER ───────────────────────────── -->
+<header class="site-header">
+    <a href="../index.html" class="logo">PAX <em>SYSTEMIC</em></a>
+    <div class="header-right">
+        <a href="../oyunlar/index.html" class="nav-chip">Oyunlar</a>
+        <a href="index.html"            class="nav-chip active-cyan">Yazılımlar</a>
+    </div>
+</header>
 
-    <div class="portal-wrap">
+<!-- ── MAIN VIEW ────────────────────────── -->
+<div id="main-view" style="display:flex; flex-direction:column; align-items:center;">
 
-        <!-- OYUNLAR -->
-        <a href="oyunlar/index.html" class="panel panel--games">
-            <div class="panel__bg"></div>
-            <div class="panel__overlay"></div>
-            <div class="panel__body">
-                <div class="panel__eyebrow">Eğlence ve Atmosfer</div>
-                <h2 class="panel__title">BarisByte<br>Games</h2>
-                <div class="panel__cta">Evrene Gir →</div>
-            </div>
-        </a>
-
-        <!-- YAZILIMLAR -->
-        <a href="yazilimlar/index.html" class="panel panel--software">
-            <div class="panel__bg"></div>
-            <div class="panel__overlay"></div>
-            <div class="panel__body">
-                <div class="panel__eyebrow">Araçlar ve Mimari</div>
-                <h2 class="panel__title">Systemic<br>Software</h2>
-                <div class="panel__cta">Sisteme Gir →</div>
-            </div>
-        </a>
-
+    <div class="catalog-hero">
+        <h1>Yazılım Kataloğu</h1>
+        <p>Yüksek performanslı, minimalist ve güvenilir araçlar.</p>
     </div>
 
-    <!-- Logo (ortada, üstte) -->
-    <header style="position:fixed; top:0; width:100%; display:flex; justify-content:center; padding:24px; pointer-events:none; z-index:200;">
-        <div class="logo" style="pointer-events:auto; font-size:1.1rem;">PAX <em>SYSTEMIC</em></div>
-    </header>
+    <div class="controls">
+        <div class="search-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" id="searchInput" class="search-input" placeholder="Yazılım ara..." oninput="updateGrid()">
+        </div>
+        <div class="filter-row">
+            <button class="filter-btn active" onclick="setCategory('all', this)">Tümü</button>
+            <button class="filter-btn" onclick="setCategory('medya', this)">Medya</button>
+            <button class="filter-btn" onclick="setCategory('yonetim', this)">Yönetim</button>
+            <button class="filter-btn" onclick="setCategory('sistem', this)">Sistem</button>
+        </div>
+    </div>
+
+    <div id="catalog-grid"></div>
+    <div id="no-results">Aradığınız yazılım bulunamadı.</div>
+
+</div>
+
+<!-- ── DETAIL VIEW ──────────────────────── -->
+<div id="detail-view">
+
+    <button class="back-btn" onclick="closeProduct()">
+        ← Kataloğa Dön
+    </button>
+
+    <!-- Header: ikon + başlık -->
+    <div class="det-header">
+        <div class="det-header__icon">
+            <img id="det-icon" src="" alt="">
+            <span id="det-icon-placeholder" class="det-header__icon-placeholder" style="display:none"></span>
+        </div>
+        <div class="det-header__text">
+            <h2 id="det-title"></h2>
+            <h4 id="det-sub"></h4>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="det-tabs">
+        <button class="d-tab active" onclick="switchTab('overview', event)">Genel Bakış</button>
+        <button class="d-tab"        onclick="switchTab('changelog', event)">Sürüm Notları</button>
+    </div>
+
+    <!-- Genel Bakış -->
+    <div id="pane-overview" class="tab-pane" style="display:block;">
+        <div class="det-overview">
+            <div class="det-text">
+                <p id="det-desc"></p>
+                <ul class="feature-list" id="det-features"></ul>
+            </div>
+            <div class="det-media" id="det-media"></div>
+        </div>
+    </div>
+
+    <!-- Sürüm Notları -->
+    <div id="pane-changelog" class="tab-pane" style="display:none;">
+        <div class="timeline" id="det-changelog"></div>
+    </div>
+
+    <!-- İndir -->
+    <div class="download-section">
+        <a href="#" id="det-btn" class="btn-download">↓ İndir</a>
+    </div>
+
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="this.style.display='none'"></div>
+
+<script src="../js/software-data.js"></script>
+<script src="../js/catalog.js"></script>
+<script>
+    window.onload = () => initCatalog(SOFTWARE_PRODUCTS);
+</script>
 
 </body>
 </html>
