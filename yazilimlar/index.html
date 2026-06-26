@@ -30,8 +30,9 @@
             position: sticky; top: 0; z-index: 1000;
         }
 
-        .logo-container { text-decoration: none; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.3s; }
-        .logo-container:hover { opacity: 0.8; }
+        .logo-container { text-decoration: none; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.3s; color: inherit; }
+        .logo-container:hover { opacity: 0.8; transform: scale(1.02); }
+        .logo-container:active { transform: scale(0.98); }
         .logo-text { font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; color: var(--text-main); }
         .logo-text span { color: var(--primary); }
 
@@ -640,7 +641,25 @@
         updateMediaView(); 
     }
 
-    // Sayfa yüklendiğinde çalıştır
+    // Logo tıklanma fonksiyonu - Ana sayfaya dön
+    document.addEventListener('DOMContentLoaded', function() {
+        const logoContainer = document.querySelector('.logo-container');
+        if (logoContainer) {
+            logoContainer.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Eğer detay sayfasındaysak, kapat
+                document.getElementById('detail-view').style.display = 'none';
+                document.getElementById('main-view').style.display = 'flex';
+                // Sayfayı başa kaydır
+                window.scrollTo(0, 0);
+                switchTab('overview', null);
+            });
+        }
+        // Grid'i başlat
+        initGrid();
+    });
+    
+    // Sayfa yüklendiğinde backup
     window.onload = initGrid;
 </script>
 </body>
