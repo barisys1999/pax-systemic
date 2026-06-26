@@ -3,118 +3,642 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="../favicon.png">
-    <title>Systemic Software | Yazılım Kataloğu</title>
-
-    <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="../css/catalog.css">
-
-    <!-- Yazılım teması: cyan -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <title>PAX Systemic | Yazılım Dünyası</title>
     <style>
+        :root {
+            --primary: #00F0FF;
+            --primary-glow: rgba(0, 240, 255, 0.4);
+            --bg-dark: #05070A;
+            --panel-bg: rgba(13, 17, 26, 0.6);
+            --text-main: #F0F4FA;
+            --text-dim: #8A9BB8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background-image: radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.04) 0%, transparent 55%);
+            background-color: var(--bg-dark); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh;
+            display: flex; flex-direction: column; overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.03) 0%, transparent 60%);
         }
-        .download-section {
-            background: rgba(0, 240, 255, 0.03);
-            border-color: rgba(0, 240, 255, 0.10);
+
+        header {
+            display: flex; justify-content: flex-start; align-items: center;
+            padding: 20px 50px; background: rgba(5, 7, 10, 0.85);
+            backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+            position: sticky; top: 0; z-index: 1000;
         }
+
+        .logo-container { text-decoration: none; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.3s; }
+        .logo-container:hover { opacity: 0.8; }
+        .logo-text { font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; color: var(--text-main); }
+        .logo-text span { color: var(--primary); }
+
+        #main-view { width: 100%; display: flex; flex-direction: column; align-items: center; animation: fadeIn 0.5s ease; }
+        .hero { text-align: center; padding: 60px 20px 30px; }
+        .hero h1 { font-size: 3.5rem; font-weight: 900; margin-bottom: 10px; color: var(--primary); }
+        
+        .controls-container { width: 100%; max-width: 800px; padding: 0 20px; margin-bottom: 50px; display: flex; flex-direction: column; gap: 25px; align-items: center; }
+        .search-box { width: 100%; max-width: 500px; }
+        .search-box input {
+            width: 100%; padding: 15px 25px; background: rgba(0, 240, 255, 0.02);
+            border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 30px;
+            color: var(--text-main); font-size: 1.1rem; outline: none; transition: 0.3s;
+        }
+        .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow); }
+
+        .filter-tags { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .filter-btn { background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--text-dim); padding: 8px 20px; border-radius: 20px; cursor: pointer; transition: 0.3s; font-weight: bold; }
+        .filter-btn.active { background: rgba(0, 240, 255, 0.1); border-color: var(--primary); color: var(--primary); }
+
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; width: 100%; max-width: 1200px; padding: 0 20px 80px; }
+        .product-card { background: var(--panel-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 15px; padding: 30px; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
+        .product-card:hover { border-color: var(--primary); transform: translateY(-5px); background: rgba(0, 240, 255, 0.03); }
+        
+        /* Geliştirilen ürünler için özel kart stili */
+        .product-card.dev-card { border-style: dashed; border-color: rgba(0, 240, 255, 0.3); }
+        .product-card.dev-card:hover { border-color: var(--primary); }
+
+        .category-label { font-size: 0.7rem; color: var(--primary); font-weight: bold; text-transform: uppercase; margin-bottom: 10px; display: block; opacity: 0.8; }
+        .product-card h3 { font-size: 1.6rem; margin-bottom: 12px; }
+        .product-card p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.5; }
+
+        #detail-view { display: none; max-width: 1100px; margin: 40px auto; padding: 0 20px; animation: slideUp 0.4s ease; }
+        .back-btn { background: none; color: var(--text-dim); border: none; font-size: 1rem; cursor: pointer; margin-bottom: 25px; transition: 0.3s; }
+        .back-btn:hover { color: var(--primary); }
+        
+        .detail-header { margin-bottom: 30px; }
+        .detail-header h2 { font-size: 3.5rem; color: var(--primary); }
+        .detail-header h4 { font-size: 1.3rem; color: var(--text-dim); font-weight: 400; }
+
+        .detail-tabs { display: flex; gap: 30px; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .d-tab { background: none; border: none; color: var(--text-dim); font-size: 1.1rem; padding-bottom: 12px; cursor: pointer; transition: 0.3s; border-bottom: 2px solid transparent; }
+        .d-tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: bold; }
+
+        .detail-content { display: grid; grid-template-columns: 1fr 1.2fr; gap: 50px; align-items: start; margin-bottom: 50px; }
+        .detail-text p { font-size: 1.15rem; line-height: 1.8; color: #C0C8D6; margin-bottom: 25px; }
+        .feature-list { list-style: none; }
+        .feature-list li { margin-bottom: 12px; padding-left: 25px; position: relative; color: var(--text-main); }
+        .feature-list li::before { content: '▹'; color: var(--primary); position: absolute; left: 0; font-weight: bold; }
+
+        .detail-media { position: relative; background: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; aspect-ratio: 16/10; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .detail-media img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
+        
+        /* Slider ve Overlay Stilleri */
+        .media-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 7, 10, 0.6); backdrop-filter: blur(4px);
+            color: var(--primary); font-size: 1rem; font-weight: bold; letter-spacing: 2px;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: 0.3s; cursor: zoom-in; z-index: 5;
+        }
+        .detail-media:hover .media-overlay { opacity: 1; }
+
+        .slider-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(5, 7, 10, 0.7); color: var(--primary);
+            border: 1px solid rgba(0, 240, 255, 0.3); padding: 12px 18px;
+            cursor: pointer; z-index: 10; font-size: 1.5rem;
+            border-radius: 8px; transition: 0.3s; backdrop-filter: blur(4px);
+        }
+        .slider-btn:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary-glow); }
+        .slider-btn.prev { left: 15px; }
+        .slider-btn.next { right: 15px; }
+
+        .slider-dots {
+            position: absolute; bottom: 15px; width: 100%;
+            display: flex; justify-content: center; gap: 8px; z-index: 10;
+        }
+        .dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: rgba(255,255,255,0.3); cursor: pointer; transition: 0.3s;
+        }
+        .dot.active { background: var(--primary); box-shadow: 0 0 10px var(--primary-glow); }
+        .dot:hover { background: rgba(0, 240, 255, 0.6); }
+
+        #lightbox { display: none; position: fixed; z-index: 10000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.98); align-items: center; justify-content: center; cursor: zoom-out; animation: fadeIn 0.3s ease; }
+        #lightbox img { max-width: 90%; max-height: 90%; border: 1px solid var(--primary); box-shadow: 0 0 50px var(--primary-glow); border-radius: 4px; cursor: default; }
+
+        .timeline { border-left: 2px solid rgba(0, 240, 255, 0.2); padding-left: 30px; margin: 20px 0 50px 10px; }
+        .timeline-item { position: relative; margin-bottom: 40px; }
+        .timeline-item::before { content: ''; position: absolute; left: -37px; top: 8px; width: 12px; height: 12px; background: var(--bg-dark); border: 2px solid var(--primary); border-radius: 50%; }
+        .tl-version { font-size: 1.3rem; font-weight: bold; color: var(--primary); margin-right: 15px; }
+        .tl-date { color: var(--text-dim); font-size: 0.9rem; }
+        .tl-notes { margin-top: 15px; list-style: none; padding-left: 10px; }
+        .tl-notes li { margin-bottom: 8px; color: #C0C8D6; font-size: 0.95rem; }
+
+        .download-section { background: rgba(0, 240, 255, 0.03); border: 1px solid rgba(0, 240, 255, 0.1); border-radius: 20px; padding: 50px; text-align: center; }
+        .btn-massive { display: inline-block; background: var(--primary); color: #000; text-decoration: none; padding: 18px 60px; font-size: 1.2rem; font-weight: 900; border-radius: 12px; transition: 0.3s; box-shadow: 0 10px 30px var(--primary-glow); }
+        .btn-massive:hover { transform: scale(1.05); box-shadow: 0 15px 40px var(--primary-glow); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 900px) { .detail-content { grid-template-columns: 1fr; } .detail-header h2 { font-size: 2.5rem; } }
     </style>
 </head>
 <body>
 
-<!-- ── HEADER ───────────────────────────── -->
-<header class="site-header">
-    <a href="../index.html" class="logo">PAX <em>SYSTEMIC</em></a>
-    <div class="header-right">
-        <a href="../oyunlar/index.html" class="nav-chip">Oyunlar</a>
-        <a href="index.html"            class="nav-chip active-cyan">Yazılımlar</a>
-    </div>
+<header>
+    <a href="index.html" class="logo-container">
+        <div class="logo-text">PAX <span>SYSTEMIC</span></div>
+    </a>
 </header>
 
-<!-- ── MAIN VIEW ────────────────────────── -->
-<div id="main-view" style="display:flex; flex-direction:column; align-items:center;">
-
-    <div class="catalog-hero">
+<div id="main-view">
+    <div class="hero">
         <h1>Yazılım Kataloğu</h1>
         <p>Yüksek performanslı, minimalist ve güvenilir araçlar.</p>
     </div>
 
-    <div class="controls">
-        <div class="search-wrap">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
-            <input type="text" id="searchInput" class="search-input" placeholder="Yazılım ara..." oninput="updateGrid()">
+    <div class="controls-container">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Yazılım ara..." onkeyup="updateUI()">
         </div>
-        <div class="filter-row">
-            <button class="filter-btn active" onclick="setCategory('all', this)">Tümü</button>
-            <button class="filter-btn" onclick="setCategory('medya', this)">Medya</button>
-            <button class="filter-btn" onclick="setCategory('yonetim', this)">Yönetim</button>
-            <button class="filter-btn" onclick="setCategory('sistem', this)">Sistem</button>
+        <div class="filter-tags">
+            <button class="filter-btn active" data-cat="all" onclick="setCategory('all', this)">Tümü</button>
+            <button class="filter-btn" data-cat="medya" onclick="setCategory('medya', this)">Medya</button>
+            <button class="filter-btn" data-cat="yonetim" onclick="setCategory('yonetim', this)">Yönetim</button>
+            <button class="filter-btn" data-cat="sistem" onclick="setCategory('sistem', this)">Sistem</button>
         </div>
     </div>
 
-    <div id="catalog-grid"></div>
-    <div id="no-results">Aradığınız yazılım bulunamadı.</div>
-
+    <div class="grid-container" id="product-grid"></div>
+    <div id="no-results" style="display:none; padding: 50px; color: var(--text-dim);">Sonuç bulunamadı.</div>
 </div>
 
-<!-- ── DETAIL VIEW ──────────────────────── -->
 <div id="detail-view">
-
-    <button class="back-btn" onclick="closeProduct()">
-        ← Kataloğa Dön
-    </button>
-
-    <!-- Header: ikon + başlık -->
-    <div class="det-header">
-        <div class="det-header__icon">
-            <img id="det-icon" src="" alt="">
-            <span id="det-icon-placeholder" class="det-header__icon-placeholder" style="display:none"></span>
-        </div>
-        <div class="det-header__text">
-            <h2 id="det-title"></h2>
-            <h4 id="det-sub"></h4>
-        </div>
+    <button class="back-btn" onclick="closeProduct()">← Kataloğa Dön</button>
+    <div class="detail-header">
+        <h2 id="det-title"></h2>
+        <h4 id="det-sub"></h4>
     </div>
-
-    <!-- Tabs -->
-    <div class="det-tabs">
+    <div class="detail-tabs">
         <button class="d-tab active" onclick="switchTab('overview', event)">Genel Bakış</button>
-        <button class="d-tab"        onclick="switchTab('changelog', event)">Sürüm Notları</button>
+        <button class="d-tab" onclick="switchTab('changelog', event)">Sürüm Notları</button>
     </div>
 
-    <!-- Genel Bakış -->
     <div id="pane-overview" class="tab-pane" style="display:block;">
-        <div class="det-overview">
-            <div class="det-text">
+        <div class="detail-content">
+            <div class="detail-text">
                 <p id="det-desc"></p>
                 <ul class="feature-list" id="det-features"></ul>
             </div>
-            <div class="det-media" id="det-media"></div>
+            <div class="detail-media" id="det-media"></div>
         </div>
     </div>
 
-    <!-- Sürüm Notları -->
     <div id="pane-changelog" class="tab-pane" style="display:none;">
         <div class="timeline" id="det-changelog"></div>
     </div>
 
-    <!-- İndir -->
     <div class="download-section">
-        <a href="#" id="det-btn" class="btn-download">↓ İndir</a>
+        <a href="#" id="det-btn" class="btn-massive">İndir</a>
     </div>
-
 </div>
 
-<!-- Lightbox -->
-<div id="lightbox" onclick="this.style.display='none'"></div>
+<div id="lightbox" onclick="this.style.display='none'">
+    
+</div>
 
-<script src="../js/software-data.js"></script>
-<script src="../js/catalog.js"></script>
 <script>
-    window.onload = () => initCatalog(SOFTWARE_PRODUCTS);
-</script>
+    // Ürün verileri
+    const products = [
+        {
+            id: 'bstreamer',
+            category: 'medya',
+            catName: 'Medya Araçları',
+            title: 'B-Streamer',
+            subtitle: 'Gelişmiş Medya İndirme & Dönüştürme Yöneticisi',
+            shortDesc: 'Gelişmiş medya indirme ve çoklu format dönüştürme yöneticisi.',
+            fullDesc: 'Yüksek performanslı medya yöneticisi. Minimalist arayüzü sayesinde arka planda kaynak tüketmeden çalışır ve kompleks indirme işlemlerini sistemleştirir.',
+            features: ['Çoklu Format (MP4, MP3) Dönüşüm Desteği', 'Youtube Hızlı Müzik ve Video İndirme ', 'Düşük İşlemci ve RAM Kullanımı'],
+            images:   ['gorseller/bstreamer/1.png'], 
+            link: 'https://github.com/barisys1999/pax-systemic/releases/download/B-Streamer/B_Streamer_Installer.exe',
+            changelog: [
+                { version: 'v1.2.0', date: 'Mayıs 2026', notes: ['İndirme motoru stabilize edildi.', 'Arayüz hızı artırıldı.'] },
+                { version: 'v1.0.0', date: 'Mart 2026', notes: ['İlk stabil sürüm yayınlandı.'] }
+            ]
+        },
+        {
+            id: 'isletme',
+            category: 'yonetim',
+            catName: 'Yönetim / İşletme',
+            title: 'NetKasa Pro',
+            subtitle: 'Kurumsal Yönetim & Muhasebe Paneli',
+            shortDesc: 'Kurumsal veriler için modern arayüzlü envanter yönetim sistemi.',
+            fullDesc: 'İşletmenizin finansal damarlarını tek merkezden yönetin. Pax Systemic ile geliştirilen bu sistem, envanter hareketlerinden cari hesap takibine kadar her süreci dijitalleştirir.',
+            features: ['Minimalist Dark Arayüz', 'Anlık Veritabanı Senkronizasyonu', 'Gelişmiş Filtreleme ve Raporlama', 'SQL Tabanlı Güçlü Veri Güvenliği'],
+            images: ['gorseller/isletme.png'], 
+            link: 'https://mail.google.com/mail/?view=cm&fs=1&to=paxsystemic@gmail.com&su=NetKasa%20Pro%20Lisans%20Talebi&body=Merhaba%2C%20NetKasa%20Pro%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum.', 
+            changelog: [
+                { version: 'v2.5', date: 'Mayıs 2026', notes: ['UI/UX tamamen modernize edildi.', 'Hız %40 artırıldı.'] }
+            ]
+        },
+        {
+            id: 'systemic',
+            category: 'sistem',
+            catName: 'Sistem Araçları',
+            title: 'Systemic Pro',
+            subtitle: 'Hepsi Bir Arada Optimizasyon Aracı',
+            shortDesc: 'Cihaz temizliği, hız testi ve sistem bilgilerini içeren hepsi bir arada araç.',
+            fullDesc: 'Sisteminizi hızlı, temiz ve kontrol altında tutan profesyonel bir araç setidir. Cihaz temizliği, anlık ağ hız testi ve detaylı donanım izleme özelliklerini içerir.',
+            features: ['Akıllı Kayıt Defteri Temizleme', 'Anlık Ağ Gecikme Analizi', 'Detaylı Donanım İzleme', 'Tek Tıkla Sistem Hızlandırma'],
+            images:   ['gorseller/systemic/1.png', 'gorseller/systemic/2.png', 'gorseller/systemic/3.png', 'gorseller/systemic/4.png', 'gorseller/systemic/5.png', 'gorseller/systemic/6.png'],
+            link: 'https://github.com/barisys1999/pax-systemic/releases/download/SystemicPro/SystemicPro_Installer.exe',
+            changelog: [
+                { version: 'v1.1.0', date: 'Mayıs 2026', notes: ['Hız testi algoritması güncellendi.'] }
+            ]
+        },
+        {
+            id: 'makroapp',
+            category: 'sistem',
+            catName: 'Sistem Araçları',
+            title: 'MakroApp',
+            subtitle: 'Akıllı Klavye & Fare Otomasyonu',
+            shortDesc: 'Tekrarlayan işlerinizi saniyeler içinde halledin. Klavye ve fare komutlarınızı otomatize edin.',
+            fullDesc: 'MakroApp, kullanıcıların klavye ve fare hareketlerini özelleştirilebilir senaryolarla otomatize etmesini sağlayan profesyonel bir araçtır. Oto-click ve otomatik metin girişi gibi işlemleri yüksek performansla gerçekleştirir.',
+            features: [
+                'Klavye ve Fare (Mouse 4/5) Tetikleyici Desteği',
+                'Otomatik Metin Yapıştırma ve Tuş Gönderme',
+                'Süre ve Adet Bazlı Gelişmiş Oto-Click',
+                'Minimalist ve Düşük Kaynak Tüketimli Arayüz',
+                'JSON Tabanlı Otomatik Ayar Kaydı'
+            ],
+            images: ['gorseller/makroapp/1.png', 'gorseller/makroapp/2.png', 'gorseller/makroapp/3.png'],
+            link: 'https://github.com/barisys1999/pax-systemic/releases/download/MakroAPP/MakroAPP_Installer.exe',
+            changelog: [
+                { version: 'v1.0.0', date: 'Mayıs 2026', notes: ['İlk sürüm yayınlandı.', 'Klavye ve mouse kancalama sistemi eklendi.'] }
+            ]
+        },
+        {
+            id: 'pomodoropro',
+            category: 'medya', 
+            catName: 'Odaklanma Araçları',
+            title: 'Pomodoro Pro',
+            subtitle: 'Gelişmiş Odaklanma & Ses Mikseri',
+            shortDesc: 'Maksimum odaklanma için tasarlandı. Pomodoro sayacı, ortam sesleri ve YouTube müzik entegrasyonu.',
+            fullDesc: 'Pomodoro Pro, derin çalışma (deep work) seanslarınız için geliştirilmiş hepsi bir arada bir asistandır. Arka planda çalışan reklamsız YouTube oynatıcısı ve ekranın köşesinde duran minimalist Mini Modu ile dikkatinizi dağıtmadan verimliliğinizi artırır.',
+            features: [
+                'Özelleştirilebilir Pomodoro ve Mola Zamanlayıcısı',
+                'Minimalist "Mini Mod" ile Ekranda Yer Kaplamayan Tasarım',
+                'Yağmur, Şömine, Kafe vb. Çoklu Ortam Sesi Mikseri',
+                'Gizli Pencerede Arka Plan YouTube Müzik Çalar',
+                'Zamanlayıcı Bitiminde Otomatik Bilgisayar Kapatma',
+                'Rahatlatıcı 4-7-8 Nefes Egzersizi Modülü'
+            ],
+            images: ['gorseller/PomodoroPro/1.png', 'gorseller/PomodoroPro/2.png', 'gorseller/PomodoroPro/3.png', 'gorseller/PomodoroPro/4.png', 'gorseller/PomodoroPro/5.png'],
+            link: 'https://github.com/barisys1999/pax-systemic/releases/download/Pomodoro/PomodoroPRO_Installer.exe',
+            changelog: [
+                { version: 'v1.0.0', date: 'Haziran 2026', notes: ['İlk sürüm yayınlandı.', 'Crossfade özellikli kesintisiz ses motoru eklendi.', 'YouTube arka plan oynatıcısı entegre edildi.'] }
+            ]
+        },
+        {
+            id: 'pomodoropro',
+            category: 'medya', 
+            catName: 'Odaklanma Araçları',
+            title: 'Pomodoro Pro',
+            subtitle: 'Gelişmiş Odaklanma & Ses Mikseri',
+            shortDesc: 'Maksimum odaklanma için tasarlandı. Pomodoro sayacı, ortam sesleri ve YouTube müzik entegrasyonu.',
+            fullDesc: 'Pomodoro Pro, derin çalışma (deep work) seanslarınız için geliştirilmiş hepsi bir arada bir asistandır. Arka planda çalışan reklamsız YouTube oynatıcısı ve ekranın köşesinde duran minimalist Mini Modu ile dikkatinizi dağıtmadan verimliliğinizi artırır.',
+            features: [
+                'Özelleştirilebilir Pomodoro ve Mola Zamanlayıcısı',
+                'Minimalist "Mini Mod" ile Ekranda Yer Kaplamayan Tasarım',
+                'Yağmur, Şömine, Kafe vb. Çoklu Ortam Sesi Mikseri',
+                'Gizli Pencerede Arka Plan YouTube Müzik Çalar',
+                'Zamanlayıcı Bitiminde Otomatik Bilgisayar Kapatma',
+                'Rahatlatıcı 4-7-8 Nefes Egzersizi Modülü'
+            ],
+            images: ['gorseller/PomodoroPro/1.png', 'gorseller/PomodoroPro/2.png', 'gorseller/PomodoroPro/3.png', 'gorseller/PomodoroPro/4.png', 'gorseller/PomodoroPro/5.png'],
+            link: 'https://github.com/barisys1999/pax-systemic/releases/download/Pomodoro/PomodoroPRO_Installer.exe',
+            changelog: [
+                { version: 'v1.0.0', date: 'Haziran 2026', notes: ['İlk sürüm yayınlandı.', 'Crossfade özellikli kesintisiz ses motoru eklendi.', 'YouTube arka plan oynatıcısı entegre edildi.'] }
+            ]
+        },
+        {
+            id: 'audiopro',
+            category: 'medya', 
+            catName: 'Ses & Medya Araçları',
+            title: 'Audio Editor',
+            subtitle: 'Gelişmiş Ses Düzenleme & Optimizasyon',
+            shortDesc: 'Gerçek zamanlı EQ, spektral gürültü giderme ve akıllı döngü (Smart Loop) ile profesyonel ses düzenleyici.',
+            fullDesc: 'AudioPro, karmaşık stüdyo yazılımlarına gerek kalmadan ses dosyalarınızı optimize etmenizi sağlar. Gerçek zamanlı 7-bant EQ ile frekansları anında ayarlayabilir, spektral gürültü giderme ile dip sesleri temizleyebilir ve Akıllı Döngü Motoru (Smart Loop) ile müzik veya ortam sesleri için kusursuz kesim noktalarını saniyeler içinde bulabilirsiniz.',
+            features: [
+                'Gerçek Zamanlı 7-Bant Parametrik EQ (Ekolayzer)',
+                'Spektral Gürültü Giderme (Noise Reduction)',
+                'Akıllı Döngü (Kusursuz Loop) Analiz Motoru',
+                'İnteraktif ve Yakınlaştırılabilir Dalga Formu (Waveform)',
+                'Fade in/out ve Crossfade Destekli Dışa Aktarma',
+                'WAV, MP3 ve M4A Formatlarında Kayıt İmkanı'
+            ],
+            images: ['gorseller/AudioEditor/1.png','gorseller/AudioEditor/2.png','gorseller/AudioEditor/3.png','gorseller/AudioEditor/4.png'],
+            link: 'https://github.com/barisys1999/pax-systemic/releases/download/AudioEditor/AudioEditor_Installer.exe',
+            changelog: [
+                { version: 'v1.0.0', date: 'Temmuz 2026', notes: ['İlk stabil sürüm yayınlandı.', 'Gerçek zamanlı EQ motoru eklendi.', 'Smart Loop algoritması optimize edildi.'] }
+            ]
+        },
+        {
+            id: 'paxvault',
+            category: 'yonetim',
+            catName: 'Güvenlik & Yönetim',
+            title: 'Password Vault',
+            subtitle: 'Ultra Güvenli Yerel Şifre Kasası',
+            shortDesc: 'Şifrelerinizi yerel diskinizde AES-GCM ile şifreleyin. 2FA, ekran kaydı koruması ve otomatik kilit ile tam güvenlik.',
+            fullDesc: 'Password Vault, bulut tabanlı şifre yöneticilerinin aksine verilerinizi cihazınızın dışına asla çıkarmaz. 15 Saniyelik otomatik pano (clipboard) temizleyicisi ve Google Authenticator (2FA) desteği ile dijital kimliklerinizi askeri düzeyde korur.',
+            features: [
+                'AES-GCM 256-bit ve PBKDF2 Şifreleme Altyapısı',
+                'Google Authenticator / TOTP (2FA) Desteği',
+                '15 Saniyelik Otomatik Pano (Clipboard) Temizleme',
+                'Hareketsizlik (AFK) Algılayıcı ve Otomatik Kilit',
+                'Acil Durumlar İçin Kurtarma Anahtarı ve Nükleer Sıfırlama'
+            ],
+            images: ['gorseller/PasswordVault/1.png','gorseller/PasswordVault/2.png','gorseller/PasswordVault/3.png','gorseller/PasswordVault/4.png'], 
+            link: 'https://github.com/barisys1999/pax-systemic/releases/download/PasswordVault/PasswordVault_Installer.exe',
+            changelog: [
+                { version: 'v2.0.0', date: 'Eylül 2026', notes: ['İlk sürüm yayınlandı.', 'Windows DPAPI ile güvenli yedekleme (.pvault) eklendi.', 'Ekran okuyucu koruması (WDA_MONITOR) aktif edildi.'] }
+            ]
+        },
+        {
+            id: 'paxdownloader',
+            category: 'medya',
+            catName: 'Medya & İndirme Araçları',
+            title: 'PAX Downloader',
+            subtitle: 'Yeni Nesil Multi-Thread Evrensel İndirme Yöneticisi',
+            shortDesc: 'Gelişmiş multi-thread indirme mimarisi, tarayıcı uzantısı entegrasyonu ve akıllı mini ilerleme paneli.',
+            fullDesc: 'PAX Downloader, en yüksek veri aktarım hızlarına ulaşmak için optimize edilmiş HttpClient çekirdeği, aria2c entegrasyonu ve multi-thread paralel bağlantı mimarisini temel alan modern bir indirme yöneticisidir. Proje şu anda aktif geliştirme aşamasındadır; kararlı indirme çekirdeği, uzantı haberleşme protokolleri ve sağ alt köşeye kenetlenen dinamik kullanıcı arayüzü başarıyla tamamlanmıştır. Yeni özellikler eklenmeye devam etmektedir.',
+            features: [
+                'Evrensel İndirmeler İçin Ultra Hızlı Çekirdek (-N 32 Paralel Bağlantı Desteği)',
+                'Sosyal Medya Videoları İçin Çift Kanallı aria2c Entegrasyonu (-N 16 Desteği)',
+                'Tarayıcı Uzantısından (ExtensionMessage) Gelen Medya Akışlarını Anlık Yakalama',
+                'Masaüstü Sağ Alt Köşesine Sabitlenen, Canlı Aşama (Stage) Göstergeli Mini Progress Penceresi',
+                'Hız Göstergelerinde %/s Yerine Gerçek Zamanlı MB/s - KB/s Ölçümü ve Akıllı Kalan Süre (ETA) Algoritması',
+                'json Tabanlı Otomatik Geçmiş Yönetimi (Waiting, Downloading, Paused, Completed, Error)'
+            ],
+            images: ['gorseller/paxdownloader/1.png','gorseller/paxdownloader/2.png','gorseller/paxdownloader/3.png'], 
+            link: '#', 
+            isDev: true, 
+            changelog: [
+                { version: 'v4.4 (Mevcut Aşama)', date: 'Mayıs 2026', notes: ['MainWindow uzantı entegrasyon katmanı ve aksiyon yakalayıcılar tamamlandı.', 'Hız göstergeleri gerçek MB/s ve KB/s değerlerine uyarlandı.', 'Çift mini progress penceresi açılmasını önleyen hata düzeltmeleri (double-close fix) uygulandı.'] },
+                { version: 'v4.2 (Arayüz & Kontroller)', date: 'Mayıs 2026', notes: ['Sağ alt köşeye otomatik konumlanan (PositionWindow) akıllı MiniProgressWindow tasarlandı.', 'Pause (Duraklat), Resume (Devam Et) ve Cancel (İptal) tetikleyicileri prototiplendi.'] },
+                { version: 'v1.0.0 (Temel Çekirdek)', date: 'Nisan 2026', notes: ['DownloadItem veri modeli ve INotifyPropertyChanged arayüz mimarisi kurgulandı.', 'Durum renk kodlamaları ve dinamik ProgressBar veri bağlamaları eklendi.'] }
+            ]
+        },
+        {
+            id: 'paxasistan',
+            category: 'sistem',
+            catName: 'Yapay Zeka & Sistem',
+            title: 'PAX Asistan',
+            subtitle: 'Otonom Masaüstü Yapay Zeka Asistanı',
+            shortDesc: 'Yerel AI (Ollama), 2 katmanlı ses tanıma (Vosk+Whisper) ve kamera ile el takibi sunan interaktif robot asistan.',
+            fullDesc: 'PAX Asistan; farenizi takip eden dinamik bir robot yüze sahip, tamamen çevrimdışı çalışabilen otonom bir sistem asistanıdır. Gelişmiş 3 katmanlı algılama mimarisi ile sizi hem duyar (Vosk & Whisper), hem görür (MediaPipe El Takibi), hem de anlar (Ollama LLM). Proje, anlık donanım entegrasyonları ve komut sistemleriyle aktif geliştirme aşamasındadır.',
+            features: [
+                'Katman 1 & 2 Ses Motoru: Vosk (Hızlı anlık tanıma) ve Whisper (Yüksek doğruluk) paralel entegrasyonu',
+                'Katman 3 LLM (Ollama): Qwen/Llama modelleriyle JSON tabanlı doğal dil işleme ve sohbet yeteneği',
+                'Kameralı Takip: Python/MediaPipe üzerinden UDP soketleriyle 0 gecikmeli jest (el hareketi) algılama',
+                'Canlı Robot Arayüzü: Fare imlecini takip eden gözler, otomatik göz kırpma, mutlu/kızgın/şaşkın mimikler ve Idle (bekleme) motoru',
+                'Gelişmiş Komut Yöneticisi: Özel klavye/makro kombinasyonları, sistem kontrolü ve "Sabit Dinleme" modu'
+            ],
+            images: ['gorseller/paxasistan/1.png'], 
+            link: '#', 
+            isDev: true, 
+            changelog: [
+                { version: 'v2.5 (Mevcut Aşama)', date: 'Güncel', notes: ['Ollama LLM entegrasyonu tamamlandı ve Tool Calling (JSON ayrıştırma) aktif edildi.', 'Python tabanlı el hareketleri (GestureService) WPF UI ile bağlandı.'] },
+                { version: 'v1.5 (Arayüz & Animasyon)', date: 'Önceki Aşama', notes: ['Robot yüz mimikleri (Idle motoru, kafa yaylanması, fare takibi) eklendi.', 'Sistem komutlarını JSON üzerinden yöneten KomutModel altyapısı kuruldu.'] },
+                { version: 'v1.0 (Çekirdek)', date: 'Başlangıç', notes: ['Vosk ve Whisper ses motorları sisteme entegre edildi.'] }
+            ]
+        },
+        {
+    id: 'paxlink',
+    category: 'sistem',
+    catName: 'İletişim & Nöral Ağ',
+    title: 'Pax Link',
+    subtitle: 'Nöral Bağlantı Tabanlı Sesli İletişim',
+    shortDesc: 'WebRTC tabanlı, Opus codec destekli yüksek sadakatli sesli iletişim platformu.',
+    fullDesc: 'Pax Link, Pax Systemic ekosisteminin mevcut iletişim katmanıdır. Opus codec entegrasyonlu yüksek sadakatli ses işleme (DSP), WebRTC üzerinden gerçek zamanlı sesli veri aktarımı ve socket.io tabanlı otonom çağrı yönetim sistemini içerir. Tamamen yerel (native) WPF mimarisi üzerine kurgulanmıştır.',
+    features: [
+        'WebRTC P2P (ICE/STUN/TURN) Sinyalleşme ve Görüşme Yönetimi',
+        'Opus Tabanlı Düşük Gecikmeli Ses İşleme (Jitter Buffer & PLC)',
+        'Socket.io ile Otonom Çağrı (Incoming/Outgoing) Sinyalleşme Motoru',
+        'Gelişmiş Gürültü Engelleme, EQ ve Dinamik Gain Kontrolü',
+        'Minimalist, Kaynak Dostu Masaüstü İstemcisi'
+    ],
+    images: ['gorseller/paxlink/1.png', 'gorseller/paxlink/2.png', 'gorseller/paxlink/3.png', 'gorseller/paxlink/4.png', 'gorseller/paxlink/5.png'],
+    link: '#',
+    isDev: true,
+    changelog: [
+        { 
+            version: 'v0.1.0 (Alfa)', 
+            date: 'Mayıs 2026', 
+            notes: [
+                'WebRTC sinyalleşme katmanı (Offer/Answer/Candidate) başarıyla tamamlandı.',
+                'Socket.io (Auth Token) ile güvenli oda bağlantıları kurgulandı.',
+                'JitterBufferWaveProvider mimarisi ile ses akış senkronizasyonu sağlandı.'
+            ] 
+        }
+    ]
+}
+    ];
 
+    let currentCategory = 'all';
+    let currentImages = [];
+    let currentImageIndex = 0;
+
+    function initGrid() {
+        const grid = document.getElementById('product-grid');
+        if(!grid) return;
+        grid.innerHTML = products.map(p => {
+            
+            const clickAction = `onclick="openProduct('${p.id}')"`;
+            
+            
+            const devBadge = p.isDev ? ` <span style="color: var(--text-dim); font-size: 0.9rem; font-weight: normal;">(Geliştiriliyor)</span>` : '';
+            
+            
+            const cardClass = p.isDev ? 'product-card dev-card' : 'product-card';
+
+            return `
+                <div class="${cardClass}" data-category="${p.category}" ${clickAction}>
+                    <span class="category-label">${p.catName}</span>
+                    <h3>${p.title}${devBadge}</h3>
+                    <p>${p.shortDesc}</p>
+                </div>
+            `;
+        }).join('');
+    }
+   
+    function updateUI() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const cards = document.querySelectorAll('.product-card');
+        let found = 0;
+
+        cards.forEach(card => {
+            const title = card.querySelector('h3').innerText.toLowerCase();
+            const cat = card.dataset.category;
+            const matchesSearch = title.includes(query);
+            const matchesCat = (currentCategory === 'all' || cat === currentCategory);
+
+            if (matchesSearch && matchesCat) {
+                card.style.display = 'block';
+                found++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        const noRes = document.getElementById('no-results');
+        if(noRes) noRes.style.display = found === 0 ? 'block' : 'none';
+    }
+
+    function setCategory(cat, btn) {
+        currentCategory = cat;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        updateUI();
+    }
+
+    function openProduct(id) {
+        const p = products.find(x => x.id === id);
+        if (!p) return;
+        
+        
+        switchTab('overview', null);
+        
+        const downloadBtn = document.getElementById('det-btn');
+        document.getElementById('det-title').innerText = p.title;
+        document.getElementById('det-sub').innerText = p.subtitle;
+        document.getElementById('det-desc').innerText = p.fullDesc;
+        downloadBtn.href = p.link;
+
+        // --- BUTON DURUMU AYARLAMA ---
+        if (p.isDev) { 
+            // geliştirme aşamasında
+            downloadBtn.innerText = 'Geliştirilme Aşamasında';
+            downloadBtn.style.pointerEvents = 'none'; 
+            downloadBtn.style.background = '#1A2333'; 
+            downloadBtn.style.color = 'var(--text-dim)';
+            downloadBtn.style.boxShadow = 'none'; 
+        } else if (p.link.startsWith('https://mail.google.com/')) {
+            // mail talebi
+            downloadBtn.innerText = 'Talep Et';
+            downloadBtn.style.pointerEvents = 'auto';
+            downloadBtn.style.background = 'var(--primary)';
+            downloadBtn.style.color = '#000';
+            downloadBtn.style.boxShadow = '0 10px 30px var(--primary-glow)';
+        } else {
+            // Normal indirme
+            downloadBtn.innerText = 'İndir';
+            downloadBtn.style.pointerEvents = 'auto';
+            downloadBtn.style.background = 'var(--primary)';
+            downloadBtn.style.color = '#000';
+            downloadBtn.style.boxShadow = '0 10px 30px var(--primary-glow)';
+        }
+        
+        currentImages = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : []);
+        currentImageIndex = 0;
+        updateMediaView();
+
+        document.getElementById('det-features').innerHTML = p.features.map(f => `<li>${f}</li>`).join('');
+        document.getElementById('det-changelog').innerHTML = p.changelog.map(l => `
+            <div class="timeline-item">
+                <span class="tl-version">${l.version}</span><span class="tl-date">${l.date}</span>
+                <ul class="tl-notes">${l.notes.map(n => `<li>${n}</li>`).join('')}</ul>
+            </div>`).join('');
+
+        document.getElementById('main-view').style.display = 'none';
+        document.getElementById('detail-view').style.display = 'block';
+        window.scrollTo(0,0);
+    }
+    
+    function updateMediaView() {
+        const media = document.getElementById('det-media');
+        if (currentImages.length === 0) {
+            media.innerHTML = 'Görsel Bulunamadı';
+            return;
+        }
+
+       
+        let html = `<img src="${currentImages[currentImageIndex]}" loading="lazy" onerror="this.onerror=null; this.style.display='none'; const p=document.createElement('p'); p.innerText='Görsel Hazırlanıyor'; p.style.color='var(--text-dim)'; this.parentElement.appendChild(p);">`;
+        html += `<div class="media-overlay" onclick="openLightbox()">GÖRÜNTÜLE</div>`;
+
+        if (currentImages.length > 1) {
+            html += `<button class="slider-btn prev" onclick="changeImage(-1, event)">&#10094;</button>`;
+            html += `<button class="slider-btn next" onclick="changeImage(1, event)">&#10095;</button>`;
+            
+            html += `<div class="slider-dots">`;
+            currentImages.forEach((_, i) => {
+                html += `<span class="dot ${i === currentImageIndex ? 'active' : ''}" onclick="setImage(${i}, event)"></span>`;
+            });
+            html += `</div>`;
+        }
+
+        media.innerHTML = html;
+    }
+
+    function changeImage(dir, event) {
+        if(event) event.stopPropagation(); 
+        currentImageIndex += dir;
+        if (currentImageIndex < 0) currentImageIndex = currentImages.length - 1;
+        if (currentImageIndex >= currentImages.length) currentImageIndex = 0;
+        updateMediaView();
+    }
+
+    function setImage(idx, event) {
+        if(event) event.stopPropagation();
+        currentImageIndex = idx;
+        updateMediaView();
+    }
+
+    function closeProduct() {
+        document.getElementById('detail-view').style.display = 'none';
+        document.getElementById('main-view').style.display = 'flex';
+        switchTab('overview', null);
+    }
+
+    function switchTab(tab, e) {
+        document.querySelectorAll('.d-tab').forEach(t => t.classList.remove('active'));
+        
+        if(e && e.target) {
+            e.target.classList.add('active');
+        } else {
+            
+            const targetIndex = tab === 'overview' ? 0 : 1;
+            const targetTab = document.querySelectorAll('.d-tab')[targetIndex];
+            if(targetTab) targetTab.classList.add('active');
+        }
+        
+        document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
+        const targetPane = document.getElementById('pane-' + tab);
+        if(targetPane) targetPane.style.display = 'block';
+    }
+
+    function openLightbox() {
+        if(currentImages.length === 0) return;
+        const lb = document.getElementById('lightbox');
+        
+        let html = `<img id="lightbox-img" src="${currentImages[currentImageIndex]}" loading="lazy" onclick="event.stopPropagation()">`;
+        
+        if (currentImages.length > 1) {
+            html += `<button class="slider-btn prev" style="position:fixed; left: 5%;" onclick="changeLightboxImage(-1, event)">&#10094;</button>`;
+            html += `<button class="slider-btn next" style="position:fixed; right: 5%;" onclick="changeLightboxImage(1, event)">&#10095;</button>`;
+        }
+
+        lb.innerHTML = html;
+        lb.style.display = 'flex';
+    }
+
+    function changeLightboxImage(dir, event) {
+        if(event) event.stopPropagation();
+        currentImageIndex += dir;
+        if (currentImageIndex < 0) currentImageIndex = currentImages.length - 1;
+        if (currentImageIndex >= currentImages.length) currentImageIndex = 0;
+        
+        const lbImg = document.getElementById('lightbox-img');
+        if(lbImg) lbImg.src = currentImages[currentImageIndex];
+        updateMediaView(); 
+    }
+
+    // Sayfa yüklendiğinde çalıştır
+    window.onload = initGrid;
+</script>
 </body>
 </html>
