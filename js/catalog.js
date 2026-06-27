@@ -1,18 +1,18 @@
 /* =============================================
    PAX SYSTEMIC — Catalog Engine
+   Firestore destekli versiyon
    ============================================= */
 
 let currentFilter = 'all';
 let currentImages  = [];
 let currentImgIdx  = 0;
-let catalogData    = [];   // dışarıdan set edilir (SOFTWARE_PRODUCTS vs)
+let catalogData    = [];
 
 /* ── Init ─────────────────────────────── */
 function initCatalog(products) {
     catalogData = products;
     renderGrid(products);
 
-    // Deep link support: index.html#systemic opens that product directly
     const hashId = (location.hash || '').replace('#', '').trim();
     if (hashId && products.some(p => p.id === hashId)) {
         openProduct(hashId);
@@ -72,10 +72,9 @@ function openProduct(id) {
     const p = catalogData.find(x => x.id === id);
     if (!p) return;
 
-    // Header
     const iconEl = document.getElementById('det-icon');
     const placeholderEl = document.getElementById('det-icon-placeholder');
-    iconEl.src = p.icon;
+    iconEl.src = p.icon || '';
     iconEl.onerror = () => { iconEl.style.display = 'none'; placeholderEl.textContent = p.iconEmoji || '📦'; placeholderEl.style.display = 'flex'; };
     iconEl.style.display = '';
     placeholderEl.style.display = 'none';
@@ -105,23 +104,20 @@ function openProduct(id) {
 
     history.replaceState(null, '', '#' + id);
 
-    // Features
     document.getElementById('det-features').innerHTML = p.features.map(f => `<li>${f}</li>`).join('');
 
-    // Changelog
-    document.getElementById('det-changelog').innerHTML = p.changelog.map(l => `
+    document.getElementById('det-changelog').innerHTML = (p.changelog || []).map(l => `
         <div class="tl-item">
             <div class="tl-head">
                 <span class="tl-version">${l.version}</span>
                 <span class="tl-date">${l.date}</span>
             </div>
-            <ul class="tl-notes">${l.notes.map(n => `<li>${n}</li>`).join('')}</ul>
+            <ul class="tl-notes">${(l.notes || []).map(n => `<li>${n}</li>`).join('')}</ul>
         </div>
     `).join('');
 
-    // Download button
     const btn = document.getElementById('det-btn');
-    btn.href = p.link;
+    btn.href = p.link || '#';
     btn.className = 'btn-download';
     if (p.isDev) {
         btn.textContent = 'Geliştirilme Aşamasında';
@@ -133,12 +129,10 @@ function openProduct(id) {
         btn.textContent = '↓ İndir';
     }
 
-    // Media
     currentImages = p.images?.length > 0 ? p.images : [];
     currentImgIdx = 0;
     updateMediaView();
 
-    // Swap views
     switchTab('overview');
     document.getElementById('main-view').style.display  = 'none';
     document.getElementById('detail-view').style.display = 'block';
@@ -157,8 +151,8 @@ function switchTab(tab, e) {
     if (e) e.preventDefault();
     document.querySelectorAll('.d-tab').forEach(t => t.classList.remove('active'));
 
-    const idx   = tab === 'overview' ? 0 : 1;
-    const tabs  = document.querySelectorAll('.d-tab');
+    const idx  = tab === 'overview' ? 0 : 1;
+    const tabs = document.querySelectorAll('.d-tab');
     if (tabs[idx]) tabs[idx].classList.add('active');
 
     document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');

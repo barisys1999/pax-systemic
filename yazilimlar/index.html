@@ -19,6 +19,19 @@
         .feature-list li::before {
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232454FF' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
         }
+        .page-loading {
+            display: flex; align-items: center; justify-content: center;
+            min-height: 40vh; flex-direction: column; gap: 16px;
+            color: #97A1B5; font-size: 0.9rem;
+        }
+        .page-loading-spinner {
+            width: 32px; height: 32px;
+            border: 3px solid rgba(36,84,255,0.15);
+            border-top-color: #2454FF;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -54,16 +67,17 @@
             </svg>
             <input type="text" id="searchInput" class="search-input" placeholder="Yazılım ara..." oninput="updateGrid()">
         </div>
-        <div class="filter-row">
+        <div class="filter-row" id="filterRow">
             <button class="filter-btn active" onclick="setCategory('all', this)">Tümü</button>
-            <button class="filter-btn" onclick="setCategory('medya', this)">Medya</button>
-            <button class="filter-btn" onclick="setCategory('yonetim', this)">Yönetim</button>
-            <button class="filter-btn" onclick="setCategory('sistem', this)">Sistem</button>
         </div>
     </div>
 
-    <div id="catalog-grid"></div>
-    <div id="no-results">Aradığınız kritere uygun yazılım bulunamadı.</div>
+    <div id="page-loader" class="page-loading">
+        <div class="page-loading-spinner"></div>
+        <span>Yazılımlar yükleniyor...</span>
+    </div>
+    <div id="catalog-grid" style="display:none"></div>
+    <div id="no-results" style="display:none">Aradığınız kritere uygun yazılım bulunamadı.</div>
 
 </div>
 
@@ -125,10 +139,10 @@
             </div>
             <div class="footer-col">
                 <h5>Yazılımlar</h5>
-                <a href="#systemic"     onclick="openProductFromNav('systemic',   event)">Systemic Pro</a>
-                <a href="#paxvault"     onclick="openProductFromNav('paxvault',    event)">Password Vault</a>
-                <a href="#pomodoropro"  onclick="openProductFromNav('pomodoropro', event)">Pomodoro Pro</a>
-                <a href="#audiopro"     onclick="openProductFromNav('audiopro',    event)">Audio Editor</a>
+                <a href="#systemic"    onclick="openProductFromNav('systemic',   event)">Systemic Pro</a>
+                <a href="#paxvault"    onclick="openProductFromNav('paxvault',    event)">Password Vault</a>
+                <a href="#pomodoropro" onclick="openProductFromNav('pomodoropro', event)">Pomodoro Pro</a>
+                <a href="#audiopro"    onclick="openProductFromNav('audiopro',    event)">Audio Editor</a>
             </div>
             <div class="footer-col">
                 <h5>Oyunlar</h5>
@@ -150,11 +164,61 @@
     </div>
 </footer>
 
+<!-- Firebase SDK -->
+<script type="module">
+    import { initializeApp }   from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy, where }
+                               from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAKVWcyice-3w2Ua7xiNnYh5ZGVdBl8qWA",
+        authDomain: "paxsystemic-f4aca.firebaseapp.com",
+        projectId: "paxsystemic-f4aca",
+        storageBucket: "paxsystemic-f4aca.firebasestorage.app",
+        messagingSenderId: "193147885737",
+        appId: "1:193147885737:web:aae1ec4c0b1c31bd0271b8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+
+    async function loadProducts() {
+        try {
+            const q    = query(collection(db, 'yazilimlar'), orderBy('order', 'asc'));
+            const snap = await getDocs(q);
+            const products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+            // Firestore'dan gelen kategorilere göre filtre butonlarını oluştur
+            const cats = [...new Set(products.map(p => p.category).filter(Boolean))];
+            const filterRow = document.getElementById('filterRow');
+            filterRow.innerHTML = `<button class="filter-btn active" onclick="setCategory('all', this)">Tümü</button>`;
+            cats.forEach(cat => {
+                const label = products.find(p => p.category === cat)?.catName || cat;
+                filterRow.innerHTML += `<button class="filter-btn" onclick="setCategory('${cat}', this)">${label}</button>`;
+            });
+
+            document.getElementById('page-loader').style.display = 'none';
+            document.getElementById('catalog-grid').style.display = '';
+
+            // catalog.js'in global initCatalog fonksiyonunu çağır
+            window.initCatalog(products);
+        } catch(err) {
+            console.warn('Firestore yüklenemedi, statik veri kullanılıyor:', err);
+            // Fallback: statik data
+            document.getElementById('page-loader').style.display = 'none';
+            document.getElementById('catalog-grid').style.display = '';
+            if (typeof SOFTWARE_PRODUCTS !== 'undefined') {
+                window.initCatalog(SOFTWARE_PRODUCTS);
+            }
+        }
+    }
+
+    loadProducts();
+</script>
+
 <script src="../js/software-data.js"></script>
 <script src="../js/catalog.js"></script>
 <script>
-    window.onload = () => initCatalog(SOFTWARE_PRODUCTS);
-
     function openProductFromNav(id, e) {
         if (e) e.preventDefault();
         openProduct(id);

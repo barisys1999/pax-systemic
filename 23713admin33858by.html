@@ -3,350 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
+    <title>Admin Panel — Pax Systemic</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --paper: #FFFFFF;
-            --mist:  #F4F6FB;
-            --ink:   #0F1729;
-            --slate: #5B6478;
-            --fog:   #97A1B5;
-            --line:  #E8EBF2;
-            --line-strong: #D0D5E3;
-            --blue:  #2454FF;
-            --blue-soft: rgba(36,84,255,0.08);
-            --blue-line: rgba(36,84,255,0.28);
-            --green: #0F9B58;
-            --green-soft: rgba(15,155,88,0.09);
-            --red:   #D63E3E;
-            --shadow-sm: 0 1px 4px rgba(15,23,41,0.06), 0 2px 8px rgba(15,23,41,0.04);
-            --shadow-md: 0 4px 16px rgba(15,23,41,0.10), 0 1px 4px rgba(15,23,41,0.06);
+            --paper: #FFFFFF; --mist: #F4F6FB; --ink: #0F1729; --slate: #5B6478;
+            --fog: #97A1B5; --line: #E8EBF2; --line-strong: #D0D5E3;
+            --blue: #2454FF; --blue-soft: rgba(36,84,255,0.08); --blue-line: rgba(36,84,255,0.28);
+            --violet: #7A3FE0; --violet-soft: rgba(122,63,224,0.08); --violet-line: rgba(122,63,224,0.28);
+            --green: #0F9B58; --green-soft: rgba(15,155,88,0.09);
+            --red: #D63E3E; --red-soft: rgba(214,62,62,0.08);
+            --shadow-sm: 0 1px 4px rgba(15,23,41,0.06),0 2px 8px rgba(15,23,41,0.04);
+            --shadow-md: 0 4px 16px rgba(15,23,41,0.10),0 1px 4px rgba(15,23,41,0.06);
             --r-sm: 6px; --r-md: 12px; --r-lg: 20px;
         }
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Inter',system-ui,sans-serif; background:var(--mist); color:var(--ink); min-height:100vh; -webkit-font-smoothing:antialiased; }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Inter',system-ui,sans-serif;background:var(--mist);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;}
 
-        /* ── Login Screen ── */
-        #loginScreen {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--ink);
-            padding: 24px;
-        }
-        .login-card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: var(--r-lg);
-            padding: 48px 44px;
-            width: 100%;
-            max-width: 380px;
-            text-align: center;
-        }
-        .login-logo {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.4);
-            margin-bottom: 32px;
-        }
-        .login-logo em { color: #6B9FFF; font-style: normal; }
-        .login-card h2 { font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
-        .login-card p { font-size: 0.84rem; color: rgba(255,255,255,0.4); margin-bottom: 28px; }
-        .login-input {
-            width: 100%;
-            padding: 13px 16px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.12);
-            border-radius: var(--r-md);
-            color: #fff;
-            font-family: inherit;
-            font-size: 0.95rem;
-            outline: none;
-            text-align: center;
-            margin-bottom: 14px;
-            transition: border-color 0.2s;
-        }
-        .login-input:focus { border-color: #6B9FFF; }
-        .login-input::placeholder { color: rgba(255,255,255,0.25); }
-        .login-btn {
-            width: 100%;
-            padding: 13px;
-            background: var(--blue);
-            color: #fff;
-            border: none;
-            border-radius: var(--r-md);
-            font-family: inherit;
-            font-size: 0.92rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.18s;
-        }
-        .login-btn:hover { background: #1535CC; }
-        .login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        .login-err { font-size: 0.8rem; color: #F87171; margin-top: 12px; display: none; }
+        /* ── Login ── */
+        #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--ink);padding:24px;}
+        .login-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-lg);padding:48px 44px;width:100%;max-width:380px;text-align:center;}
+        .login-logo{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:32px;}
+        .login-logo em{color:#6B9FFF;font-style:normal;}
+        .login-card h2{font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:8px;}
+        .login-card p{font-size:0.84rem;color:rgba(255,255,255,0.4);margin-bottom:28px;}
+        .login-input{width:100%;padding:13px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-md);color:#fff;font-family:inherit;font-size:0.95rem;outline:none;text-align:center;margin-bottom:14px;transition:border-color 0.2s;}
+        .login-input:focus{border-color:#6B9FFF;}
+        .login-input::placeholder{color:rgba(255,255,255,0.25);}
+        .login-btn{width:100%;padding:13px;background:var(--blue);color:#fff;border:none;border-radius:var(--r-md);font-family:inherit;font-size:0.92rem;font-weight:700;cursor:pointer;transition:background 0.18s;}
+        .login-btn:hover{background:#1535CC;}
+        .login-btn:disabled{opacity:0.6;cursor:not-allowed;}
+        .login-err{font-size:0.8rem;color:#F87171;margin-top:12px;display:none;}
 
-        /* ── Admin Panel ── */
-        #adminPanel { display: none; min-height: 100vh; }
+        /* ── Panel ── */
+        #adminPanel{display:none;min-height:100vh;}
+        .admin-header{background:var(--ink);padding:0 40px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+        .admin-header__brand{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:2px;color:rgba(255,255,255,0.9);text-transform:uppercase;}
+        .admin-header__brand em{color:#6B9FFF;font-style:normal;}
+        .admin-header__right{display:flex;align-items:center;gap:16px;}
+        .admin-badge{font-size:0.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;background:rgba(36,84,255,0.25);color:#6B9FFF;border-radius:20px;}
+        .logout-btn{font-size:0.78rem;color:rgba(255,255,255,0.35);background:none;border:none;cursor:pointer;padding:6px 10px;border-radius:var(--r-sm);transition:color 0.18s;}
+        .logout-btn:hover{color:rgba(255,255,255,0.7);}
 
-        .admin-header {
-            background: var(--ink);
-            padding: 0 40px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .admin-header__brand {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: 0.95rem;
-            letter-spacing: 2px;
-            color: rgba(255,255,255,0.9);
-            text-transform: uppercase;
-        }
-        .admin-header__brand em { color: #6B9FFF; font-style: normal; }
-        .admin-header__right { display: flex; align-items: center; gap: 16px; }
-        .admin-badge {
-            font-size: 0.68rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            padding: 4px 10px;
-            background: rgba(36,84,255,0.25);
-            color: #6B9FFF;
-            border-radius: 20px;
-        }
-        .logout-btn {
-            font-size: 0.78rem;
-            color: rgba(255,255,255,0.35);
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 6px 10px;
-            border-radius: var(--r-sm);
-            transition: color 0.18s;
-        }
-        .logout-btn:hover { color: rgba(255,255,255,0.7); }
+        /* ── Tabs ── */
+        .admin-tabs{background:var(--paper);border-bottom:1px solid var(--line);display:flex;gap:0;padding:0 40px;}
+        .admin-tab{padding:16px 20px;font-size:0.85rem;font-weight:600;color:var(--fog);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.18s;margin-bottom:-1px;}
+        .admin-tab:hover{color:var(--ink);}
+        .admin-tab.active{color:var(--blue);border-bottom-color:var(--blue);}
+        .tab-content{display:none;}
+        .tab-content.active{display:block;}
 
-        .admin-body { max-width: 1080px; margin: 0 auto; padding: 40px 32px 80px; }
+        .admin-body{max-width:1080px;margin:0 auto;padding:32px 32px 80px;}
 
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-        .stat-card {
-            background: var(--paper);
-            border: 1px solid var(--line);
-            border-radius: var(--r-md);
-            padding: 20px 22px;
-            box-shadow: var(--shadow-sm);
-        }
-        .stat-card__num {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--ink);
-            line-height: 1;
-            margin-bottom: 6px;
-        }
-        .stat-card__label {
-            font-size: 0.72rem;
-            font-weight: 600;
-            color: var(--fog);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+        /* ── Stats ── */
+        .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;}
+        .stat-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-md);padding:20px 22px;box-shadow:var(--shadow-sm);}
+        .stat-card__num{font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:700;color:var(--ink);line-height:1;margin-bottom:6px;}
+        .stat-card__label{font-size:0.72rem;font-weight:600;color:var(--fog);text-transform:uppercase;letter-spacing:0.5px;}
 
-        .toolbar {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .toolbar h2 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--ink);
-            flex: 1;
-        }
-        .toolbar-btn {
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 8px 16px;
-            border-radius: 30px;
-            border: 1px solid var(--line-strong);
-            background: var(--paper);
-            color: var(--slate);
-            cursor: pointer;
-            transition: all 0.18s;
-        }
-        .toolbar-btn:hover { color: var(--ink); border-color: var(--ink); }
-        .toolbar-btn.danger { color: var(--red); border-color: rgba(214,62,62,0.3); }
-        .toolbar-btn.danger:hover { background: rgba(214,62,62,0.06); }
+        /* ── Toolbar ── */
+        .toolbar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+        .toolbar h2{font-family:'Space Grotesk',sans-serif;font-size:1.15rem;font-weight:700;color:var(--ink);flex:1;}
+        .toolbar-btn{font-size:0.8rem;font-weight:600;padding:8px 16px;border-radius:30px;border:1px solid var(--line-strong);background:var(--paper);color:var(--slate);cursor:pointer;transition:all 0.18s;white-space:nowrap;}
+        .toolbar-btn:hover{color:var(--ink);border-color:var(--ink);}
+        .toolbar-btn.primary{background:var(--blue);color:#fff;border-color:var(--blue);}
+        .toolbar-btn.primary:hover{background:#1535CC;border-color:#1535CC;}
+        .toolbar-btn.violet{background:var(--violet);color:#fff;border-color:var(--violet);}
+        .toolbar-btn.violet:hover{background:#4D24A6;border-color:#4D24A6;}
+        .toolbar-btn.danger{color:var(--red);border-color:rgba(214,62,62,0.3);}
+        .toolbar-btn.danger:hover{background:rgba(214,62,62,0.06);}
 
-        .filter-tabs { display: flex; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
-        .ftab {
-            font-size: 0.82rem;
-            font-weight: 600;
-            padding: 7px 16px;
-            border-radius: 30px;
-            border: 1px solid transparent;
-            background: none;
-            color: var(--fog);
-            cursor: pointer;
-            transition: all 0.18s;
-        }
-        .ftab:hover { color: var(--ink); background: var(--paper); }
-        .ftab.active { color: var(--blue); background: var(--blue-soft); border-color: var(--blue-line); }
+        /* ── Filter tabs ── */
+        .filter-tabs{display:flex;gap:4px;margin-bottom:20px;flex-wrap:wrap;}
+        .ftab{font-size:0.82rem;font-weight:600;padding:7px 16px;border-radius:30px;border:1px solid transparent;background:none;color:var(--fog);cursor:pointer;transition:all 0.18s;}
+        .ftab:hover{color:var(--ink);background:var(--paper);}
+        .ftab.active{color:var(--blue);background:var(--blue-soft);border-color:var(--blue-line);}
 
-        .feedback-list { display: flex; flex-direction: column; gap: 12px; }
+        /* ── Feedback cards ── */
+        .feedback-list{display:flex;flex-direction:column;gap:12px;}
+        .fb-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-md);padding:22px 24px;box-shadow:var(--shadow-sm);cursor:pointer;transition:border-color 0.18s,box-shadow 0.18s;}
+        .fb-card:hover{border-color:var(--blue-line);box-shadow:var(--shadow-md);}
+        .fb-card.unread{border-left:3px solid var(--blue);}
+        .fb-card__top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px;}
+        .fb-card__meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+        .fb-card__name{font-weight:700;font-size:0.95rem;color:var(--ink);}
+        .fb-card__email{font-size:0.78rem;color:var(--fog);}
+        .type-badge{font-size:0.64rem;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;padding:3px 9px;border-radius:20px;background:var(--blue-soft);color:var(--blue);border:1px solid var(--blue-line);white-space:nowrap;}
+        .product-badge{font-size:0.64rem;font-weight:600;padding:3px 9px;border-radius:20px;background:var(--mist);color:var(--slate);border:1px solid var(--line-strong);white-space:nowrap;}
+        .unread-dot{width:8px;height:8px;background:var(--blue);border-radius:50%;flex-shrink:0;}
+        .fb-card__time{font-size:0.74rem;color:var(--fog);white-space:nowrap;}
+        .fb-card__message{font-size:0.88rem;color:var(--slate);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+        .fb-card__actions{display:none;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);gap:8px;flex-wrap:wrap;}
+        .fb-card.expanded .fb-card__message{display:block;-webkit-line-clamp:unset;}
+        .fb-card.expanded .fb-card__actions{display:flex;}
+        .card-action-btn{font-size:0.78rem;font-weight:600;padding:6px 14px;border-radius:20px;border:1px solid var(--line-strong);background:var(--paper);color:var(--slate);cursor:pointer;transition:all 0.18s;}
+        .card-action-btn:hover{color:var(--ink);border-color:var(--ink);}
+        .card-action-btn.mark-read{color:var(--green);border-color:rgba(15,155,88,0.3);}
+        .card-action-btn.mark-read:hover{background:var(--green-soft);}
+        .card-action-btn.del{color:var(--red);border-color:rgba(214,62,62,0.3);}
+        .card-action-btn.del:hover{background:rgba(214,62,62,0.06);}
+        .reply-link{display:inline-flex;align-items:center;gap:5px;font-size:0.78rem;font-weight:600;color:var(--blue);text-decoration:none;padding:6px 14px;border-radius:20px;border:1px solid var(--blue-line);background:var(--blue-soft);transition:all 0.18s;}
+        .reply-link:hover{background:rgba(36,84,255,0.15);}
 
-        .fb-card {
-            background: var(--paper);
-            border: 1px solid var(--line);
-            border-radius: var(--r-md);
-            padding: 22px 24px;
-            box-shadow: var(--shadow-sm);
-            cursor: pointer;
-            transition: border-color 0.18s, box-shadow 0.18s;
-        }
-        .fb-card:hover { border-color: var(--blue-line); box-shadow: var(--shadow-md); }
-        .fb-card.unread { border-left: 3px solid var(--blue); }
+        /* ── CMS Grid ── */
+        .cms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+        .cms-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-md);padding:20px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:10px;transition:box-shadow 0.18s;}
+        .cms-card:hover{box-shadow:var(--shadow-md);}
+        .cms-card__top{display:flex;align-items:flex-start;gap:12px;}
+        .cms-card__icon{width:44px;height:44px;border-radius:10px;background:var(--mist);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;overflow:hidden;}
+        .cms-card__icon img{width:100%;height:100%;object-fit:cover;border-radius:9px;}
+        .cms-card__info{flex:1;min-width:0;}
+        .cms-card__title{font-weight:700;font-size:0.95rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        .cms-card__sub{font-size:0.75rem;color:var(--fog);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        .cms-card__badges{display:flex;gap:6px;flex-wrap:wrap;}
+        .cms-badge{font-size:0.62rem;font-weight:700;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:0.4px;}
+        .cms-badge.live{background:var(--green-soft);color:var(--green);border:1px solid rgba(15,155,88,0.25);}
+        .cms-badge.dev{background:rgba(255,165,0,0.1);color:#B36B00;border:1px solid rgba(255,165,0,0.25);}
+        .cms-badge.cat{background:var(--mist);color:var(--slate);border:1px solid var(--line-strong);}
+        .cms-card__imgs{font-size:0.75rem;color:var(--fog);}
+        .cms-card__actions{display:flex;gap:8px;margin-top:4px;}
+        .cms-action{font-size:0.75rem;font-weight:600;padding:5px 12px;border-radius:20px;border:1px solid var(--line-strong);background:none;color:var(--slate);cursor:pointer;transition:all 0.18s;}
+        .cms-action:hover{color:var(--ink);border-color:var(--ink);}
+        .cms-action.edit{color:var(--blue);border-color:var(--blue-line);}
+        .cms-action.edit:hover{background:var(--blue-soft);}
+        .cms-action.del{color:var(--red);border-color:rgba(214,62,62,0.3);}
+        .cms-action.del:hover{background:var(--red-soft);}
 
-        .fb-card__top {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-        .fb-card__meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .fb-card__name { font-weight: 700; font-size: 0.95rem; color: var(--ink); }
-        .fb-card__email { font-size: 0.78rem; color: var(--fog); }
-        .type-badge {
-            font-size: 0.64rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            padding: 3px 9px;
-            border-radius: 20px;
-            background: var(--blue-soft);
-            color: var(--blue);
-            border: 1px solid var(--blue-line);
-            white-space: nowrap;
-        }
-        .product-badge {
-            font-size: 0.64rem;
-            font-weight: 600;
-            padding: 3px 9px;
-            border-radius: 20px;
-            background: var(--mist);
-            color: var(--slate);
-            border: 1px solid var(--line-strong);
-            white-space: nowrap;
-        }
-        .unread-dot {
-            width: 8px; height: 8px;
-            background: var(--blue);
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-        .fb-card__time { font-size: 0.74rem; color: var(--fog); white-space: nowrap; }
-        .fb-card__message {
-            font-size: 0.88rem;
-            color: var(--slate);
-            line-height: 1.6;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .fb-card__actions {
-            display: none;
-            margin-top: 16px;
-            padding-top: 14px;
-            border-top: 1px solid var(--line);
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .fb-card.expanded .fb-card__message { display: block; -webkit-line-clamp: unset; }
-        .fb-card.expanded .fb-card__actions { display: flex; }
+        /* ── Modal ── */
+        .modal-overlay{position:fixed;inset:0;background:rgba(15,23,41,0.6);z-index:1000;display:none;align-items:flex-start;justify-content:center;padding:32px 16px;overflow-y:auto;}
+        .modal-overlay.open{display:flex;}
+        .modal{background:var(--paper);border-radius:var(--r-lg);width:100%;max-width:680px;box-shadow:0 20px 60px rgba(15,23,41,0.25);margin:auto;}
+        .modal-header{padding:24px 28px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;}
+        .modal-header h3{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;}
+        .modal-close{width:32px;height:32px;border:none;background:var(--mist);border-radius:var(--r-sm);cursor:pointer;font-size:1.1rem;color:var(--slate);display:flex;align-items:center;justify-content:center;transition:all 0.18s;}
+        .modal-close:hover{background:var(--line);color:var(--ink);}
+        .modal-body{padding:24px 28px;}
+        .modal-footer{padding:16px 28px 24px;display:flex;justify-content:flex-end;gap:10px;}
 
-        .card-action-btn {
-            font-size: 0.78rem;
-            font-weight: 600;
-            padding: 6px 14px;
-            border-radius: 20px;
-            border: 1px solid var(--line-strong);
-            background: var(--paper);
-            color: var(--slate);
-            cursor: pointer;
-            transition: all 0.18s;
-        }
-        .card-action-btn:hover { color: var(--ink); border-color: var(--ink); }
-        .card-action-btn.mark-read { color: var(--green); border-color: rgba(15,155,88,0.3); }
-        .card-action-btn.mark-read:hover { background: var(--green-soft); }
-        .card-action-btn.del { color: var(--red); border-color: rgba(214,62,62,0.3); }
-        .card-action-btn.del:hover { background: rgba(214,62,62,0.06); }
+        /* ── Form ── */
+        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+        .form-group{margin-bottom:16px;}
+        .form-group:last-child{margin-bottom:0;}
+        .form-label{display:block;font-size:0.8rem;font-weight:600;color:var(--slate);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.4px;}
+        .form-label span{color:var(--fog);font-weight:400;text-transform:none;letter-spacing:0;}
+        .form-input,.form-select,.form-textarea{width:100%;padding:10px 14px;border:1px solid var(--line-strong);border-radius:var(--r-md);font-family:inherit;font-size:0.9rem;color:var(--ink);background:var(--paper);outline:none;transition:border-color 0.18s;}
+        .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--blue);}
+        .form-textarea{resize:vertical;min-height:80px;line-height:1.5;}
+        .form-hint{font-size:0.74rem;color:var(--fog);margin-top:5px;}
 
-        .reply-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.78rem;
-            font-weight: 600;
-            color: var(--blue);
-            text-decoration: none;
-            padding: 6px 14px;
-            border-radius: 20px;
-            border: 1px solid var(--blue-line);
-            background: var(--blue-soft);
-            transition: all 0.18s;
-        }
-        .reply-link:hover { background: rgba(36,84,255,0.15); }
+        /* ── Image upload area ── */
+        .img-upload-area{border:2px dashed var(--line-strong);border-radius:var(--r-md);padding:20px;text-align:center;cursor:pointer;transition:all 0.18s;background:var(--mist);}
+        .img-upload-area:hover,.img-upload-area.drag{border-color:var(--blue);background:var(--blue-soft);}
+        .img-upload-area input[type=file]{display:none;}
+        .img-upload-icon{font-size:2rem;margin-bottom:8px;}
+        .img-upload-text{font-size:0.85rem;color:var(--slate);font-weight:500;}
+        .img-upload-sub{font-size:0.75rem;color:var(--fog);margin-top:4px;}
+        .img-preview-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+        .img-preview-item{position:relative;width:80px;height:60px;border-radius:var(--r-sm);overflow:hidden;border:1px solid var(--line);}
+        .img-preview-item img{width:100%;height:100%;object-fit:cover;}
+        .img-preview-item .remove-img{position:absolute;top:2px;right:2px;width:18px;height:18px;background:rgba(15,23,41,0.75);color:#fff;border:none;border-radius:50%;font-size:0.65rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+        .upload-progress{font-size:0.78rem;color:var(--blue);margin-top:8px;display:none;}
 
-        .empty-state { text-align: center; padding: 80px 24px; color: var(--fog); display: none; }
-        .empty-state__icon { font-size: 2.5rem; margin-bottom: 16px; }
-        .empty-state p { font-size: 0.9rem; }
+        /* ── Feature/changelog editors ── */
+        .dynamic-list{display:flex;flex-direction:column;gap:6px;}
+        .dynamic-item{display:flex;gap:8px;align-items:center;}
+        .dynamic-item input{flex:1;padding:8px 12px;border:1px solid var(--line-strong);border-radius:var(--r-sm);font-family:inherit;font-size:0.85rem;color:var(--ink);outline:none;}
+        .dynamic-item input:focus{border-color:var(--blue);}
+        .dynamic-item .rm-btn{width:28px;height:28px;border:1px solid rgba(214,62,62,0.3);background:none;border-radius:var(--r-sm);color:var(--red);cursor:pointer;font-size:0.9rem;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+        .dynamic-item .rm-btn:hover{background:var(--red-soft);}
+        .add-row-btn{font-size:0.78rem;font-weight:600;color:var(--blue);background:none;border:1px dashed var(--blue-line);padding:6px 14px;border-radius:20px;cursor:pointer;margin-top:6px;transition:all 0.18s;}
+        .add-row-btn:hover{background:var(--blue-soft);}
 
-        .loading-state { text-align: center; padding: 60px; color: var(--fog); font-size: 0.9rem; }
+        .cl-block{background:var(--mist);border-radius:var(--r-md);padding:14px;margin-bottom:10px;border:1px solid var(--line);}
+        .cl-block__head{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;}
+        .cl-block__head input{padding:7px 10px;border:1px solid var(--line-strong);border-radius:var(--r-sm);font-family:inherit;font-size:0.82rem;color:var(--ink);outline:none;}
+        .cl-block__head input:focus{border-color:var(--blue);}
 
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .spinner {
-            display: inline-block;
-            width: 18px; height: 18px;
-            border: 2px solid var(--line);
-            border-top-color: var(--blue);
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            vertical-align: middle;
-            margin-right: 8px;
-        }
-
-        @media (max-width: 700px) {
-            .admin-body { padding: 24px 16px 60px; }
-            .stats-row { grid-template-columns: 1fr 1fr; }
-            .admin-header { padding: 0 16px; }
-        }
+        /* ── Misc ── */
+        .empty-state{text-align:center;padding:80px 24px;color:var(--fog);display:none;}
+        .empty-state__icon{font-size:2.5rem;margin-bottom:16px;}
+        .empty-state p{font-size:0.9rem;}
+        .loading-state{text-align:center;padding:60px;color:var(--fog);font-size:0.9rem;}
+        @keyframes spin{to{transform:rotate(360deg);}}
+        .spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--line);border-top-color:var(--blue);border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:8px;}
+        .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:var(--r-md);font-size:0.85rem;font-weight:500;z-index:9999;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;}
+        .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+        .toast.success{background:#0F9B58;}
+        .toast.error{background:var(--red);}
+        .section-divider{height:1px;background:var(--line);margin:28px 0;}
+        @media(max-width:700px){.admin-body{padding:24px 16px 60px;}.stats-row{grid-template-columns:1fr 1fr;}.admin-header{padding:0 16px;}.admin-tabs{padding:0 16px;overflow-x:auto;}.form-row{grid-template-columns:1fr;}}
     </style>
 </head>
 <body>
 
-<!-- ── LOGIN ─────────────────────────────── -->
 <div id="loginScreen">
     <div class="login-card">
         <div class="login-logo">PAX <em>SYSTEMIC</em></div>
@@ -359,7 +210,6 @@
     </div>
 </div>
 
-<!-- ── ADMIN PANEL ────────────────────────── -->
 <div id="adminPanel">
     <header class="admin-header">
         <div class="admin-header__brand">PAX <em>SYSTEMIC</em></div>
@@ -369,285 +219,701 @@
         </div>
     </header>
 
-    <div class="admin-body">
+    <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchAdminTab('inbox', this)">📬 Gelen Kutusu</button>
+        <button class="admin-tab" onclick="switchAdminTab('yazilimlar', this)">💻 Yazılımlar</button>
+        <button class="admin-tab" onclick="switchAdminTab('oyunlar', this)">🎮 Oyunlar</button>
+    </div>
 
-        <div class="stats-row">
-            <div class="stat-card">
-                <div class="stat-card__num" id="statTotal">—</div>
-                <div class="stat-card__label">Toplam Mesaj</div>
+    <!-- ══ GELEN KUTUSU ══ -->
+    <div id="tab-inbox" class="tab-content active">
+        <div class="admin-body">
+            <div class="stats-row">
+                <div class="stat-card"><div class="stat-card__num" id="statTotal">—</div><div class="stat-card__label">Toplam Mesaj</div></div>
+                <div class="stat-card"><div class="stat-card__num" id="statUnread">—</div><div class="stat-card__label">Okunmamış</div></div>
+                <div class="stat-card"><div class="stat-card__num" id="statToday">—</div><div class="stat-card__label">Bugün</div></div>
+                <div class="stat-card"><div class="stat-card__num" id="statTypes">—</div><div class="stat-card__label">Farklı Tür</div></div>
             </div>
-            <div class="stat-card">
-                <div class="stat-card__num" id="statUnread">—</div>
-                <div class="stat-card__label">Okunmamış</div>
+            <div class="toolbar">
+                <h2>Gelen Kutusu</h2>
+                <button class="toolbar-btn" onclick="loadFeedbacks()">↻ Yenile</button>
+                <button class="toolbar-btn" onclick="markAllRead()">Tümünü Okundu İşaretle</button>
+                <button class="toolbar-btn danger" onclick="clearAll()">Tümünü Sil</button>
             </div>
-            <div class="stat-card">
-                <div class="stat-card__num" id="statToday">—</div>
-                <div class="stat-card__label">Bugün</div>
+            <div class="filter-tabs">
+                <button class="ftab active" onclick="setFilter('all', this)">Tümü</button>
+                <button class="ftab" onclick="setFilter('unread', this)">Okunmamış</button>
+                <button class="ftab" onclick="setFilter('Özellik Önerisi', this)">Özellik Önerisi</button>
+                <button class="ftab" onclick="setFilter('Hata Bildirimi', this)">Hata</button>
+                <button class="ftab" onclick="setFilter('Yeni Yazılım Talebi', this)">Yeni Talep</button>
             </div>
-            <div class="stat-card">
-                <div class="stat-card__num" id="statTypes">—</div>
-                <div class="stat-card__label">Farklı Tür</div>
+            <div class="loading-state" id="loadingState"><span class="spinner"></span> Mesajlar yükleniyor...</div>
+            <div class="empty-state" id="emptyState"><div class="empty-state__icon">📭</div><p>Bu filtrede mesaj yok.</p></div>
+            <div class="feedback-list" id="feedbackList"></div>
+        </div>
+    </div>
+
+    <!-- ══ YAZILIMLAR ══ -->
+    <div id="tab-yazilimlar" class="tab-content">
+        <div class="admin-body">
+            <div class="toolbar">
+                <h2>Yazılımlar</h2>
+                <button class="toolbar-btn primary" onclick="openCmsModal('yazilimlar')">+ Yeni Yazılım</button>
             </div>
+            <div class="loading-state" id="loadingYazilimlar"><span class="spinner"></span> Yazılımlar yükleniyor...</div>
+            <div class="cms-grid" id="cmsGridYazilimlar"></div>
+            <div class="empty-state" id="emptyYazilimlar"><div class="empty-state__icon">💻</div><p>Henüz yazılım eklenmemiş.</p></div>
         </div>
+    </div>
 
-        <div class="toolbar">
-            <h2>Gelen Kutusu</h2>
-            <button class="toolbar-btn" onclick="loadFeedbacks()">↻ Yenile</button>
-            <button class="toolbar-btn" onclick="markAllRead()">Tümünü Okundu İşaretle</button>
-            <button class="toolbar-btn danger" onclick="clearAll()">Tümünü Sil</button>
+    <!-- ══ OYUNLAR ══ -->
+    <div id="tab-oyunlar" class="tab-content">
+        <div class="admin-body">
+            <div class="toolbar">
+                <h2>Oyunlar</h2>
+                <button class="toolbar-btn violet" onclick="openCmsModal('oyunlar')">+ Yeni Oyun</button>
+            </div>
+            <div class="loading-state" id="loadingOyunlar"><span class="spinner"></span> Oyunlar yükleniyor...</div>
+            <div class="cms-grid" id="cmsGridOyunlar"></div>
+            <div class="empty-state" id="emptyOyunlar"><div class="empty-state__icon">🎮</div><p>Henüz oyun eklenmemiş.</p></div>
         </div>
-
-        <div class="filter-tabs">
-            <button class="ftab active" onclick="setFilter('all', this)">Tümü</button>
-            <button class="ftab" onclick="setFilter('unread', this)">Okunmamış</button>
-            <button class="ftab" onclick="setFilter('Özellik Önerisi', this)">Özellik Önerisi</button>
-            <button class="ftab" onclick="setFilter('Hata Bildirimi', this)">Hata</button>
-            <button class="ftab" onclick="setFilter('Yeni Yazılım Talebi', this)">Yeni Talep</button>
-        </div>
-
-        <div class="loading-state" id="loadingState">
-            <span class="spinner"></span> Mesajlar yükleniyor...
-        </div>
-        <div class="empty-state" id="emptyState">
-            <div class="empty-state__icon">📭</div>
-            <p>Henüz bu filtrede mesaj bulunmuyor.</p>
-        </div>
-        <div class="feedback-list" id="feedbackList"></div>
-
     </div>
 </div>
 
-<!-- Firebase SDK -->
+<!-- ══ CMS MODAL ══ -->
+<div class="modal-overlay" id="cmsModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="modalTitle">Yeni Ekle</h3>
+            <button class="modal-close" onclick="closeCmsModal()">✕</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer">
+            <button class="toolbar-btn" onclick="closeCmsModal()">İptal</button>
+            <button class="toolbar-btn primary" id="modalSaveBtn" onclick="saveCmsItem()">Kaydet</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script type="module">
-    import { initializeApp }                          from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
-                                                      from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
-    import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, query, orderBy, writeBatch }
-                                                      from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc,
+         addDoc, query, orderBy, writeBatch, Timestamp }
+    from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject }
+    from "https://www.gstatic.com/firebasejs/11.0.0/firebase-storage.js";
 
-    // ══════════════════════════════════════════════════
-    // FIREBASE CONFIG — Firebase Console'dan kopyala
-    // ══════════════════════════════════════════════════
-    const firebaseConfig = {
-  apiKey: "AIzaSyAKVWcyice-3w2Ua7xiNnYh5ZGVdBl8qWA",
-  authDomain: "paxsystemic-f4aca.firebaseapp.com",
-  projectId: "paxsystemic-f4aca",
-  storageBucket: "paxsystemic-f4aca.firebasestorage.app",
-  messagingSenderId: "193147885737",
-  appId: "1:193147885737:web:aae1ec4c0b1c31bd0271b8",
-  measurementId: "G-EP6RGT45VZ"
+const firebaseConfig = {
+    apiKey: "AIzaSyAKVWcyice-3w2Ua7xiNnYh5ZGVdBl8qWA",
+    authDomain: "paxsystemic-f4aca.firebaseapp.com",
+    projectId: "paxsystemic-f4aca",
+    storageBucket: "paxsystemic-f4aca.firebasestorage.app",
+    messagingSenderId: "193147885737",
+    appId: "1:193147885737:web:aae1ec4c0b1c31bd0271b8"
 };
-    // ══════════════════════════════════════════════════
 
-    const app  = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db   = getFirestore(app);
+const app     = initializeApp(firebaseConfig);
+const auth    = getAuth(app);
+const db      = getFirestore(app);
+const storage = getStorage(app);
 
-    let allFeedbacks  = [];
-    let currentFilter = 'all';
-
-    // ── Auth ────────────────────────────────────────
-    onAuthStateChanged(auth, user => {
-        if (user) {
-            showPanel();
-        } else {
-            document.getElementById('loginScreen').style.display = 'flex';
-            document.getElementById('adminPanel').style.display  = 'none';
-        }
-    });
-
-    window.doLogin = async function() {
-        const email = document.getElementById('emailInput').value.trim();
-        const pw    = document.getElementById('pwInput').value;
-        const btn   = document.getElementById('loginBtn');
-        const err   = document.getElementById('loginErr');
-
-        if (!email || !pw) return;
-        btn.disabled = true;
-        btn.textContent = 'Giriş yapılıyor...';
-        err.style.display = 'none';
-
-        try {
-            await signInWithEmailAndPassword(auth, email, pw);
-        } catch(e) {
-            err.style.display = 'block';
-            btn.disabled = false;
-            btn.textContent = 'Giriş Yap';
-        }
-    };
-
-    window.doLogout = async function() {
-        await signOut(auth);
-    };
-
-    function showPanel() {
+// ═══════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════
+onAuthStateChanged(auth, user => {
+    if (user) {
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('adminPanel').style.display  = 'block';
         loadFeedbacks();
+    } else {
+        document.getElementById('loginScreen').style.display = 'flex';
+        document.getElementById('adminPanel').style.display  = 'none';
     }
+});
 
-    // ── Data ────────────────────────────────────────
-    window.loadFeedbacks = async function() {
-        document.getElementById('loadingState').style.display = 'block';
-        document.getElementById('feedbackList').innerHTML = '';
-        document.getElementById('emptyState').style.display = 'none';
-
-        try {
-            const q    = query(collection(db, 'feedbacks'), orderBy('createdAt', 'desc'));
-            const snap = await getDocs(q);
-            allFeedbacks = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
-        } catch(e) {
-            console.error(e);
-            allFeedbacks = [];
-        }
-
-        document.getElementById('loadingState').style.display = 'none';
-        updateStats();
-        renderList();
-    };
-
-    function updateStats() {
-        const total  = allFeedbacks.length;
-        const unread = allFeedbacks.filter(f => !f.read).length;
-        const today  = allFeedbacks.filter(f => {
-            if (!f.createdAt) return false;
-            const d = f.createdAt.toDate ? f.createdAt.toDate() : new Date(f.createdAt);
-            return d.toDateString() === new Date().toDateString();
-        }).length;
-        const types  = new Set(allFeedbacks.map(f => f.type)).size;
-
-        document.getElementById('statTotal').textContent  = total;
-        document.getElementById('statUnread').textContent = unread;
-        document.getElementById('statToday').textContent  = today;
-        document.getElementById('statTypes').textContent  = types || '—';
+window.doLogin = async function() {
+    const email = document.getElementById('emailInput').value.trim();
+    const pw    = document.getElementById('pwInput').value;
+    const btn   = document.getElementById('loginBtn');
+    const err   = document.getElementById('loginErr');
+    if (!email || !pw) return;
+    btn.disabled = true; btn.textContent = 'Giriş yapılıyor...';
+    err.style.display = 'none';
+    try {
+        await signInWithEmailAndPassword(auth, email, pw);
+    } catch(e) {
+        err.style.display = 'block';
+        btn.disabled = false; btn.textContent = 'Giriş Yap';
     }
+};
+window.doLogout = () => signOut(auth);
 
-    window.setFilter = function(filter, btn) {
-        currentFilter = filter;
-        document.querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderList();
-    };
+// ═══════════════════════════════════════
+// TAB SWITCHING
+// ═══════════════════════════════════════
+window.switchAdminTab = function(name, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+    if (name === 'yazilimlar') loadCmsItems('yazilimlar');
+    if (name === 'oyunlar')    loadCmsItems('oyunlar');
+};
 
-    function renderList() {
-        const list  = document.getElementById('feedbackList');
-        const empty = document.getElementById('emptyState');
+// ═══════════════════════════════════════
+// FEEDBACK (GELEN KUTUSU)
+// ═══════════════════════════════════════
+let allFeedbacks  = [];
+let currentFilter = 'all';
 
-        let items = [...allFeedbacks];
-        if (currentFilter === 'unread') {
-            items = items.filter(f => !f.read);
-        } else if (currentFilter !== 'all') {
-            items = items.filter(f => f.type === currentFilter);
-        }
+window.loadFeedbacks = async function() {
+    document.getElementById('loadingState').style.display   = 'block';
+    document.getElementById('feedbackList').innerHTML       = '';
+    document.getElementById('emptyState').style.display    = 'none';
+    try {
+        const q    = query(collection(db, 'feedbacks'), orderBy('createdAt', 'desc'));
+        const snap = await getDocs(q);
+        allFeedbacks = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+    } catch(e) { console.error(e); allFeedbacks = []; }
+    document.getElementById('loadingState').style.display = 'none';
+    updateStats(); renderList();
+};
 
-        if (items.length === 0) {
-            list.innerHTML = '';
-            empty.style.display = 'block';
-            return;
-        }
-        empty.style.display = 'none';
+function updateStats() {
+    const total  = allFeedbacks.length;
+    const unread = allFeedbacks.filter(f => !f.read).length;
+    const today  = allFeedbacks.filter(f => {
+        if (!f.createdAt) return false;
+        const d = f.createdAt.toDate ? f.createdAt.toDate() : new Date(f.createdAt);
+        return d.toDateString() === new Date().toDateString();
+    }).length;
+    const types  = new Set(allFeedbacks.map(f => f.type)).size;
+    document.getElementById('statTotal').textContent  = total;
+    document.getElementById('statUnread').textContent = unread;
+    document.getElementById('statToday').textContent  = today;
+    document.getElementById('statTypes').textContent  = types || '—';
+}
 
-        list.innerHTML = items.map(f => {
-            const date    = f.createdAt?.toDate ? f.createdAt.toDate() : new Date(f.createdAt || Date.now());
-            const timeStr = formatTime(date);
-            const mailSubject = encodeURIComponent(`Re: ${f.type} — ${f.product}`);
-            const mailBody    = encodeURIComponent(`Merhaba ${f.name},\n\n`);
+window.setFilter = function(filter, btn) {
+    currentFilter = filter;
+    document.querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderList();
+};
 
-            return `
-            <div class="fb-card ${f.read ? '' : 'unread'}" id="card_${f._id}" onclick="toggleCard('${f._id}')">
-                <div class="fb-card__top">
-                    <div class="fb-card__meta">
-                        ${!f.read ? '<div class="unread-dot"></div>' : ''}
-                        <span class="fb-card__name">${esc(f.name)}</span>
-                        <span class="fb-card__email">${esc(f.email)}</span>
-                        <span class="type-badge">${esc(f.type)}</span>
-                        <span class="product-badge">${esc(f.product)}</span>
-                    </div>
-                    <span class="fb-card__time">${timeStr}</span>
+function renderList() {
+    const list = document.getElementById('feedbackList');
+    const empty = document.getElementById('emptyState');
+    let items = [...allFeedbacks];
+    if (currentFilter === 'unread')        items = items.filter(f => !f.read);
+    else if (currentFilter !== 'all')      items = items.filter(f => f.type === currentFilter);
+    if (items.length === 0) { list.innerHTML = ''; empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    list.innerHTML = items.map(f => {
+        const date       = f.createdAt?.toDate ? f.createdAt.toDate() : new Date(f.createdAt || Date.now());
+        const timeStr    = formatTime(date);
+        const mailSub    = encodeURIComponent(`Re: ${f.type} — ${f.product}`);
+        const mailBody   = encodeURIComponent(`Merhaba ${f.name},\n\n`);
+        return `<div class="fb-card ${f.read?'':'unread'}" id="card_${f._id}" onclick="toggleCard('${f._id}')">
+            <div class="fb-card__top">
+                <div class="fb-card__meta">
+                    ${!f.read?'<div class="unread-dot"></div>':''}
+                    <span class="fb-card__name">${esc(f.name)}</span>
+                    <span class="fb-card__email">${esc(f.email)}</span>
+                    <span class="type-badge">${esc(f.type)}</span>
+                    <span class="product-badge">${esc(f.product)}</span>
                 </div>
-                <div class="fb-card__message">${esc(f.message)}</div>
-                <div class="fb-card__actions">
-                    <a href="mailto:${esc(f.email)}?subject=${mailSubject}&body=${mailBody}"
-                       class="reply-link" onclick="event.stopPropagation()">✉ Yanıtla</a>
-                    ${!f.read ? `<button class="card-action-btn mark-read" onclick="event.stopPropagation(); markRead('${f._id}')">✓ Okundu</button>` : ''}
-                    <button class="card-action-btn del" onclick="event.stopPropagation(); deleteOne('${f._id}')">✕ Sil</button>
+                <span class="fb-card__time">${timeStr}</span>
+            </div>
+            <div class="fb-card__message">${esc(f.message)}</div>
+            <div class="fb-card__actions">
+                <a href="mailto:${esc(f.email)}?subject=${mailSub}&body=${mailBody}" class="reply-link" onclick="event.stopPropagation()">✉ Yanıtla</a>
+                ${!f.read?`<button class="card-action-btn mark-read" onclick="event.stopPropagation();markRead('${f._id}')">✓ Okundu</button>`:''}
+                <button class="card-action-btn del" onclick="event.stopPropagation();deleteOne('${f._id}')">✕ Sil</button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+window.toggleCard = function(id) {
+    const card = document.getElementById('card_' + id);
+    const isExp = card.classList.contains('expanded');
+    document.querySelectorAll('.fb-card.expanded').forEach(c => c.classList.remove('expanded'));
+    if (!isExp) { card.classList.add('expanded'); const fb = allFeedbacks.find(f=>f._id===id); if(fb&&!fb.read) markRead(id,true); }
+};
+window.markRead = async function(id, silent=false) {
+    const fb = allFeedbacks.find(f=>f._id===id);
+    if(!fb||fb.read) return;
+    fb.read = true;
+    try { await updateDoc(doc(db,'feedbacks',id),{read:true}); } catch(e) { console.error(e); }
+    if(!silent) renderList();
+    updateStats();
+    const card = document.getElementById('card_'+id);
+    if(card){ card.classList.remove('unread'); const dot=card.querySelector('.unread-dot'); if(dot) dot.remove(); }
+};
+window.markAllRead = async function() {
+    const batch = writeBatch(db);
+    allFeedbacks.filter(f=>!f.read).forEach(f=>{ batch.update(doc(db,'feedbacks',f._id),{read:true}); f.read=true; });
+    try { await batch.commit(); } catch(e) { console.error(e); }
+    updateStats(); renderList();
+};
+window.deleteOne = async function(id) {
+    if(!confirm('Bu mesajı silmek istediğinize emin misiniz?')) return;
+    try { await deleteDoc(doc(db,'feedbacks',id)); } catch(e) { console.error(e); return; }
+    allFeedbacks = allFeedbacks.filter(f=>f._id!==id);
+    updateStats(); renderList();
+};
+window.clearAll = async function() {
+    if(!confirm('Tüm mesajları silmek istediğinize emin misiniz?')) return;
+    const batch = writeBatch(db);
+    allFeedbacks.forEach(f=>batch.delete(doc(db,'feedbacks',f._id)));
+    try { await batch.commit(); } catch(e) { console.error(e); return; }
+    allFeedbacks = []; updateStats(); renderList();
+};
+
+// ═══════════════════════════════════════
+// CMS — YAZILIMLAR & OYUNLAR
+// ═══════════════════════════════════════
+let cmsCollection  = '';   // 'yazilimlar' | 'oyunlar'
+let editingDocId   = null; // null = yeni kayıt
+let uploadedImages = [];   // {url, storagePath} listesi (kayıtlı olanlar)
+let pendingFiles   = [];   // File nesneleri (yüklenecek)
+let iconUrl        = '';
+let pendingIconFile = null;
+
+// ── Load list ──────────────────────────
+window.loadCmsItems = async function(col) {
+    const gridEl   = document.getElementById('cmsGrid' + cap(col));
+    const loadEl   = document.getElementById('loading'  + cap(col));
+    const emptyEl  = document.getElementById('empty'    + cap(col));
+    gridEl.innerHTML = ''; loadEl.style.display = 'block'; emptyEl.style.display = 'none';
+    try {
+        const q    = query(collection(db, col), orderBy('order', 'asc'));
+        const snap = await getDocs(q);
+        const items = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+        loadEl.style.display = 'none';
+        if (items.length === 0) { emptyEl.style.display = 'block'; return; }
+        gridEl.innerHTML = items.map(item => {
+            const imgCount = (item.images || []).length;
+            const isLive   = !item.isDev;
+            return `<div class="cms-card">
+                <div class="cms-card__top">
+                    <div class="cms-card__icon">
+                        ${item.icon ? `<img src="${esc(item.icon)}" onerror="this.parentNode.textContent='${esc(item.iconEmoji||'📦')}'">` : (item.iconEmoji || '📦')}
+                    </div>
+                    <div class="cms-card__info">
+                        <div class="cms-card__title">${esc(item.title)}</div>
+                        <div class="cms-card__sub">${esc(item.subtitle||'')}</div>
+                    </div>
+                </div>
+                <div class="cms-card__badges">
+                    <span class="cms-badge ${isLive?'live':'dev'}">${isLive?'Yayında':'Geliştiriliyor'}</span>
+                    <span class="cms-badge cat">${esc(item.catName||item.category||'')}</span>
+                </div>
+                <div class="cms-card__imgs">🖼 ${imgCount} görsel</div>
+                <div class="cms-card__actions">
+                    <button class="cms-action edit" onclick="editCmsItem('${col}','${item._id}')">✎ Düzenle</button>
+                    <button class="cms-action del"  onclick="deleteCmsItem('${col}','${item._id}','${esc(item.title)}')">✕ Sil</button>
                 </div>
             </div>`;
         }).join('');
+    } catch(e) {
+        loadEl.style.display = 'none';
+        showToast('Yükleme hatası: ' + e.message, 'error');
+    }
+};
+
+// ── Open modal ─────────────────────────
+window.openCmsModal = function(col, data = null, docId = null) {
+    cmsCollection  = col;
+    editingDocId   = docId;
+    uploadedImages = data?.images ? data.images.map(u => ({url:u, storagePath:null})) : [];
+    pendingFiles   = [];
+    iconUrl        = data?.icon || '';
+    pendingIconFile = null;
+
+    const isGame = col === 'oyunlar';
+    document.getElementById('modalTitle').textContent = docId
+        ? `Düzenle — ${data?.title || ''}`
+        : (isGame ? 'Yeni Oyun Ekle' : 'Yeni Yazılım Ekle');
+    document.getElementById('modalSaveBtn').textContent = docId ? 'Güncelle' : 'Kaydet';
+
+    const catOptions = isGame
+        ? `<option value="korku">Korku / Gerilim</option>
+           <option value="arcade">Arcade / Mobil</option>
+           <option value="macera">Aksiyon / Macera</option>
+           <option value="strateji">Strateji</option>
+           <option value="puzzle">Puzzle</option>`
+        : `<option value="medya">Medya Araçları</option>
+           <option value="yonetim">Yönetim / İşletme</option>
+           <option value="sistem">Sistem Araçları</option>
+           <option value="guvenlik">Güvenlik</option>`;
+
+    const featuresHtml = (data?.features || ['']).map(f => featureRow(f)).join('');
+    const changelogHtml = (data?.changelog || []).map(cl => changelogBlock(cl)).join('');
+
+    document.getElementById('modalBody').innerHTML = `
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Başlık *</label>
+                <input type="text" class="form-input" id="fi_title" value="${esc(data?.title||'')}" placeholder="ör. Systemic Pro">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Kısa Başlık</label>
+                <input type="text" class="form-input" id="fi_subtitle" value="${esc(data?.subtitle||'')}" placeholder="ör. Hepsi Bir Arada Araç">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Kategori</label>
+                <select class="form-select" id="fi_category" onchange="updateCatName(this)">
+                    ${catOptions}
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Kategori Adı <span>(otomatik dolar)</span></label>
+                <input type="text" class="form-input" id="fi_catName" value="${esc(data?.catName||'')}" placeholder="ör. Sistem Araçları">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Emoji İkonu</label>
+                <input type="text" class="form-input" id="fi_iconEmoji" value="${esc(data?.iconEmoji||'📦')}" placeholder="📦">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Sıra (order)</label>
+                <input type="number" class="form-input" id="fi_order" value="${data?.order ?? 99}" min="0">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Kısa Açıklama *</label>
+            <input type="text" class="form-input" id="fi_shortDesc" value="${esc(data?.shortDesc||'')}" placeholder="Katalog kartında görünür">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Tam Açıklama</label>
+            <textarea class="form-textarea" id="fi_fullDesc" placeholder="Detay sayfasında görünür">${esc(data?.fullDesc||'')}</textarea>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">İndirme Linki</label>
+                <input type="text" class="form-input" id="fi_link" value="${esc(data?.link||'')}" placeholder="https://...">
+            </div>
+            <div class="form-group" style="display:flex;align-items:flex-end;gap:16px;padding-bottom:2px;">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.85rem;font-weight:600;color:var(--slate);">
+                    <input type="checkbox" id="fi_isDev" ${data?.isDev?'checked':''} style="width:16px;height:16px;"> Geliştiriliyor
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.85rem;font-weight:600;color:var(--slate);">
+                    <input type="checkbox" id="fi_isRequest" ${data?.isRequest?'checked':''} style="width:16px;height:16px;"> Talep Gerekli
+                </label>
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="form-group">
+            <label class="form-label">İkon Görseli <span>(PNG/JPG — isteğe bağlı)</span></label>
+            <div class="img-upload-area" id="iconUploadArea" onclick="document.getElementById('iconFileInput').click()" ondragover="dragOver(event,'iconUploadArea')" ondragleave="dragLeave('iconUploadArea')" ondrop="dropIcon(event)">
+                <input type="file" id="iconFileInput" accept="image/*" onchange="pickIconFile(event)">
+                <div id="iconPreviewWrap">
+                    ${iconUrl ? `<img src="${esc(iconUrl)}" style="max-height:60px;border-radius:8px;margin-bottom:8px;">` : `<div class="img-upload-icon">🖼</div>`}
+                    <div class="img-upload-text">İkon yükle</div>
+                    <div class="img-upload-sub">PNG, JPG — 512×512 önerilir</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Ekran Görüntüleri</label>
+            <div class="img-upload-area" id="imgUploadArea" onclick="document.getElementById('imgFileInput').click()" ondragover="dragOver(event,'imgUploadArea')" ondragleave="dragLeave('imgUploadArea')" ondrop="dropImages(event)">
+                <input type="file" id="imgFileInput" accept="image/*" multiple onchange="pickImageFiles(event)">
+                <div class="img-upload-icon">📸</div>
+                <div class="img-upload-text">Görsel ekle</div>
+                <div class="img-upload-sub">PNG, JPG — birden fazla seçebilirsiniz</div>
+            </div>
+            <div class="img-preview-list" id="imgPreviewList"></div>
+            <div class="upload-progress" id="uploadProgress">Yükleniyor...</div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="form-group">
+            <label class="form-label">Özellikler</label>
+            <div class="dynamic-list" id="featuresList">${featuresHtml}</div>
+            <button class="add-row-btn" onclick="addFeatureRow()">+ Özellik Ekle</button>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="form-group">
+            <label class="form-label">Sürüm Notları (Changelog)</label>
+            <div id="changelogList">${changelogHtml}</div>
+            <button class="add-row-btn" onclick="addChangelogBlock()">+ Sürüm Ekle</button>
+        </div>
+    `;
+
+    // Set category select value
+    if (data?.category) {
+        const sel = document.getElementById('fi_category');
+        if (sel) sel.value = data.category;
     }
 
-    window.toggleCard = function(id) {
-        const card       = document.getElementById('card_' + id);
-        const isExpanded = card.classList.contains('expanded');
-        document.querySelectorAll('.fb-card.expanded').forEach(c => c.classList.remove('expanded'));
-        if (!isExpanded) {
-            card.classList.add('expanded');
-            const fb = allFeedbacks.find(f => f._id === id);
-            if (fb && !fb.read) markRead(id, true);
-        }
-    };
+    renderImagePreviews();
+    document.getElementById('cmsModal').classList.add('open');
+};
 
-    window.markRead = async function(id, silent = false) {
-        const fb = allFeedbacks.find(f => f._id === id);
-        if (!fb || fb.read) return;
-        fb.read = true;
-        try { await updateDoc(doc(db, 'feedbacks', id), { read: true }); } catch(e) { console.error(e); }
-        if (!silent) renderList();
-        updateStats();
-        const card = document.getElementById('card_' + id);
-        if (card) {
-            card.classList.remove('unread');
-            const dot = card.querySelector('.unread-dot');
-            if (dot) dot.remove();
-        }
-    };
+function featureRow(val) {
+    return `<div class="dynamic-item">
+        <input type="text" value="${esc(val)}" placeholder="ör. Akıllı Kayıt Defteri Temizleme">
+        <button class="rm-btn" onclick="this.parentNode.remove()">✕</button>
+    </div>`;
+}
 
-    window.markAllRead = async function() {
-        const batch = writeBatch(db);
-        allFeedbacks.filter(f => !f.read).forEach(f => {
-            batch.update(doc(db, 'feedbacks', f._id), { read: true });
-            f.read = true;
+function changelogBlock(cl) {
+    const notes = (cl.notes || ['']).map(n =>
+        `<div class="dynamic-item"><input type="text" value="${esc(n)}" placeholder="Not..."><button class="rm-btn" onclick="this.parentNode.remove()">✕</button></div>`
+    ).join('');
+    return `<div class="cl-block">
+        <div class="cl-block__head">
+            <input type="text" value="${esc(cl.version||'')}" placeholder="v1.0.0">
+            <input type="text" value="${esc(cl.date||'')}" placeholder="Mayıs 2026">
+            <button class="rm-btn" onclick="this.closest('.cl-block').remove()">✕</button>
+        </div>
+        <div class="dynamic-list cl-notes">${notes}</div>
+        <button class="add-row-btn" onclick="addNoteRow(this)" style="margin-top:6px;font-size:0.72rem;padding:4px 12px;">+ Not</button>
+    </div>`;
+}
+
+window.addFeatureRow = () => {
+    const el = document.createElement('div');
+    el.innerHTML = featureRow('');
+    document.getElementById('featuresList').appendChild(el.firstChild);
+};
+
+window.addChangelogBlock = () => {
+    const el = document.createElement('div');
+    el.innerHTML = changelogBlock({});
+    document.getElementById('changelogList').appendChild(el.firstChild);
+};
+
+window.addNoteRow = (btn) => {
+    const el = document.createElement('div');
+    el.innerHTML = `<div class="dynamic-item"><input type="text" placeholder="Not..."><button class="rm-btn" onclick="this.parentNode.remove()">✕</button></div>`;
+    btn.previousElementSibling.appendChild(el.firstChild);
+};
+
+window.updateCatName = function(sel) {
+    const map = {
+        medya:'Medya Araçları', yonetim:'Yönetim / İşletme', sistem:'Sistem Araçları',
+        guvenlik:'Güvenlik Araçları', korku:'Korku / Gerilim', arcade:'Arcade / Mobil',
+        macera:'Aksiyon / Macera', strateji:'Strateji', puzzle:'Puzzle'
+    };
+    const inp = document.getElementById('fi_catName');
+    if (inp && map[sel.value]) inp.value = map[sel.value];
+};
+
+// ── Image handling ─────────────────────
+window.dragOver  = (e, id) => { e.preventDefault(); document.getElementById(id)?.classList.add('drag'); };
+window.dragLeave = (id)    => { document.getElementById(id)?.classList.remove('drag'); };
+
+window.dropImages = (e) => {
+    e.preventDefault(); dragLeave('imgUploadArea');
+    const files = [...e.dataTransfer.files].filter(f => f.type.startsWith('image/'));
+    pendingFiles.push(...files); renderImagePreviews();
+};
+window.dropIcon = (e) => {
+    e.preventDefault(); dragLeave('iconUploadArea');
+    const file = [...e.dataTransfer.files].find(f => f.type.startsWith('image/'));
+    if (file) { pendingIconFile = file; renderIconPreview(file); }
+};
+
+window.pickImageFiles = (e) => {
+    const files = [...e.target.files];
+    pendingFiles.push(...files); renderImagePreviews(); e.target.value = '';
+};
+window.pickIconFile = (e) => {
+    const file = e.target.files[0];
+    if (file) { pendingIconFile = file; renderIconPreview(file); e.target.value = ''; }
+};
+
+function renderIconPreview(file) {
+    const wrap = document.getElementById('iconPreviewWrap');
+    const url  = URL.createObjectURL(file);
+    wrap.innerHTML = `<img src="${url}" style="max-height:60px;border-radius:8px;margin-bottom:8px;">
+        <div class="img-upload-text">İkon seçildi: ${file.name}</div>`;
+}
+
+function renderImagePreviews() {
+    const list = document.getElementById('imgPreviewList');
+    if (!list) return;
+    const savedHtml = uploadedImages.map((img, i) => `
+        <div class="img-preview-item">
+            <img src="${img.url}" onerror="this.src=''">
+            <button class="remove-img" onclick="removeSavedImg(${i})">✕</button>
+        </div>
+    `).join('');
+    const pendingHtml = pendingFiles.map((f, i) => {
+        const url = URL.createObjectURL(f);
+        return `<div class="img-preview-item">
+            <img src="${url}">
+            <button class="remove-img" onclick="removePendingImg(${i})">✕</button>
+        </div>`;
+    }).join('');
+    list.innerHTML = savedHtml + pendingHtml;
+}
+
+window.removeSavedImg  = (i) => { uploadedImages.splice(i, 1); renderImagePreviews(); };
+window.removePendingImg = (i) => { pendingFiles.splice(i, 1); renderImagePreviews(); };
+
+// ── Upload helper ──────────────────────
+async function uploadFile(file, path) {
+    const storRef  = ref(storage, path);
+    const task     = uploadBytesResumable(storRef, file);
+    return new Promise((resolve, reject) => {
+        task.on('state_changed', null, reject, async () => {
+            const url = await getDownloadURL(task.snapshot.ref);
+            resolve({ url, storagePath: path });
         });
-        try { await batch.commit(); } catch(e) { console.error(e); }
-        updateStats();
-        renderList();
-    };
+    });
+}
 
-    window.deleteOne = async function(id) {
-        if (!confirm('Bu mesajı silmek istediğinize emin misiniz?')) return;
-        try { await deleteDoc(doc(db, 'feedbacks', id)); } catch(e) { console.error(e); return; }
-        allFeedbacks = allFeedbacks.filter(f => f._id !== id);
-        updateStats();
-        renderList();
-    };
+// ── Save ──────────────────────────────
+window.saveCmsItem = async function() {
+    const btn   = document.getElementById('modalSaveBtn');
+    const title = document.getElementById('fi_title')?.value.trim();
+    if (!title) { showToast('Başlık zorunludur!', 'error'); return; }
 
-    window.clearAll = async function() {
-        if (!confirm('Tüm mesajları silmek istediğinize emin misiniz? Bu işlem geri alınamaz.')) return;
-        const batch = writeBatch(db);
-        allFeedbacks.forEach(f => batch.delete(doc(db, 'feedbacks', f._id)));
-        try { await batch.commit(); } catch(e) { console.error(e); return; }
-        allFeedbacks = [];
-        updateStats();
-        renderList();
-    };
+    btn.disabled = true; btn.textContent = 'Kaydediliyor...';
 
-    // ── Helpers ─────────────────────────────────────
-    function esc(str) {
-        return String(str || '')
-            .replace(/&/g,'&amp;')
-            .replace(/</g,'&lt;')
-            .replace(/>/g,'&gt;')
-            .replace(/"/g,'&quot;');
+    try {
+        // 1) Upload pending images
+        const progEl = document.getElementById('uploadProgress');
+        if (pendingFiles.length > 0 || pendingIconFile) {
+            progEl.style.display = 'block';
+            progEl.textContent   = 'Görseller yükleniyor...';
+        }
+        const slug = title.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        for (const file of pendingFiles) {
+            const path   = `${cmsCollection}/${slug}/${Date.now()}_${file.name}`;
+            const result = await uploadFile(file, path);
+            uploadedImages.push(result);
+        }
+
+        // 2) Upload icon if pending
+        if (pendingIconFile) {
+            const path = `${cmsCollection}/${slug}/icon_${Date.now()}_${pendingIconFile.name}`;
+            const res  = await uploadFile(pendingIconFile, path);
+            iconUrl    = res.url;
+        }
+        progEl.style.display = 'none';
+
+        // 3) Collect features
+        const features = [...document.querySelectorAll('#featuresList .dynamic-item input')]
+            .map(i => i.value.trim()).filter(Boolean);
+
+        // 4) Collect changelog
+        const changelog = [...document.querySelectorAll('#changelogList .cl-block')].map(block => {
+            const inputs = block.querySelectorAll('.cl-block__head input');
+            const notes  = [...block.querySelectorAll('.cl-notes .dynamic-item input')]
+                .map(i => i.value.trim()).filter(Boolean);
+            return { version: inputs[0]?.value.trim()||'', date: inputs[1]?.value.trim()||'', notes };
+        }).filter(c => c.version);
+
+        // 5) Build document
+        const data = {
+            title,
+            subtitle:   document.getElementById('fi_subtitle')?.value.trim()  || '',
+            category:   document.getElementById('fi_category')?.value          || '',
+            catName:    document.getElementById('fi_catName')?.value.trim()    || '',
+            iconEmoji:  document.getElementById('fi_iconEmoji')?.value.trim()  || '📦',
+            order:      parseInt(document.getElementById('fi_order')?.value)   || 99,
+            shortDesc:  document.getElementById('fi_shortDesc')?.value.trim()  || '',
+            fullDesc:   document.getElementById('fi_fullDesc')?.value.trim()   || '',
+            link:       document.getElementById('fi_link')?.value.trim()       || '#',
+            isDev:      document.getElementById('fi_isDev')?.checked           || false,
+            isRequest:  document.getElementById('fi_isRequest')?.checked       || false,
+            icon:       iconUrl || null,
+            images:     uploadedImages.map(i => i.url),
+            features,
+            changelog,
+            updatedAt:  Timestamp.now()
+        };
+
+        if (editingDocId) {
+            await updateDoc(doc(db, cmsCollection, editingDocId), data);
+            showToast('Güncellendi!', 'success');
+        } else {
+            data.createdAt = Timestamp.now();
+            await addDoc(collection(db, cmsCollection), data);
+            showToast('Eklendi!', 'success');
+        }
+
+        closeCmsModal();
+        loadCmsItems(cmsCollection);
+    } catch(e) {
+        console.error(e);
+        showToast('Hata: ' + e.message, 'error');
+        btn.disabled = false;
+        btn.textContent = editingDocId ? 'Güncelle' : 'Kaydet';
     }
+};
 
-    function formatTime(date) {
-        const now  = new Date();
-        const diff = (now - date) / 1000;
-        if (diff < 60)    return 'Az önce';
-        if (diff < 3600)  return `${Math.floor(diff/60)} dk önce`;
-        if (diff < 86400) return `${Math.floor(diff/3600)} sa önce`;
-        return date.toLocaleDateString('tr-TR', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
-    }
+// ── Edit ──────────────────────────────
+window.editCmsItem = async function(col, id) {
+    try {
+        const q    = query(collection(db, col), orderBy('order', 'asc'));
+        const snap = await getDocs(q);
+        const item = snap.docs.find(d => d.id === id);
+        if (!item) { showToast('Öğe bulunamadı', 'error'); return; }
+        openCmsModal(col, { _id: id, ...item.data() }, id);
+    } catch(e) { showToast('Hata: ' + e.message, 'error'); }
+};
+
+// ── Delete ─────────────────────────────
+window.deleteCmsItem = async function(col, id, title) {
+    if (!confirm(`"${title}" öğesini silmek istediğinize emin misiniz?`)) return;
+    try {
+        await deleteDoc(doc(db, col, id));
+        showToast('Silindi!', 'success');
+        loadCmsItems(col);
+    } catch(e) { showToast('Hata: ' + e.message, 'error'); }
+};
+
+window.closeCmsModal = function() {
+    document.getElementById('cmsModal').classList.remove('open');
+    pendingFiles = []; uploadedImages = []; pendingIconFile = null;
+};
+
+// ═══════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function esc(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function formatTime(date) {
+    const diff = (new Date() - date) / 1000;
+    if (diff < 60)    return 'Az önce';
+    if (diff < 3600)  return `${Math.floor(diff/60)} dk önce`;
+    if (diff < 86400) return `${Math.floor(diff/3600)} sa önce`;
+    return date.toLocaleDateString('tr-TR', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
+let toastTimer;
+window.showToast = function(msg, type='') {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.className = 'toast show ' + type;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+};
+
+// Close modal on overlay click
+document.getElementById('cmsModal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeCmsModal();
+});
 </script>
 </body>
 </html>
