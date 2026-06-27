@@ -182,34 +182,49 @@
     const app = initializeApp(firebaseConfig);
     const db  = getFirestore(app);
 
+    function renderWithProducts(products) {
+        // Kategorilere göre filtre butonlarını oluştur
+        const cats = [...new Set(products.map(p => p.category).filter(Boolean))];
+        const filterRow = document.getElementById('filterRow');
+        filterRow.innerHTML = `<button class="filter-btn active" onclick="setCategory('all', this)">Tümü</button>`;
+        cats.forEach(cat => {
+            const label = products.find(p => p.category === cat)?.catName || cat;
+            filterRow.innerHTML += `<button class="filter-btn" onclick="setCategory('${cat}', this)">${label}</button>`;
+        });
+
+        document.getElementById('page-loader').style.display = 'none';
+        document.getElementById('catalog-grid').style.display = '';
+
+        // catalog.js'in global initCatalog fonksiyonunu çağır
+        window.initCatalog(products);
+    }
+
+    function useStaticFallback(reason) {
+        if (reason) console.warn(reason);
+        if (typeof SOFTWARE_PRODUCTS !== 'undefined' && SOFTWARE_PRODUCTS.length > 0) {
+            renderWithProducts(SOFTWARE_PRODUCTS);
+        } else {
+            document.getElementById('page-loader').style.display = 'none';
+            document.getElementById('no-results').style.display = 'block';
+        }
+    }
+
     async function loadProducts() {
         try {
             const q    = query(collection(db, 'yazilimlar'), orderBy('order', 'asc'));
             const snap = await getDocs(q);
             const products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-            // Firestore'dan gelen kategorilere göre filtre butonlarını oluştur
-            const cats = [...new Set(products.map(p => p.category).filter(Boolean))];
-            const filterRow = document.getElementById('filterRow');
-            filterRow.innerHTML = `<button class="filter-btn active" onclick="setCategory('all', this)">Tümü</button>`;
-            cats.forEach(cat => {
-                const label = products.find(p => p.category === cat)?.catName || cat;
-                filterRow.innerHTML += `<button class="filter-btn" onclick="setCategory('${cat}', this)">${label}</button>`;
-            });
-
-            document.getElementById('page-loader').style.display = 'none';
-            document.getElementById('catalog-grid').style.display = '';
-
-            // catalog.js'in global initCatalog fonksiyonunu çağır
-            window.initCatalog(products);
-        } catch(err) {
-            console.warn('Firestore yüklenemedi, statik veri kullanılıyor:', err);
-            // Fallback: statik data
-            document.getElementById('page-loader').style.display = 'none';
-            document.getElementById('catalog-grid').style.display = '';
-            if (typeof SOFTWARE_PRODUCTS !== 'undefined') {
-                window.initCatalog(SOFTWARE_PRODUCTS);
+            if (products.length === 0) {
+                // Firestore'da henüz doküman yok -> statik veriye düş
+                useStaticFallback('Firestore "yazilimlar" koleksiyonu boş, statik veri kullanılıyor.');
+                return;
             }
+
+            renderWithProducts(products);
+        } catch(err) {
+            // Firestore'a erişilemedi (yetki/ağ/index hatası vb.) -> statik veriye düş
+            useStaticFallback('Firestore yüklenemedi, statik veri kullanılıyor: ' + err);
         }
     }
 
