@@ -132,7 +132,7 @@ const SOFTWARE_PRODUCTS = [
             BASE + 'PomodoroPro/4.png',
             BASE + 'PomodoroPro/5.png'
         ],
-        link: 'https://github.com/barisys1999/pax-systemic/releases/download/PomodoroPro/PomodoroPro_Installer.exe',
+        link: 'https://github.com/barisys1999/pax-systemic/releases/download/Pomodoro/PomodoroPRO_Installer.exe',
         changelog: [
             { version: 'v1.0.0', date: 'Haziran 2026', notes: ['İlk sürüm yayınlandı.', 'Crossfade özellikli kesintisiz ses motoru eklendi.', 'YouTube arka plan oynatıcısı entegre edildi.'] }
         ]
