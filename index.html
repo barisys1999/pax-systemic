@@ -3,11 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="favicon.png">
-    <title>Pax Systemic | Dijital Portal</title>
-
-    <link rel="preload" as="image" href="games-background.png">
-    <link rel="preload" as="image" href="software-background.png">
+    <title>Pax Systemic | Dijital Yazılım & Oyun Stüdyosu</title>
+    <meta name="description" content="Pax Systemic: Masaüstü yazılımları ve indie oyunlar geliştiren bağımsız bir dijital stüdyo. Barış Yurdunuseven tarafından kuruldu.">
 
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/portal.css">
@@ -18,46 +15,165 @@
       "@type": "Organization",
       "name": "Pax Systemic",
       "url": "https://barisys1999.github.io/pax-systemic/",
-      "logo": "https://barisys1999.github.io/pax-systemic/favicon.png",
       "founder": { "@type": "Person", "name": "Barış Yurdunuseven" }
     }
     </script>
 </head>
 <body class="portal-page">
 
-    <!-- Orta çizgi -->
-    <div class="portal-divider"></div>
+<!-- ── Header ───────────────────────────── -->
+<header class="portal-header">
+    <div class="logo">
+        <span class="logo-mark"></span>
+        PAX <em>SYSTEMIC</em>
+    </div>
+    <div class="portal-header-right">
+        <a href="yazilimlar/index.html">Yazılımlar</a>
+        <a href="oyunlar/index.html">Oyunlar</a>
+        <a href="mailto:paxsystemic@gmail.com">İletişim</a>
+    </div>
+</header>
 
-    <div class="portal-wrap">
+<div class="portal-wrap">
 
-        <!-- OYUNLAR -->
-        <a href="oyunlar/index.html" class="panel panel--games">
-            <div class="panel__bg"></div>
-            <div class="panel__overlay"></div>
-            <div class="panel__body">
-                <div class="panel__eyebrow">Eğlence ve Atmosfer</div>
-                <h2 class="panel__title">BarisByte<br>Games</h2>
-                <div class="panel__cta">Evrene Gir →</div>
+    <!-- ── Hero ─────────────────────────── -->
+    <section class="portal-hero">
+        <div class="portal-hero__inner">
+            <div class="portal-hero__eyebrow">
+                <span class="dot"></span>
+                Dijital Stüdyo · Ankara, TR
             </div>
-        </a>
-
-        <!-- YAZILIMLAR -->
-        <a href="yazilimlar/index.html" class="panel panel--software">
-            <div class="panel__bg"></div>
-            <div class="panel__overlay"></div>
-            <div class="panel__body">
-                <div class="panel__eyebrow">Araçlar ve Mimari</div>
-                <h2 class="panel__title">Systemic<br>Software</h2>
-                <div class="panel__cta">Sisteme Gir →</div>
+            <h1>Yazılım Üretiyor,<br><span>Oyun Tasarlıyoruz</span></h1>
+            <p>Masaüstü araçlarından indie oyun projelerine — Pax Systemic, her ürününü bir mühendislik disipliniyle inşa eder.</p>
+            <div class="portal-hero__ctas">
+                <a href="yazilimlar/index.html" class="portal-cta-blue">
+                    Yazılımları Keşfet →
+                </a>
+                <a href="oyunlar/index.html" class="portal-cta-violet">
+                    Oyunları İncele →
+                </a>
             </div>
-        </a>
+        </div>
+    </section>
 
+    <!-- ── Stats ────────────────────────── -->
+    <div class="portal-stats">
+        <div class="stat-item">
+            <span class="stat-num">10</span>
+            <span class="stat-label">Yazılım Ürünü</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-num">4</span>
+            <span class="stat-label">Oyun Projesi</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-num">2026</span>
+            <span class="stat-label">Güncel Yıl</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-num">Windows</span>
+            <span class="stat-label">Platform</span>
+        </div>
     </div>
 
-    <!-- Logo (ortada, üstte) -->
-    <header style="position:fixed; top:0; width:100%; display:flex; justify-content:center; padding:24px; pointer-events:none; z-index:200;">
-        <div class="logo" style="pointer-events:auto; font-size:1.1rem;">PAX <em>SYSTEMIC</em></div>
-    </header>
+    <!-- ── Product Lines ────────────────── -->
+    <section class="portal-lines">
+
+        <!-- Software Line -->
+        <a href="yazilimlar/index.html" class="line-card line-card--blue">
+            <div class="line-card__icon">⚙️</div>
+            <div class="line-card__eyebrow">Systemic Software</div>
+            <h2>Yazılım<br>Kataloğu</h2>
+            <p>Sistem optimizasyonundan şifre güvenliğine, medya yönetiminden otomasyon araçlarına — her biri kendi alanında özelleşmiş Windows uygulamaları.</p>
+            <div class="line-card__apps">
+                <span class="app-chip">Systemic Pro</span>
+                <span class="app-chip">Password Vault</span>
+                <span class="app-chip">Pomodoro Pro</span>
+                <span class="app-chip">Audio Editor</span>
+                <span class="app-chip">+6 daha</span>
+            </div>
+            <div class="line-card__count">10 uygulama · Windows</div>
+            <span class="line-card__cta">Yazılımları Gör →</span>
+        </a>
+
+        <!-- Games Line -->
+        <a href="oyunlar/index.html" class="line-card line-card--violet">
+            <div class="line-card__icon">🎮</div>
+            <div class="line-card__eyebrow">BarisByte Games</div>
+            <h2>Oyun<br>Kataloğu</h2>
+            <p>Atmosferik korku, mobil arcade ve açık dünya macerası — BarisByte Games, her türden indie oyuncuya hitap eden projeler üretiyor.</p>
+            <div class="line-card__apps">
+                <span class="app-chip">Karanlıktan Işığa</span>
+                <span class="app-chip">CosmoHop!</span>
+                <span class="app-chip">Project: Nexus</span>
+                <span class="app-chip">Sessiz Ev</span>
+            </div>
+            <div class="line-card__count">4 proje · PC & Mobil</div>
+            <span class="line-card__cta">Oyunları Gör →</span>
+        </a>
+
+    </section>
+
+    <!-- ── Value Props ───────────────────── -->
+    <section class="portal-props">
+        <div class="portal-props__grid">
+            <div class="prop-item">
+                <span class="prop-item__icon">🔒</span>
+                <h4>Yerel & Güvenli</h4>
+                <p>Uygulamalar verilerinizi cihazınızda tutar. Bulut bağımlılığı yok, reklam yok, izleme yok.</p>
+            </div>
+            <div class="prop-item">
+                <span class="prop-item__icon">⚡</span>
+                <h4>Kaynak Dostu</h4>
+                <p>Minimalist mimari. Düşük CPU ve RAM tüketimiyle arka planda sessizce çalışır.</p>
+            </div>
+            <div class="prop-item">
+                <span class="prop-item__icon">🛠</span>
+                <h4>Aktif Geliştirme</h4>
+                <p>Tüm ürünler sürekli güncellenir. Kullanıcı geri bildirimleri doğrudan yol haritasını şekillendirir.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Footer ───────────────────────── -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="logo">
+                        <span class="logo-mark"></span>
+                        PAX <em>SYSTEMIC</em>
+                    </a>
+                    <p>Masaüstü yazılımları ve indie oyunlar geliştiren bağımsız bir dijital stüdyo. Barış Yurdunuseven tarafından kuruldu.</p>
+                </div>
+                <div class="footer-col">
+                    <h5>Yazılımlar</h5>
+                    <a href="yazilimlar/index.html#systemic">Systemic Pro</a>
+                    <a href="yazilimlar/index.html#paxvault">Password Vault</a>
+                    <a href="yazilimlar/index.html#pomodoropro">Pomodoro Pro</a>
+                    <a href="yazilimlar/index.html#audiopro">Audio Editor</a>
+                </div>
+                <div class="footer-col">
+                    <h5>Oyunlar</h5>
+                    <a href="oyunlar/index.html#karanliktan">Karanlıktan Işığa</a>
+                    <a href="oyunlar/index.html#cosmohop">CosmoHop!</a>
+                    <a href="oyunlar/index.html#nexus">Project: Nexus</a>
+                    <a href="oyunlar/index.html#sessizev">Sessiz Ev</a>
+                </div>
+                <div class="footer-col">
+                    <h5>Kurumsal</h5>
+                    <a href="mailto:paxsystemic@gmail.com">İletişim</a>
+                    <a href="https://github.com/barisys1999/pax-systemic" target="_blank" rel="noopener">GitHub</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2026 Pax Systemic. Tüm hakları saklıdır.</span>
+                <span>Kurucu: Barış Yurdunuseven</span>
+            </div>
+        </div>
+    </footer>
+
+</div><!-- /.portal-wrap -->
 
 </body>
 </html>

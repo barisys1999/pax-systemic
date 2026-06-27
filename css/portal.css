@@ -1,143 +1,428 @@
 /* =============================================
    PAX SYSTEMIC — Portal (Ana Sayfa) Styles
+   Clean split with product-line identity cards
    ============================================= */
 
 body.portal-page {
-    overflow: hidden;
+    background: var(--paper);
+    overflow-x: hidden;
 }
 
-.portal-wrap {
+/* ── Portal Header ────────────────────── */
+.portal-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
     display: flex;
-    width: 100vw;
-    height: 100vh;
-}
-
-/* ── Yarı Bölünmüş Panel ──────────────── */
-.panel {
-    flex: 1;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    text-align: center;
-    text-decoration: none;
-    color: var(--text);
-    overflow: hidden;
-    cursor: pointer;
-    transition: flex 0.65s cubic-bezier(0.25, 0.8, 0.25, 1);
-    will-change: flex;
+    justify-content: space-between;
+    padding: 0 48px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--line);
+    z-index: 200;
+    box-shadow: var(--shadow-sm);
 }
 
-/* Arka plan görseli */
-.panel__bg {
-    position: absolute;
-    inset: 0;
-    background-size: cover;
-    background-position: center;
-    transition: transform 0.9s ease;
-    z-index: 0;
-    will-change: transform;
-}
-
-/* Renk overlay */
-.panel__overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    transition: background 0.65s ease;
-}
-
-.panel--games .panel__bg    { background-image: url('../games-background.png'); background-color: #1a0b2e; }
-.panel--games .panel__overlay { background: rgba(10, 5, 20, 0.72); }
-
-.panel--software .panel__bg    { background-image: url('../software-background.png'); background-color: #002b33; }
-.panel--software .panel__overlay { background: rgba(0, 15, 20, 0.72); }
-
-/* Hover */
-.panel:hover { flex: 1.55; }
-.panel:hover .panel__bg { transform: scale(1.06); }
-.panel--games:hover   .panel__overlay { background: rgba(138, 43, 226, 0.38); }
-.panel--software:hover .panel__overlay { background: rgba(0, 200, 220, 0.28); }
-
-/* İçerik */
-.panel__body {
-    position: relative;
-    z-index: 2;
-    transition: transform 0.45s ease;
-}
-.panel:hover .panel__body { transform: translateY(-12px); }
-
-.panel__eyebrow {
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 5px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-bottom: 18px;
-    transition: color 0.3s;
-}
-.panel--games:hover   .panel__eyebrow { color: #c084fc; }
-.panel--software:hover .panel__eyebrow { color: var(--cyan); }
-
-.panel__title {
+.portal-header .logo {
     font-family: var(--font-display);
-    font-size: clamp(2rem, 4vw, 4rem);
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    line-height: 1.05;
-    margin-bottom: 28px;
-    text-shadow: 0 4px 20px rgba(0,0,0,0.7);
-}
-
-.panel__cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 13px 32px;
-    font-size: 0.85rem;
+    font-size: 1.1rem;
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    border: 1.5px solid rgba(255,255,255,0.25);
-    border-radius: 40px;
-    background: rgba(0,0,0,0.3);
-    backdrop-filter: blur(6px);
-    transition: all 0.3s;
-    color: var(--text);
+    text-decoration: none;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+.portal-header .logo em { color: var(--blue); font-style: normal; }
+.portal-header .logo-mark {
+    width: 26px; height: 26px;
+    background: var(--ink);
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 900;
+    color: #fff;
+    flex-shrink: 0;
+}
+.portal-header .logo-mark::after { content: 'PS'; }
+
+.portal-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.82rem;
+    color: var(--fog);
+}
+.portal-header-right a {
+    color: var(--slate);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 20px;
+    transition: all 0.18s;
+}
+.portal-header-right a:hover { color: var(--ink); background: var(--mist); }
+
+/* ── Portal Layout ────────────────────── */
+.portal-wrap {
+    min-height: 100vh;
+    padding-top: 60px;
+    display: flex;
+    flex-direction: column;
 }
 
-.panel--games:hover .panel__cta {
-    border-color: #c084fc;
-    background: rgba(192, 132, 252, 0.15);
-    box-shadow: 0 0 22px rgba(192, 132, 252, 0.35);
-}
-.panel--software:hover .panel__cta {
-    border-color: var(--cyan);
-    background: rgba(0, 240, 255, 0.12);
-    box-shadow: 0 0 22px var(--cyan-glow);
+/* ── Hero ─────────────────────────────── */
+.portal-hero {
+    text-align: center;
+    padding: 80px 24px 72px;
+    background: var(--paper);
+    position: relative;
+    overflow: hidden;
 }
 
-/* Orta çizgi */
-.portal-divider {
-    position: fixed;
-    top: 0;
-    left: 50%;
-    width: 1px;
-    height: 100vh;
-    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.08) 20%, rgba(255,255,255,0.08) 80%, transparent);
-    z-index: 5;
+/* Subtle background grid pattern */
+.portal-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 52px 52px;
+    opacity: 0.45;
     pointer-events: none;
-    transition: opacity 0.4s;
 }
-.portal-wrap:has(.panel:hover) .portal-divider { opacity: 0; }
+
+/* Soft gradient overlay to fade the grid */
+.portal-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 30%, rgba(255,255,255,0) 0%, var(--paper) 75%);
+    pointer-events: none;
+}
+
+.portal-hero__inner {
+    position: relative;
+    z-index: 2;
+    max-width: 680px;
+    margin: 0 auto;
+    animation: fadeUp 0.6s ease both;
+}
+
+.portal-hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--fog);
+    border: 1px solid var(--line-strong);
+    background: var(--paper);
+    padding: 6px 16px;
+    border-radius: 30px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-sm);
+}
+.portal-hero__eyebrow .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #30C97B;
+    box-shadow: 0 0 6px rgba(48, 201, 123, 0.6);
+}
+
+.portal-hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -1.5px;
+    line-height: 1.06;
+    margin-bottom: 22px;
+}
+
+.portal-hero h1 span {
+    background: linear-gradient(135deg, var(--blue) 0%, var(--violet) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.portal-hero p {
+    font-size: 1.1rem;
+    color: var(--slate);
+    max-width: 480px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+}
+
+.portal-hero__ctas {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.portal-cta-blue {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--blue);
+    color: #fff;
+    text-decoration: none;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 13px 28px;
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 24px rgba(36, 84, 255, 0.25);
+    transition: all 0.2s;
+}
+.portal-cta-blue:hover { background: var(--blue-ink); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(36, 84, 255, 0.35); }
+
+.portal-cta-violet {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--violet);
+    color: #fff;
+    text-decoration: none;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 13px 28px;
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 24px rgba(122, 63, 224, 0.22);
+    transition: all 0.2s;
+}
+.portal-cta-violet:hover { background: var(--violet-ink); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(122, 63, 224, 0.32); }
+
+/* ── Stats bar ─────────────────────────── */
+.portal-stats {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: var(--mist);
+    padding: 0;
+    animation: fadeUp 0.6s 0.1s ease both;
+}
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 22px 48px;
+    border-right: 1px solid var(--line);
+}
+.stat-item:last-child { border-right: none; }
+.stat-num {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+    line-height: 1;
+}
+.stat-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--fog);
+    text-transform: uppercase;
+}
+
+/* ── Product Lines ────────────────────── */
+.portal-lines {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    max-width: 1100px;
+    margin: 64px auto;
+    padding: 0 32px;
+    animation: fadeUp 0.6s 0.15s ease both;
+}
+
+.line-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-xl);
+    padding: 48px;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+.line-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+}
+.line-card--blue:hover  { border-color: var(--blue-line); }
+.line-card--violet:hover { border-color: var(--violet-line); }
+
+/* Decorative corner gradient */
+.line-card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    transform: translate(50%, -50%);
+    pointer-events: none;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+}
+.line-card--blue::before   { background: radial-gradient(circle, var(--blue-soft) 0%, transparent 70%); }
+.line-card--violet::before { background: radial-gradient(circle, var(--violet-soft) 0%, transparent 70%); }
+.line-card:hover::before   { opacity: 1; }
+
+.line-card__icon {
+    width: 56px; height: 56px;
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 28px;
+    position: relative;
+}
+.line-card--blue   .line-card__icon { background: var(--blue-soft); }
+.line-card--violet .line-card__icon { background: var(--violet-soft); }
+
+.line-card__eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+.line-card--blue   .line-card__eyebrow { color: var(--blue); }
+.line-card--violet .line-card__eyebrow { color: var(--violet); }
+
+.line-card h2 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+    margin-bottom: 14px;
+}
+
+.line-card p {
+    font-size: 0.93rem;
+    color: var(--slate);
+    line-height: 1.65;
+    margin-bottom: 32px;
+    max-width: 340px;
+}
+
+.line-card__count {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: var(--fog);
+}
+
+.line-card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    padding: 11px 24px;
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+    border: none;
+}
+.line-card--blue   .line-card__cta { background: var(--blue);   color: #fff; }
+.line-card--violet .line-card__cta { background: var(--violet); color: #fff; }
+.line-card:hover .line-card__cta { transform: translateX(4px); }
+
+/* App preview chips */
+.line-card__apps {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+}
+.app-chip {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: var(--mist);
+    border: 1px solid var(--line);
+    color: var(--slate);
+    white-space: nowrap;
+}
+
+/* ── Value Props ──────────────────────── */
+.portal-props {
+    background: var(--mist);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 64px 0;
+}
+
+.portal-props__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+}
+
+.prop-item {
+    padding: 32px 40px;
+    border-right: 1px solid var(--line);
+}
+.prop-item:last-child { border-right: none; }
+
+.prop-item__icon {
+    font-size: 1.4rem;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.prop-item h4 {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+}
+
+.prop-item p {
+    font-size: 0.86rem;
+    color: var(--slate);
+    line-height: 1.65;
+}
 
 /* ── Mobile ───────────────────────────── */
-@media (max-width: 768px) {
-    body.portal-page { overflow: auto; }
-    .portal-wrap { flex-direction: column; height: auto; min-height: 100vh; }
-    .panel { min-height: 50vh; }
-    .panel:hover { flex: 1.2; }
-    .panel__title { font-size: 2.2rem; }
-    .portal-divider { display: none; }
+@media (max-width: 800px) {
+    .portal-lines { grid-template-columns: 1fr; padding: 0 20px; }
+    .portal-stats { flex-wrap: wrap; }
+    .stat-item { padding: 16px 24px; border-right: none; border-bottom: 1px solid var(--line); }
+    .portal-props__grid { grid-template-columns: 1fr; }
+    .prop-item { border-right: none; border-bottom: 1px solid var(--line); }
+    .portal-hero { padding: 56px 20px 52px; }
+    .line-card { padding: 32px 28px; }
+    .portal-header { padding: 0 20px; }
 }
