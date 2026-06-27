@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Systemic Software | Yazılım Kataloğu — Pax Systemic</title>
-    <meta name="description" content="Systemic Software: Sistem optimizasyonu, şifre yönetimi, medya araçları ve otomasyon için Windows uygulamaları. Pax Systemic tarafından geliştirildi.">
+    <meta name="description" content="Systemic Software: Sistem optimizasyonu, şifre yönetimi, medya araçları ve otomasyon için Windows uygulamaları.">
 
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/catalog.css">
 
-    <!-- Yazılımlar teması: blue -->
     <style>
         :root {
             --accent:      #2454FF;
@@ -17,7 +16,6 @@
             --accent-soft: rgba(36, 84, 255, 0.08);
             --accent-line: rgba(36, 84, 255, 0.28);
         }
-        /* Fix feature list checkmark for blue */
         .feature-list li::before {
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232454FF' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
         }
@@ -72,9 +70,7 @@
 <!-- ── DETAIL VIEW ──────────────────────── -->
 <div id="detail-view">
 
-    <button class="back-btn" onclick="closeProduct()">
-        ← Yazılımlara Dön
-    </button>
+    <button class="back-btn" onclick="closeProduct()">← Yazılımlara Dön</button>
 
     <div class="det-header">
         <div class="det-header__main">
@@ -129,10 +125,10 @@
             </div>
             <div class="footer-col">
                 <h5>Yazılımlar</h5>
-                <a href="#systemic" onclick="openProductFromNav('systemic')">Systemic Pro</a>
-                <a href="#paxvault" onclick="openProductFromNav('paxvault')">Password Vault</a>
-                <a href="#pomodoropro" onclick="openProductFromNav('pomodoropro')">Pomodoro Pro</a>
-                <a href="#audiopro" onclick="openProductFromNav('audiopro')">Audio Editor</a>
+                <a href="#systemic"     onclick="openProductFromNav('systemic',   event)">Systemic Pro</a>
+                <a href="#paxvault"     onclick="openProductFromNav('paxvault',    event)">Password Vault</a>
+                <a href="#pomodoropro"  onclick="openProductFromNav('pomodoropro', event)">Pomodoro Pro</a>
+                <a href="#audiopro"     onclick="openProductFromNav('audiopro',    event)">Audio Editor</a>
             </div>
             <div class="footer-col">
                 <h5>Oyunlar</h5>
@@ -143,7 +139,7 @@
             <div class="footer-col">
                 <h5>Kurumsal</h5>
                 <a href="mailto:paxsystemic@gmail.com">İletişim</a>
-                    <a href="../oneri.html">Talep & Öneri</a>
+                <a href="../oneri.html">Talep & Öneri</a>
                 <a href="https://github.com/barisys1999/pax-systemic" target="_blank" rel="noopener">GitHub</a>
             </div>
         </div>
@@ -157,94 +153,10 @@
 <script src="../js/software-data.js"></script>
 <script src="../js/catalog.js"></script>
 <script>
-    // Fix icon paths to actual logo files
-    SOFTWARE_PRODUCTS.forEach(p => {
-        const iconMap = {
-            'bstreamer':     null,
-            'isletme':       '../gorseller/netkasa/netkasaprologo.png',
-            'systemic':      '../gorseller/systemic/systemicprologo.png',
-            'makroapp':      '../gorseller/makroapp/MakroApplogo.png',
-            'pomodoropro':   '../gorseller/PomodoroPro/Pomodorologo.png',
-            'audiopro':      '../gorseller/AudioEditor/AudioForgelogo.png',
-            'paxvault':      '../gorseller/PasswordVault/PasswordVault1logo.png',
-            'paxdownloader': '../gorseller/paxdownloader/paxdownloader.png',
-        };
-        if (iconMap[p.id] !== undefined) p.icon = iconMap[p.id] || null;
+    window.onload = () => initCatalog(SOFTWARE_PRODUCTS);
 
-        // Fix image paths to use raw GitHub URLs
-        if (p.images && p.images.length > 0) {
-            p.images = p.images.map(img =>
-                img.replace('../gorseller/', 'https://raw.githubusercontent.com/barisys1999/pax-systemic/main/gorseller/')
-            );
-        }
-    });
-
-    // Add paxasistan and paxlink from yazilimlar inline data
-    const extra = [
-        {
-            id: 'paxasistan',
-            category: 'sistem',
-            catName: 'Yapay Zeka & Sistem',
-            title: 'PAX Asistan',
-            subtitle: 'Otonom Masaüstü Yapay Zeka Asistanı',
-            shortDesc: 'Yerel AI (Ollama), 2 katmanlı ses tanıma (Vosk+Whisper) ve el takibi sunan interaktif robot asistan.',
-            fullDesc: 'PAX Asistan; farenizi takip eden dinamik bir robot yüze sahip, tamamen çevrimdışı çalışabilen otonom bir sistem asistanıdır. Gelişmiş 3 katmanlı algılama mimarisi ile sizi hem duyar (Vosk & Whisper), hem görür (MediaPipe El Takibi), hem de anlar (Ollama LLM).',
-            icon: 'https://raw.githubusercontent.com/barisys1999/pax-systemic/main/gorseller/paxasistan/Pax%20Asistanlogo.png',
-            iconEmoji: '🤖',
-            features: [
-                'Vosk (hızlı) ve Whisper (yüksek doğruluk) paralel ses motoru',
-                'Ollama LLM: Qwen/Llama modelleriyle doğal dil işleme',
-                'MediaPipe üzerinden UDP soketleriyle 0 gecikmeli jest algılama',
-                'Fare imlecini takip eden gözler ve otomatik mimikler',
-                'Gelişmiş Komut Yöneticisi ve Sabit Dinleme Modu'
-            ],
-            images: ['https://raw.githubusercontent.com/barisys1999/pax-systemic/main/gorseller/paxasistan/1.png'],
-            link: '#',
-            isDev: true,
-            changelog: [
-                { version: 'v2.5', date: 'Güncel', notes: ['Ollama LLM entegrasyonu tamamlandı.', 'Python tabanlı el hareketleri WPF UI ile bağlandı.'] },
-                { version: 'v1.0', date: 'Başlangıç', notes: ['Vosk ve Whisper ses motorları entegre edildi.'] }
-            ]
-        },
-        {
-            id: 'paxlink',
-            category: 'sistem',
-            catName: 'İletişim & Nöral Ağ',
-            title: 'Pax Link',
-            subtitle: 'Nöral Bağlantı Tabanlı Sesli İletişim',
-            shortDesc: 'WebRTC tabanlı, Opus codec destekli yüksek sadakatli sesli iletişim platformu.',
-            fullDesc: 'Pax Link, Pax Systemic ekosisteminin iletişim katmanıdır. Opus codec entegrasyonlu ses işleme (DSP), WebRTC üzerinden gerçek zamanlı sesli veri aktarımı ve socket.io tabanlı otonom çağrı yönetimini içerir.',
-            icon: null,
-            iconEmoji: '📡',
-            features: [
-                'WebRTC P2P (ICE/STUN/TURN) Sinyalleşme ve Görüşme Yönetimi',
-                'Opus Tabanlı Düşük Gecikmeli Ses İşleme (Jitter Buffer & PLC)',
-                'Socket.io ile Otonom Çağrı Sinyalleşme Motoru',
-                'Gelişmiş Gürültü Engelleme, EQ ve Dinamik Gain Kontrolü',
-                'Minimalist, Kaynak Dostu Masaüstü İstemcisi'
-            ],
-            images: [
-                'https://raw.githubusercontent.com/barisys1999/pax-systemic/main/gorseller/paxlink/1.png',
-                'https://raw.githubusercontent.com/barisys1999/pax-systemic/main/gorseller/paxlink/2.png',
-                'https://raw.githubusercontent.com/barisys1999/pax-systemic/main/gorseller/paxlink/3.png',
-                'https://raw.githubusercontent.com/barisys1999/pax-systemic/main/gorseller/paxlink/4.png',
-                'https://raw.githubusercontent.com/barisys1999/pax-systemic/main/gorseller/paxlink/5.png'
-            ],
-            link: '#',
-            isDev: true,
-            changelog: [
-                { version: 'v0.1.0 (Alfa)', date: 'Mayıs 2026', notes: ['WebRTC sinyalleşme katmanı tamamlandı.', 'Socket.io güvenli oda bağlantıları kurgulandı.'] }
-            ]
-        }
-    ];
-
-    window.onload = () => {
-        const all = [...SOFTWARE_PRODUCTS, ...extra];
-        initCatalog(all);
-    };
-
-    function openProductFromNav(id) {
-        event.preventDefault();
+    function openProductFromNav(id, e) {
+        if (e) e.preventDefault();
         openProduct(id);
     }
 </script>
