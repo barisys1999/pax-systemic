@@ -9,6 +9,12 @@
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/portal.css">
 
+    <style>
+        .stat-num { transition: opacity 0.3s; }
+        .stat-num.loading { opacity: 0.3; }
+        .app-chip.skeleton { background: rgba(255,255,255,0.08); color: transparent; border-color: transparent; width: 80px; border-radius: 20px; }
+    </style>
+
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -59,11 +65,11 @@
     <!-- ── Stats ────────────────────────── -->
     <div class="portal-stats">
         <div class="stat-item">
-            <span class="stat-num">10</span>
+            <span class="stat-num loading" id="statYazilim">—</span>
             <span class="stat-label">Yazılım Ürünü</span>
         </div>
         <div class="stat-item">
-            <span class="stat-num">4</span>
+            <span class="stat-num loading" id="statOyun">—</span>
             <span class="stat-label">Oyun Projesi</span>
         </div>
         <div class="stat-item">
@@ -85,14 +91,12 @@
             <div class="line-card__eyebrow">Systemic Software</div>
             <h2>Yazılım<br>Kataloğu</h2>
             <p>Sistem optimizasyonundan şifre güvenliğine, medya yönetiminden otomasyon araçlarına — her biri kendi alanında özelleşmiş Windows uygulamaları.</p>
-            <div class="line-card__apps">
-                <span class="app-chip">Systemic Pro</span>
-                <span class="app-chip">Password Vault</span>
-                <span class="app-chip">Pomodoro Pro</span>
-                <span class="app-chip">Audio Editor</span>
-                <span class="app-chip">+6 daha</span>
+            <div class="line-card__apps" id="yazilimChips">
+                <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
             </div>
-            <div class="line-card__count">10 uygulama · Windows</div>
+            <div class="line-card__count" id="yazilimCount">Yükleniyor...</div>
             <span class="line-card__cta">Yazılımları Gör →</span>
         </a>
 
@@ -102,13 +106,11 @@
             <div class="line-card__eyebrow">BarisByte Games</div>
             <h2>Oyun<br>Kataloğu</h2>
             <p>Atmosferik korku, mobil arcade ve açık dünya macerası — BarisByte Games, her türden indie oyuncuya hitap eden projeler üretiyor.</p>
-            <div class="line-card__apps">
-                <span class="app-chip">Karanlıktan Işığa</span>
-                <span class="app-chip">CosmoHop!</span>
-                <span class="app-chip">Project: Nexus</span>
-                <span class="app-chip">Sessiz Ev</span>
+            <div class="line-card__apps" id="oyunChips">
+                <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
             </div>
-            <div class="line-card__count">4 proje · PC & Mobil</div>
+            <div class="line-card__count" id="oyunCount">Yükleniyor...</div>
             <span class="line-card__cta">Oyunları Gör →</span>
         </a>
 
@@ -174,6 +176,86 @@
     </footer>
 
 </div><!-- /.portal-wrap -->
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getFirestore, collection, getDocs, query, orderBy }
+    from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAKVWcyice-3w2Ua7xiNnYh5ZGVdBl8qWA",
+    authDomain: "paxsystemic-f4aca.firebaseapp.com",
+    projectId: "paxsystemic-f4aca",
+    storageBucket: "paxsystemic-f4aca.firebasestorage.app",
+    messagingSenderId: "193147885737",
+    appId: "1:193147885737:web:aae1ec4c0b1c31bd0271b8"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+async function loadStats() {
+    try {
+        // Yazılımlar
+        const yazSnap = await getDocs(query(collection(db, 'yazilimlar'), orderBy('order', 'asc')));
+        const yazList = yazSnap.docs.map(d => d.data());
+
+        const yazCount = yazList.length;
+        document.getElementById('statYazilim').textContent = yazCount;
+        document.getElementById('statYazilim').classList.remove('loading');
+
+        // İlk 4 yazılımı chip olarak göster, kalanı "+N daha"
+        const yazChips = document.getElementById('yazilimChips');
+        if (yazList.length > 0) {
+            const shown = yazList.slice(0, 4);
+            const rest  = yazList.length - shown.length;
+            yazChips.innerHTML =
+                shown.map(p => `<span class="app-chip">${p.title}</span>`).join('') +
+                (rest > 0 ? `<span class="app-chip">+${rest} daha</span>` : '');
+        }
+        document.getElementById('yazilimCount').textContent = `${yazCount} uygulama · Windows`;
+
+        // Oyunlar
+        const oyunSnap = await getDocs(query(collection(db, 'oyunlar'), orderBy('order', 'asc')));
+        const oyunList = oyunSnap.docs.map(d => d.data());
+
+        const oyunCount = oyunList.length;
+        document.getElementById('statOyun').textContent = oyunCount;
+        document.getElementById('statOyun').classList.remove('loading');
+
+        const oyunChips = document.getElementById('oyunChips');
+        if (oyunList.length > 0) {
+            const shown = oyunList.slice(0, 4);
+            const rest  = oyunList.length - shown.length;
+            oyunChips.innerHTML =
+                shown.map(p => `<span class="app-chip">${p.title}</span>`).join('') +
+                (rest > 0 ? `<span class="app-chip">+${rest} daha</span>` : '');
+        }
+        document.getElementById('oyunCount').textContent = `${oyunCount} proje · PC & Mobil`;
+
+    } catch(err) {
+        // Firestore erişilemezse statik fallback
+        console.warn('Firestore yüklenemedi:', err);
+        document.getElementById('statYazilim').textContent = '10';
+        document.getElementById('statYazilim').classList.remove('loading');
+        document.getElementById('statOyun').textContent = '4';
+        document.getElementById('statOyun').classList.remove('loading');
+        document.getElementById('yazilimChips').innerHTML = `
+            <span class="app-chip">Systemic Pro</span>
+            <span class="app-chip">Password Vault</span>
+            <span class="app-chip">Pomodoro Pro</span>
+            <span class="app-chip">+7 daha</span>`;
+        document.getElementById('yazilimCount').textContent = '10 uygulama · Windows';
+        document.getElementById('oyunChips').innerHTML = `
+            <span class="app-chip">Karanlıktan Işığa</span>
+            <span class="app-chip">CosmoHop!</span>
+            <span class="app-chip">+2 daha</span>`;
+        document.getElementById('oyunCount').textContent = '4 proje · PC & Mobil';
+    }
+}
+
+loadStats();
+</script>
 
 </body>
 </html>
