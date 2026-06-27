@@ -304,7 +304,7 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
 import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc,
          addDoc, query, orderBy, writeBatch, Timestamp }
     from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
-// Görseller artık dosya yüklemesi ile değil, doğrudan GitHub raw URL'leri olarak ekleniyor.
+// Görseller GitHub raw URL'den çekiliyor
 
 const firebaseConfig = {
     apiKey: "AIzaSyAKVWcyice-3w2Ua7xiNnYh5ZGVdBl8qWA",
@@ -319,6 +319,8 @@ const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
+// GitHub raw base URL — tüm görseller buradan çekilir
+const GITHUB_BASE = 'https://raw.githubusercontent.com/barisys1999/images/main/gorseller/';
 
 // ═══════════════════════════════════════
 // AUTH
@@ -479,6 +481,10 @@ window.clearAll = async function() {
 // ═══════════════════════════════════════
 let cmsCollection  = '';   // 'yazilimlar' | 'oyunlar'
 let editingDocId   = null; // null = yeni kayıt
+let uploadedImages = [];   // URL string listesi (referans için)
+let pendingFiles   = [];   // artık kullanılmıyor (temizlik için tutuldu)
+let iconUrl        = '';
+let pendingIconFile = null; // artık kullanılmıyor
 
 // ── Load list ──────────────────────────
 window.loadCmsItems = async function(col) {
@@ -526,6 +532,10 @@ window.loadCmsItems = async function(col) {
 window.openCmsModal = function(col, data = null, docId = null) {
     cmsCollection  = col;
     editingDocId   = docId;
+    uploadedImages = data?.images ? [...data.images] : [];
+    pendingFiles   = [];
+    iconUrl        = data?.icon || '';
+    pendingIconFile = null;
 
     const isGame = col === 'oyunlar';
     document.getElementById('modalTitle').textContent = docId
@@ -546,7 +556,6 @@ window.openCmsModal = function(col, data = null, docId = null) {
 
     const featuresHtml = (data?.features || ['']).map(f => featureRow(f)).join('');
     const changelogHtml = (data?.changelog || []).map(cl => changelogBlock(cl)).join('');
-    const imagesHtml = (data?.images && data.images.length > 0 ? data.images : ['']).map(u => imageUrlRow(u)).join('');
 
     document.getElementById('modalBody').innerHTML = `
         <div class="form-row">
@@ -607,19 +616,20 @@ window.openCmsModal = function(col, data = null, docId = null) {
         <div class="section-divider"></div>
 
         <div class="form-group">
-            <label class="form-label">İkon Görseli URL'i <span>(GitHub raw link — isteğe bağlı)</span></label>
-            <input type="text" class="form-input" id="fi_icon" value="${esc(data?.icon||'')}"
-                   placeholder="https://raw.githubusercontent.com/barisys1999/images/main/gorseller/.../logo.png"
-                   oninput="updateIconPreview(this.value)">
-            <div id="iconPreviewWrap" style="margin-top:10px;">
-                ${data?.icon ? `<img src="${esc(data.icon)}" style="max-height:60px;border-radius:8px;" onerror="this.style.display='none'">` : ''}
+            <label class="form-label">İkon Görseli — GitHub Yolu <span>(isteğe bağlı, ör: netkasa/netkasaprologo.png)</span></label>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <input type="text" class="form-input" id="fi_iconPath" value="${esc(data?.icon ? data.icon.replace(GITHUB_BASE,'') : '')}" placeholder="klasor/logo.png" oninput="previewIconFromPath(this.value)" style="flex:1;">
+                <button type="button" class="toolbar-btn" onclick="previewIconFromPath(document.getElementById('fi_iconPath').value)" style="white-space:nowrap;">Önizle</button>
+            </div>
+            <div id="iconPreviewWrap" style="margin-top:8px;">
+                ${(data?.icon) ? `<img src="${esc(data.icon)}" style="max-height:60px;border-radius:8px;" onerror="this.style.display='none'">` : ''}
             </div>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Ekran Görüntüleri <span>(GitHub raw link'leri)</span></label>
-            <div class="dynamic-list" id="imagesList">${imagesHtml}</div>
-            <button class="add-row-btn" onclick="addImageUrlRow()">+ Görsel URL Ekle</button>
+            <label class="form-label">Ekran Görüntüleri — GitHub Yolları <span>(her satıra bir yol, ör: systemic/1.png)</span></label>
+            <textarea class="form-textarea" id="fi_imagePaths" rows="5" placeholder="systemic/1.png&#10;systemic/2.png&#10;systemic/3.png" oninput="renderImagePreviews()" style="font-family:monospace;font-size:0.82rem;">${(data?.images||[]).map(u => u.replace(GITHUB_BASE,'')).join('\n')}</textarea>
+            <div class="img-preview-list" id="imgPreviewList" style="margin-top:10px;"></div>
         </div>
 
         <div class="section-divider"></div>
@@ -645,6 +655,7 @@ window.openCmsModal = function(col, data = null, docId = null) {
         if (sel) sel.value = data.category;
     }
 
+    renderImagePreviews();
     document.getElementById('cmsModal').classList.add('open');
 };
 
@@ -654,26 +665,6 @@ function featureRow(val) {
         <button class="rm-btn" onclick="this.parentNode.remove()">✕</button>
     </div>`;
 }
-
-function imageUrlRow(val) {
-    return `<div class="dynamic-item">
-        <input type="text" value="${esc(val)}" placeholder="https://raw.githubusercontent.com/barisys1999/images/main/gorseller/.../1.png">
-        <button class="rm-btn" onclick="this.parentNode.remove()">✕</button>
-    </div>`;
-}
-
-window.addImageUrlRow = () => {
-    const el = document.createElement('div');
-    el.innerHTML = imageUrlRow('');
-    document.getElementById('imagesList').appendChild(el.firstChild);
-};
-
-window.updateIconPreview = (url) => {
-    const wrap = document.getElementById('iconPreviewWrap');
-    wrap.innerHTML = url
-        ? `<img src="${esc(url)}" style="max-height:60px;border-radius:8px;" onerror="this.style.display='none'">`
-        : '';
-};
 
 function changelogBlock(cl) {
     const notes = (cl.notes || ['']).map(n =>
@@ -718,6 +709,33 @@ window.updateCatName = function(sel) {
     if (inp && map[sel.value]) inp.value = map[sel.value];
 };
 
+// ── Image handling ─────────────────────
+// Artık dosya upload yok — sadece GitHub path'leri kullanılıyor
+
+function renderImagePreviews() {
+    const textarea = document.getElementById('fi_imagePaths');
+    if (!textarea) return;
+    const paths = textarea.value.split('\n').map(s => s.trim()).filter(Boolean);
+    const list = document.getElementById('imgPreviewList');
+    if (!list) return;
+    list.innerHTML = paths.map(p => {
+        const url = GITHUB_BASE + p;
+        return `<div class="img-preview-item">
+            <img src="${url}" onerror="this.style.opacity='0.2';this.title='Görsel bulunamadı: '+this.src" title="${url}">
+        </div>`;
+    }).join('');
+}
+
+window.previewIconFromPath = function(path) {
+    const wrap = document.getElementById('iconPreviewWrap');
+    if (!wrap) return;
+    if (!path.trim()) { wrap.innerHTML = ''; return; }
+    const url = GITHUB_BASE + path.trim();
+    wrap.innerHTML = `<img src="${url}" style="max-height:60px;border-radius:8px;" onerror="this.style.opacity='0.2';this.title='Bulunamadı'">`;
+};
+
+// Cloudinary kaldırıldı — görseller GitHub'dan çekiliyor, upload gerekmez
+
 // ── Save ──────────────────────────────
 window.saveCmsItem = async function() {
     const btn   = document.getElementById('modalSaveBtn');
@@ -727,15 +745,20 @@ window.saveCmsItem = async function() {
     btn.disabled = true; btn.textContent = 'Kaydediliyor...';
 
     try {
-        // 1) Collect features
+        // 1) İkon URL'sini GitHub'dan oluştur
+        const iconPathVal = document.getElementById('fi_iconPath')?.value.trim();
+        iconUrl = iconPathVal ? (GITHUB_BASE + iconPathVal) : '';
+
+        // 2) Görsel URL'lerini GitHub'dan oluştur
+        const imgPathsVal = document.getElementById('fi_imagePaths')?.value || '';
+        const imageUrls = imgPathsVal.split('\n').map(s => s.trim()).filter(Boolean)
+            .map(p => GITHUB_BASE + p);
+
+        // 3) Collect features
         const features = [...document.querySelectorAll('#featuresList .dynamic-item input')]
             .map(i => i.value.trim()).filter(Boolean);
 
-        // 2) Collect image URLs
-        const images = [...document.querySelectorAll('#imagesList .dynamic-item input')]
-            .map(i => i.value.trim()).filter(Boolean);
-
-        // 3) Collect changelog
+        // 4) Collect changelog
         const changelog = [...document.querySelectorAll('#changelogList .cl-block')].map(block => {
             const inputs = block.querySelectorAll('.cl-block__head input');
             const notes  = [...block.querySelectorAll('.cl-notes .dynamic-item input')]
@@ -743,7 +766,7 @@ window.saveCmsItem = async function() {
             return { version: inputs[0]?.value.trim()||'', date: inputs[1]?.value.trim()||'', notes };
         }).filter(c => c.version);
 
-        // 4) Build document
+        // 5) Build document
         const data = {
             title,
             subtitle:   document.getElementById('fi_subtitle')?.value.trim()  || '',
@@ -756,8 +779,8 @@ window.saveCmsItem = async function() {
             link:       document.getElementById('fi_link')?.value.trim()       || '#',
             isDev:      document.getElementById('fi_isDev')?.checked           || false,
             isRequest:  document.getElementById('fi_isRequest')?.checked       || false,
-            icon:       document.getElementById('fi_icon')?.value.trim()       || null,
-            images,
+            icon:       iconUrl || null,
+            images:     imageUrls,
             features,
             changelog,
             updatedAt:  Timestamp.now()
@@ -805,6 +828,7 @@ window.deleteCmsItem = async function(col, id, title) {
 
 window.closeCmsModal = function() {
     document.getElementById('cmsModal').classList.remove('open');
+    pendingFiles = []; uploadedImages = []; pendingIconFile = null; iconUrl = '';
 };
 
 // ═══════════════════════════════════════
