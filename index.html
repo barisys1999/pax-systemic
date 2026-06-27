@@ -195,62 +195,83 @@ const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
 
 async function loadStats() {
+    // Statik fallback değerleri
+    const FALLBACK_YAZ = {
+        count: 10,
+        chips: `<span class="app-chip">B-Streamer</span>
+                <span class="app-chip">NetKasa Pro</span>
+                <span class="app-chip">Systemic Pro</span>
+                <span class="app-chip">+7 daha</span>`,
+        label: '10 uygulama · Windows'
+    };
+    const FALLBACK_OYUN = {
+        count: 4,
+        chips: `<span class="app-chip">Karanlıktan Işığa</span>
+                <span class="app-chip">CosmoHop!</span>
+                <span class="app-chip">+2 daha</span>`,
+        label: '4 proje · PC & Mobil'
+    };
+
+    function applyYazilim(list) {
+        const count = list.length;
+        document.getElementById('statYazilim').textContent = count;
+        document.getElementById('statYazilim').classList.remove('loading');
+        if (count > 0) {
+            const shown = list.slice(0, 4);
+            const rest  = count - shown.length;
+            document.getElementById('yazilimChips').innerHTML =
+                shown.map(p => `<span class="app-chip">${p.title}</span>`).join('') +
+                (rest > 0 ? `<span class="app-chip">+${rest} daha</span>` : '');
+            document.getElementById('yazilimCount').textContent = `${count} uygulama · Windows`;
+        } else {
+            // Firebase boş — statik fallback
+            document.getElementById('statYazilim').textContent = FALLBACK_YAZ.count;
+            document.getElementById('yazilimChips').innerHTML  = FALLBACK_YAZ.chips;
+            document.getElementById('yazilimCount').textContent = FALLBACK_YAZ.label;
+        }
+    }
+
+    function applyOyun(list) {
+        const count = list.length;
+        document.getElementById('statOyun').textContent = count;
+        document.getElementById('statOyun').classList.remove('loading');
+        if (count > 0) {
+            const shown = list.slice(0, 4);
+            const rest  = count - shown.length;
+            document.getElementById('oyunChips').innerHTML =
+                shown.map(p => `<span class="app-chip">${p.title}</span>`).join('') +
+                (rest > 0 ? `<span class="app-chip">+${rest} daha</span>` : '');
+            document.getElementById('oyunCount').textContent = `${count} proje · PC & Mobil`;
+        } else {
+            // Firebase boş — statik fallback
+            document.getElementById('statOyun').textContent = FALLBACK_OYUN.count;
+            document.getElementById('oyunChips').innerHTML  = FALLBACK_OYUN.chips;
+            document.getElementById('oyunCount').textContent = FALLBACK_OYUN.label;
+        }
+    }
+
+    // Yazılımlar
     try {
-        // Yazılımlar
         const yazSnap = await getDocs(query(collection(db, 'yazilimlar'), orderBy('order', 'asc')));
-        const yazList = yazSnap.docs.map(d => d.data());
-
-        const yazCount = yazList.length;
-        document.getElementById('statYazilim').textContent = yazCount;
-        document.getElementById('statYazilim').classList.remove('loading');
-
-        // İlk 4 yazılımı chip olarak göster, kalanı "+N daha"
-        const yazChips = document.getElementById('yazilimChips');
-        if (yazList.length > 0) {
-            const shown = yazList.slice(0, 4);
-            const rest  = yazList.length - shown.length;
-            yazChips.innerHTML =
-                shown.map(p => `<span class="app-chip">${p.title}</span>`).join('') +
-                (rest > 0 ? `<span class="app-chip">+${rest} daha</span>` : '');
-        }
-        document.getElementById('yazilimCount').textContent = `${yazCount} uygulama · Windows`;
-
-        // Oyunlar
-        const oyunSnap = await getDocs(query(collection(db, 'oyunlar'), orderBy('order', 'asc')));
-        const oyunList = oyunSnap.docs.map(d => d.data());
-
-        const oyunCount = oyunList.length;
-        document.getElementById('statOyun').textContent = oyunCount;
-        document.getElementById('statOyun').classList.remove('loading');
-
-        const oyunChips = document.getElementById('oyunChips');
-        if (oyunList.length > 0) {
-            const shown = oyunList.slice(0, 4);
-            const rest  = oyunList.length - shown.length;
-            oyunChips.innerHTML =
-                shown.map(p => `<span class="app-chip">${p.title}</span>`).join('') +
-                (rest > 0 ? `<span class="app-chip">+${rest} daha</span>` : '');
-        }
-        document.getElementById('oyunCount').textContent = `${oyunCount} proje · PC & Mobil`;
-
+        applyYazilim(yazSnap.docs.map(d => d.data()));
     } catch(err) {
-        // Firestore erişilemezse statik fallback
-        console.warn('Firestore yüklenemedi:', err);
-        document.getElementById('statYazilim').textContent = '10';
+        console.warn('Yazılım Firestore hatası:', err);
+        document.getElementById('statYazilim').textContent = FALLBACK_YAZ.count;
         document.getElementById('statYazilim').classList.remove('loading');
-        document.getElementById('statOyun').textContent = '4';
+        document.getElementById('yazilimChips').innerHTML  = FALLBACK_YAZ.chips;
+        document.getElementById('yazilimCount').textContent = FALLBACK_YAZ.label;
+    }
+
+    // Oyunlar
+    try {
+        const oyunSnap = await getDocs(query(collection(db, 'oyunlar'), orderBy('order', 'asc')));
+        applyOyun(oyunSnap.docs.map(d => d.data()));
+    } catch(err) {
+        console.warn('Oyun Firestore hatası:', err);
+        document.getElementById('statOyun').textContent = FALLBACK_OYUN.count;
         document.getElementById('statOyun').classList.remove('loading');
-        document.getElementById('yazilimChips').innerHTML = `
-            <span class="app-chip">B-Streamer</span>
-            <span class="app-chip">NetKasa Pro</span>
-            <span class="app-chip">Systemic Pro</span>
-            <span class="app-chip">+7 daha</span>`;
-        document.getElementById('yazilimCount').textContent = '10 uygulama · Windows';
-        document.getElementById('oyunChips').innerHTML = `
-            <span class="app-chip">Karanlıktan Işığa</span>
-            <span class="app-chip">CosmoHop!</span>
-            <span class="app-chip">+2 daha</span>`;
-        document.getElementById('oyunCount').textContent = '4 proje · PC & Mobil';
+        document.getElementById('oyunChips').innerHTML  = FALLBACK_OYUN.chips;
+        document.getElementById('oyunCount').textContent = FALLBACK_OYUN.label;
     }
 }
 
