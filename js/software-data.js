@@ -3,7 +3,7 @@
    Resimler: GitHub raw URL (Cloudflare'de de çalışır)
    ============================================= */
 
-const BASE = 'https://raw.githubusercontent.com/barisys1999/pax-systemic/main/gorseller/';
+const BASE = 'https://raw.githubusercontent.com/barisys1999/images/main/gorseller/';
 
 const SOFTWARE_PRODUCTS = [
     {
