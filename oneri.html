@@ -69,9 +69,7 @@
             margin-bottom: 36px;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+        .form-group { margin-bottom: 20px; }
 
         .form-group label {
             display: block;
@@ -81,9 +79,7 @@
             margin-bottom: 7px;
         }
 
-        .form-group label span {
-            color: var(--blue);
-        }
+        .form-group label span { color: var(--blue); }
 
         .form-control {
             width: 100%;
@@ -158,7 +154,6 @@
         }
         .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-        /* Success state */
         .success-state {
             display: none;
             text-align: center;
@@ -191,7 +186,6 @@
             font-size: 0.88rem;
         }
 
-        /* Error banner */
         .error-banner {
             display: none;
             background: rgba(224,92,42,0.08);
@@ -305,21 +299,37 @@
     </div>
 </main>
 
-<!-- Footer minimal -->
 <footer style="text-align:center; padding: 24px; font-size: 0.78rem; color: var(--fog); border-top: 1px solid var(--line);">
     © 2026 Pax Systemic · <a href="index.html" style="color:var(--blue); text-decoration:none;">Ana Sayfa</a>
 </footer>
 
-<script>
-    // ── Storage key prefix ─────────────────────
-    const STORAGE_KEY = 'pax_feedback_';
+<!-- Firebase SDK -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
-    function updateCharCount() {
+    // ══════════════════════════════════════════════════
+    // FIREBASE CONFIG — Firebase Console'dan kopyala
+    // ══════════════════════════════════════════════════
+    const firebaseConfig = {
+        apiKey:            "BURAYA_API_KEY",
+        authDomain:        "BURAYA_AUTH_DOMAIN",
+        projectId:         "BURAYA_PROJECT_ID",
+        storageBucket:     "BURAYA_STORAGE_BUCKET",
+        messagingSenderId: "BURAYA_MESSAGING_SENDER_ID",
+        appId:             "BURAYA_APP_ID"
+    };
+    // ══════════════════════════════════════════════════
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+
+    window.updateCharCount = function() {
         const msg = document.getElementById('inputMessage').value;
-        const el = document.getElementById('charCount');
+        const el  = document.getElementById('charCount');
         el.textContent = `${msg.length} / 1000`;
         el.classList.toggle('warn', msg.length > 900);
-    }
+    };
 
     function showError(msg) {
         const el = document.getElementById('errorBanner');
@@ -328,7 +338,7 @@
         setTimeout(() => el.style.display = 'none', 5000);
     }
 
-    async function submitForm() {
+    window.submitForm = async function() {
         const name    = document.getElementById('inputName').value.trim();
         const email   = document.getElementById('inputEmail').value.trim();
         const type    = document.getElementById('inputType').value;
@@ -345,25 +355,13 @@
         document.getElementById('btnText').textContent = 'Gönderiliyor...';
         document.getElementById('btnIcon').textContent = '⏳';
 
-        const entry = {
-            id:        'fb_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
-            timestamp: new Date().toISOString(),
-            name, email, type, product, message,
-            read: false
-        };
-
         try {
-            // Load existing, append, save back
-            let existing = [];
-            try {
-                const res = await window.storage.get('pax_feedbacks', true);
-                if (res && res.value) existing = JSON.parse(res.value);
-            } catch(_) {}
+            await addDoc(collection(db, 'feedbacks'), {
+                name, email, type, product, message,
+                read: false,
+                createdAt: serverTimestamp()
+            });
 
-            existing.unshift(entry); // newest first
-            await window.storage.set('pax_feedbacks', JSON.stringify(existing), true);
-
-            // Show success
             document.getElementById('formSection').style.display = 'none';
             document.getElementById('successState').style.display = 'block';
         } catch(err) {
@@ -373,7 +371,8 @@
             showError('Bir hata oluştu, lütfen tekrar deneyin.');
             console.error(err);
         }
-    }
+    };
 </script>
+
 </body>
 </html>
