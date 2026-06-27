@@ -87,7 +87,7 @@ const SOFTWARE_PRODUCTS = [
         title: 'MakroApp',
         subtitle: 'Akıllı Klavye & Fare Otomasyonu',
         shortDesc: 'Tekrarlayan işlerinizi saniyeler içinde halledin. Klavye ve fare komutlarınızı otomatize edin.',
-        fullDesc: 'MakroApp, kullanıcıların klavye ve fare hareketlerini özelleştirilebilir senaryolarla otomatize etmesini sağlayan profesyonel bir araçtır.',
+        fullDesc: 'MakroApp, kullanıcıların klavye ve fare hareketlerini özelleştirilebilir senaryolarla otomatize etmesini sağlayan profesyonel bir araçtır. Oto-click ve otomatik metin girişi gibi işlemleri yüksek performansla gerçekleştirir.',
         icon: BASE + 'makroapp/MakroApplogo.png',
         iconEmoji: '⌨️',
         features: [
@@ -114,7 +114,7 @@ const SOFTWARE_PRODUCTS = [
         title: 'Pomodoro Pro',
         subtitle: 'Gelişmiş Odaklanma & Ses Mikseri',
         shortDesc: 'Maksimum odaklanma için tasarlandı. Pomodoro sayacı, ortam sesleri ve YouTube müzik entegrasyonu.',
-        fullDesc: 'Pomodoro Pro, derin çalışma seanslarınız için geliştirilmiş hepsi bir arada bir asistandır. Arka planda çalışan reklamsız YouTube oynatıcısı ve minimalist Mini Modu ile dikkatinizi dağıtmadan verimliliğinizi artırır.',
+        fullDesc: 'Pomodoro Pro, derin çalışma (deep work) seanslarınız için geliştirilmiş hepsi bir arada bir asistandır. Arka planda çalışan reklamsız YouTube oynatıcısı ve ekranın köşesinde duran minimalist Mini Modu ile dikkatinizi dağıtmadan verimliliğinizi artırır.',
         icon: BASE + 'PomodoroPro/Pomodorologo.png',
         iconEmoji: '🍅',
         features: [
@@ -134,25 +134,26 @@ const SOFTWARE_PRODUCTS = [
         ],
         link: 'https://github.com/barisys1999/pax-systemic/releases/download/PomodoroPro/PomodoroPro_Installer.exe',
         changelog: [
-            { version: 'v2.1.0', date: 'Mayıs 2026', notes: ['Mini mod eklendi.', 'YouTube entegrasyonu güçlendirildi.'] }
+            { version: 'v1.0.0', date: 'Haziran 2026', notes: ['İlk sürüm yayınlandı.', 'Crossfade özellikli kesintisiz ses motoru eklendi.', 'YouTube arka plan oynatıcısı entegre edildi.'] }
         ]
     },
     {
         id: 'audiopro',
         category: 'medya',
-        catName: 'Medya Araçları',
+        catName: 'Ses & Medya Araçları',
         title: 'Audio Editor',
-        subtitle: 'Profesyonel Ses Düzenleme & Miksaj Aracı',
-        shortDesc: 'Ses kaydetme, düzenleme ve format dönüştürme için profesyonel masaüstü aracı.',
-        fullDesc: 'Audio Editor, Windows için tasarlanmış hafif ve güçlü bir ses düzenleme yazılımıdır. Dalga formu görüntüleme, çok parçalı düzenleme ve gelişmiş efekt zinciriyle profesyonel sonuçlar elde edin.',
+        subtitle: 'Gelişmiş Ses Düzenleme & Optimizasyon',
+        shortDesc: 'Gerçek zamanlı EQ, spektral gürültü giderme ve akıllı döngü (Smart Loop) ile profesyonel ses düzenleyici.',
+        fullDesc: 'AudioPro, karmaşık stüdyo yazılımlarına gerek kalmadan ses dosyalarınızı optimize etmenizi sağlar. Gerçek zamanlı 7-bant EQ ile frekansları anında ayarlayabilir, spektral gürültü giderme ile dip sesleri temizleyebilir ve Akıllı Döngü Motoru (Smart Loop) ile müzik veya ortam sesleri için kusursuz kesim noktalarını saniyeler içinde bulabilirsiniz.',
         icon: BASE + 'AudioEditor/AudioForgelogo.png',
         iconEmoji: '🎛️',
         features: [
-            'Çok Parçalı (Multi-Track) Ses Düzenleme',
-            'Gerçek Zamanlı Dalga Formu Görüntüleme',
-            'MP3, WAV, FLAC, OGG Format Desteği',
-            'Gürültü Azaltma ve EQ Filtreleri',
-            'Toplu Dosya İşleme (Batch Processing)'
+            'Gerçek Zamanlı 7-Bant Parametrik EQ (Ekolayzer)',
+            'Spektral Gürültü Giderme (Noise Reduction)',
+            'Akıllı Döngü (Kusursuz Loop) Analiz Motoru',
+            'İnteraktif ve Yakınlaştırılabilir Dalga Formu (Waveform)',
+            'Fade in/out ve Crossfade Destekli Dışa Aktarma',
+            'WAV, MP3 ve M4A Formatlarında Kayıt İmkanı'
         ],
         images: [
             BASE + 'AudioEditor/1.png',
@@ -162,25 +163,25 @@ const SOFTWARE_PRODUCTS = [
         ],
         link: 'https://github.com/barisys1999/pax-systemic/releases/download/AudioEditor/AudioEditor_Installer.exe',
         changelog: [
-            { version: 'v1.3.0', date: 'Mayıs 2026', notes: ['EQ filtresi güncellendi.', 'Batch processing eklendi.'] }
+            { version: 'v1.0.0', date: 'Temmuz 2026', notes: ['İlk stabil sürüm yayınlandı.', 'Gerçek zamanlı EQ motoru eklendi.', 'Smart Loop algoritması optimize edildi.'] }
         ]
     },
     {
         id: 'paxvault',
         category: 'yonetim',
-        catName: 'Güvenlik Araçları',
+        catName: 'Güvenlik & Yönetim',
         title: 'Password Vault',
-        subtitle: 'Şifreleriniz İçin Yerel & Güvenli Kasa',
-        shortDesc: 'Tüm şifrelerinizi şifreli veritabanında saklayan, bulut gerektirmeyen güvenlik kasası.',
-        fullDesc: 'Password Vault, AES-256 şifreleme ile tüm parolalarınızı cihazınızda yerel olarak saklar. Bulut bağlantısı gerektirmez, internet olmadan da çalışır. Güçlü şifre üreticisi ve kategori yönetimi ile tüm dijital kimliklerinizi güvende tutun.',
+        subtitle: 'Ultra Güvenli Yerel Şifre Kasası',
+        shortDesc: 'Şifrelerinizi yerel diskinizde AES-GCM ile şifreleyin. 2FA, ekran kaydı koruması ve otomatik kilit ile tam güvenlik.',
+        fullDesc: 'Password Vault, bulut tabanlı şifre yöneticilerinin aksine verilerinizi cihazınızın dışına asla çıkarmaz. 15 Saniyelik otomatik pano (clipboard) temizleyicisi ve Google Authenticator (2FA) desteği ile dijital kimliklerinizi askeri düzeyde korur.',
         icon: BASE + 'PasswordVault/PasswordVault1logo.png',
         iconEmoji: '🔐',
         features: [
-            'AES-256 Askeri Düzey Şifreleme',
-            'Bulut Bağlantısı Gerektirmez — %100 Yerel',
-            'Güçlü Şifre Üreticisi (Özelleştirilebilir)',
-            'Kategori ve Etiket Tabanlı Organizasyon',
-            'Tek Tıkla Kopyalama ve Otomatik Temizleme'
+            'AES-GCM 256-bit ve PBKDF2 Şifreleme Altyapısı',
+            'Google Authenticator / TOTP (2FA) Desteği',
+            '15 Saniyelik Otomatik Pano (Clipboard) Temizleme',
+            'Hareketsizlik (AFK) Algılayıcı ve Otomatik Kilit',
+            'Acil Durumlar İçin Kurtarma Anahtarı ve Nükleer Sıfırlama'
         ],
         images: [
             BASE + 'PasswordVault/1.png',
@@ -190,25 +191,26 @@ const SOFTWARE_PRODUCTS = [
         ],
         link: 'https://github.com/barisys1999/pax-systemic/releases/download/PasswordVault/PasswordVault_Installer.exe',
         changelog: [
-            { version: 'v1.2.0', date: 'Mayıs 2026', notes: ['Şifre güçlük göstergesi eklendi.'] }
+            { version: 'v2.0.0', date: 'Eylül 2026', notes: ['İlk sürüm yayınlandı.', 'Windows DPAPI ile güvenli yedekleme (.pvault) eklendi.', 'Ekran okuyucu koruması (WDA_MONITOR) aktif edildi.'] }
         ]
     },
     {
         id: 'paxdownloader',
         category: 'medya',
-        catName: 'Medya Araçları',
+        catName: 'Medya & İndirme Araçları',
         title: 'PAX Downloader',
-        subtitle: 'Akıllı Dosya & İçerik İndirici',
-        shortDesc: 'Çoklu kaynak destekli, hız yönetimli gelişmiş dosya indirme yöneticisi.',
-        fullDesc: 'PAX Downloader, indirme işlemlerinizi hızlandırmak ve organize etmek için tasarlanmış güçlü bir yöneticidir. Parçalı indirme, bant genişliği kontrolü ve otomatik dosya sınıflandırma özellikleri sunar.',
+        subtitle: 'Yeni Nesil Multi-Thread Evrensel İndirme Yöneticisi',
+        shortDesc: 'Gelişmiş multi-thread indirme mimarisi, tarayıcı uzantısı entegrasyonu ve akıllı mini ilerleme paneli.',
+        fullDesc: 'PAX Downloader, en yüksek veri aktarım hızlarına ulaşmak için optimize edilmiş HttpClient çekirdeği, aria2c entegrasyonu ve multi-thread paralel bağlantı mimarisini temel alan modern bir indirme yöneticisidir. Proje şu anda aktif geliştirme aşamasındadır; kararlı indirme çekirdeği, uzantı haberleşme protokolleri ve sağ alt köşeye kenetlenen dinamik kullanıcı arayüzü başarıyla tamamlanmıştır. Yeni özellikler eklenmeye devam etmektedir.',
         icon: BASE + 'paxdownloader/paxdownloader.png',
         iconEmoji: '📥',
         features: [
-            'Parçalı İndirme ile Maksimum Hız',
-            'Bant Genişliği (Bandwidth) Kontrolü',
-            'Otomatik Dosya Türü Sınıflandırması',
-            'İndirme Kuyruğu ve Zamanlama',
-            'Tarayıcı Eklentisi Entegrasyonu'
+            'Evrensel İndirmeler İçin Ultra Hızlı Çekirdek (-N 32 Paralel Bağlantı Desteği)',
+            'Sosyal Medya Videoları İçin Çift Kanallı aria2c Entegrasyonu (-N 16 Desteği)',
+            'Tarayıcı Uzantısından (ExtensionMessage) Gelen Medya Akışlarını Anlık Yakalama',
+            'Masaüstü Sağ Alt Köşesine Sabitlenen, Canlı Aşama (Stage) Göstergeli Mini Progress Penceresi',
+            'Hız Göstergelerinde %/s Yerine Gerçek Zamanlı MB/s - KB/s Ölçümü ve Akıllı Kalan Süre (ETA) Algoritması',
+            'json Tabanlı Otomatik Geçmiş Yönetimi (Waiting, Downloading, Paused, Completed, Error)'
         ],
         images: [
             BASE + 'paxdownloader/1.png',
@@ -218,7 +220,9 @@ const SOFTWARE_PRODUCTS = [
         link: '#',
         isDev: true,
         changelog: [
-            { version: 'v0.8.0 (Beta)', date: 'Haziran 2026', notes: ['Parçalı indirme motoru tamamlandı.'] }
+            { version: 'v4.4 (Mevcut Aşama)', date: 'Mayıs 2026', notes: ['MainWindow uzantı entegrasyon katmanı ve aksiyon yakalayıcılar tamamlandı.', 'Hız göstergeleri gerçek MB/s ve KB/s değerlerine uyarlandı.', 'Çift mini progress penceresi açılmasını önleyen hata düzeltmeleri (double-close fix) uygulandı.'] },
+            { version: 'v4.2 (Arayüz & Kontroller)', date: 'Mayıs 2026', notes: ['Sağ alt köşeye otomatik konumlanan (PositionWindow) akıllı MiniProgressWindow tasarlandı.', 'Pause (Duraklat), Resume (Devam Et) ve Cancel (İptal) tetikleyicileri prototiplendi.'] },
+            { version: 'v1.0.0 (Temel Çekirdek)', date: 'Nisan 2026', notes: ['DownloadItem veri modeli ve INotifyPropertyChanged arayüz mimarisi kurgulandı.', 'Durum renk kodlamaları ve dinamik ProgressBar veri bağlamaları eklendi.'] }
         ]
     },
     {
@@ -227,23 +231,24 @@ const SOFTWARE_PRODUCTS = [
         catName: 'Yapay Zeka & Sistem',
         title: 'PAX Asistan',
         subtitle: 'Otonom Masaüstü Yapay Zeka Asistanı',
-        shortDesc: 'Yerel AI (Ollama), 2 katmanlı ses tanıma (Vosk+Whisper) ve el takibi sunan interaktif robot asistan.',
-        fullDesc: 'PAX Asistan; farenizi takip eden dinamik bir robot yüze sahip, tamamen çevrimdışı çalışabilen otonom bir sistem asistanıdır. Gelişmiş algılama mimarisi ile sizi hem duyar, hem görür, hem de anlar.',
+        shortDesc: 'Yerel AI (Ollama), 2 katmanlı ses tanıma (Vosk+Whisper) ve kamera ile el takibi sunan interaktif robot asistan.',
+        fullDesc: 'PAX Asistan; farenizi takip eden dinamik bir robot yüze sahip, tamamen çevrimdışı çalışabilen otonom bir sistem asistanıdır. Gelişmiş 3 katmanlı algılama mimarisi ile sizi hem duyar (Vosk & Whisper), hem görür (MediaPipe El Takibi), hem de anlar (Ollama LLM). Proje, anlık donanım entegrasyonları ve komut sistemleriyle aktif geliştirme aşamasındadır.',
         icon: BASE + 'paxasistan/Pax%20Asistanlogo.png',
         iconEmoji: '🤖',
         features: [
-            'Vosk (hızlı) ve Whisper (yüksek doğruluk) paralel ses motoru',
-            'Ollama LLM: Qwen/Llama modelleriyle doğal dil işleme',
-            'MediaPipe üzerinden jest algılama',
-            'Fare imlecini takip eden gözler ve otomatik mimikler',
-            'Gelişmiş Komut Yöneticisi ve Sabit Dinleme Modu'
+            'Katman 1 & 2 Ses Motoru: Vosk (Hızlı anlık tanıma) ve Whisper (Yüksek doğruluk) paralel entegrasyonu',
+            'Katman 3 LLM (Ollama): Qwen/Llama modelleriyle JSON tabanlı doğal dil işleme ve sohbet yeteneği',
+            'Kameralı Takip: Python/MediaPipe üzerinden UDP soketleriyle 0 gecikmeli jest (el hareketi) algılama',
+            'Canlı Robot Arayüzü: Fare imlecini takip eden gözler, otomatik göz kırpma, mutlu/kızgın/şaşkın mimikler ve Idle (bekleme) motoru',
+            'Gelişmiş Komut Yöneticisi: Özel klavye/makro kombinasyonları, sistem kontrolü ve "Sabit Dinleme" modu'
         ],
         images: [BASE + 'paxasistan/1.png'],
         link: '#',
         isDev: true,
         changelog: [
-            { version: 'v2.5', date: 'Güncel', notes: ['Ollama LLM entegrasyonu tamamlandı.'] },
-            { version: 'v1.0', date: 'Başlangıç', notes: ['Vosk ve Whisper ses motorları entegre edildi.'] }
+            { version: 'v2.5 (Mevcut Aşama)', date: 'Güncel', notes: ['Ollama LLM entegrasyonu tamamlandı ve Tool Calling (JSON ayrıştırma) aktif edildi.', 'Python tabanlı el hareketleri (GestureService) WPF UI ile bağlandı.'] },
+            { version: 'v1.5 (Arayüz & Animasyon)', date: 'Önceki Aşama', notes: ['Robot yüz mimikleri (Idle motoru, kafa yaylanması, fare takibi) eklendi.', 'Sistem komutlarını JSON üzerinden yöneten KomutModel altyapısı kuruldu.'] },
+            { version: 'v1.0 (Çekirdek)', date: 'Başlangıç', notes: ['Vosk ve Whisper ses motorları sisteme entegre edildi.'] }
         ]
     },
     {
@@ -253,13 +258,13 @@ const SOFTWARE_PRODUCTS = [
         title: 'Pax Link',
         subtitle: 'Nöral Bağlantı Tabanlı Sesli İletişim',
         shortDesc: 'WebRTC tabanlı, Opus codec destekli yüksek sadakatli sesli iletişim platformu.',
-        fullDesc: 'Pax Link, Pax Systemic ekosisteminin iletişim katmanıdır. Opus codec entegrasyonlu ses işleme (DSP), WebRTC üzerinden gerçek zamanlı sesli veri aktarımı ve socket.io tabanlı otonom çağrı yönetimini içerir.',
+        fullDesc: 'Pax Link, Pax Systemic ekosisteminin mevcut iletişim katmanıdır. Opus codec entegrasyonlu yüksek sadakatli ses işleme (DSP), WebRTC üzerinden gerçek zamanlı sesli veri aktarımı ve socket.io tabanlı otonom çağrı yönetim sistemini içerir. Tamamen yerel (native) WPF mimarisi üzerine kurgulanmıştır.',
         icon: null,
         iconEmoji: '📡',
         features: [
             'WebRTC P2P (ICE/STUN/TURN) Sinyalleşme ve Görüşme Yönetimi',
-            'Opus Tabanlı Düşük Gecikmeli Ses İşleme',
-            'Socket.io ile Otonom Çağrı Sinyalleşme Motoru',
+            'Opus Tabanlı Düşük Gecikmeli Ses İşleme (Jitter Buffer & PLC)',
+            'Socket.io ile Otonom Çağrı (Incoming/Outgoing) Sinyalleşme Motoru',
             'Gelişmiş Gürültü Engelleme, EQ ve Dinamik Gain Kontrolü',
             'Minimalist, Kaynak Dostu Masaüstü İstemcisi'
         ],
@@ -273,7 +278,7 @@ const SOFTWARE_PRODUCTS = [
         link: '#',
         isDev: true,
         changelog: [
-            { version: 'v0.1.0 (Alfa)', date: 'Mayıs 2026', notes: ['WebRTC sinyalleşme katmanı tamamlandı.'] }
+            { version: 'v0.1.0 (Alfa)', date: 'Mayıs 2026', notes: ['WebRTC sinyalleşme katmanı (Offer/Answer/Candidate) başarıyla tamamlandı.', 'Socket.io (Auth Token) ile güvenli oda bağlantıları kurgulandı.', 'JitterBufferWaveProvider mimarisi ile ses akış senkronizasyonu sağlandı.'] }
         ]
     }
 ];
