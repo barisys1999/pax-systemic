@@ -304,7 +304,7 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
 import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc,
          addDoc, query, orderBy, writeBatch, Timestamp }
     from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
-// Firebase Storage kullanılmıyor — Cloudinary kullanılıyor
+// Görseller artık dosya yüklemesi ile değil, doğrudan GitHub raw URL'leri olarak ekleniyor.
 
 const firebaseConfig = {
     apiKey: "AIzaSyAKVWcyice-3w2Ua7xiNnYh5ZGVdBl8qWA",
@@ -319,9 +319,6 @@ const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
-// ── Cloudinary config ──────────────────
-const CLOUDINARY_CLOUD  = 'dtesozgzo';
-const CLOUDINARY_PRESET = 'paxsystemic';
 
 // ═══════════════════════════════════════
 // AUTH
@@ -482,10 +479,6 @@ window.clearAll = async function() {
 // ═══════════════════════════════════════
 let cmsCollection  = '';   // 'yazilimlar' | 'oyunlar'
 let editingDocId   = null; // null = yeni kayıt
-let uploadedImages = [];   // {url, storagePath} listesi (kayıtlı olanlar)
-let pendingFiles   = [];   // File nesneleri (yüklenecek)
-let iconUrl        = '';
-let pendingIconFile = null;
 
 // ── Load list ──────────────────────────
 window.loadCmsItems = async function(col) {
@@ -533,10 +526,6 @@ window.loadCmsItems = async function(col) {
 window.openCmsModal = function(col, data = null, docId = null) {
     cmsCollection  = col;
     editingDocId   = docId;
-    uploadedImages = data?.images ? data.images.map(u => ({url:u, storagePath:null})) : [];
-    pendingFiles   = [];
-    iconUrl        = data?.icon || '';
-    pendingIconFile = null;
 
     const isGame = col === 'oyunlar';
     document.getElementById('modalTitle').textContent = docId
@@ -557,6 +546,7 @@ window.openCmsModal = function(col, data = null, docId = null) {
 
     const featuresHtml = (data?.features || ['']).map(f => featureRow(f)).join('');
     const changelogHtml = (data?.changelog || []).map(cl => changelogBlock(cl)).join('');
+    const imagesHtml = (data?.images && data.images.length > 0 ? data.images : ['']).map(u => imageUrlRow(u)).join('');
 
     document.getElementById('modalBody').innerHTML = `
         <div class="form-row">
@@ -617,27 +607,19 @@ window.openCmsModal = function(col, data = null, docId = null) {
         <div class="section-divider"></div>
 
         <div class="form-group">
-            <label class="form-label">İkon Görseli <span>(PNG/JPG — isteğe bağlı)</span></label>
-            <div class="img-upload-area" id="iconUploadArea" onclick="document.getElementById('iconFileInput').click()" ondragover="dragOver(event,'iconUploadArea')" ondragleave="dragLeave('iconUploadArea')" ondrop="dropIcon(event)">
-                <input type="file" id="iconFileInput" accept="image/*" onchange="pickIconFile(event)">
-                <div id="iconPreviewWrap">
-                    ${iconUrl ? `<img src="${esc(iconUrl)}" style="max-height:60px;border-radius:8px;margin-bottom:8px;">` : `<div class="img-upload-icon">🖼</div>`}
-                    <div class="img-upload-text">İkon yükle</div>
-                    <div class="img-upload-sub">PNG, JPG — 512×512 önerilir</div>
-                </div>
+            <label class="form-label">İkon Görseli URL'i <span>(GitHub raw link — isteğe bağlı)</span></label>
+            <input type="text" class="form-input" id="fi_icon" value="${esc(data?.icon||'')}"
+                   placeholder="https://raw.githubusercontent.com/barisys1999/images/main/gorseller/.../logo.png"
+                   oninput="updateIconPreview(this.value)">
+            <div id="iconPreviewWrap" style="margin-top:10px;">
+                ${data?.icon ? `<img src="${esc(data.icon)}" style="max-height:60px;border-radius:8px;" onerror="this.style.display='none'">` : ''}
             </div>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Ekran Görüntüleri</label>
-            <div class="img-upload-area" id="imgUploadArea" onclick="document.getElementById('imgFileInput').click()" ondragover="dragOver(event,'imgUploadArea')" ondragleave="dragLeave('imgUploadArea')" ondrop="dropImages(event)">
-                <input type="file" id="imgFileInput" accept="image/*" multiple onchange="pickImageFiles(event)">
-                <div class="img-upload-icon">📸</div>
-                <div class="img-upload-text">Görsel ekle</div>
-                <div class="img-upload-sub">PNG, JPG — birden fazla seçebilirsiniz</div>
-            </div>
-            <div class="img-preview-list" id="imgPreviewList"></div>
-            <div class="upload-progress" id="uploadProgress">Yükleniyor...</div>
+            <label class="form-label">Ekran Görüntüleri <span>(GitHub raw link'leri)</span></label>
+            <div class="dynamic-list" id="imagesList">${imagesHtml}</div>
+            <button class="add-row-btn" onclick="addImageUrlRow()">+ Görsel URL Ekle</button>
         </div>
 
         <div class="section-divider"></div>
@@ -663,7 +645,6 @@ window.openCmsModal = function(col, data = null, docId = null) {
         if (sel) sel.value = data.category;
     }
 
-    renderImagePreviews();
     document.getElementById('cmsModal').classList.add('open');
 };
 
@@ -673,6 +654,26 @@ function featureRow(val) {
         <button class="rm-btn" onclick="this.parentNode.remove()">✕</button>
     </div>`;
 }
+
+function imageUrlRow(val) {
+    return `<div class="dynamic-item">
+        <input type="text" value="${esc(val)}" placeholder="https://raw.githubusercontent.com/barisys1999/images/main/gorseller/.../1.png">
+        <button class="rm-btn" onclick="this.parentNode.remove()">✕</button>
+    </div>`;
+}
+
+window.addImageUrlRow = () => {
+    const el = document.createElement('div');
+    el.innerHTML = imageUrlRow('');
+    document.getElementById('imagesList').appendChild(el.firstChild);
+};
+
+window.updateIconPreview = (url) => {
+    const wrap = document.getElementById('iconPreviewWrap');
+    wrap.innerHTML = url
+        ? `<img src="${esc(url)}" style="max-height:60px;border-radius:8px;" onerror="this.style.display='none'">`
+        : '';
+};
 
 function changelogBlock(cl) {
     const notes = (cl.notes || ['']).map(n =>
@@ -717,75 +718,6 @@ window.updateCatName = function(sel) {
     if (inp && map[sel.value]) inp.value = map[sel.value];
 };
 
-// ── Image handling ─────────────────────
-window.dragOver  = (e, id) => { e.preventDefault(); document.getElementById(id)?.classList.add('drag'); };
-window.dragLeave = (id)    => { document.getElementById(id)?.classList.remove('drag'); };
-
-window.dropImages = (e) => {
-    e.preventDefault(); dragLeave('imgUploadArea');
-    const files = [...e.dataTransfer.files].filter(f => f.type.startsWith('image/'));
-    pendingFiles.push(...files); renderImagePreviews();
-};
-window.dropIcon = (e) => {
-    e.preventDefault(); dragLeave('iconUploadArea');
-    const file = [...e.dataTransfer.files].find(f => f.type.startsWith('image/'));
-    if (file) { pendingIconFile = file; renderIconPreview(file); }
-};
-
-window.pickImageFiles = (e) => {
-    const files = [...e.target.files];
-    pendingFiles.push(...files); renderImagePreviews(); e.target.value = '';
-};
-window.pickIconFile = (e) => {
-    const file = e.target.files[0];
-    if (file) { pendingIconFile = file; renderIconPreview(file); e.target.value = ''; }
-};
-
-function renderIconPreview(file) {
-    const wrap = document.getElementById('iconPreviewWrap');
-    const url  = URL.createObjectURL(file);
-    wrap.innerHTML = `<img src="${url}" style="max-height:60px;border-radius:8px;margin-bottom:8px;">
-        <div class="img-upload-text">İkon seçildi: ${file.name}</div>`;
-}
-
-function renderImagePreviews() {
-    const list = document.getElementById('imgPreviewList');
-    if (!list) return;
-    const savedHtml = uploadedImages.map((img, i) => `
-        <div class="img-preview-item">
-            <img src="${img.url}" onerror="this.src=''">
-            <button class="remove-img" onclick="removeSavedImg(${i})">✕</button>
-        </div>
-    `).join('');
-    const pendingHtml = pendingFiles.map((f, i) => {
-        const url = URL.createObjectURL(f);
-        return `<div class="img-preview-item">
-            <img src="${url}">
-            <button class="remove-img" onclick="removePendingImg(${i})">✕</button>
-        </div>`;
-    }).join('');
-    list.innerHTML = savedHtml + pendingHtml;
-}
-
-window.removeSavedImg  = (i) => { uploadedImages.splice(i, 1); renderImagePreviews(); };
-window.removePendingImg = (i) => { pendingFiles.splice(i, 1); renderImagePreviews(); };
-
-// ── Cloudinary upload ──────────────────
-async function uploadFile(file) {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', CLOUDINARY_PRESET);
-    formData.append('folder', 'paxsystemic');
-
-    const res  = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
-        method: 'POST',
-        body: formData
-    });
-    if (!res.ok) throw new Error('Cloudinary yükleme hatası: ' + res.statusText);
-    const data = await res.json();
-    return { url: data.secure_url, publicId: data.public_id };
-}
-
 // ── Save ──────────────────────────────
 window.saveCmsItem = async function() {
     const btn   = document.getElementById('modalSaveBtn');
@@ -795,30 +727,15 @@ window.saveCmsItem = async function() {
     btn.disabled = true; btn.textContent = 'Kaydediliyor...';
 
     try {
-        // 1) Upload pending images
-        const progEl = document.getElementById('uploadProgress');
-        if (pendingFiles.length > 0 || pendingIconFile) {
-            progEl.style.display = 'block';
-            progEl.textContent   = 'Görseller yükleniyor...';
-        }
-        const slug = title.toLowerCase().replace(/[^a-z0-9]/g, '-');
-        for (const file of pendingFiles) {
-            const result = await uploadFile(file);
-            uploadedImages.push(result);
-        }
-
-        // 2) Upload icon if pending
-        if (pendingIconFile) {
-            const res = await uploadFile(pendingIconFile);
-            iconUrl   = res.url;
-        }
-        progEl.style.display = 'none';
-
-        // 3) Collect features
+        // 1) Collect features
         const features = [...document.querySelectorAll('#featuresList .dynamic-item input')]
             .map(i => i.value.trim()).filter(Boolean);
 
-        // 4) Collect changelog
+        // 2) Collect image URLs
+        const images = [...document.querySelectorAll('#imagesList .dynamic-item input')]
+            .map(i => i.value.trim()).filter(Boolean);
+
+        // 3) Collect changelog
         const changelog = [...document.querySelectorAll('#changelogList .cl-block')].map(block => {
             const inputs = block.querySelectorAll('.cl-block__head input');
             const notes  = [...block.querySelectorAll('.cl-notes .dynamic-item input')]
@@ -826,7 +743,7 @@ window.saveCmsItem = async function() {
             return { version: inputs[0]?.value.trim()||'', date: inputs[1]?.value.trim()||'', notes };
         }).filter(c => c.version);
 
-        // 5) Build document
+        // 4) Build document
         const data = {
             title,
             subtitle:   document.getElementById('fi_subtitle')?.value.trim()  || '',
@@ -839,8 +756,8 @@ window.saveCmsItem = async function() {
             link:       document.getElementById('fi_link')?.value.trim()       || '#',
             isDev:      document.getElementById('fi_isDev')?.checked           || false,
             isRequest:  document.getElementById('fi_isRequest')?.checked       || false,
-            icon:       iconUrl || null,
-            images:     uploadedImages.map(i => i.url),
+            icon:       document.getElementById('fi_icon')?.value.trim()       || null,
+            images,
             features,
             changelog,
             updatedAt:  Timestamp.now()
@@ -888,7 +805,6 @@ window.deleteCmsItem = async function(col, id, title) {
 
 window.closeCmsModal = function() {
     document.getElementById('cmsModal').classList.remove('open');
-    pendingFiles = []; uploadedImages = []; pendingIconFile = null;
 };
 
 // ═══════════════════════════════════════

@@ -3,241 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Systemic Software | Yazılım Kataloğu — Pax Systemic</title>
-    <meta name="description" content="Systemic Software: Sistem optimizasyonu, şifre yönetimi, medya araçları ve otomasyon için Windows uygulamaları.">
+    <title>Pax Systemic | Dijital Yazılım & Oyun Stüdyosu</title>
+    <meta name="description" content="Pax Systemic: Masaüstü yazılımları ve indie oyunlar geliştiren bağımsız bir dijital stüdyo. Barış Yurdunuseven tarafından kuruldu.">
 
-    <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="../css/catalog.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/portal.css">
+
+    <script src="js/software-data.js"></script>
+    <script src="js/games-data.js"></script>
 
     <style>
-        :root {
-            --accent:      #2454FF;
-            --accent-ink:  #1535CC;
-            --accent-soft: rgba(36, 84, 255, 0.08);
-            --accent-line: rgba(36, 84, 255, 0.28);
-        }
-        .feature-list li::before {
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232454FF' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
-        }
-        .page-loading {
-            display: flex; align-items: center; justify-content: center;
-            min-height: 40vh; flex-direction: column; gap: 16px;
-            color: #97A1B5; font-size: 0.9rem;
-        }
-        .page-loading-spinner {
-            width: 32px; height: 32px;
-            border: 3px solid rgba(36,84,255,0.15);
-            border-top-color: #2454FF;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .stat-num { transition: opacity 0.3s; }
+        .stat-num.loading { opacity: 0.3; }
+        .app-chip.skeleton { background: rgba(255,255,255,0.08); color: transparent; border-color: transparent; width: 80px; border-radius: 20px; }
     </style>
-</head>
-<body>
 
-<!-- ── HEADER ───────────────────────────── -->
-<header class="site-header">
-    <a href="../index.html" class="logo">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Pax Systemic",
+      "url": "https://barisys1999.github.io/pax-systemic/",
+      "founder": { "@type": "Person", "name": "Barış Yurdunuseven" }
+    }
+    </script>
+</head>
+<body class="portal-page">
+
+<!-- ── Header ───────────────────────────── -->
+<header class="portal-header">
+    <div class="logo">
         <span class="logo-mark"></span>
         PAX <em>SYSTEMIC</em>
-    </a>
-    <nav class="main-nav">
-        <a href="index.html" class="nav-link is-active-blue">Yazılımlar</a>
-        <a href="../oyunlar/index.html" class="nav-link">Oyunlar</a>
-    </nav>
-    <div class="header-right">
-        <a href="../index.html" class="btn btn-ghost btn-sm">← Ana Sayfa</a>
+    </div>
+    <div class="portal-header-right">
+        <a href="yazilimlar/index.html">Yazılımlar</a>
+        <a href="oyunlar/index.html">Oyunlar</a>
+        <a href="oneri.html">💬 Talep & Öneri</a>
     </div>
 </header>
 
-<!-- ── MAIN VIEW ────────────────────────── -->
-<div id="main-view" style="display:flex; flex-direction:column; align-items:center;">
+<div class="portal-wrap">
 
-    <div class="catalog-hero">
-        <span class="eyebrow is-blue">SYSTEMIC SOFTWARE</span>
-        <h1>Yazılım Kataloğu</h1>
-        <p>Sistem optimizasyonundan şifre güvenliğine, ses düzenlemeden otomasyon araçlarına — yüksek performanslı Windows uygulamaları.</p>
-    </div>
-
-    <div class="controls">
-        <div class="search-wrap">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
-            <input type="text" id="searchInput" class="search-input" placeholder="Yazılım ara..." oninput="updateGrid()">
-        </div>
-        <div class="filter-row" id="filterRow">
-            <button class="filter-btn active" onclick="setCategory('all', this)">Tümü</button>
-        </div>
-    </div>
-
-    <div id="page-loader" class="page-loading">
-        <div class="page-loading-spinner"></div>
-        <span>Yazılımlar yükleniyor...</span>
-    </div>
-    <div id="catalog-grid" style="display:none"></div>
-    <div id="no-results" style="display:none">Aradığınız kritere uygun yazılım bulunamadı.</div>
-
-</div>
-
-<!-- ── DETAIL VIEW ──────────────────────── -->
-<div id="detail-view">
-
-    <button class="back-btn" onclick="closeProduct()">← Yazılımlara Dön</button>
-
-    <div class="det-header">
-        <div class="det-header__main">
-            <div class="det-header__icon">
-                <img id="det-icon" src="" alt="">
-                <span id="det-icon-placeholder" class="det-header__icon-placeholder" style="display:none"></span>
+    <!-- ── Hero ─────────────────────────── -->
+    <section class="portal-hero">
+        <div class="portal-hero__inner">
+            <div class="portal-hero__eyebrow">
+                <span class="dot"></span>
+                Dijital Stüdyo · Ankara, TR
             </div>
-            <div class="det-header__text">
-                <span id="det-cat" class="det-header__cat"></span>
-                <h2 id="det-title"></h2>
-                <h4 id="det-sub"></h4>
-                <div id="det-meta" class="det-header__meta"></div>
+            <h1>Yazılım Üretiyor,<br><span>Oyun Tasarlıyoruz</span></h1>
+            <p>Masaüstü araçlarından indie oyun projelerine — Pax Systemic, her ürününü bir mühendislik disipliniyle inşa eder.</p>
+            <div class="portal-hero__ctas">
+                <a href="yazilimlar/index.html" class="portal-cta-blue">
+                    Yazılımları Keşfet →
+                </a>
+                <a href="oyunlar/index.html" class="portal-cta-violet">
+                    Oyunları İncele →
+                </a>
             </div>
+        </div>
+    </section>
+
+    <!-- ── Stats ────────────────────────── -->
+    <div class="portal-stats">
+        <div class="stat-item">
+            <span class="stat-num loading" id="statYazilim">—</span>
+            <span class="stat-label">Yazılım Ürünü</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-num loading" id="statOyun">—</span>
+            <span class="stat-label">Oyun Projesi</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-num">2026</span>
+            <span class="stat-label">Güncel Yıl</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-num">Windows</span>
+            <span class="stat-label">Platform</span>
         </div>
     </div>
 
-    <div class="det-tabs">
-        <button class="d-tab active" onclick="switchTab('overview', event)">Genel Bakış</button>
-        <button class="d-tab"        onclick="switchTab('changelog', event)">Sürüm Notları</button>
-    </div>
+    <!-- ── Product Lines ────────────────── -->
+    <section class="portal-lines">
 
-    <div id="pane-overview" class="tab-pane" style="display:block;">
-        <div class="det-overview">
-            <div class="det-text">
-                <p id="det-desc"></p>
-                <ul class="feature-list" id="det-features"></ul>
+        <!-- Software Line -->
+        <a href="yazilimlar/index.html" class="line-card line-card--blue">
+            <div class="line-card__icon">⚙️</div>
+            <div class="line-card__eyebrow">Systemic Software</div>
+            <h2>Yazılım<br>Kataloğu</h2>
+            <p>Sistem optimizasyonundan şifre güvenliğine, medya yönetiminden otomasyon araçlarına — her biri kendi alanında özelleşmiş Windows uygulamaları.</p>
+            <div class="line-card__apps" id="yazilimChips">
+                <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
             </div>
-            <div class="det-media" id="det-media"></div>
-        </div>
-    </div>
+            <div class="line-card__count" id="yazilimCount">Yükleniyor...</div>
+            <span class="line-card__cta">Yazılımları Gör →</span>
+        </a>
 
-    <div id="pane-changelog" class="tab-pane" style="display:none;">
-        <div class="timeline" id="det-changelog"></div>
-    </div>
-
-    <div class="download-section">
-        <p>Bu uygulamayı Windows cihazınıza indirin.</p>
-        <a href="#" id="det-btn" class="btn-download">↓ İndir</a>
-    </div>
-
-</div>
-
-<div id="lightbox" onclick="this.style.display='none'"></div>
-
-<!-- ── FOOTER ───────────────────────────── -->
-<footer class="site-footer">
-    <div class="container">
-        <div class="footer-grid">
-            <div class="footer-brand">
-                <a href="../index.html" class="logo"><span class="logo-mark"></span>PAX <em>SYSTEMIC</em></a>
-                <p>Masaüstü yazılımları ve indie oyunlar geliştiren bağımsız bir dijital stüdyo. Barış Yurdunuseven tarafından kuruldu.</p>
+        <!-- Games Line -->
+        <a href="oyunlar/index.html" class="line-card line-card--violet">
+            <div class="line-card__icon">🎮</div>
+            <div class="line-card__eyebrow">BarisByte Games</div>
+            <h2>Oyun<br>Kataloğu</h2>
+            <p>Atmosferik korku, mobil arcade ve açık dünya macerası — BarisByte Games, her türden indie oyuncuya hitap eden projeler üretiyor.</p>
+            <div class="line-card__apps" id="oyunChips">
+                <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
             </div>
-            <div class="footer-col">
-                <h5>Yazılımlar</h5>
-                <a href="#systemic"    onclick="openProductFromNav('systemic',   event)">Systemic Pro</a>
-                <a href="#paxvault"    onclick="openProductFromNav('paxvault',    event)">Password Vault</a>
-                <a href="#pomodoropro" onclick="openProductFromNav('pomodoropro', event)">Pomodoro Pro</a>
-                <a href="#audiopro"    onclick="openProductFromNav('audiopro',    event)">Audio Editor</a>
+            <div class="line-card__count" id="oyunCount">Yükleniyor...</div>
+            <span class="line-card__cta">Oyunları Gör →</span>
+        </a>
+
+    </section>
+
+    <!-- ── Value Props ───────────────────── -->
+    <section class="portal-props">
+        <div class="portal-props__grid">
+            <div class="prop-item">
+                <span class="prop-item__icon">🔒</span>
+                <h4>Yerel & Güvenli</h4>
+                <p>Uygulamalar verilerinizi cihazınızda tutar. Bulut bağımlılığı yok, reklam yok, izleme yok.</p>
             </div>
-            <div class="footer-col">
-                <h5>Oyunlar</h5>
-                <a href="../oyunlar/index.html#karanliktan">Karanlıktan Işığa</a>
-                <a href="../oyunlar/index.html#cosmohop">CosmoHop!</a>
-                <a href="../oyunlar/index.html#nexus">Project: Nexus</a>
+            <div class="prop-item">
+                <span class="prop-item__icon">⚡</span>
+                <h4>Kaynak Dostu</h4>
+                <p>Minimalist mimari. Düşük CPU ve RAM tüketimiyle arka planda sessizce çalışır.</p>
             </div>
-            <div class="footer-col">
-                <h5>Kurumsal</h5>
-                <a href="mailto:paxsystemic@gmail.com">İletişim</a>
-                <a href="../oneri.html">Talep & Öneri</a>
-                <a href="https://github.com/barisys1999/pax-systemic" target="_blank" rel="noopener">GitHub</a>
+            <div class="prop-item">
+                <span class="prop-item__icon">🛠</span>
+                <h4>Aktif Geliştirme</h4>
+                <p>Tüm ürünler sürekli güncellenir. Kullanıcı geri bildirimleri doğrudan yol haritasını şekillendirir.</p>
             </div>
         </div>
-        <div class="footer-bottom">
-            <span>© 2026 Pax Systemic. Tüm hakları saklıdır.</span>
-            <span>Kurucu: Barış Yurdunuseven</span>
-        </div>
-    </div>
-</footer>
+    </section>
 
-<!-- Firebase SDK -->
+    <!-- ── Footer ───────────────────────── -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="logo">
+                        <span class="logo-mark"></span>
+                        PAX <em>SYSTEMIC</em>
+                    </a>
+                    <p>Masaüstü yazılımları ve indie oyunlar geliştiren bağımsız bir dijital stüdyo. Barış Yurdunuseven tarafından kuruldu.</p>
+                </div>
+                <div class="footer-col">
+                    <h5>Yazılımlar</h5>
+                    <a href="yazilimlar/index.html#systemic">Systemic Pro</a>
+                    <a href="yazilimlar/index.html#paxvault">Password Vault</a>
+                    <a href="yazilimlar/index.html#pomodoropro">Pomodoro Pro</a>
+                    <a href="yazilimlar/index.html#audiopro">Audio Editor</a>
+                </div>
+                <div class="footer-col">
+                    <h5>Oyunlar</h5>
+                    <a href="oyunlar/index.html#karanliktan">Karanlıktan Işığa</a>
+                    <a href="oyunlar/index.html#cosmohop">CosmoHop!</a>
+                    <a href="oyunlar/index.html#nexus">Project: Nexus</a>
+                    <a href="oyunlar/index.html#sessizev">Sessiz Ev</a>
+                </div>
+                <div class="footer-col">
+                    <h5>Kurumsal</h5>
+                    <a href="oneri.html">💬 Talep & Öneri</a>
+                    <a href="https://github.com/barisys1999/pax-systemic" target="_blank" rel="noopener">GitHub</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2026 Pax Systemic. Tüm hakları saklıdır.</span>
+                <span>Kurucu: Barış Yurdunuseven</span>
+            </div>
+        </div>
+    </footer>
+
+</div><!-- /.portal-wrap -->
+
 <script type="module">
-    import { initializeApp }   from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, query, orderBy, where }
-                               from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getFirestore, collection, getDocs, query, orderBy }
+    from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAKVWcyice-3w2Ua7xiNnYh5ZGVdBl8qWA",
-        authDomain: "paxsystemic-f4aca.firebaseapp.com",
-        projectId: "paxsystemic-f4aca",
-        storageBucket: "paxsystemic-f4aca.firebasestorage.app",
-        messagingSenderId: "193147885737",
-        appId: "1:193147885737:web:aae1ec4c0b1c31bd0271b8"
-    };
+const firebaseConfig = {
+    apiKey: "AIzaSyAKVWcyice-3w2Ua7xiNnYh5ZGVdBl8qWA",
+    authDomain: "paxsystemic-f4aca.firebaseapp.com",
+    projectId: "paxsystemic-f4aca",
+    storageBucket: "paxsystemic-f4aca.firebasestorage.app",
+    messagingSenderId: "193147885737",
+    appId: "1:193147885737:web:aae1ec4c0b1c31bd0271b8"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const db  = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
 
-    function renderWithProducts(products) {
-        // Kategorilere göre filtre butonlarını oluştur
-        const cats = [...new Set(products.map(p => p.category).filter(Boolean))];
-        const filterRow = document.getElementById('filterRow');
-        filterRow.innerHTML = `<button class="filter-btn active" onclick="setCategory('all', this)">Tümü</button>`;
-        cats.forEach(cat => {
-            const label = products.find(p => p.category === cat)?.catName || cat;
-            filterRow.innerHTML += `<button class="filter-btn" onclick="setCategory('${cat}', this)">${label}</button>`;
-        });
+function renderYazilimStats(list) {
+    const count = list.length;
+    document.getElementById('statYazilim').textContent = count;
+    document.getElementById('statYazilim').classList.remove('loading');
 
-        document.getElementById('page-loader').style.display = 'none';
-        document.getElementById('catalog-grid').style.display = '';
-
-        // catalog.js'in global initCatalog fonksiyonunu çağır
-        window.initCatalog(products);
+    const chipsEl = document.getElementById('yazilimChips');
+    if (count > 0) {
+        const shown = list.slice(0, 4);
+        const rest  = count - shown.length;
+        chipsEl.innerHTML =
+            shown.map(p => `<span class="app-chip">${p.title}</span>`).join('') +
+            (rest > 0 ? `<span class="app-chip">+${rest} daha</span>` : '');
     }
+    document.getElementById('yazilimCount').textContent = `${count} uygulama · Windows`;
+}
 
-    function useStaticFallback(reason) {
-        if (reason) console.warn(reason);
-        if (typeof SOFTWARE_PRODUCTS !== 'undefined' && SOFTWARE_PRODUCTS.length > 0) {
-            renderWithProducts(SOFTWARE_PRODUCTS);
+function renderOyunStats(list) {
+    const count = list.length;
+    document.getElementById('statOyun').textContent = count;
+    document.getElementById('statOyun').classList.remove('loading');
+
+    const chipsEl = document.getElementById('oyunChips');
+    if (count > 0) {
+        const shown = list.slice(0, 4);
+        const rest  = count - shown.length;
+        chipsEl.innerHTML =
+            shown.map(p => `<span class="app-chip">${p.title}</span>`).join('') +
+            (rest > 0 ? `<span class="app-chip">+${rest} daha</span>` : '');
+    }
+    document.getElementById('oyunCount').textContent = `${count} proje · PC & Mobil`;
+}
+
+async function loadStats() {
+    // ── Yazılımlar ──
+    try {
+        const yazSnap = await getDocs(query(collection(db, 'yazilimlar'), orderBy('order', 'asc')));
+        const yazList = yazSnap.docs.map(d => d.data());
+        if (yazList.length > 0) {
+            renderYazilimStats(yazList);
+        } else if (typeof SOFTWARE_PRODUCTS !== 'undefined') {
+            renderYazilimStats(SOFTWARE_PRODUCTS);
         } else {
-            document.getElementById('page-loader').style.display = 'none';
-            document.getElementById('no-results').style.display = 'block';
+            renderYazilimStats([]);
         }
+    } catch(err) {
+        console.warn('Yazılım istatistikleri için Firestore yüklenemedi:', err);
+        renderYazilimStats(typeof SOFTWARE_PRODUCTS !== 'undefined' ? SOFTWARE_PRODUCTS : []);
     }
 
-    async function loadProducts() {
-        try {
-            const q    = query(collection(db, 'yazilimlar'), orderBy('order', 'asc'));
-            const snap = await getDocs(q);
-            const products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-            if (products.length === 0) {
-                // Firestore'da henüz doküman yok -> statik veriye düş
-                useStaticFallback('Firestore "yazilimlar" koleksiyonu boş, statik veri kullanılıyor.');
-                return;
-            }
-
-            renderWithProducts(products);
-        } catch(err) {
-            // Firestore'a erişilemedi (yetki/ağ/index hatası vb.) -> statik veriye düş
-            useStaticFallback('Firestore yüklenemedi, statik veri kullanılıyor: ' + err);
+    // ── Oyunlar ──
+    try {
+        const oyunSnap = await getDocs(query(collection(db, 'oyunlar'), orderBy('order', 'asc')));
+        const oyunList = oyunSnap.docs.map(d => d.data());
+        if (oyunList.length > 0) {
+            renderOyunStats(oyunList);
+        } else if (typeof GAMES_PRODUCTS !== 'undefined') {
+            renderOyunStats(GAMES_PRODUCTS);
+        } else {
+            renderOyunStats([]);
         }
+    } catch(err) {
+        console.warn('Oyun istatistikleri için Firestore yüklenemedi:', err);
+        renderOyunStats(typeof GAMES_PRODUCTS !== 'undefined' ? GAMES_PRODUCTS : []);
     }
+}
 
-    loadProducts();
-</script>
-
-<script src="../js/software-data.js"></script>
-<script src="../js/catalog.js"></script>
-<script>
-    function openProductFromNav(id, e) {
-        if (e) e.preventDefault();
-        openProduct(id);
-    }
+loadStats();
 </script>
 
 </body>
