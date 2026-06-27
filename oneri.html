@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talep & Öneri | Pax Systemic</title>
+    <meta name="description" content="Pax Systemic'e talep, öneri veya geri bildiriminizi gönderin.">
+    <link rel="stylesheet" href="css/global.css">
+    <style>
+        body { background: var(--paper); }
+
+        .feedback-wrap {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .feedback-main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 24px 60px;
+        }
+
+        .feedback-card {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-xl);
+            padding: 52px 56px;
+            max-width: 620px;
+            width: 100%;
+            box-shadow: var(--shadow-lg);
+            animation: fadeUp 0.5s ease both;
+        }
+
+        .feedback-card__icon {
+            width: 56px; height: 56px;
+            background: var(--blue-soft);
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 24px;
+        }
+
+        .feedback-card__eyebrow {
+            font-family: var(--font-mono, monospace);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--blue);
+            margin-bottom: 10px;
+        }
+
+        .feedback-card h1 {
+            font-family: var(--font-display);
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: -0.5px;
+            margin-bottom: 10px;
+        }
+
+        .feedback-card > p {
+            font-size: 0.93rem;
+            color: var(--slate);
+            line-height: 1.65;
+            margin-bottom: 36px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 7px;
+        }
+
+        .form-group label span {
+            color: var(--blue);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--paper);
+            border: 1px solid var(--line-strong);
+            border-radius: var(--radius-md);
+            font-family: var(--font-body);
+            font-size: 0.93rem;
+            color: var(--ink);
+            outline: none;
+            transition: border-color 0.18s, box-shadow 0.18s;
+            box-shadow: var(--shadow-sm);
+        }
+        .form-control::placeholder { color: var(--fog); }
+        .form-control:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 4px var(--blue-soft);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 130px;
+            line-height: 1.6;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .type-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235B6478' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 38px;
+        }
+
+        .char-count {
+            font-size: 0.74rem;
+            color: var(--fog);
+            text-align: right;
+            margin-top: 5px;
+        }
+        .char-count.warn { color: #E05C2A; }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px 24px;
+            background: var(--blue);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: var(--font-body);
+            font-size: 0.96rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 8px 24px var(--blue-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .submit-btn:hover:not(:disabled) {
+            background: var(--blue-ink);
+            transform: translateY(-1px);
+            box-shadow: 0 12px 32px rgba(36,84,255,0.3);
+        }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        /* Success state */
+        .success-state {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .success-state__icon {
+            width: 64px; height: 64px;
+            background: rgba(16,163,90,0.1);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem;
+            margin: 0 auto 20px;
+        }
+        .success-state h3 {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 10px;
+        }
+        .success-state p { font-size: 0.9rem; color: var(--slate); line-height: 1.6; }
+        .success-state .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 24px;
+            color: var(--blue);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.88rem;
+        }
+
+        /* Error banner */
+        .error-banner {
+            display: none;
+            background: rgba(224,92,42,0.08);
+            border: 1px solid rgba(224,92,42,0.25);
+            color: #C0451A;
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            font-size: 0.86rem;
+            margin-bottom: 16px;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .feedback-card { padding: 36px 24px; border-radius: var(--radius-lg); }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body class="feedback-wrap">
+
+<!-- Header -->
+<header class="site-header">
+    <a href="index.html" class="logo">
+        <span class="logo-mark"></span>
+        PAX <em>SYSTEMIC</em>
+    </a>
+    <nav class="main-nav">
+        <a href="yazilimlar/index.html" class="nav-link">Yazılımlar</a>
+        <a href="oyunlar/index.html" class="nav-link">Oyunlar</a>
+    </nav>
+    <div class="header-right">
+        <a href="index.html" class="btn btn-ghost btn-sm">← Ana Sayfa</a>
+    </div>
+</header>
+
+<main class="feedback-main">
+    <div class="feedback-card">
+        <div class="feedback-card__icon">💬</div>
+        <div class="feedback-card__eyebrow">Geri Bildirim</div>
+        <h1>Talep & Öneri</h1>
+        <p>Bir uygulama talebi, özellik önerisi veya herhangi bir geri bildiriminiz mi var? Doğrudan Barış'a ulaşın — her mesaj okunur.</p>
+
+        <div class="error-banner" id="errorBanner"></div>
+
+        <!-- Form -->
+        <div id="formSection">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Ad Soyad <span>*</span></label>
+                    <input type="text" id="inputName" class="form-control" placeholder="Ahmet Yılmaz" maxlength="80">
+                </div>
+                <div class="form-group">
+                    <label>E-posta <span>*</span></label>
+                    <input type="email" id="inputEmail" class="form-control" placeholder="ornek@mail.com">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Konu Türü <span>*</span></label>
+                <select id="inputType" class="form-control type-select">
+                    <option value="">— Seçin —</option>
+                    <option value="Özellik Önerisi">Özellik Önerisi</option>
+                    <option value="Yeni Yazılım Talebi">Yeni Yazılım Talebi</option>
+                    <option value="Hata Bildirimi">Hata Bildirimi</option>
+                    <option value="İşbirliği Teklifi">İşbirliği Teklifi</option>
+                    <option value="Genel Görüş">Genel Görüş</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>İlgili Ürün</label>
+                <select id="inputProduct" class="form-control type-select">
+                    <option value="Genel">Genel / Belirtmek istemiyorum</option>
+                    <option value="Systemic Pro">Systemic Pro</option>
+                    <option value="Password Vault">Password Vault</option>
+                    <option value="Pomodoro Pro">Pomodoro Pro</option>
+                    <option value="Audio Editor">Audio Editor</option>
+                    <option value="MakroApp">MakroApp</option>
+                    <option value="B-Streamer">B-Streamer</option>
+                    <option value="NetKasa Pro">NetKasa Pro</option>
+                    <option value="PAX Downloader">PAX Downloader</option>
+                    <option value="PAX Asistan">PAX Asistan</option>
+                    <option value="Pax Link">Pax Link</option>
+                    <option value="BarisByte Games">BarisByte Games</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Mesajınız <span>*</span></label>
+                <textarea id="inputMessage" class="form-control" placeholder="Önerinizi veya talebinizi detaylıca yazın..." maxlength="1000" oninput="updateCharCount()"></textarea>
+                <div class="char-count" id="charCount">0 / 1000</div>
+            </div>
+
+            <button class="submit-btn" id="submitBtn" onclick="submitForm()">
+                <span id="btnText">Gönder</span>
+                <span id="btnIcon">→</span>
+            </button>
+        </div>
+
+        <!-- Success -->
+        <div class="success-state" id="successState">
+            <div class="success-state__icon">✓</div>
+            <h3>Mesajınız İletildi!</h3>
+            <p>Geri bildiriminiz için teşekkürler. Barış mümkün olan en kısa sürede inceleyecek.</p>
+            <a href="index.html" class="back-link">← Ana Sayfaya Dön</a>
+        </div>
+    </div>
+</main>
+
+<!-- Footer minimal -->
+<footer style="text-align:center; padding: 24px; font-size: 0.78rem; color: var(--fog); border-top: 1px solid var(--line);">
+    © 2026 Pax Systemic · <a href="index.html" style="color:var(--blue); text-decoration:none;">Ana Sayfa</a>
+</footer>
+
+<script>
+    // ── Storage key prefix ─────────────────────
+    const STORAGE_KEY = 'pax_feedback_';
+
+    function updateCharCount() {
+        const msg = document.getElementById('inputMessage').value;
+        const el = document.getElementById('charCount');
+        el.textContent = `${msg.length} / 1000`;
+        el.classList.toggle('warn', msg.length > 900);
+    }
+
+    function showError(msg) {
+        const el = document.getElementById('errorBanner');
+        el.textContent = msg;
+        el.style.display = 'block';
+        setTimeout(() => el.style.display = 'none', 5000);
+    }
+
+    async function submitForm() {
+        const name    = document.getElementById('inputName').value.trim();
+        const email   = document.getElementById('inputEmail').value.trim();
+        const type    = document.getElementById('inputType').value;
+        const product = document.getElementById('inputProduct').value;
+        const message = document.getElementById('inputMessage').value.trim();
+
+        if (!name)    return showError('Lütfen adınızı girin.');
+        if (!email || !email.includes('@')) return showError('Geçerli bir e-posta adresi girin.');
+        if (!type)    return showError('Lütfen konu türünü seçin.');
+        if (!message) return showError('Mesaj alanı boş bırakılamaz.');
+
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        document.getElementById('btnText').textContent = 'Gönderiliyor...';
+        document.getElementById('btnIcon').textContent = '⏳';
+
+        const entry = {
+            id:        'fb_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+            timestamp: new Date().toISOString(),
+            name, email, type, product, message,
+            read: false
+        };
+
+        try {
+            // Load existing, append, save back
+            let existing = [];
+            try {
+                const res = await window.storage.get('pax_feedbacks', true);
+                if (res && res.value) existing = JSON.parse(res.value);
+            } catch(_) {}
+
+            existing.unshift(entry); // newest first
+            await window.storage.set('pax_feedbacks', JSON.stringify(existing), true);
+
+            // Show success
+            document.getElementById('formSection').style.display = 'none';
+            document.getElementById('successState').style.display = 'block';
+        } catch(err) {
+            btn.disabled = false;
+            document.getElementById('btnText').textContent = 'Gönder';
+            document.getElementById('btnIcon').textContent = '→';
+            showError('Bir hata oluştu, lütfen tekrar deneyin.');
+            console.error(err);
+        }
+    }
+</script>
+</body>
+</html>
