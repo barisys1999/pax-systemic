@@ -11,6 +11,12 @@ let catalogData    = [];   // dışarıdan set edilir (SOFTWARE_PRODUCTS vs)
 function initCatalog(products) {
     catalogData = products;
     renderGrid(products);
+
+    // Deep link support: index.html#systemic opens that product directly
+    const hashId = (location.hash || '').replace('#', '').trim();
+    if (hashId && products.some(p => p.id === hashId)) {
+        openProduct(hashId);
+    }
 }
 
 /* ── Grid ─────────────────────────────── */
@@ -78,6 +84,27 @@ function openProduct(id) {
     document.getElementById('det-sub').textContent   = p.subtitle;
     document.getElementById('det-desc').textContent  = p.fullDesc;
 
+    const catEl = document.getElementById('det-cat');
+    if (catEl) catEl.textContent = p.catName;
+
+    const metaEl = document.getElementById('det-meta');
+    if (metaEl) {
+        const latest = p.changelog && p.changelog[0];
+        let chips = '';
+        if (latest) {
+            chips += `<span class="meta-chip"><span class="dot"></span>${latest.version}</span>`;
+            chips += `<span class="meta-chip">${latest.date}</span>`;
+        }
+        if (p.isDev) {
+            chips += `<span class="meta-chip is-dev">Geliştiriliyor</span>`;
+        } else {
+            chips += `<span class="meta-chip is-live">Yayında</span>`;
+        }
+        metaEl.innerHTML = chips;
+    }
+
+    history.replaceState(null, '', '#' + id);
+
     // Features
     document.getElementById('det-features').innerHTML = p.features.map(f => `<li>${f}</li>`).join('');
 
@@ -122,6 +149,7 @@ function closeProduct() {
     document.getElementById('detail-view').style.display = 'none';
     document.getElementById('main-view').style.display   = 'flex';
     switchTab('overview');
+    history.replaceState(null, '', location.pathname);
 }
 
 /* ── Tabs ─────────────────────────────── */
