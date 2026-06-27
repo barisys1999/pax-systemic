@@ -304,8 +304,7 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
 import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc,
          addDoc, query, orderBy, writeBatch, Timestamp }
     from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
-import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject }
-    from "https://www.gstatic.com/firebasejs/11.0.0/firebase-storage.js";
+// Firebase Storage kullanılmıyor — Cloudinary kullanılıyor
 
 const firebaseConfig = {
     apiKey: "AIzaSyAKVWcyice-3w2Ua7xiNnYh5ZGVdBl8qWA",
@@ -316,10 +315,13 @@ const firebaseConfig = {
     appId: "1:193147885737:web:aae1ec4c0b1c31bd0271b8"
 };
 
-const app     = initializeApp(firebaseConfig);
-const auth    = getAuth(app);
-const db      = getFirestore(app);
-const storage = getStorage(app);
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+// ── Cloudinary config ──────────────────
+const CLOUDINARY_CLOUD  = 'dtesozgzo';
+const CLOUDINARY_PRESET = 'paxsystemic';
 
 // ═══════════════════════════════════════
 // AUTH
@@ -768,16 +770,20 @@ function renderImagePreviews() {
 window.removeSavedImg  = (i) => { uploadedImages.splice(i, 1); renderImagePreviews(); };
 window.removePendingImg = (i) => { pendingFiles.splice(i, 1); renderImagePreviews(); };
 
-// ── Upload helper ──────────────────────
-async function uploadFile(file, path) {
-    const storRef  = ref(storage, path);
-    const task     = uploadBytesResumable(storRef, file);
-    return new Promise((resolve, reject) => {
-        task.on('state_changed', null, reject, async () => {
-            const url = await getDownloadURL(task.snapshot.ref);
-            resolve({ url, storagePath: path });
-        });
+// ── Cloudinary upload ──────────────────
+async function uploadFile(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_PRESET);
+    formData.append('folder', 'paxsystemic');
+
+    const res  = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
+        method: 'POST',
+        body: formData
     });
+    if (!res.ok) throw new Error('Cloudinary yükleme hatası: ' + res.statusText);
+    const data = await res.json();
+    return { url: data.secure_url, publicId: data.public_id };
 }
 
 // ── Save ──────────────────────────────
@@ -797,16 +803,14 @@ window.saveCmsItem = async function() {
         }
         const slug = title.toLowerCase().replace(/[^a-z0-9]/g, '-');
         for (const file of pendingFiles) {
-            const path   = `${cmsCollection}/${slug}/${Date.now()}_${file.name}`;
-            const result = await uploadFile(file, path);
+            const result = await uploadFile(file);
             uploadedImages.push(result);
         }
 
         // 2) Upload icon if pending
         if (pendingIconFile) {
-            const path = `${cmsCollection}/${slug}/icon_${Date.now()}_${pendingIconFile.name}`;
-            const res  = await uploadFile(pendingIconFile, path);
-            iconUrl    = res.url;
+            const res = await uploadFile(pendingIconFile);
+            iconUrl   = res.url;
         }
         progEl.style.display = 'none';
 
