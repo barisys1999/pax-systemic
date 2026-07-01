@@ -1,9 +1,9 @@
 /* =============================================
    PAX SYSTEMIC — Software Product Data
-   Resimler: GitHub raw URL (Cloudflare'de de çalışır)
+   Resimler: proje içi /gorseller klasöründen (WebP), site kök dizinine göre mutlak yol
    ============================================= */
 
-const BASE = 'https://raw.githubusercontent.com/barisys1999/images/main/gorseller/';
+const BASE = '/gorseller/';
 
 const SOFTWARE_PRODUCTS = [
     {
@@ -21,7 +21,7 @@ const SOFTWARE_PRODUCTS = [
             'Youtube Hızlı Müzik ve Video İndirme',
             'Düşük İşlemci ve RAM Kullanımı'
         ],
-        images: [BASE + 'bstreamer/1.png'],
+        images: [BASE + 'bstreamer/1.webp'],
         link: 'https://github.com/barisys1999/pax-systemic/releases/download/B-Streamer/B_Streamer_Installer.exe',
         changelog: [
             { version: 'v1.2.0', date: 'Mayıs 2026', notes: ['İndirme motoru stabilize edildi.', 'Arayüz hızı artırıldı.'] },
@@ -36,7 +36,7 @@ const SOFTWARE_PRODUCTS = [
         subtitle: 'Kurumsal Yönetim & Muhasebe Paneli',
         shortDesc: 'Kurumsal veriler için modern arayüzlü envanter yönetim sistemi.',
         fullDesc: 'İşletmenizin finansal damarlarını tek merkezden yönetin. Pax Systemic ile geliştirilen bu sistem, envanter hareketlerinden cari hesap takibine kadar her süreci dijitalleştirir.',
-        icon: BASE + 'netkasa/netkasaprologo.png',
+        icon: BASE + 'netkasa/netkasaprologo.webp',
         iconEmoji: '🏢',
         features: [
             'Minimalist Dark Arayüz',
@@ -44,7 +44,7 @@ const SOFTWARE_PRODUCTS = [
             'Gelişmiş Filtreleme ve Raporlama',
             'SQL Tabanlı Güçlü Veri Güvenliği'
         ],
-        images: [BASE + 'netkasa/1.png'],
+        images: [BASE + 'netkasa/1.webp'],
         link: 'https://mail.google.com/mail/?view=cm&fs=1&to=paxsystemic@gmail.com&su=NetKasa%20Pro%20Lisans%20Talebi&body=Merhaba%2C%20NetKasa%20Pro%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum.',
         isRequest: true,
         changelog: [
@@ -59,7 +59,7 @@ const SOFTWARE_PRODUCTS = [
         subtitle: 'Hepsi Bir Arada Optimizasyon Aracı',
         shortDesc: 'Cihaz temizliği, hız testi ve sistem bilgilerini içeren hepsi bir arada araç.',
         fullDesc: 'Sisteminizi hızlı, temiz ve kontrol altında tutan profesyonel bir araç setidir. Cihaz temizliği, anlık ağ hız testi ve detaylı donanım izleme özelliklerini içerir.',
-        icon: BASE + 'systemic/systemicprologo.png',
+        icon: BASE + 'systemic/systemicprologo.webp',
         iconEmoji: '⚙️',
         features: [
             'Akıllı Kayıt Defteri Temizleme',
@@ -68,12 +68,12 @@ const SOFTWARE_PRODUCTS = [
             'Tek Tıkla Sistem Hızlandırma'
         ],
         images: [
-            BASE + 'systemic/1.png',
-            BASE + 'systemic/2.png',
-            BASE + 'systemic/3.png',
-            BASE + 'systemic/4.png',
-            BASE + 'systemic/5.png',
-            BASE + 'systemic/6.png'
+            BASE + 'systemic/1.webp',
+            BASE + 'systemic/2.webp',
+            BASE + 'systemic/3.webp',
+            BASE + 'systemic/4.webp',
+            BASE + 'systemic/5.webp',
+            BASE + 'systemic/6.webp'
         ],
         link: 'https://github.com/barisys1999/pax-systemic/releases/download/SystemicPro/SystemicPro_Installer.exe',
         changelog: [
@@ -88,7 +88,7 @@ const SOFTWARE_PRODUCTS = [
         subtitle: 'Akıllı Klavye & Fare Otomasyonu',
         shortDesc: 'Tekrarlayan işlerinizi saniyeler içinde halledin. Klavye ve fare komutlarınızı otomatize edin.',
         fullDesc: 'MakroApp, kullanıcıların klavye ve fare hareketlerini özelleştirilebilir senaryolarla otomatize etmesini sağlayan profesyonel bir araçtır. Oto-click ve otomatik metin girişi gibi işlemleri yüksek performansla gerçekleştirir.',
-        icon: BASE + 'makroapp/MakroApplogo.png',
+        icon: BASE + 'makroapp/MakroApplogo.webp',
         iconEmoji: '⌨️',
         features: [
             'Klavye ve Fare (Mouse 4/5) Tetikleyici Desteği',
@@ -98,9 +98,9 @@ const SOFTWARE_PRODUCTS = [
             'JSON Tabanlı Otomatik Ayar Kaydı'
         ],
         images: [
-            BASE + 'makroapp/1.png',
-            BASE + 'makroapp/2.png',
-            BASE + 'makroapp/3.png'
+            BASE + 'makroapp/1.webp',
+            BASE + 'makroapp/2.webp',
+            BASE + 'makroapp/3.webp'
         ],
         link: 'https://github.com/barisys1999/pax-systemic/releases/download/MakroAPP/MakroAPP_Installer.exe',
         changelog: [
@@ -115,7 +115,7 @@ const SOFTWARE_PRODUCTS = [
         subtitle: 'Gelişmiş Odaklanma & Ses Mikseri',
         shortDesc: 'Maksimum odaklanma için tasarlandı. Pomodoro sayacı, ortam sesleri ve YouTube müzik entegrasyonu.',
         fullDesc: 'Pomodoro Pro, derin çalışma (deep work) seanslarınız için geliştirilmiş hepsi bir arada bir asistandır. Arka planda çalışan reklamsız YouTube oynatıcısı ve ekranın köşesinde duran minimalist Mini Modu ile dikkatinizi dağıtmadan verimliliğinizi artırır.',
-        icon: BASE + 'PomodoroPro/Pomodorologo.png',
+        icon: BASE + 'PomodoroPro/Pomodorologo.webp',
         iconEmoji: '🍅',
         features: [
             'Özelleştirilebilir Pomodoro ve Mola Zamanlayıcısı',
@@ -126,11 +126,11 @@ const SOFTWARE_PRODUCTS = [
             'Rahatlatıcı 4-7-8 Nefes Egzersizi Modülü'
         ],
         images: [
-            BASE + 'PomodoroPro/1.png',
-            BASE + 'PomodoroPro/2.png',
-            BASE + 'PomodoroPro/3.png',
-            BASE + 'PomodoroPro/4.png',
-            BASE + 'PomodoroPro/5.png'
+            BASE + 'PomodoroPro/1.webp',
+            BASE + 'PomodoroPro/2.webp',
+            BASE + 'PomodoroPro/3.webp',
+            BASE + 'PomodoroPro/4.webp',
+            BASE + 'PomodoroPro/5.webp'
         ],
         link: 'https://github.com/barisys1999/pax-systemic/releases/download/Pomodoro/PomodoroPRO_Installer.exe',
         changelog: [
@@ -145,7 +145,7 @@ const SOFTWARE_PRODUCTS = [
         subtitle: 'Gelişmiş Ses Düzenleme & Optimizasyon',
         shortDesc: 'Gerçek zamanlı EQ, spektral gürültü giderme ve akıllı döngü (Smart Loop) ile profesyonel ses düzenleyici.',
         fullDesc: 'AudioPro, karmaşık stüdyo yazılımlarına gerek kalmadan ses dosyalarınızı optimize etmenizi sağlar. Gerçek zamanlı 7-bant EQ ile frekansları anında ayarlayabilir, spektral gürültü giderme ile dip sesleri temizleyebilir ve Akıllı Döngü Motoru (Smart Loop) ile müzik veya ortam sesleri için kusursuz kesim noktalarını saniyeler içinde bulabilirsiniz.',
-        icon: BASE + 'AudioEditor/AudioForgelogo.png',
+        icon: BASE + 'AudioEditor/AudioForgelogo.webp',
         iconEmoji: '🎛️',
         features: [
             'Gerçek Zamanlı 7-Bant Parametrik EQ (Ekolayzer)',
@@ -156,10 +156,10 @@ const SOFTWARE_PRODUCTS = [
             'WAV, MP3 ve M4A Formatlarında Kayıt İmkanı'
         ],
         images: [
-            BASE + 'AudioEditor/1.png',
-            BASE + 'AudioEditor/2.png',
-            BASE + 'AudioEditor/3.png',
-            BASE + 'AudioEditor/4.png'
+            BASE + 'AudioEditor/1.webp',
+            BASE + 'AudioEditor/2.webp',
+            BASE + 'AudioEditor/3.webp',
+            BASE + 'AudioEditor/4.webp'
         ],
         link: 'https://github.com/barisys1999/pax-systemic/releases/download/AudioEditor/AudioEditor_Installer.exe',
         changelog: [
@@ -174,7 +174,7 @@ const SOFTWARE_PRODUCTS = [
         subtitle: 'Ultra Güvenli Yerel Şifre Kasası',
         shortDesc: 'Şifrelerinizi yerel diskinizde AES-GCM ile şifreleyin. 2FA, ekran kaydı koruması ve otomatik kilit ile tam güvenlik.',
         fullDesc: 'Password Vault, bulut tabanlı şifre yöneticilerinin aksine verilerinizi cihazınızın dışına asla çıkarmaz. 15 Saniyelik otomatik pano (clipboard) temizleyicisi ve Google Authenticator (2FA) desteği ile dijital kimliklerinizi askeri düzeyde korur.',
-        icon: BASE + 'PasswordVault/PasswordVault1logo.png',
+        icon: BASE + 'PasswordVault/PasswordVault1logo.webp',
         iconEmoji: '🔐',
         features: [
             'AES-GCM 256-bit ve PBKDF2 Şifreleme Altyapısı',
@@ -184,10 +184,10 @@ const SOFTWARE_PRODUCTS = [
             'Acil Durumlar İçin Kurtarma Anahtarı ve Nükleer Sıfırlama'
         ],
         images: [
-            BASE + 'PasswordVault/1.png',
-            BASE + 'PasswordVault/2.png',
-            BASE + 'PasswordVault/3.png',
-            BASE + 'PasswordVault/4.png'
+            BASE + 'PasswordVault/1.webp',
+            BASE + 'PasswordVault/2.webp',
+            BASE + 'PasswordVault/3.webp',
+            BASE + 'PasswordVault/4.webp'
         ],
         link: 'https://github.com/barisys1999/pax-systemic/releases/download/PasswordVault/PasswordVault_Installer.exe',
         changelog: [
@@ -202,7 +202,7 @@ const SOFTWARE_PRODUCTS = [
         subtitle: 'Yeni Nesil Multi-Thread Evrensel İndirme Yöneticisi',
         shortDesc: 'Gelişmiş multi-thread indirme mimarisi, tarayıcı uzantısı entegrasyonu ve akıllı mini ilerleme paneli.',
         fullDesc: 'PAX Downloader, en yüksek veri aktarım hızlarına ulaşmak için optimize edilmiş HttpClient çekirdeği, aria2c entegrasyonu ve multi-thread paralel bağlantı mimarisini temel alan modern bir indirme yöneticisidir. Proje şu anda aktif geliştirme aşamasındadır; kararlı indirme çekirdeği, uzantı haberleşme protokolleri ve sağ alt köşeye kenetlenen dinamik kullanıcı arayüzü başarıyla tamamlanmıştır. Yeni özellikler eklenmeye devam etmektedir.',
-        icon: BASE + 'paxdownloader/paxdownloader.png',
+        icon: BASE + 'paxdownloader/paxdownloader.webp',
         iconEmoji: '📥',
         features: [
             'Evrensel İndirmeler İçin Ultra Hızlı Çekirdek (-N 32 Paralel Bağlantı Desteği)',
@@ -213,9 +213,9 @@ const SOFTWARE_PRODUCTS = [
             'json Tabanlı Otomatik Geçmiş Yönetimi (Waiting, Downloading, Paused, Completed, Error)'
         ],
         images: [
-            BASE + 'paxdownloader/1.png',
-            BASE + 'paxdownloader/2.png',
-            BASE + 'paxdownloader/3.png'
+            BASE + 'paxdownloader/1.webp',
+            BASE + 'paxdownloader/2.webp',
+            BASE + 'paxdownloader/3.webp'
         ],
         link: '#',
         isDev: true,
@@ -233,7 +233,7 @@ const SOFTWARE_PRODUCTS = [
         subtitle: 'Otonom Masaüstü Yapay Zeka Asistanı',
         shortDesc: 'Yerel AI (Ollama), 2 katmanlı ses tanıma (Vosk+Whisper) ve kamera ile el takibi sunan interaktif robot asistan.',
         fullDesc: 'PAX Asistan; farenizi takip eden dinamik bir robot yüze sahip, tamamen çevrimdışı çalışabilen otonom bir sistem asistanıdır. Gelişmiş 3 katmanlı algılama mimarisi ile sizi hem duyar (Vosk & Whisper), hem görür (MediaPipe El Takibi), hem de anlar (Ollama LLM). Proje, anlık donanım entegrasyonları ve komut sistemleriyle aktif geliştirme aşamasındadır.',
-        icon: BASE + 'paxasistan/Pax%20Asistanlogo.png',
+        icon: BASE + 'paxasistan/paxasistanlogo.webp',
         iconEmoji: '🤖',
         features: [
             'Katman 1 & 2 Ses Motoru: Vosk (Hızlı anlık tanıma) ve Whisper (Yüksek doğruluk) paralel entegrasyonu',
@@ -242,7 +242,7 @@ const SOFTWARE_PRODUCTS = [
             'Canlı Robot Arayüzü: Fare imlecini takip eden gözler, otomatik göz kırpma, mutlu/kızgın/şaşkın mimikler ve Idle (bekleme) motoru',
             'Gelişmiş Komut Yöneticisi: Özel klavye/makro kombinasyonları, sistem kontrolü ve "Sabit Dinleme" modu'
         ],
-        images: [BASE + 'paxasistan/1.png'],
+        images: [BASE + 'paxasistan/1.webp'],
         link: '#',
         isDev: true,
         changelog: [
@@ -269,11 +269,11 @@ const SOFTWARE_PRODUCTS = [
             'Minimalist, Kaynak Dostu Masaüstü İstemcisi'
         ],
         images: [
-            BASE + 'paxlink/1.png',
-            BASE + 'paxlink/2.png',
-            BASE + 'paxlink/3.png',
-            BASE + 'paxlink/4.png',
-            BASE + 'paxlink/5.png'
+            BASE + 'paxlink/1.webp',
+            BASE + 'paxlink/2.webp',
+            BASE + 'paxlink/3.webp',
+            BASE + 'paxlink/4.webp',
+            BASE + 'paxlink/5.webp'
         ],
         link: '#',
         isDev: true,

@@ -304,7 +304,7 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
 import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc,
          addDoc, query, orderBy, writeBatch, Timestamp }
     from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
-// Görseller GitHub raw URL'den çekiliyor
+// Görseller proje içi /gorseller klasöründen (WebP) çekiliyor
 
 const firebaseConfig = {
     apiKey: "AIzaSyAKVWcyice-3w2Ua7xiNnYh5ZGVdBl8qWA",
@@ -319,8 +319,8 @@ const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
-// GitHub raw base URL — tüm görseller buradan çekilir
-const GITHUB_BASE = 'https://raw.githubusercontent.com/barisys1999/images/main/gorseller/';
+// Yerel görsel klasörü — tüm görseller proje içindeki /gorseller klasöründen (WebP) çekilir
+const GITHUB_BASE = '/gorseller/';
 
 // ═══════════════════════════════════════
 // AUTH
@@ -616,9 +616,9 @@ window.openCmsModal = function(col, data = null, docId = null) {
         <div class="section-divider"></div>
 
         <div class="form-group">
-            <label class="form-label">İkon Görseli — GitHub Yolu <span>(isteğe bağlı, ör: netkasa/netkasaprologo.png)</span></label>
+            <label class="form-label">İkon Görseli — Dosya Yolu <span>(isteğe bağlı, /gorseller içinde, ör: netkasa/netkasaprologo.webp)</span></label>
             <div style="display:flex;gap:8px;align-items:center;">
-                <input type="text" class="form-input" id="fi_iconPath" value="${esc(data?.icon ? data.icon.replace(GITHUB_BASE,'') : '')}" placeholder="klasor/logo.png" oninput="previewIconFromPath(this.value)" style="flex:1;">
+                <input type="text" class="form-input" id="fi_iconPath" value="${esc(data?.icon ? data.icon.replace(GITHUB_BASE,'') : '')}" placeholder="klasor/logo.webp" oninput="previewIconFromPath(this.value)" style="flex:1;">
                 <button type="button" class="toolbar-btn" onclick="previewIconFromPath(document.getElementById('fi_iconPath').value)" style="white-space:nowrap;">Önizle</button>
             </div>
             <div id="iconPreviewWrap" style="margin-top:8px;">
@@ -627,8 +627,8 @@ window.openCmsModal = function(col, data = null, docId = null) {
         </div>
 
         <div class="form-group">
-            <label class="form-label">Ekran Görüntüleri — GitHub Yolları <span>(her satıra bir yol, ör: systemic/1.png)</span></label>
-            <textarea class="form-textarea" id="fi_imagePaths" rows="5" placeholder="systemic/1.png&#10;systemic/2.png&#10;systemic/3.png" oninput="renderImagePreviews()" style="font-family:monospace;font-size:0.82rem;">${(data?.images||[]).map(u => u.replace(GITHUB_BASE,'')).join('\n')}</textarea>
+            <label class="form-label">Ekran Görüntüleri — Dosya Yolları <span>(/gorseller içinde, her satıra bir yol, ör: systemic/1.webp)</span></label>
+            <textarea class="form-textarea" id="fi_imagePaths" rows="5" placeholder="systemic/1.webp&#10;systemic/2.webp&#10;systemic/3.webp" oninput="renderImagePreviews()" style="font-family:monospace;font-size:0.82rem;">${(data?.images||[]).map(u => u.replace(GITHUB_BASE,'')).join('\n')}</textarea>
             <div class="img-preview-list" id="imgPreviewList" style="margin-top:10px;"></div>
         </div>
 
