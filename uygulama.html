@@ -223,6 +223,8 @@
         <button class="admin-tab active" onclick="switchAdminTab('inbox', this)">📬 Gelen Kutusu</button>
         <button class="admin-tab" onclick="switchAdminTab('yazilimlar', this)">💻 Yazılımlar</button>
         <button class="admin-tab" onclick="switchAdminTab('oyunlar', this)">🎮 Oyunlar</button>
+        <button class="admin-tab" onclick="switchAdminTab('androidUygulamalar', this)">📱 Android Uygulamalar</button>
+        <button class="admin-tab" onclick="switchAdminTab('siteler', this)">🌐 Siteler</button>
     </div>
 
     <!-- ══ GELEN KUTUSU ══ -->
@@ -276,6 +278,32 @@
             <div class="loading-state" id="loadingOyunlar"><span class="spinner"></span> Oyunlar yükleniyor...</div>
             <div class="cms-grid" id="cmsGridOyunlar"></div>
             <div class="empty-state" id="emptyOyunlar"><div class="empty-state__icon">🎮</div><p>Henüz oyun eklenmemiş.</p></div>
+        </div>
+    </div>
+
+    <!-- ══ ANDROID UYGULAMALAR ══ -->
+    <div id="tab-androidUygulamalar" class="tab-content">
+        <div class="admin-body">
+            <div class="toolbar">
+                <h2>Android Uygulamalar</h2>
+                <button class="toolbar-btn primary" onclick="openCmsModal('androidUygulamalar')">+ Yeni Android Uygulama</button>
+            </div>
+            <div class="loading-state" id="loadingAndroidUygulamalar"><span class="spinner"></span> Android uygulamalar yükleniyor...</div>
+            <div class="cms-grid" id="cmsGridAndroidUygulamalar"></div>
+            <div class="empty-state" id="emptyAndroidUygulamalar"><div class="empty-state__icon">📱</div><p>Henüz Android uygulama eklenmemiş.</p></div>
+        </div>
+    </div>
+
+    <!-- ══ SİTELER ══ -->
+    <div id="tab-siteler" class="tab-content">
+        <div class="admin-body">
+            <div class="toolbar">
+                <h2>Siteler</h2>
+                <button class="toolbar-btn primary" onclick="openCmsModal('siteler')">+ Yeni Site</button>
+            </div>
+            <div class="loading-state" id="loadingSiteler"><span class="spinner"></span> Siteler yükleniyor...</div>
+            <div class="cms-grid" id="cmsGridSiteler"></div>
+            <div class="empty-state" id="emptySiteler"><div class="empty-state__icon">🌐</div><p>Henüz site eklenmemiş.</p></div>
         </div>
     </div>
 </div>
@@ -361,8 +389,10 @@ window.switchAdminTab = function(name, btn) {
     document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
     document.getElementById('tab-' + name).classList.add('active');
     btn.classList.add('active');
-    if (name === 'yazilimlar') loadCmsItems('yazilimlar');
-    if (name === 'oyunlar')    loadCmsItems('oyunlar');
+    if (name === 'yazilimlar')          loadCmsItems('yazilimlar');
+    if (name === 'oyunlar')             loadCmsItems('oyunlar');
+    if (name === 'androidUygulamalar')  loadCmsItems('androidUygulamalar');
+    if (name === 'siteler')             loadCmsItems('siteler');
 };
 
 // ═══════════════════════════════════════
@@ -537,10 +567,18 @@ window.openCmsModal = function(col, data = null, docId = null) {
     iconUrl        = data?.icon || '';
     pendingIconFile = null;
 
-    const isGame = col === 'oyunlar';
+    const isGame  = col === 'oyunlar';
+    const isAndroid = col === 'androidUygulamalar';
+    const isSite    = col === 'siteler';
+    const newTitleMap = {
+        yazilimlar: 'Yeni Yazılım Ekle',
+        oyunlar: 'Yeni Oyun Ekle',
+        androidUygulamalar: 'Yeni Android Uygulama Ekle',
+        siteler: 'Yeni Site Ekle'
+    };
     document.getElementById('modalTitle').textContent = docId
         ? `Düzenle — ${data?.title || ''}`
-        : (isGame ? 'Yeni Oyun Ekle' : 'Yeni Yazılım Ekle');
+        : (newTitleMap[col] || 'Yeni Ekle');
     document.getElementById('modalSaveBtn').textContent = docId ? 'Güncelle' : 'Kaydet';
 
     const catOptions = isGame
@@ -549,6 +587,16 @@ window.openCmsModal = function(col, data = null, docId = null) {
            <option value="macera">Aksiyon / Macera</option>
            <option value="strateji">Strateji</option>
            <option value="puzzle">Puzzle</option>`
+        : isAndroid
+        ? `<option value="uretkenlik">Üretkenlik</option>
+           <option value="eglence">Eğlence / Medya</option>
+           <option value="arac">Araçlar</option>
+           <option value="oyun">Mobil Oyun</option>`
+        : isSite
+        ? `<option value="kurumsal">Kurumsal Site</option>
+           <option value="eticaret">E-Ticaret</option>
+           <option value="portal">Portal</option>
+           <option value="portfoy">Portföy / Blog</option>`
         : `<option value="medya">Medya Araçları</option>
            <option value="yonetim">Yönetim / İşletme</option>
            <option value="sistem">Sistem Araçları</option>
@@ -703,7 +751,9 @@ window.updateCatName = function(sel) {
     const map = {
         medya:'Medya Araçları', yonetim:'Yönetim / İşletme', sistem:'Sistem Araçları',
         guvenlik:'Güvenlik Araçları', korku:'Korku / Gerilim', arcade:'Arcade / Mobil',
-        macera:'Aksiyon / Macera', strateji:'Strateji', puzzle:'Puzzle'
+        macera:'Aksiyon / Macera', strateji:'Strateji', puzzle:'Puzzle',
+        uretkenlik:'Üretkenlik', eglence:'Eğlence / Medya', arac:'Araçlar', oyun:'Mobil Oyun',
+        kurumsal:'Kurumsal Site', eticaret:'E-Ticaret', portal:'Portal', portfoy:'Portföy / Blog'
     };
     const inp = document.getElementById('fi_catName');
     if (inp && map[sel.value]) inp.value = map[sel.value];
