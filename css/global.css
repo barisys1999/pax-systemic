@@ -30,6 +30,18 @@
     --violet-soft: rgba(122, 63, 224, 0.08);
     --violet-line: rgba(122, 63, 224, 0.28);
 
+    /* Brand — Siteler (teal) */
+    --teal:        #0E9F87;
+    --teal-ink:    #0A7A68;
+    --teal-soft:   rgba(14, 159, 135, 0.08);
+    --teal-line:   rgba(14, 159, 135, 0.28);
+
+    /* Brand — Android Uygulamalar (green) */
+    --green:       #2FA84F;
+    --green-ink:   #1F7E3A;
+    --green-soft:  rgba(47, 168, 79, 0.08);
+    --green-line:  rgba(47, 168, 79, 0.28);
+
     /* ── Typography ─────────────────────── */
     --font-display: 'Space Grotesk', system-ui, sans-serif;
     --font-body:    'Inter', system-ui, sans-serif;
@@ -136,6 +148,8 @@ body {
 .nav-link:hover { color: var(--ink); background: var(--mist); }
 .nav-link.is-active-blue   { color: var(--blue);   background: var(--blue-soft); }
 .nav-link.is-active-violet { color: var(--violet); background: var(--violet-soft); }
+.nav-link.is-active-teal   { color: var(--teal);   background: var(--teal-soft); }
+.nav-link.is-active-green  { color: var(--green);  background: var(--green-soft); }
 
 /* Header right area */
 .header-right { display: flex; align-items: center; gap: 10px; }

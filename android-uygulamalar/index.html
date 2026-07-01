@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <title>Android Uygulamalar — Pax Systemic</title>
+    <meta name="description" content="Pax Systemic'in geliştirdiği Android uygulamalarının vitrini.">
+
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/catalog.css">
+
+    <style>
+        :root {
+            --accent:      #2FA84F;
+            --accent-ink:  #1F7E3A;
+            --accent-soft: rgba(47, 168, 79, 0.08);
+            --accent-line: rgba(47, 168, 79, 0.30);
+        }
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            text-align: center;
+            padding: 90px 24px 140px;
+            color: var(--fog);
+            max-width: 460px;
+            margin: 0 auto;
+        }
+        .empty-state__icon {
+            width: 64px; height: 64px;
+            border-radius: var(--radius-lg);
+            background: var(--accent-soft);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+        }
+        .empty-state h3 {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            color: var(--ink);
+            font-weight: 700;
+        }
+        .empty-state p { font-size: 0.92rem; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+<!-- ── HEADER ───────────────────────────── -->
+<header class="site-header">
+    <a href="../index.html" class="logo">
+        <span class="logo-mark"></span>
+        PAX <em>SYSTEMIC</em>
+    </a>
+    <nav class="main-nav">
+        <a href="../yazilimlar/index.html" class="nav-link">Yazılımlar</a>
+        <a href="../oyunlar/index.html" class="nav-link">Oyunlar</a>
+        <a href="../siteler/index.html" class="nav-link">Yaptığımız Siteler</a>
+        <a href="index.html" class="nav-link is-active-green">Android Uygulamalar</a>
+    </nav>
+    <div class="header-right">
+        <a href="../index.html" class="btn btn-ghost btn-sm">← Ana Sayfa</a>
+    </div>
+</header>
+
+<!-- ── MAIN VIEW ────────────────────────── -->
+<div id="main-view" style="display:flex; flex-direction:column; align-items:center;">
+
+    <div class="catalog-hero">
+        <span class="eyebrow" style="color: var(--accent);">PAX SYSTEMIC MOBILE</span>
+        <h1>Android Uygulamalar</h1>
+        <p>Cebinizde çalışan araçlardan mobil oyunlara — Android için geliştirdiğimiz uygulamaların kataloğu burada.</p>
+    </div>
+
+    <div class="empty-state">
+        <div class="empty-state__icon">📱</div>
+        <h3>Vitrin hazırlanıyor</h3>
+        <p>Bu sayfaya yakında geliştirdiğimiz Android uygulamalarını ekleyeceğiz. Bir öneriniz veya talebiniz varsa bize ulaşabilirsiniz.</p>
+    </div>
+
+</div>
+
+<!-- ── FOOTER ───────────────────────────── -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="../index.html" class="logo"><span class="logo-mark"></span>PAX <em>SYSTEMIC</em></a>
+                <p>Masaüstü yazılımları ve indie oyunlar geliştiren bağımsız bir dijital stüdyo. Barış Yurdunuseven tarafından kuruldu.</p>
+            </div>
+            <div class="footer-col">
+                <h5>Yazılımlar</h5>
+                <a href="../yazilimlar/index.html">Tüm Yazılımlar</a>
+                <a href="../yazilimlar/index.html#systemic">Systemic Pro</a>
+                <a href="../yazilimlar/index.html#paxvault">Password Vault</a>
+            </div>
+            <div class="footer-col">
+                <h5>Oyunlar</h5>
+                <a href="../oyunlar/index.html">Tüm Oyunlar</a>
+                <a href="../oyunlar/index.html#karanliktan">Karanlıktan Işığa</a>
+                <a href="../oyunlar/index.html#cosmohop">CosmoHop!</a>
+            </div>
+            <div class="footer-col">
+                <h5>Kurumsal</h5>
+                <a href="mailto:paxsystemic@gmail.com">İletişim</a>
+                <a href="../oneri.html">Talep & Öneri</a>
+                <a href="https://github.com/barisys1999/pax-systemic" target="_blank" rel="noopener">GitHub</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 Pax Systemic. Tüm hakları saklıdır.</span>
+            <span>Kurucu: Barış Yurdunuseven</span>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
