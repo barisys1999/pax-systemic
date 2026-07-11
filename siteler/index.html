@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="icon" type="image/png" href="../favicon.png">
     <title>Yapılan Siteler — Pax Systemic</title>
     <meta name="description" content="Pax Systemic'in geliştirdiği web sitesi ve portal projelerinin vitrini.">
 
@@ -17,32 +17,45 @@
             --accent-soft: rgba(14, 159, 135, 0.08);
             --accent-line: rgba(14, 159, 135, 0.30);
         }
-        .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
-            text-align: center;
-            padding: 90px 24px 140px;
-            color: var(--fog);
-            max-width: 460px;
-            margin: 0 auto;
-        }
-        .empty-state__icon {
-            width: 64px; height: 64px;
-            border-radius: var(--radius-lg);
-            background: var(--accent-soft);
+        .page-loading {
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.8rem;
-            margin-bottom: 6px;
+            min-height: 40vh; flex-direction: column; gap: 16px;
+            color: #97A1B5; font-size: 0.9rem;
         }
-        .empty-state h3 {
-            font-family: var(--font-display);
-            font-size: 1.15rem;
-            color: var(--ink);
-            font-weight: 700;
+        .page-loading-spinner {
+            width: 32px; height: 32px;
+            border: 3px solid rgba(14,159,135,0.15);
+            border-top-color: #0E9F87;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
-        .empty-state p { font-size: 0.92rem; line-height: 1.6; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        /* Site kartında "Siteyi Ziyaret Et" butonu */
+        .site-visit-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 7px 16px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            border: 1px solid var(--accent-line);
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.18s;
+        }
+        .site-visit-btn:hover { background: rgba(14,159,135,0.18); }
+        .tech-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            border-radius: 20px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            margin: 2px 2px;
+        }
+        .tech-tags { margin-top: 12px; }
     </style>
 </head>
 <body>
@@ -73,13 +86,75 @@
         <p>Kurumsal siteler, portallar ve müşteri projeleri — geliştirdiğimiz web sitelerinin tamamını burada bulacaksınız.</p>
     </div>
 
-    <div class="empty-state">
-        <div class="empty-state__icon">🌐</div>
-        <h3>Vitrin hazırlanıyor</h3>
-        <p>Bu sayfaya yakında geliştirdiğimiz web sitesi projelerini ekleyeceğiz. Bir öneriniz veya talebiniz varsa bize ulaşabilirsiniz.</p>
+    <div class="controls">
+        <div class="search-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" id="searchInput" class="search-input" placeholder="Site ara..." oninput="updateGrid()">
+        </div>
+        <div class="filter-row" id="filterRow">
+            <button class="filter-btn active" onclick="setCategory('all', this)">Tümü</button>
+        </div>
+    </div>
+
+    <div id="page-loader" class="page-loading">
+        <div class="page-loading-spinner"></div>
+        <span>Siteler yükleniyor...</span>
+    </div>
+    <div id="catalog-grid" style="display:none"></div>
+    <div id="no-results" style="display:none">Aradığınız kritere uygun site bulunamadı.</div>
+
+</div>
+
+<!-- ── DETAIL VIEW ──────────────────────── -->
+<div id="detail-view" style="display:none;">
+
+    <button class="back-btn" onclick="closeProduct()">← Sitelere Dön</button>
+
+    <div class="det-header">
+        <div class="det-header__main">
+            <div class="det-header__icon">
+                <img id="det-icon" src="" alt="">
+                <span id="det-icon-placeholder" class="det-header__icon-placeholder" style="display:none"></span>
+            </div>
+            <div class="det-header__text">
+                <span id="det-cat" class="det-header__cat"></span>
+                <h2 id="det-title"></h2>
+                <h4 id="det-sub"></h4>
+                <div id="det-meta" class="det-header__meta"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="det-tabs">
+        <button class="d-tab active" onclick="switchTab('overview', event)">Genel Bakış</button>
+        <button class="d-tab"        onclick="switchTab('changelog', event)">Teknolojiler</button>
+    </div>
+
+    <div id="pane-overview" class="tab-pane" style="display:block;">
+        <div class="det-overview">
+            <div class="det-text">
+                <p id="det-desc"></p>
+                <ul class="feature-list" id="det-features"></ul>
+                <div id="det-visit-wrap" style="margin-top:16px;"></div>
+            </div>
+            <div class="det-media" id="det-media"></div>
+        </div>
+    </div>
+
+    <div id="pane-changelog" class="tab-pane" style="display:none;">
+        <div id="det-tech-tags" class="tech-tags" style="padding:24px 0;"></div>
+    </div>
+
+    <div class="download-section">
+        <p>Bu siteyi ziyaret edin.</p>
+        <a href="#" id="det-btn" class="btn-download" target="_blank" rel="noopener">🌐 Siteyi Aç</a>
     </div>
 
 </div>
+
+<div id="lightbox" onclick="this.style.display='none'"></div>
 
 <!-- ── FOOTER ───────────────────────────── -->
 <footer class="site-footer">
@@ -114,6 +189,284 @@
         </div>
     </div>
 </footer>
+
+<!-- Firebase SDK -->
+<script type="module">
+    import { initializeApp }   from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy }
+                               from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAKVWcyice-3w2Ua7xiNnYh5ZGVdBl8qWA",
+        authDomain: "paxsystemic-f4aca.firebaseapp.com",
+        projectId: "paxsystemic-f4aca",
+        storageBucket: "paxsystemic-f4aca.firebasestorage.app",
+        messagingSenderId: "193147885737",
+        appId: "1:193147885737:web:aae1ec4c0b1c31bd0271b8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+
+    async function loadProducts() {
+        try {
+            const q    = query(collection(db, 'siteler'), orderBy('order', 'asc'));
+            const snap = await getDocs(q);
+            const products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+            if (products.length > 0) {
+                const cats = [...new Set(products.map(p => p.category).filter(Boolean))];
+                const filterRow = document.getElementById('filterRow');
+                filterRow.innerHTML = '<button class="filter-btn active" onclick="setCategory(\'all\', this)">Tümü</button>';
+                const catNameMap = {
+                    kurumsal: 'Kurumsal Site',
+                    eticaret: 'E-Ticaret',
+                    portal:   'Portal',
+                    portfoy:  'Portföy / Blog'
+                };
+                cats.forEach(cat => {
+                    const label = products.find(p => p.category === cat)?.catName || catNameMap[cat] || cat;
+                    filterRow.innerHTML += `<button class="filter-btn" onclick="setCategory('${cat}', this)">${label}</button>`;
+                });
+                document.getElementById('page-loader').style.display = 'none';
+                document.getElementById('catalog-grid').style.display = '';
+                window.initSiteCatalog(products);
+            } else {
+                document.getElementById('page-loader').innerHTML = '<p style="color:var(--fog); padding:60px 0;">Henüz eklenmiş site yok.</p>';
+            }
+        } catch(err) {
+            console.warn('Firestore yüklenemedi:', err);
+            document.getElementById('page-loader').innerHTML = '<p style="color:var(--fog); padding:60px 0;">Veriler yüklenemedi. Lütfen sayfayı yenileyin.</p>';
+        }
+    }
+
+    loadProducts();
+</script>
+
+<script>
+/* ── Site Catalog Engine ────────────────── */
+let currentFilter = 'all';
+let currentImages  = [];
+let currentImgIdx  = 0;
+let catalogData    = [];
+
+window.initSiteCatalog = function(products) {
+    catalogData = products;
+    renderGrid(products);
+
+    const hashId = (location.hash || '').replace('#', '').trim();
+    if (hashId && products.some(p => p.id === hashId)) {
+        openProduct(hashId);
+    }
+};
+
+function renderGrid(products) {
+    const q      = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+    const grid   = document.getElementById('catalog-grid');
+    const noRes  = document.getElementById('no-results');
+
+    const filtered = products.filter(p => {
+        const matchCat  = currentFilter === 'all' || p.category === currentFilter;
+        const matchText = !q || (p.title||'').toLowerCase().includes(q) || (p.shortDesc||'').toLowerCase().includes(q);
+        return matchCat && matchText;
+    });
+
+    if (filtered.length === 0) {
+        grid.innerHTML = '';
+        noRes.style.display = 'block';
+        return;
+    }
+    noRes.style.display = 'none';
+
+    const statusMap = {
+        yayinda:        '🟢 Yayında',
+        gelistiriliyor: '🔧 Geliştiriliyor',
+        tamamlandi:     '✅ Tamamlandı',
+        arsiv:          '📦 Arşiv'
+    };
+
+    grid.innerHTML = filtered.map(p => `
+        <div class="app-card" onclick="openProduct('${p.id}')">
+            <div class="app-card__top">
+                <div class="app-card__icon">
+                    ${p.icon
+                        ? `<img src="${p.icon}" alt="${p.title} ikonu" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                           <span class="app-card__icon-placeholder" style="display:none">${p.iconEmoji || '🌐'}</span>`
+                        : `<span class="app-card__icon-placeholder" style="display:flex">${p.iconEmoji || '🌐'}</span>`
+                    }
+                </div>
+                <div class="app-card__meta">
+                    <span class="app-card__cat">${p.catName || ''}</span>
+                    <div class="app-card__name">${p.title}</div>
+                </div>
+            </div>
+            <p class="app-card__desc">${p.shortDesc || ''}</p>
+            ${p.status ? `<span style="font-size:0.75rem; color:var(--fog); margin-top:6px; display:block;">${statusMap[p.status] || p.status}</span>` : ''}
+        </div>
+    `).join('');
+}
+
+function setCategory(cat, btn) {
+    currentFilter = cat;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderGrid(catalogData);
+}
+
+function updateGrid() { renderGrid(catalogData); }
+
+function openProduct(id) {
+    const p = catalogData.find(x => x.id === id);
+    if (!p) return;
+
+    const iconEl = document.getElementById('det-icon');
+    const placeholderEl = document.getElementById('det-icon-placeholder');
+    if (p.icon) {
+        iconEl.src = p.icon;
+        iconEl.style.display = '';
+        placeholderEl.style.display = 'none';
+        iconEl.onerror = () => {
+            iconEl.style.display = 'none';
+            placeholderEl.textContent = p.iconEmoji || '🌐';
+            placeholderEl.style.display = 'flex';
+        };
+    } else {
+        iconEl.style.display = 'none';
+        placeholderEl.textContent = p.iconEmoji || '🌐';
+        placeholderEl.style.display = 'flex';
+    }
+
+    document.getElementById('det-title').textContent = p.title;
+    document.getElementById('det-sub').textContent   = p.client ? `Müşteri: ${p.client}` : '';
+    document.getElementById('det-desc').textContent  = p.fullDesc || p.shortDesc || '';
+
+    const catEl = document.getElementById('det-cat');
+    if (catEl) catEl.textContent = p.catName || '';
+
+    const metaEl = document.getElementById('det-meta');
+    if (metaEl) {
+        const statusMap = {
+            yayinda: 'Yayında', gelistiriliyor: 'Geliştiriliyor',
+            tamamlandi: 'Tamamlandı', arsiv: 'Arşiv'
+        };
+        let chips = '';
+        if (p.year) chips += `<span class="meta-chip">${p.year}</span>`;
+        if (p.status) chips += `<span class="meta-chip is-live">${statusMap[p.status] || p.status}</span>`;
+        metaEl.innerHTML = chips;
+    }
+
+    // Özellikler yok, visit butonu göster
+    document.getElementById('det-features').innerHTML = '';
+    const visitWrap = document.getElementById('det-visit-wrap');
+    if (p.siteUrl) {
+        visitWrap.innerHTML = `<a href="${p.siteUrl}" target="_blank" rel="noopener" class="site-visit-btn">🌐 Siteyi Ziyaret Et</a>`;
+    } else {
+        visitWrap.innerHTML = '';
+    }
+
+    // Teknolojiler sekmesi
+    const techEl = document.getElementById('det-tech-tags');
+    if (techEl) {
+        const techs = p.technologies || [];
+        if (techs.length > 0) {
+            techEl.innerHTML = '<h4 style="margin-bottom:12px; font-size:0.9rem; color:var(--fog);">Kullanılan Teknolojiler</h4>' +
+                techs.map(t => `<span class="tech-tag">${t}</span>`).join('');
+        } else {
+            techEl.innerHTML = '<p style="color:var(--fog); font-size:0.9rem;">Teknoloji bilgisi eklenmemiş.</p>';
+        }
+    }
+
+    // Ana download butonu
+    const btn = document.getElementById('det-btn');
+    if (p.siteUrl) {
+        btn.href = p.siteUrl;
+        btn.textContent = '🌐 Siteyi Aç';
+        btn.classList.remove('disabled');
+    } else {
+        btn.href = '#';
+        btn.textContent = 'URL Belirtilmemiş';
+        btn.classList.add('disabled');
+    }
+
+    // Görseller
+    currentImages = p.images?.length > 0 ? p.images : [];
+    currentImgIdx = 0;
+    updateMediaView();
+
+    switchTab('overview');
+    history.replaceState(null, '', '#' + id);
+    document.getElementById('main-view').style.display   = 'none';
+    document.getElementById('detail-view').style.display = 'block';
+    window.scrollTo(0, 0);
+}
+
+function closeProduct() {
+    document.getElementById('detail-view').style.display = 'none';
+    document.getElementById('main-view').style.display   = 'flex';
+    switchTab('overview');
+    history.replaceState(null, '', location.pathname);
+}
+
+function switchTab(tab, e) {
+    if (e) e.preventDefault();
+    document.querySelectorAll('.d-tab').forEach(t => t.classList.remove('active'));
+    const idx  = tab === 'overview' ? 0 : 1;
+    const tabs = document.querySelectorAll('.d-tab');
+    if (tabs[idx]) tabs[idx].classList.add('active');
+    document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
+    const pane = document.getElementById('pane-' + tab);
+    if (pane) pane.style.display = 'block';
+}
+
+function updateMediaView() {
+    const media = document.getElementById('det-media');
+    if (!currentImages.length) {
+        media.innerHTML = '<p style="color:var(--text-dim); font-size:0.85rem;">Görsel hazırlanıyor</p>';
+        return;
+    }
+    let html = `<img src="${currentImages[currentImgIdx]}" loading="lazy" onerror="this.style.display='none'">
+                <div class="media-overlay" onclick="openLightbox()">GÖRÜNTÜLE</div>`;
+    if (currentImages.length > 1) {
+        html += `<button class="slider-btn prev" onclick="changeImg(-1, event)">&#10094;</button>
+                 <button class="slider-btn next" onclick="changeImg( 1, event)">&#10095;</button>
+                 <div class="slider-dots">
+                     ${currentImages.map((_, i) => `<span class="dot ${i === currentImgIdx ? 'active' : ''}" onclick="setImg(${i}, event)"></span>`).join('')}
+                 </div>`;
+    }
+    media.innerHTML = html;
+}
+
+function changeImg(dir, e) {
+    if (e) e.stopPropagation();
+    currentImgIdx = (currentImgIdx + dir + currentImages.length) % currentImages.length;
+    updateMediaView();
+}
+function setImg(idx, e) {
+    if (e) e.stopPropagation();
+    currentImgIdx = idx;
+    updateMediaView();
+}
+
+function openLightbox() {
+    if (!currentImages.length) return;
+    const lb = document.getElementById('lightbox');
+    let html = `<img id="lb-img" src="${currentImages[currentImgIdx]}" loading="lazy" onclick="event.stopPropagation()">`;
+    if (currentImages.length > 1) {
+        html += `<button class="slider-btn prev" style="position:fixed;left:4%"  onclick="changeLbImg(-1,event)">&#10094;</button>
+                 <button class="slider-btn next" style="position:fixed;right:4%" onclick="changeLbImg( 1,event)">&#10095;</button>`;
+    }
+    lb.innerHTML = html;
+    lb.style.display = 'flex';
+}
+
+function changeLbImg(dir, e) {
+    if (e) e.stopPropagation();
+    currentImgIdx = (currentImgIdx + dir + currentImages.length) % currentImages.length;
+    const img = document.getElementById('lb-img');
+    if (img) img.src = currentImages[currentImgIdx];
+    updateMediaView();
+}
+</script>
 
 </body>
 </html>
