@@ -406,9 +406,13 @@ window.loadFeedbacks = async function() {
     document.getElementById('feedbackList').innerHTML       = '';
     document.getElementById('emptyState').style.display    = 'none';
     try {
-        const q    = query(collection(db, 'feedbacks'), orderBy('createdAt', 'desc'));
-        const snap = await getDocs(q);
+        const snap = await getDocs(collection(db, 'feedbacks'));
         allFeedbacks = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+        allFeedbacks.sort((a, b) => {
+            const ta = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
+            const tb = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
+            return tb - ta;
+        });
     } catch(e) { console.error(e); allFeedbacks = []; }
     document.getElementById('loadingState').style.display = 'none';
     updateStats(); renderList();
@@ -605,6 +609,18 @@ window.openCmsModal = function(col, data = null, docId = null) {
     const featuresHtml = (data?.features || ['']).map(f => featureRow(f)).join('');
     const changelogHtml = (data?.changelog || []).map(cl => changelogBlock(cl)).join('');
 
+    // ── Site için ayrı popup ──────────────
+    if (isSite) {
+        document.getElementById('modalBody').innerHTML = buildSiteForm(data);
+        if (data?.category) {
+            const sel = document.getElementById('fi_category');
+            if (sel) sel.value = data.category;
+        }
+        renderSiteImagePreviews();
+        document.getElementById('cmsModal').classList.add('open');
+        return;
+    }
+
     document.getElementById('modalBody').innerHTML = `
         <div class="form-row">
             <div class="form-group">
@@ -788,6 +804,8 @@ window.previewIconFromPath = function(path) {
 
 // ── Save ──────────────────────────────
 window.saveCmsItem = async function() {
+    if (cmsCollection === 'siteler') { await saveSiteItem(); return; }
+
     const btn   = document.getElementById('modalSaveBtn');
     const title = document.getElementById('fi_title')?.value.trim();
     if (!title) { showToast('Başlık zorunludur!', 'error'); return; }
@@ -902,6 +920,188 @@ window.showToast = function(msg, type='') {
     t.textContent = msg; t.className = 'toast show ' + type;
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+};
+
+
+// ══════════════════════════════════════════════════════
+// SİTE FORMU
+// ══════════════════════════════════════════════════════
+
+function buildSiteForm(data) {
+    const catOptions = `
+        <option value="kurumsal">Kurumsal Site</option>
+        <option value="eticaret">E-Ticaret</option>
+        <option value="portal">Portal</option>
+        <option value="portfoy">Portföy / Blog</option>
+        <option value="lansman">Lansman / Tanıtım</option>
+        <option value="diger">Diğer</option>`;
+
+    const techHtml = (data?.technologies || ['']).map(t => siteTagRow(t)).join('');
+    const imgPaths = (data?.images || []).map(u => u.replace(GITHUB_BASE, '')).join('\n');
+    const iconPath = data?.icon ? data.icon.replace(GITHUB_BASE, '') : '';
+
+    return `
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Site Adı *</label>
+                <input type="text" class="form-input" id="fi_title" value="${esc(data?.title||'')}" placeholder="ör. RestaurantX Web Sitesi">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Müşteri / Konu</label>
+                <input type="text" class="form-input" id="fi_client" value="${esc(data?.client||'')}" placeholder="ör. Ahmet Restoran">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Kategori</label>
+                <select class="form-select" id="fi_category">
+                    ${catOptions}
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Durum</label>
+                <select class="form-select" id="fi_status">
+                    <option value="yayinda" ${(data?.status||'yayinda')==='yayinda'?'selected':''}>🟢 Yayında</option>
+                    <option value="gelistiriliyor" ${data?.status==='gelistiriliyor'?'selected':''}>🔧 Geliştiriliyor</option>
+                    <option value="tamamlandi" ${data?.status==='tamamlandi'?'selected':''}>✅ Tamamlandı</option>
+                    <option value="arsiv" ${data?.status==='arsiv'?'selected':''}>📦 Arşiv</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Kısa Açıklama *</label>
+            <input type="text" class="form-input" id="fi_shortDesc" value="${esc(data?.shortDesc||'')}" placeholder="Katalog kartında görünen kısa açıklama">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Tam Açıklama</label>
+            <textarea class="form-textarea" id="fi_fullDesc" placeholder="Proje hakkında detaylı bilgi, süreç, hedef kitle...">${esc(data?.fullDesc||'')}</textarea>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Site URL'si</label>
+                <input type="text" class="form-input" id="fi_siteUrl" value="${esc(data?.siteUrl||'')}" placeholder="https://www.ornek.com">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Sıra (order)</label>
+                <input type="number" class="form-input" id="fi_order" value="${data?.order ?? 99}" min="0">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Yapım Yılı</label>
+                <input type="text" class="form-input" id="fi_year" value="${esc(data?.year||'')}" placeholder="2026">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Emoji İkonu</label>
+                <input type="text" class="form-input" id="fi_iconEmoji" value="${esc(data?.iconEmoji||'🌐')}" placeholder="🌐">
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="form-group">
+            <label class="form-label">Kullanılan Teknolojiler</label>
+            <div class="dynamic-list" id="techList">${techHtml}</div>
+            <button class="add-row-btn" onclick="addSiteTagRow()">+ Teknoloji Ekle</button>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="form-group">
+            <label class="form-label">Öne Çıkan Görsel — Dosya Yolu <span>(ör: siteadi/kapak.webp)</span></label>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <input type="text" class="form-input" id="fi_iconPath" value="${esc(iconPath)}" placeholder="siteadi/kapak.webp" oninput="previewIconFromPath(this.value)" style="flex:1;">
+                <button type="button" class="toolbar-btn" onclick="previewIconFromPath(document.getElementById('fi_iconPath').value)" style="white-space:nowrap;">Önizle</button>
+            </div>
+            <div id="iconPreviewWrap" style="margin-top:8px;">
+                ${data?.icon ? '<img src="'+esc(data.icon)+'" style="max-height:60px;border-radius:8px;" onerror="this.style.display='none'">' : ''}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Ekran Görüntüleri — Dosya Yolları <span>(her satıra bir yol)</span></label>
+            <textarea class="form-textarea" id="fi_imagePaths" rows="4" placeholder="siteadi/1.webp&#10;siteadi/2.webp" oninput="renderSiteImagePreviews()" style="font-family:monospace;font-size:0.82rem;">${imgPaths}</textarea>
+            <div class="img-preview-list" id="siteImgPreviewList" style="margin-top:10px;"></div>
+        </div>
+    `;
+}
+
+function siteTagRow(val) {
+    return `<div class="dynamic-item">
+        <input type="text" value="${esc(val)}" placeholder="ör. HTML, CSS, JavaScript, React...">
+        <button class="rm-btn" onclick="this.parentNode.remove()">✕</button>
+    </div>`;
+}
+
+window.addSiteTagRow = function() {
+    document.getElementById('techList').insertAdjacentHTML('beforeend', siteTagRow(''));
+};
+
+window.renderSiteImagePreviews = function() {
+    const ta  = document.getElementById('fi_imagePaths');
+    const box = document.getElementById('siteImgPreviewList');
+    if (!ta || !box) return;
+    const paths = ta.value.split('\n').map(s => s.trim()).filter(Boolean);
+    box.innerHTML = paths.map(p =>
+        `<img src="${GITHUB_BASE+p}" loading="lazy" onerror="this.onerror=null;this.style.opacity='0.2'" style="height:64px;border-radius:6px;object-fit:cover;margin:4px;">`
+    ).join('');
+};
+
+window.saveSiteItem = async function() {
+    const btn   = document.getElementById('modalSaveBtn');
+    const title = document.getElementById('fi_title')?.value.trim();
+    if (!title) { showToast('Site adı zorunludur!', 'error'); return; }
+
+    btn.disabled = true; btn.textContent = 'Kaydediliyor...';
+
+    try {
+        const iconPathVal = document.getElementById('fi_iconPath')?.value.trim();
+        const iconFinal   = iconPathVal ? (GITHUB_BASE + iconPathVal) : '';
+
+        const imgPathsVal = document.getElementById('fi_imagePaths')?.value || '';
+        const imageUrls   = imgPathsVal.split('\n').map(s => s.trim()).filter(Boolean)
+            .map(p => GITHUB_BASE + p);
+
+        const technologies = [...document.querySelectorAll('#techList .dynamic-item input')]
+            .map(i => i.value.trim()).filter(Boolean);
+
+        const data = {
+            title,
+            client:       document.getElementById('fi_client')?.value.trim()    || '',
+            category:     document.getElementById('fi_category')?.value          || '',
+            status:       document.getElementById('fi_status')?.value            || 'yayinda',
+            shortDesc:    document.getElementById('fi_shortDesc')?.value.trim()  || '',
+            fullDesc:     document.getElementById('fi_fullDesc')?.value.trim()   || '',
+            siteUrl:      document.getElementById('fi_siteUrl')?.value.trim()    || '',
+            year:         document.getElementById('fi_year')?.value.trim()       || '',
+            iconEmoji:    document.getElementById('fi_iconEmoji')?.value.trim()  || '🌐',
+            order:        parseInt(document.getElementById('fi_order')?.value)   || 99,
+            icon:         iconFinal || null,
+            images:       imageUrls,
+            technologies,
+            updatedAt:    Timestamp.now()
+        };
+
+        if (editingDocId) {
+            await updateDoc(doc(db, 'siteler', editingDocId), data);
+            showToast('Site güncellendi!', 'success');
+        } else {
+            data.createdAt = Timestamp.now();
+            await addDoc(collection(db, 'siteler'), data);
+            showToast('Site eklendi!', 'success');
+        }
+
+        closeCmsModal();
+        loadCmsItems('siteler');
+    } catch(e) {
+        console.error(e);
+        showToast('Hata: ' + e.message, 'error');
+        btn.disabled = false;
+        btn.textContent = editingDocId ? 'Güncelle' : 'Kaydet';
+    }
 };
 
 // Close modal on overlay click
