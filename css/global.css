@@ -116,26 +116,11 @@ body {
 .logo-mark {
     width: 28px;
     height: 28px;
-<<<<<<< HEAD
-=======
     background: var(--ink);
->>>>>>> bf4e8dec76104194fedb6f2b1f36b08da4b275b7
     border-radius: 7px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-<<<<<<< HEAD
-    flex-shrink: 0;
-    overflow: hidden;
-    background: transparent;
-}
-.logo-mark img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-}
-=======
     font-size: 0.7rem;
     font-weight: 900;
     color: #fff;
@@ -143,7 +128,6 @@ body {
     flex-shrink: 0;
 }
 .logo-mark::after { content: 'PS'; }
->>>>>>> bf4e8dec76104194fedb6f2b1f36b08da4b275b7
 
 /* Nav */
 .main-nav {
@@ -240,11 +224,7 @@ body {
 
 .footer-brand .logo { color: rgba(255,255,255,0.9); margin-bottom: 16px; }
 .footer-brand .logo em { color: #6B9FFF; }
-<<<<<<< HEAD
-.footer-brand .logo-mark { background: transparent; }
-=======
 .footer-brand .logo-mark { background: rgba(255,255,255,0.12); }
->>>>>>> bf4e8dec76104194fedb6f2b1f36b08da4b275b7
 .footer-brand p {
     font-size: 0.84rem;
     line-height: 1.7;
