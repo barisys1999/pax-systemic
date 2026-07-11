@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <title>BarisByte Games | Android - PC Oyun Kataloğu — Pax Systemic</title>
+    <meta name="description" content="BarisByte Games: Pax Systemic'in atmosferik korku, arcade ve aksiyon-macera oyunları kataloğu.">
+
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/catalog.css">
+
+    <style>
+        :root {
+            --accent:      #7A3FE0;
+            --accent-ink:  #4D24A6;
+            --accent-soft: rgba(122, 63, 224, 0.08);
+            --accent-line: rgba(122, 63, 224, 0.30);
+        }
+        .page-loading {
+            display: flex; align-items: center; justify-content: center;
+            min-height: 40vh; flex-direction: column; gap: 16px;
+            color: #97A1B5; font-size: 0.9rem;
+        }
+        .page-loading-spinner {
+            width: 32px; height: 32px;
+            border: 3px solid rgba(122,63,224,0.15);
+            border-top-color: #7A3FE0;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<!-- ── HEADER ───────────────────────────── -->
+<header class="site-header">
+    <a href="../anasayfa/index.html" class="logo">
+        <span class="logo-mark"><img src="../paxsystemiclogo.webp" alt="Pax Systemic Logo"></span>
+        PAX <em>SYSTEMIC</em>
+    </a>
+    <nav class="main-nav">
+        <a href="../yazilimlar/index.html" class="nav-link">Yazılımlar</a>
+        <a href="index.html" class="nav-link is-active-violet">Oyunlar</a>
+        <a href="../siteler/index.html" class="nav-link">Yapılan Siteler</a>
+        <a href="../android-uygulamalar/index.html" class="nav-link">Android Uygulamalar</a>
+    </nav>
+    <div class="header-right">
+        <a href="../anasayfa/index.html" class="btn btn-ghost btn-sm">← Ana Sayfa</a>
+    </div>
+</header>
+
+<!-- ── MAIN VIEW ────────────────────────── -->
+<div id="main-view" style="display:flex; flex-direction:column; align-items:center;">
+
+    <div class="catalog-hero">
+        <span class="eyebrow is-violet">BARISBYTE GAMES</span>
+        <h1>Android - PC Oyun Kataloğu</h1>
+        <p>Atmosfer, keşif ve sınırları zorlayan mekanikler. Yayınlanan oyunları indirin, geliştirme aşamasındakileri buradan takip edin.</p>
+    </div>
+
+    <div class="controls">
+        <div class="search-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" id="searchInput" class="search-input" placeholder="Oyun ara..." oninput="updateGrid()">
+        </div>
+        <div class="filter-row" id="filterRow">
+            <button class="filter-btn active" onclick="setCategory('all', this)">Tümü</button>
+        </div>
+    </div>
+
+    <div id="page-loader" class="page-loading">
+        <div class="page-loading-spinner"></div>
+        <span>Oyunlar yükleniyor...</span>
+    </div>
+    <div id="catalog-grid" style="display:none"></div>
+    <div id="no-results" style="display:none">Aradığınız kritere uygun oyun bulunamadı.</div>
+
+</div>
+
+<!-- ── DETAIL VIEW ──────────────────────── -->
+<div id="detail-view">
+
+    <button class="back-btn" onclick="closeProduct()">← Oyunlara Dön</button>
+
+    <div class="det-header">
+        <div class="det-header__main">
+            <div class="det-header__icon">
+                <img id="det-icon" src="" alt="">
+                <span id="det-icon-placeholder" class="det-header__icon-placeholder" style="display:none"></span>
+            </div>
+            <div class="det-header__text">
+                <span id="det-cat" class="det-header__cat"></span>
+                <h2 id="det-title"></h2>
+                <h4 id="det-sub"></h4>
+                <div id="det-meta" class="det-header__meta"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="det-tabs">
+        <button class="d-tab active" onclick="switchTab('overview', event)">Genel Bakış</button>
+        <button class="d-tab"        onclick="switchTab('changelog', event)">Geliştirme Günlüğü</button>
+    </div>
+
+    <div id="pane-overview" class="tab-pane" style="display:block;">
+        <div class="det-overview">
+            <div class="det-text">
+                <p id="det-desc"></p>
+                <ul class="feature-list" id="det-features"></ul>
+            </div>
+            <div class="det-media" id="det-media"></div>
+        </div>
+    </div>
+
+    <div id="pane-changelog" class="tab-pane" style="display:none;">
+        <div class="timeline" id="det-changelog"></div>
+    </div>
+
+    <div class="download-section">
+        <p>Bu oyunu cihazınıza indirin.</p>
+        <a href="#" id="det-btn" class="btn-download">↓ İndir</a>
+    </div>
+
+</div>
+
+<div id="lightbox" onclick="this.style.display='none'"></div>
+
+<!-- ── FOOTER ───────────────────────────── -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="../anasayfa/index.html" class="logo"><span class="logo-mark"><img src="../paxsystemiclogo.webp" alt="Pax Systemic Logo"></span>PAX <em>SYSTEMIC</em></a>
+                <p>Masaüstü yazılımları ve indie oyunlar geliştiren bağımsız bir dijital stüdyo. Barış Yurdunuseven tarafından kuruldu.</p>
+            </div>
+            <div class="footer-col">
+                <h5>Yazılımlar</h5>
+                <a href="../yazilimlar/index.html">Tüm Yazılımlar</a>
+                <a href="../yazilimlar/index.html#systemic">Systemic Pro</a>
+                <a href="../yazilimlar/index.html#paxvault">Password Vault</a>
+            </div>
+            <div class="footer-col">
+                <h5>Oyunlar</h5>
+                <a href="#karanliktan" onclick="openProductFromNav('karanliktan', event)">Karanlıktan Işığa</a>
+                <a href="#cosmohop"    onclick="openProductFromNav('cosmohop',    event)">CosmoHop!</a>
+                <a href="#nexus"       onclick="openProductFromNav('nexus',       event)">Project: Nexus</a>
+            </div>
+            <div class="footer-col">
+                <h5>Kurumsal</h5>
+                <a href="mailto:paxsystemic@gmail.com">İletişim</a>
+                <a href="../oneri.html">Talep & Öneri</a>
+                <a href="https://github.com/barisys1999/pax-systemic" target="_blank" rel="noopener">GitHub</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 Pax Systemic. Tüm hakları saklıdır.</span>
+            <span>Kurucu: Barış Yurdunuseven</span>
+        </div>
+    </div>
+</footer>
+
+<!-- Firebase SDK -->
+<script type="module">
+    import { initializeApp }   from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy }
+                               from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAKVWcyice-3w2Ua7xiNnYh5ZGVdBl8qWA",
+        authDomain: "paxsystemic-f4aca.firebaseapp.com",
+        projectId: "paxsystemic-f4aca",
+        storageBucket: "paxsystemic-f4aca.firebasestorage.app",
+        messagingSenderId: "193147885737",
+        appId: "1:193147885737:web:aae1ec4c0b1c31bd0271b8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+
+    async function loadProducts() {
+        try {
+            const q    = query(collection(db, 'oyunlar'), orderBy('order', 'asc'));
+            const snap = await getDocs(q);
+            const products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+            if (products.length > 0) {
+                const cats = [...new Set(products.map(p => p.category).filter(Boolean))];
+                const filterRow = document.getElementById('filterRow');
+                filterRow.innerHTML = '<button class="filter-btn active" onclick="setCategory(\'all\', this)">Tümü</button>';
+                cats.forEach(cat => {
+                    const label = products.find(p => p.category === cat)?.catName || cat;
+                    filterRow.innerHTML += '<button class="filter-btn" onclick="setCategory(\'' + cat + '\', this)">' + label + '</button>';
+                });
+                document.getElementById('page-loader').style.display = 'none';
+                document.getElementById('catalog-grid').style.display = '';
+                window.initCatalog(products);
+            } else {
+                console.warn('Firestore boş, statik veri kullanılıyor.');
+                document.getElementById('page-loader').style.display = 'none';
+                document.getElementById('catalog-grid').style.display = '';
+                if (typeof GAMES_PRODUCTS !== 'undefined') window.initCatalog(GAMES_PRODUCTS);
+            }
+        } catch(err) {
+            console.warn('Firestore yüklenemedi, statik veri kullanılıyor:', err);
+            document.getElementById('page-loader').style.display = 'none';
+            document.getElementById('catalog-grid').style.display = '';
+            if (typeof GAMES_PRODUCTS !== 'undefined') window.initCatalog(GAMES_PRODUCTS);
+        }
+    }
+
+    loadProducts();
+</script>
+
+<script src="../js/games-data.js"></script>
+<script src="../js/catalog.js"></script>
+<script>
+    function openProductFromNav(id, e) {
+        if (e) e.preventDefault();
+        openProduct(id);
+    }
+</script>
+
+</body>
+</html>

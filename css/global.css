@@ -1,0 +1,294 @@
+/* =============================================
+   PAX SYSTEMIC — Global Design System
+   Light / Professional / Microsoft-Store style
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap');
+
+:root {
+    /* ── Color Tokens ───────────────────── */
+    --paper:       #FFFFFF;
+    --mist:        #F4F6FB;
+    --surface:     #FFFFFF;
+
+    --ink:         #0F1729;
+    --slate:       #5B6478;
+    --fog:         #97A1B5;
+
+    --line:        #E8EBF2;
+    --line-strong: #D0D5E3;
+
+    /* Brand — Software (blue) */
+    --blue:        #2454FF;
+    --blue-ink:    #1535CC;
+    --blue-soft:   rgba(36, 84, 255, 0.08);
+    --blue-line:   rgba(36, 84, 255, 0.28);
+
+    /* Brand — Games (violet) */
+    --violet:      #7A3FE0;
+    --violet-ink:  #4D24A6;
+    --violet-soft: rgba(122, 63, 224, 0.08);
+    --violet-line: rgba(122, 63, 224, 0.28);
+
+    /* Brand — Siteler (teal) */
+    --teal:        #0E9F87;
+    --teal-ink:    #0A7A68;
+    --teal-soft:   rgba(14, 159, 135, 0.08);
+    --teal-line:   rgba(14, 159, 135, 0.28);
+
+    /* Brand — Android Uygulamalar (green) */
+    --green:       #2FA84F;
+    --green-ink:   #1F7E3A;
+    --green-soft:  rgba(47, 168, 79, 0.08);
+    --green-line:  rgba(47, 168, 79, 0.28);
+
+    /* ── Typography ─────────────────────── */
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-body:    'Inter', system-ui, sans-serif;
+    --font-mono:    'SF Mono', 'Fira Code', 'Consolas', monospace;
+
+    /* ── Elevation ──────────────────────── */
+    --shadow-sm:   0 1px 4px rgba(15, 23, 41, 0.06), 0 2px 8px rgba(15, 23, 41, 0.04);
+    --shadow-md:   0 4px 16px rgba(15, 23, 41, 0.10), 0 1px 4px rgba(15, 23, 41, 0.06);
+    --shadow-lg:   0 16px 48px rgba(15, 23, 41, 0.14), 0 4px 16px rgba(15, 23, 41, 0.08);
+
+    /* ── Shape ──────────────────────────── */
+    --radius-sm:   6px;
+    --radius-md:   12px;
+    --radius-lg:   20px;
+    --radius-xl:   32px;
+}
+
+/* ── Reset ────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: var(--font-body);
+    background-color: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ── Layout ───────────────────────────── */
+.container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+/* ── Header ───────────────────────────── */
+.site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 0 40px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Logo */
+.logo {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+}
+.logo:hover { opacity: 0.7; }
+.logo em { color: var(--blue); font-style: normal; }
+
+/* Logo mark — small PS monogram */
+.logo-mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: transparent;
+}
+.logo-mark img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+/* Nav */
+.main-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.nav-link {
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--slate);
+    padding: 6px 14px;
+    border-radius: 30px;
+    transition: all 0.18s;
+}
+.nav-link:hover { color: var(--ink); background: var(--mist); }
+.nav-link.is-active-blue   { color: var(--blue);   background: var(--blue-soft); }
+.nav-link.is-active-violet { color: var(--violet); background: var(--violet-soft); }
+.nav-link.is-active-teal   { color: var(--teal);   background: var(--teal-soft); }
+.nav-link.is-active-green  { color: var(--green);  background: var(--green-soft); }
+
+/* Header right area */
+.header-right { display: flex; align-items: center; gap: 10px; }
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.18s;
+    border: none;
+}
+.btn-sm  { font-size: 0.82rem; padding: 8px 16px; }
+.btn-md  { font-size: 0.9rem;  padding: 12px 24px; }
+.btn-lg  { font-size: 1rem;    padding: 15px 36px; }
+
+.btn-primary {
+    background: var(--blue);
+    color: #fff;
+    box-shadow: 0 8px 24px var(--blue-soft);
+}
+.btn-primary:hover { background: var(--blue-ink); transform: translateY(-1px); }
+
+.btn-secondary {
+    background: var(--violet);
+    color: #fff;
+    box-shadow: 0 8px 24px var(--violet-soft);
+}
+.btn-secondary:hover { background: var(--violet-ink); transform: translateY(-1px); }
+
+.btn-ghost {
+    background: var(--paper);
+    color: var(--slate);
+    border: 1px solid var(--line-strong);
+    box-shadow: var(--shadow-sm);
+}
+.btn-ghost:hover { color: var(--ink); border-color: var(--ink); }
+
+/* Eyebrow label */
+.eyebrow {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--fog);
+    margin-bottom: 14px;
+}
+.eyebrow.is-blue   { color: var(--blue); }
+.eyebrow.is-violet { color: var(--violet); }
+
+/* ── Footer ───────────────────────────── */
+.site-footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.65);
+    padding: 64px 0 32px;
+    margin-top: 80px;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 52px;
+}
+
+.footer-brand .logo { color: rgba(255,255,255,0.9); margin-bottom: 16px; }
+.footer-brand .logo em { color: #6B9FFF; }
+.footer-brand .logo-mark { background: transparent; }
+.footer-brand p {
+    font-size: 0.84rem;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.4);
+    max-width: 260px;
+}
+
+.footer-col h5 {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 16px;
+}
+.footer-col a {
+    display: block;
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    margin-bottom: 10px;
+    transition: color 0.18s;
+}
+.footer-col a:hover { color: #fff; }
+
+.footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 28px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.28);
+}
+
+/* ── Animations ───────────────────────── */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ── Scrollbar ────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--mist); }
+::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 3px; }
+
+/* ── Mobile ───────────────────────────── */
+@media (max-width: 900px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .footer-brand { grid-column: 1 / -1; }
+}
+@media (max-width: 768px) {
+    .site-header { padding: 0 20px; }
+    .container { padding: 0 20px; }
+    .main-nav { display: none; }
+}
+@media (max-width: 540px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+}
