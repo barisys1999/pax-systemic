@@ -778,7 +778,7 @@ window.updateCatName = function(sel) {
 // ── Image handling ─────────────────────
 // Artık dosya upload yok — sadece GitHub path'leri kullanılıyor
 
-function renderImagePreviews() {
+window.renderImagePreviews = function() {
     const textarea = document.getElementById('fi_imagePaths');
     if (!textarea) return;
     const paths = textarea.value.split('\n').map(s => s.trim()).filter(Boolean);
@@ -790,7 +790,7 @@ function renderImagePreviews() {
             <img src="${url}" onerror="this.style.opacity='0.2';this.title='Görsel bulunamadı: '+this.src" title="${url}">
         </div>`;
     }).join('');
-}
+};
 
 window.previewIconFromPath = function(path) {
     const wrap = document.getElementById('iconPreviewWrap');
