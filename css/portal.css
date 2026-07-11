@@ -50,8 +50,11 @@ body.portal-page {
     font-weight: 900;
     color: #fff;
     flex-shrink: 0;
+    overflow: hidden;
 }
 .portal-header .logo-mark::after { content: 'PS'; }
+.portal-header .logo-mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.portal-header .logo-mark:has(img)::after { content: none; }
 
 .portal-header-right {
     display: flex;
