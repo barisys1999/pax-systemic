@@ -1017,7 +1017,7 @@ function buildSiteForm(data) {
                 <button type="button" class="toolbar-btn" onclick="previewIconFromPath(document.getElementById('fi_iconPath').value)" style="white-space:nowrap;">Önizle</button>
             </div>
             <div id="iconPreviewWrap" style="margin-top:8px;">
-                ${data?.icon ? '<img src="'+esc(data.icon)+'" style="max-height:60px;border-radius:8px;" onerror="this.style.display='none'">' : ''}
+                ${data?.icon ? `<img src="${esc(data.icon)}" style="max-height:60px;border-radius:8px;" onerror="this.style.display='none'">` : ''}
             </div>
         </div>
 
