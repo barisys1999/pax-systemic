@@ -114,25 +114,25 @@ body {
 
 /* Logo mark — small PS monogram */
 .logo-mark {
-    width: 28px;
-    height: 28px;
-    background: var(--ink);
-    border-radius: 7px;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border-radius: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-size: 0.7rem;
     font-weight: 900;
-    color: #fff;
+    color: var(--ink);
     letter-spacing: 0;
     flex-shrink: 0;
-    overflow: hidden;
+    overflow: visible;
 }
 .logo-mark::after { content: 'PS'; }
 .logo-mark img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
     display: block;
 }
 .logo-mark:has(img)::after { content: none; }
@@ -232,7 +232,7 @@ body {
 
 .footer-brand .logo { color: rgba(255,255,255,0.9); margin-bottom: 16px; }
 .footer-brand .logo em { color: #6B9FFF; }
-.footer-brand .logo-mark { background: rgba(255,255,255,0.12); }
+.footer-brand .logo-mark { background: transparent; }
 .footer-brand p {
     font-size: 0.84rem;
     line-height: 1.7;
