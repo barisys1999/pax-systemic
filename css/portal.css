@@ -225,8 +225,11 @@ body.portal-page {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
-    padding: 28px 52px;
+    justify-content: center;
+    gap: 6px;
+    padding: 28px 0;
+    flex: 1;
+    max-width: 220px;
     border-right: 1px solid var(--line);
     position: relative;
     transition: background 0.2s;
@@ -240,6 +243,11 @@ body.portal-page {
     color: var(--ink);
     letter-spacing: -1px;
     line-height: 1;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
 }
 .stat-label {
     font-size: 0.68rem;
@@ -247,6 +255,7 @@ body.portal-page {
     letter-spacing: 1.2px;
     color: var(--fog);
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 /* ── Product Lines ────────────────────── */
