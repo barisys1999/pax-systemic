@@ -84,38 +84,38 @@ body.portal-page {
 /* ── Hero ─────────────────────────────── */
 .portal-hero {
     text-align: center;
-    padding: 80px 24px 72px;
-    background: var(--paper);
+    padding: 100px 24px 88px;
+    background: linear-gradient(160deg, #f8faff 0%, #eef2ff 50%, #f5f0ff 100%);
     position: relative;
     overflow: hidden;
 }
 
-/* Subtle background grid pattern */
+/* Dot grid pattern */
 .portal-hero::before {
     content: '';
     position: absolute;
     inset: 0;
-    background-image:
-        linear-gradient(var(--line) 1px, transparent 1px),
-        linear-gradient(90deg, var(--line) 1px, transparent 1px);
-    background-size: 52px 52px;
-    opacity: 0.45;
+    background-image: radial-gradient(circle, rgba(36,84,255,0.08) 1px, transparent 1px);
+    background-size: 36px 36px;
     pointer-events: none;
 }
 
-/* Soft gradient overlay to fade the grid */
+/* Glow blobs */
 .portal-hero::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 70% 60% at 50% 30%, rgba(255,255,255,0) 0%, var(--paper) 75%);
+    background:
+        radial-gradient(ellipse 55% 45% at 20% 50%, rgba(36,84,255,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 45% 55% at 80% 40%, rgba(122,63,224,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 50% 100%, rgba(255,255,255,0.9) 0%, transparent 60%);
     pointer-events: none;
 }
 
 .portal-hero__inner {
     position: relative;
     z-index: 2;
-    max-width: 680px;
+    max-width: 700px;
     margin: 0 auto;
     animation: fadeUp 0.6s ease both;
 }
@@ -164,9 +164,9 @@ body.portal-page {
 .portal-hero p {
     font-size: 1.1rem;
     color: var(--slate);
-    max-width: 480px;
-    margin: 0 auto 40px;
-    line-height: 1.7;
+    max-width: 500px;
+    margin: 0 auto 0;
+    line-height: 1.75;
 }
 
 .portal-hero__ctas {
@@ -215,34 +215,36 @@ body.portal-page {
 .portal-stats {
     display: flex;
     justify-content: center;
-    gap: 0;
-    border-top: 1px solid var(--line);
+    background: var(--paper);
     border-bottom: 1px solid var(--line);
-    background: var(--mist);
-    padding: 0;
+    padding: 0 24px;
     animation: fadeUp 0.6s 0.1s ease both;
+    box-shadow: 0 1px 0 var(--line), 0 4px 16px rgba(15,23,41,0.04);
 }
 .stat-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3px;
-    padding: 22px 48px;
+    gap: 4px;
+    padding: 28px 52px;
     border-right: 1px solid var(--line);
+    position: relative;
+    transition: background 0.2s;
 }
 .stat-item:last-child { border-right: none; }
+.stat-item:hover { background: var(--mist); }
 .stat-num {
     font-family: var(--font-display);
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 700;
     color: var(--ink);
-    letter-spacing: -0.5px;
+    letter-spacing: -1px;
     line-height: 1;
 }
 .stat-label {
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
     color: var(--fog);
     text-transform: uppercase;
 }
