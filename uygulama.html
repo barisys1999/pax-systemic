@@ -349,6 +349,72 @@ const db   = getFirestore(app);
 
 // Yerel görsel klasörü — tüm görseller proje içindeki /gorseller klasöründen (WebP) çekilir
 const GITHUB_BASE = 'https://raw.githubusercontent.com/barisys1999/pax-systemic/main/gorseller/';
+const GH_TOKEN = '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';
+const GH_REPO  = 'barisys1999/pax-systemic';
+const GH_BRANCH = 'main';
+
+// GitHub'a görsel yükle
+async function uploadToGitHub(file, folder) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            try {
+                const base64 = e.target.result.split(',')[1];
+                const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+                const path = `gorseller/${folder}/${safeName}`;
+                const apiUrl = `https://api.github.com/repos/${GH_REPO}/contents/${path}`;
+
+                // Dosya zaten var mı kontrol et (SHA gerekebilir)
+                let sha = null;
+                try {
+                    const check = await fetch(apiUrl, {
+                        headers: { Authorization: `token ${GH_TOKEN}`, Accept: 'application/vnd.github+json' }
+                    });
+                    if (check.ok) {
+                        const existing = await check.json();
+                        sha = existing.sha;
+                    }
+                } catch(e) {}
+
+                const body = {
+                    message: `Admin: ${safeName} görseli eklendi`,
+                    content: base64,
+                    branch: GH_BRANCH
+                };
+                if (sha) body.sha = sha;
+
+                const res = await fetch(apiUrl, {
+                    method: 'PUT',
+                    headers: {
+                        Authorization: `token ${GH_TOKEN}`,
+                        Accept: 'application/vnd.github+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.message || 'GitHub upload hatası');
+                }
+
+                const data = await res.json();
+                const rawUrl = `https://raw.githubusercontent.com/${GH_REPO}/${GH_BRANCH}/gorseller/${folder}/${safeName}`;
+                resolve({ path: `${folder}/${safeName}`, url: rawUrl });
+            } catch(err) {
+                reject(err);
+            }
+        };
+        reader.onerror = () => reject(new Error('Dosya okunamadı'));
+        reader.readAsDataURL(file);
+    });
+}
+
+// Folder adını input'tan al (başlık alanından)
+function getUploadFolder() {
+    const title = document.getElementById('fi_title')?.value.trim() || 'genel';
+    return title.toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_');
+}
 
 // ═══════════════════════════════════════
 // AUTH
@@ -684,6 +750,10 @@ window.openCmsModal = function(col, data = null, docId = null) {
             <div style="display:flex;gap:8px;align-items:center;">
                 <input type="text" class="form-input" id="fi_iconPath" value="${esc(data?.icon ? data.icon.replace(GITHUB_BASE,'') : '')}" placeholder="klasor/logo.webp" oninput="previewIconFromPath(this.value)" style="flex:1;">
                 <button type="button" class="toolbar-btn" onclick="previewIconFromPath(document.getElementById('fi_iconPath').value)" style="white-space:nowrap;">Önizle</button>
+                <label class="toolbar-btn" style="white-space:nowrap;cursor:pointer;margin:0;">
+                    📁 Yükle
+                    <input type="file" accept="image/*,.webp" style="display:none" onchange="uploadIconFile(this)">
+                </label>
             </div>
             <div id="iconPreviewWrap" style="margin-top:8px;">
                 ${(data?.icon) ? `<img src="${esc(data.icon)}" style="max-height:60px;border-radius:8px;" onerror="this.style.display='none'">` : ''}
@@ -691,7 +761,13 @@ window.openCmsModal = function(col, data = null, docId = null) {
         </div>
 
         <div class="form-group">
-            <label class="form-label">Ekran Görüntüleri — Dosya Yolları <span>(/gorseller içinde, her satıra bir yol, ör: systemic/1.webp)</span></label>
+            <label class="form-label" style="display:flex;align-items:center;justify-content:space-between;">
+                <span>Ekran Görüntüleri <span style="font-weight:400;color:var(--fog);">(her satıra bir yol, ör: systemic/1.webp)</span></span>
+                <label class="toolbar-btn" style="cursor:pointer;margin:0;">
+                    📁 Görsel Yükle
+                    <input type="file" accept="image/*,.webp" multiple style="display:none" onchange="uploadImageFiles(this)">
+                </label>
+            </label>
             <textarea class="form-textarea" id="fi_imagePaths" rows="5" placeholder="systemic/1.webp&#10;systemic/2.webp&#10;systemic/3.webp" oninput="renderImagePreviews()" style="font-family:monospace;font-size:0.82rem;">${(data?.images||[]).map(u => u.replace(GITHUB_BASE,'')).join('\n')}</textarea>
             <div class="img-preview-list" id="imgPreviewList" style="margin-top:10px;"></div>
         </div>
@@ -790,6 +866,48 @@ window.renderImagePreviews = function() {
             <img src="${url}" onerror="this.style.opacity='0.2';this.title='Görsel bulunamadı: '+this.src" title="${url}">
         </div>`;
     }).join('');
+};
+
+window.uploadIconFile = async function(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const folder = getUploadFolder();
+    const btn = input.parentElement;
+    btn.textContent = '⏳ Yükleniyor...';
+    try {
+        const result = await uploadToGitHub(file, folder);
+        document.getElementById('fi_iconPath').value = result.path;
+        previewIconFromPath(result.path);
+        btn.innerHTML = '✅ Yüklendi';
+        setTimeout(() => { btn.innerHTML = '📁 Yükle<input type="file" accept="image/*,.webp" style="display:none" onchange="uploadIconFile(this)">'; }, 2000);
+        showToast('İkon yüklendi: ' + result.path, 'success');
+    } catch(e) {
+        btn.innerHTML = '📁 Yükle<input type="file" accept="image/*,.webp" style="display:none" onchange="uploadIconFile(this)">';
+        showToast('Hata: ' + e.message, 'error');
+    }
+};
+
+window.uploadImageFiles = async function(input) {
+    const files = [...input.files];
+    if (!files.length) return;
+    const folder = getUploadFolder();
+    const label = input.parentElement;
+    label.textContent = `⏳ ${files.length} dosya yükleniyor...`;
+    const textarea = document.getElementById('fi_imagePaths');
+    let successCount = 0;
+    for (const file of files) {
+        try {
+            const result = await uploadToGitHub(file, folder);
+            const current = textarea.value.trim();
+            textarea.value = current ? current + '\n' + result.path : result.path;
+            window.renderImagePreviews();
+            successCount++;
+        } catch(e) {
+            showToast('Hata (' + file.name + '): ' + e.message, 'error');
+        }
+    }
+    label.innerHTML = '📁 Görsel Yükle<input type="file" accept="image/*,.webp" multiple style="display:none" onchange="uploadImageFiles(this)">';
+    if (successCount > 0) showToast(successCount + ' görsel başarıyla yüklendi!', 'success');
 };
 
 window.previewIconFromPath = function(path) {
