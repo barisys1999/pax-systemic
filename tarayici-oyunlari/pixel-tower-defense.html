@@ -771,31 +771,45 @@ function clearSelection(){
 
 function renderSelectedPanel(){
   const panel=document.getElementById('selected-panel');
+  panel.innerHTML='';
   if(selectedPlacedTower){
     const t=selectedPlacedTower;
     const def=TOWER_DEFS.find(d=>d.id===t.typeId);
     const nextUp=def.upgrades[t.level-1];
     const sellVal=Math.floor(t.totalSpent*0.6);
-    let html=`<div class="selected-info">
-      <b>${def.icon} ${def.name}</b><br>
-      SEVİYE: <b>${t.level}</b>/3<br>
-      ${def.dmg?`HASAR: <b>${t.dmg}</b><br>`:''}
-      ${def.range?`MENZİL: <b>${(t.range+(t.level-1)*0.3).toFixed(1)}</b><br>`:''}
-      ${t.slow?`YAVAŞLAT: <b>${Math.round(t.slow*100)}%</b><br>`:''}
-      ${t.goldGen?`ÜRETİM: <b>${t.goldGen}💰/s</b><br>`:''}
-      ${t.poisonDmg?`ZEHİR: <b>${t.poisonDmg}/tick</b><br>`:''}
-    </div>`;
+    const info=document.createElement('div');
+    info.className='selected-info';
+    info.innerHTML='<b>'+def.icon+' '+def.name+'</b><br>SEVİYE: <b>'+t.level+'</b>/3<br>'
+      +(def.dmg?'HASAR: <b>'+t.dmg+'</b><br>':'')
+      +(def.range?'MENZİL: <b>'+(t.range+(t.level-1)*0.3).toFixed(1)+'</b><br>':'')
+      +(t.slow?'YAVAŞLAT: <b>'+Math.round(t.slow*100)+'%</b><br>':'')
+      +(t.goldGen?'ÜRETİM: <b>'+t.goldGen+'💰/5s</b><br>':'')
+      +(t.poisonDmg?'ZEHİR: <b>'+t.poisonDmg+'/tick</b><br>':'');
+    panel.appendChild(info);
     if(nextUp && t.level<3){
-      html+=`<button class="upgrade-btn" id="up-btn" ${G.gold<nextUp.cost?'disabled':''} onclick="upgradeTower()">
-        ⬆️ YÜKSELT (💰${nextUp.cost})<br><span style="font-size:5px;color:var(--dim)">${nextUp.name}</span>
-      </button>`;
+      const upBtn=document.createElement('button');
+      upBtn.className='upgrade-btn';
+      upBtn.disabled=G.gold<nextUp.cost;
+      upBtn.innerHTML='⬆️ YÜKSELT (💰'+nextUp.cost+')<br><span style="font-size:5px;color:var(--dim)">'+nextUp.name+'</span>';
+      upBtn.addEventListener('click', upgradeTower);
+      panel.appendChild(upBtn);
     } else if(t.level>=3){
-      html+=`<div style="font-size:6px;color:var(--gold);text-align:center;padding:4px">✨ MAKS SEVİYE</div>`;
+      const maxEl=document.createElement('div');
+      maxEl.style.cssText='font-size:6px;color:var(--gold);text-align:center;padding:4px';
+      maxEl.textContent='✨ MAKS SEVİYE';
+      panel.appendChild(maxEl);
     }
-    html+=`<button class="sell-btn" onclick="sellTower()">🗑️ SAT (💰${sellVal})</button>`;
-    panel.innerHTML=html;
+    const sellBtn=document.createElement('button');
+    sellBtn.className='sell-btn';
+    sellBtn.textContent='🗑️ SAT (💰'+sellVal+')';
+    sellBtn.addEventListener('click', sellTower);
+    panel.appendChild(sellBtn);
   } else {
-    panel.innerHTML=`<div class="selected-info" style="color:var(--dim);font-size:6px">Kule seçin veya<br>kuleye tıklayın</div>`;
+    const empty=document.createElement('div');
+    empty.className='selected-info';
+    empty.style.cssText='color:var(--dim);font-size:6px';
+    empty.innerHTML='Kule seçin veya<br>kuleye tıklayın';
+    panel.appendChild(empty);
   }
 }
 
