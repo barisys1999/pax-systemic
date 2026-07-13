@@ -640,16 +640,16 @@ function getDiffConfig() {
   // rate: kaç frame'de bir spawn (60 = 1 saniye). Düşük = daha hızlı spawn.
   // count: her spawn tick'inde çıkan düşman sayısı
   // hpScale/spdScale: düşman güç çarpanı
-  if (lv === 1)  return { rate: 120, count: 1, fastChance: 0,    tankChance: 0,    hpScale: 0.6, spdScale: 0.8 };
-  if (lv === 2)  return { rate: 100, count: 1, fastChance: 0,    tankChance: 0,    hpScale: 0.7, spdScale: 0.85 };
-  if (lv === 3)  return { rate: 90,  count: 1, fastChance: 0.1,  tankChance: 0,    hpScale: 0.8, spdScale: 0.9 };
-  if (lv === 4)  return { rate: 80,  count: 1, fastChance: 0.15, tankChance: 0,    hpScale: 0.9, spdScale: 0.92 };
-  if (lv === 5)  return { rate: 72,  count: 2, fastChance: 0.18, tankChance: 0.05, hpScale: 1.0, spdScale: 0.95 };
-  if (lv === 6)  return { rate: 65,  count: 2, fastChance: 0.2,  tankChance: 0.08, hpScale: 1.1, spdScale: 0.97 };
-  if (lv === 7)  return { rate: 58,  count: 2, fastChance: 0.22, tankChance: 0.1,  hpScale: 1.2, spdScale: 1.0 };
-  if (lv === 8)  return { rate: 52,  count: 2, fastChance: 0.25, tankChance: 0.12, hpScale: 1.3, spdScale: 1.02 };
-  if (lv === 9)  return { rate: 46,  count: 3, fastChance: 0.28, tankChance: 0.14, hpScale: 1.45, spdScale: 1.05 };
-  if (lv === 10) return { rate: 40,  count: 3, fastChance: 0.3,  tankChance: 0.15, hpScale: 1.6, spdScale: 1.08 };
+  if (lv === 1)  return { rate: 120, count: 1, fastChance: 0,    tankChance: 0,    hpScale: 1.4,  spdScale: 0.8 };
+  if (lv === 2)  return { rate: 100, count: 1, fastChance: 0,    tankChance: 0,    hpScale: 1.6,  spdScale: 0.85 };
+  if (lv === 3)  return { rate: 90,  count: 1, fastChance: 0.1,  tankChance: 0,    hpScale: 1.85, spdScale: 0.9 };
+  if (lv === 4)  return { rate: 80,  count: 1, fastChance: 0.15, tankChance: 0,    hpScale: 2.1,  spdScale: 0.92 };
+  if (lv === 5)  return { rate: 72,  count: 2, fastChance: 0.18, tankChance: 0.05, hpScale: 2.4,  spdScale: 0.95 };
+  if (lv === 6)  return { rate: 65,  count: 2, fastChance: 0.2,  tankChance: 0.08, hpScale: 2.7,  spdScale: 0.97 };
+  if (lv === 7)  return { rate: 58,  count: 2, fastChance: 0.22, tankChance: 0.1,  hpScale: 3.0,  spdScale: 1.0 };
+  if (lv === 8)  return { rate: 52,  count: 2, fastChance: 0.25, tankChance: 0.12, hpScale: 3.4,  spdScale: 1.02 };
+  if (lv === 9)  return { rate: 46,  count: 3, fastChance: 0.28, tankChance: 0.14, hpScale: 3.8,  spdScale: 1.05 };
+  if (lv === 10) return { rate: 40,  count: 3, fastChance: 0.3,  tankChance: 0.15, hpScale: 4.3,  spdScale: 1.08 };
   // lv 11+: giderek sertleşir
   const extra = lv - 10;
   return {
@@ -657,7 +657,7 @@ function getDiffConfig() {
     count:      Math.min(6, 3 + Math.floor(extra / 3)),
     fastChance: Math.min(0.35, 0.3 + extra * 0.01),
     tankChance: Math.min(0.25, 0.15 + extra * 0.01),
-    hpScale:    1.6 + extra * 0.18,
+    hpScale:    4.3 + extra * 0.5,
     spdScale:   1.08 + extra * 0.03,
   };
 }
@@ -931,8 +931,15 @@ function update(dt) {
       b.vy += (player.y - b.y) * 0.006 * dt;
     }
 
-    // Out of bounds
-    if (b.x < -60 || b.x > W+60 || b.y < -60 || b.y > H+60 || b.life > 180) {
+    // Clamp bullets to screen — bounce off edges instead of going offscreen
+    if (b.type !== 'axe') {
+      if (b.x < 0)   { b.x = 0;   b.vx = Math.abs(b.vx); }
+      if (b.x > W)   { b.x = W;   b.vx = -Math.abs(b.vx); }
+      if (b.y < 0)   { b.y = 0;   b.vy = Math.abs(b.vy); }
+      if (b.y > H)   { b.y = H;   b.vy = -Math.abs(b.vy); }
+    }
+    // Remove only if lifetime expired
+    if (b.life > 180) {
       b.dead = true; bullets.splice(i,1); continue;
     }
 
