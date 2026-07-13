@@ -283,7 +283,7 @@ canvas { display:block; image-rendering:pixelated; }
   <div class="howto-grid">
     <div class="howto-card">
       <h3>🎯 AMAÇ</h3>
-      <p>Düşmanların kalenize ulaşmasını engelleyin. 20 dalgayı geçin, final boss'u yenin!</p>
+      <p>Düşmanların kalenize ulaşmasını engelleyin. Sonsuz dalgaları geçin, her dalga daha da zorlaşır!</p>
     </div>
     <div class="howto-card">
       <h3>🏗️ KULE İNŞA</h3>
@@ -428,7 +428,7 @@ function sfxAbility(){ [660,880,1100,1320].forEach((f,i)=>setTimeout(()=>playTon
 // ═══════════════════════════════════════════
 const CELL = 40;
 const COLS = 20, ROWS = 14;
-const MAX_WAVES = 20;
+const MAX_WAVES = Infinity;
 
 const PATH_CELLS = [
   [0,2],[1,2],[2,2],[3,2],[4,2],[4,3],[4,4],[4,5],[4,6],
@@ -479,12 +479,12 @@ const TOWER_DEFS = [
     ]
   },
   {
-    id:'gold', name:'Altın Madeni', icon:'💰', cost:150, hotkey:'5',
-    desc:'Para üretir,\nsavaşmaz',
-    color:'#ffd700', range:0, dmg:0, rate:0, proj:'none', slow:0, goldGen:8,
+    id:'gold', name:'Altın Madeni', icon:'💰', cost:2000, hotkey:'5',
+    desc:'Para üretir,\n5s\'de bir',
+    color:'#ffd700', range:0, dmg:0, rate:0, proj:'none', slow:0, goldGen:5,
     upgrades:[
-      {name:'Zengin Maden', cost:100, goldGen:15, desc:'Daha fazla altın'},
-      {name:'Hazine Odası', cost:180, goldGen:25, desc:'Çok daha fazla altın'},
+      {name:'Zengin Maden', cost:500, goldGen:10, desc:'Daha fazla altın'},
+      {name:'Hazine Odası', cost:900, goldGen:18, desc:'Çok daha fazla altın'},
     ]
   },
   {
@@ -546,7 +546,7 @@ const SHOP_ITEMS = [
   {id:'extra_life', name:'Can Elması', icon:'🍎', desc:'+3 can kazan', cost:0, effect:()=>{G.lives+=3; updateHUD();}, oneTime:false},
   {id:'damage_boost', name:'Güç Artışı', icon:'⚔️', desc:'Tüm kule hasarı +20%', cost:0, effect:()=>{G.dmgMult=(G.dmgMult||1)*1.2;}, oneTime:false},
   {id:'speed_boost', name:'Ateş Hızı', icon:'⚡', desc:'Tüm kuleler %15 hızlı ateş', cost:0, effect:()=>{G.rateMult=(G.rateMult||1)*0.85;}, oneTime:false},
-  {id:'gold_bonus', name:'Altın Yağmuru', icon:'🌧️', desc:'+150 altın', cost:0, effect:()=>{G.gold+=150; sfxGold();}, oneTime:false},
+  {id:'gold_bonus', name:'Altın Yağmuru', icon:'🌧️', desc:'+80 altın', cost:0, effect:()=>{G.gold+=80; sfxGold();}, oneTime:false},
 ];
 
 // ═══════════════════════════════════════════
@@ -591,7 +591,68 @@ function getWave(n){
     [{type:'armored',count:12,delay:50},{type:'healer',count:6,delay:65},{type:'tank',count:5,delay:80},{type:'splitter',count:4,delay:70}],
     [{type:'boss_final',count:1,delay:0},{type:'boss',count:2,delay:200},{type:'armored',count:10,delay:55},{type:'fast',count:10,delay:40}],
   ];
-  return waves[Math.min(n-1, waves.length-1)];
+  if(n<=20) return waves[n-1];
+  // Sonsuz dalga: 20'den sonra giderek zorlaşan prosedürel dalgalar
+  const tier = Math.floor((n-21)/5); // her 5 dalgada bir zorluk kademesi artar
+  const scale = n - 20; // ne kadar ilerlediğimiz
+  const rng = (min,max) => Math.floor(min + (max-min)*(0.5+0.5*Math.sin(n*1.7+tier)));
+  // Giderek artan sayılar
+  const basicCount  = Math.min(8  + scale*2, 40);
+  const fastCount   = Math.min(6  + scale*2, 35);
+  const tankCount   = Math.min(3  + Math.floor(scale/2), 18);
+  const armoredCount= Math.min(4  + scale,   30);
+  const healerCount = Math.min(2  + Math.floor(scale/2), 12);
+  const stealthCount= Math.min(3  + scale,   25);
+  const splitterCnt = Math.min(2  + Math.floor(scale/2), 12);
+  const miniCount   = Math.min(1  + Math.floor(scale/3), 6);
+  const bossCount   = Math.min(Math.floor(scale/4)+1, 4);
+  // Spawn hızı giderek artar (delay azalır), minimum 18
+  const delayFast   = Math.max(18, 38 - scale*1.5);
+  const delayMed    = Math.max(25, 55 - scale*1.5);
+  const delaySlow   = Math.max(40, 80 - scale*2);
+  // Her 5 dalgada bir boss gelsin, her 10'da çift boss
+  const isBossWave = (n % 5 === 0);
+  const isDoubleBoss = (n % 10 === 0);
+  let wave = [];
+  if(isDoubleBoss){
+    wave.push({type:'boss_final', count: bossCount, delay:200});
+    wave.push({type:'boss', count: bossCount+1, delay:160});
+    wave.push({type:'armored', count: armoredCount, delay:delayMed});
+    wave.push({type:'fast', count: fastCount, delay:delayFast});
+    wave.push({type:'healer', count: healerCount, delay:delaySlow});
+    wave.push({type:'stealth', count: stealthCount, delay:delayFast});
+  } else if(isBossWave){
+    wave.push({type:'boss', count: bossCount, delay:160});
+    wave.push({type:'boss_mini', count: miniCount, delay:delaySlow});
+    wave.push({type:'armored', count: armoredCount, delay:delayMed});
+    wave.push({type:'tank', count: tankCount, delay:delaySlow});
+    wave.push({type:'fast', count: fastCount, delay:delayFast});
+  } else {
+    // Normal karışık dalga - tier'a göre farklı kombinasyonlar
+    const combo = (n-21) % 4;
+    if(combo===0){
+      wave.push({type:'fast', count:fastCount, delay:delayFast});
+      wave.push({type:'armored', count:armoredCount, delay:delayMed});
+      wave.push({type:'stealth', count:stealthCount, delay:delayFast});
+    } else if(combo===1){
+      wave.push({type:'tank', count:tankCount, delay:delaySlow});
+      wave.push({type:'healer', count:healerCount, delay:delaySlow});
+      wave.push({type:'splitter', count:splitterCnt, delay:delayMed});
+      wave.push({type:'basic', count:basicCount, delay:delayFast});
+    } else if(combo===2){
+      wave.push({type:'boss_mini', count:miniCount, delay:delaySlow});
+      wave.push({type:'stealth', count:stealthCount, delay:delayFast});
+      wave.push({type:'armored', count:armoredCount, delay:delayMed});
+      wave.push({type:'healer', count:healerCount, delay:delaySlow});
+    } else {
+      wave.push({type:'fast', count:fastCount, delay:delayFast});
+      wave.push({type:'tank', count:tankCount, delay:delaySlow});
+      wave.push({type:'splitter', count:splitterCnt, delay:delayMed});
+      wave.push({type:'basic', count:basicCount, delay:delayFast});
+      wave.push({type:'stealth', count:stealthCount, delay:delayFast});
+    }
+  }
+  return wave;
 }
 
 // ═══════════════════════════════════════════
@@ -766,7 +827,7 @@ function useAbility(id){
     });
     spawnFloatie('❄️ BUZ FIRTINASI!',COLS*CELL/2,ROWS*CELL/2-40,'#88ddff');
   } else if(id==='goldrush'){
-    const bonus=100+waveNum*10;
+    const bonus=50+waveNum*5;
     G.gold+=bonus;
     sfxGold();
     spawnFloatie('+'+bonus+'💰 ACİL ALTIN!',COLS*CELL/2,ROWS*CELL/2-40,'#ffd700');
@@ -853,9 +914,9 @@ function startGame(){
 // UPDATE
 // ═══════════════════════════════════════════
 function update(dt){
-  // Gold generation
+  // Gold generation (every 5 seconds)
   goldTimer+=dt;
-  if(goldTimer>=60){
+  if(goldTimer>=300){
     goldTimer=0;
     let gen=0;
     placedTowers.forEach(t=>{if(t.typeId==='gold') gen+=t.goldGen;});
@@ -1118,7 +1179,7 @@ function spawnEnemy(typeId, returnRef=false){
 // WAVE CONTROL
 // ═══════════════════════════════════════════
 function sendWave(){
-  if(waveActive||waveNum>=MAX_WAVES) return;
+  if(waveActive) return;
   waveNum++;
   livesAtWaveStart=G.lives;
   wavePerfect=false;
@@ -1138,9 +1199,9 @@ function sendWave(){
 function waveComplete(){
   waveActive=false;
   wavePerfect=(G.lives===livesAtWaveStart);
-  if(waveNum>=MAX_WAVES){gameWin(); return;}
-  const bonus=50+waveNum*12;
-  G.gold+=bonus; G.score+=bonus;
+  // Sonsuz mod: hiç bitmez
+  const bonus=50+waveNum*15;
+  G.gold+=bonus; G.score+=bonus*2;
   spawnFloatie('+'+bonus+'💰 DALGA BONUSU',COLS*CELL/2-60,40,'#ffd700');
   showWaveBanner(`✅ DALGA ${waveNum} TAMAM!`);
   sfxWave();
@@ -1565,7 +1626,7 @@ function updateHUD(){
   document.getElementById('hud-gold').textContent=G.gold;
   document.getElementById('hud-lives').textContent=G.lives;
   document.getElementById('hud-score').textContent=G.score.toLocaleString();
-  document.getElementById('hud-wave').textContent=`DALGA ${waveNum}/${MAX_WAVES}`;
+  document.getElementById('hud-wave').textContent=`DALGA ${waveNum}/∞`;
 }
 
 function toggleSpeed(){
@@ -1587,7 +1648,7 @@ function gameOver(){
   document.getElementById('over-title').style.color='var(--red)';
   document.getElementById('over-score-val').textContent=G.score.toLocaleString();
   document.getElementById('over-stats').innerHTML=`
-    DALGA: ${waveNum} / ${MAX_WAVES}<br>
+    DALGA: ${waveNum}<br>
     ÖLDÜRME: ${totalKills}<br>
     MAX COMBO: x${maxCombo}<br>
     BOSS ÖLDÜRMELERi: ${bossKills}`;
