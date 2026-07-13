@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CUBE SLAYER</title>
+<title>CUBE SLAYER v2</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { background:#07070d; overflow:hidden; font-family:'Segoe UI',system-ui,sans-serif; user-select:none; }
@@ -341,7 +341,7 @@ function setVolume(v){ masterVolume=v/100; isMuted=false; document.getElementByI
 // GAME STATE
 // ════════════════════════════════════════════════
 let state='menu';
-let score=0, kills=0, level=1, xp=0, xpToNext=20, gameTime=0;
+let score=0, kills=0, level=1, xp=0, xpToNext=55, gameTime=0;
 let pendingUpgrades=0, raf=null, lastTime=0, stateBefore=null;
 let waveNum=1;
 
@@ -447,7 +447,7 @@ const WEAPONS = {
         for(let j=enemies.length-1;j>=0;j--){
           const e=enemies[j];
           if(e.dead||seen.has(j))continue;
-          if(Math.hypot(ox-e.x,oy-e.y)<22){ seen.add(j); damageEnemy(j,w.dmg*dt*3.5); }
+          if(Math.hypot(ox-e.x,oy-e.y)<22){ seen.add(j); damageEnemy(j,w.dmg*dt*2.0); }
         }
       }
     },
@@ -550,7 +550,7 @@ const WEAPONS = {
         const e=enemies[j]; if(e.dead)continue;
         const d=Math.hypot(e.x-player.x,e.y-player.y);
         if(d<w.radius){
-          damageEnemy(j,w.dmg*dt*(w.evolved?3.5:2.4));
+          damageEnemy(j,w.dmg*dt*(w.evolved?2.8:1.6));
           // Knockback sadece çok yakınsa devreye girer, düşmanı tamamen durdurmaz
           if(d < w.radius * 0.5){
             const a=Math.atan2(e.y-player.y,e.x-player.x);
@@ -659,57 +659,57 @@ const WEAPONS = {
 const PASSIVES = {
   bracer: {
     id:'bracer', name:'Bileklik', emoji:'🧤', color:'#ffe066',
-    desc:'Mermi hızı artar (+15% / lv) — Bıçak ile evrim!',
+    desc:'Mermi hızı artar (+8% / lv) — Bıçak ile evrim!',
     pairsWith:'knife', maxLevel:5,
-    apply(lv){ player.bulletSpd=1+lv*.15; }
+    apply(lv){ player.bulletSpd=1+lv*.08; }
   },
   canteen: {
     id:'canteen', name:'Matara', emoji:'🫙', color:'#ff8c42',
-    desc:'Her öldürme can kazanır (+1.5 / lv) — Balta ile evrim!',
+    desc:'Her öldürme can kazanır (+0.6 / lv) — Balta ile evrim!',
     pairsWith:'axe', maxLevel:5,
-    apply(lv){ player.vampirism=lv*1.5; }
+    apply(lv){ player.vampirism=lv*0.6; }
   },
   spellbook: {
     id:'spellbook', name:'Büyü Kitabı', emoji:'📖', color:'#c77dff',
-    desc:'Hasar çarpanı (+12% / lv) — Sihir Çemberi ile evrim!',
+    desc:'Hasar çarpanı (+7% / lv) — Sihir Çemberi ile evrim!',
     pairsWith:'magic', maxLevel:5,
-    apply(lv){ player.dmgMult=1+lv*.12; }
+    apply(lv){ player.dmgMult=1+lv*.07; }
   },
   skull: {
     id:'skull', name:'Kafatası', emoji:'💀', color:'#ffe566',
-    desc:'Cooldown azalır (-5% / lv) — Yıldırım ile evrim!',
+    desc:'Cooldown azalır (-3% / lv, max %12) — Yıldırım ile evrim!',
     pairsWith:'lightning', maxLevel:5,
-    apply(lv){ player.cooldownReduce=1-lv*.05; }
+    apply(lv){ player.cooldownReduce=Math.max(0.88, 1-lv*.03); }
   },
   hollow: {
     id:'hollow', name:'Boşluk Taşı', emoji:'🪨', color:'#ff6655',
-    desc:'Patlama hasarı (+15 / lv) — Kamçı ile evrim!',
+    desc:'Patlama hasarı (+8 / lv) — Kamçı ile evrim!',
     pairsWith:'whip', maxLevel:5,
-    apply(lv){ player.explosion=lv*15; }
+    apply(lv){ player.explosion=lv*8; }
   },
   pummarola: {
     id:'pummarola', name:'Domates', emoji:'🍅', color:'#ccff66',
-    desc:'Rejenerasyon (+2.5 hp/s / lv) — Sarımsak ile evrim!',
+    desc:'Rejenerasyon (+0.8 hp/s / lv) — Sarımsak ile evrim!',
     pairsWith:'garlic', maxLevel:5,
-    apply(lv){ player.regen=lv*2.5; }
+    apply(lv){ player.regen=lv*0.8; }
   },
   inferno: {
     id:'inferno', name:'İnferno Taşı', emoji:'💎', color:'#ff4400',
-    desc:'Ateş alan hasarı (+20% / lv) — Ateş Topu ile evrim!',
+    desc:'Ateş alan hasarı (+10% / lv) — Ateş Topu ile evrim!',
     pairsWith:'fireball', maxLevel:5,
-    apply(lv){ player.fireMult=1+lv*.20; }
+    apply(lv){ player.fireMult=1+lv*.10; }
   },
   bible: {
     id:'bible', name:'İncil', emoji:'📜', color:'#ffeeaa',
-    desc:'Kutsal hasar bonusu (+15% / lv) — Kutsal Haç ile evrim!',
+    desc:'Kutsal hasar bonusu (+8% / lv) — Kutsal Haç ile evrim!',
     pairsWith:'cross', maxLevel:5,
-    apply(lv){ player.holyMult=1+lv*.15; }
+    apply(lv){ player.holyMult=1+lv*.08; }
   },
   armor: {
     id:'armor', name:'Zırh', emoji:'🛡️', color:'#88ccff',
-    desc:'Hasar azaltma (+6% / lv, max %30)',
+    desc:'Hasar azaltma (+4% / lv, max %20)',
     pairsWith:null, maxLevel:5,
-    apply(lv){ player.dmgReduce=Math.min(.30,lv*.06); }
+    apply(lv){ player.dmgReduce=Math.min(.20,lv*.04); }
   },
   wings: {
     id:'wings', name:'Kanatlar', emoji:'🪽', color:'#aaffee',
@@ -719,15 +719,15 @@ const PASSIVES = {
   },
   heart: {
     id:'heart', name:'Kalp', emoji:'❤️', color:'#ff4488',
-    desc:'Max can +30 / lv + anlık iyileşme',
+    desc:'Max can +15 / lv + anlık iyileşme',
     pairsWith:null, maxLevel:5,
-    apply(lv){ player.maxHp=120+lv*30; player.hp=Math.min(player.hp+30,player.maxHp); }
+    apply(lv){ player.maxHp=120+lv*15; player.hp=Math.min(player.hp+15,player.maxHp); }
   },
   magnet: {
     id:'magnet', name:'Mıknatıs', emoji:'🧲', color:'#aabbff',
-    desc:'XP çekme menzili (×1.6 / lv)',
+    desc:'XP çekme menzili (×1.3 / lv)',
     pairsWith:null, maxLevel:4,
-    apply(lv){ player.magnetRange=110*Math.pow(1.6,lv); }
+    apply(lv){ player.magnetRange=110*Math.pow(1.3,lv); }
   },
 };
 
@@ -795,8 +795,8 @@ function getSpawnConfig(t) {
     spawnRate: Math.max(18, 95 - minutes * 12),
     // Count per spawn: 1→8 over 5 minutes
     count: Math.min(8, 1 + Math.floor(minutes * 1.4)),
-    hpMult: 1 + minutes * 0.45,
-    spdMult: Math.min(2.0, 1 + minutes * 0.055),
+    hpMult: 1 + minutes * 0.65,
+    spdMult: Math.min(2.5, 1 + minutes * 0.08),
     // Enemy type probabilities unlock by time
     fastChance:   t > 20  ? Math.min(0.35, (t-20)/400) : 0,
     tankChance:   t > 60  ? Math.min(0.22, (t-60)/500) : 0,
@@ -830,12 +830,12 @@ function spawnOneEnemy(cfg, forceType=null){
   const type = forceType || rollEnemyType(fastChance,tankChance,eliteChance,swarmChance,ghostChance);
 
   const baseEnemies = {
-    basic: {hp:40,speed:1.2,radius:11,color:'#ff4455',dmgPerSec:8},
-    fast:  {hp:22,speed:2.4,radius:7, color:'#ff9900',dmgPerSec:7},
-    tank:  {hp:130,speed:0.68,radius:19,color:'#8855ff',dmgPerSec:12},
-    elite: {hp:200,speed:1.05,radius:21,color:'#aa00ff',dmgPerSec:16},
-    swarm: {hp:12,speed:1.6,radius:6, color:'#ff6699',dmgPerSec:6},  // NEW: many small
-    ghost: {hp:65,speed:1.35,radius:13,color:'#88ffee',dmgPerSec:10}, // NEW: phases through bullets 30%
+    basic: {hp:40,speed:1.2,radius:11,color:'#ff4455',dmgPerSec:12},
+    fast:  {hp:22,speed:2.4,radius:7, color:'#ff9900',dmgPerSec:11},
+    tank:  {hp:130,speed:0.68,radius:19,color:'#8855ff',dmgPerSec:18},
+    elite: {hp:200,speed:1.05,radius:21,color:'#aa00ff',dmgPerSec:24},
+    swarm: {hp:12,speed:1.6,radius:6, color:'#ff6699',dmgPerSec:9},
+    ghost: {hp:65,speed:1.35,radius:13,color:'#88ffee',dmgPerSec:15},
   };
 
   const b=baseEnemies[type]||baseEnemies.basic;
@@ -876,7 +876,7 @@ function spawnBoss(timeIdx){
     radius: 30 + tier*2,
     color: ['#ff0055','#ff6600','#aa00ff','#ff0088','#ff4400','#ff00ff'][Math.min(idx,5)],
     dead:false, type:'boss', flashTimer:0, tier,
-    dmgPerSec: 22 + tier*4,
+    dmgPerSec: 35 + tier*6,
     phase: false,
     // Boss special: shield at 50% hp
     shieldAt: 0.5, shielded: false,
@@ -936,7 +936,9 @@ function damageEnemy(idx,dmg){
   const e=enemies[idx]; if(!e||e.dead)return;
   // Ghost phase: 35% chance to dodge bullet
   if(e.phase && Math.random()<.35) return;
-  dmg*=(player.dmgMult||1);
+  // Global dmgMult cap at 2.5x to prevent runaway stacking
+  const cappedMult = Math.min(2.5, player.dmgMult||1);
+  dmg*=cappedMult;
   e.hp-=dmg; e.flashTimer=6;
   if(dmg>=4) showDmgNum(e.x,e.y,Math.round(dmg),dmg);
   if(e.hp<=0) killEnemy(idx);
@@ -953,7 +955,7 @@ function killEnemy(idx){
     const explR = player.explosion;
     for(let k=enemies.length-1;k>=0;k--){
       const en=enemies[k]; if(en.dead)continue;
-      if(Math.hypot(en.x-e.x,en.y-e.y)<explR) damageEnemy(k,50*(player.dmgMult||1));
+      if(Math.hypot(en.x-e.x,en.y-e.y)<explR) damageEnemy(k,25);
     }
     for(let p=0;p<10;p++) spawnParticle(e.x+randn(12),e.y+randn(12),randn(4),randn(4),'#ff6600',.45,4);
   }
@@ -967,7 +969,7 @@ function killEnemy(idx){
 function damagePlayer(dmg){
   if(player.invincible>0)return;
   dmg*=(1-(player.dmgReduce||0));
-  player.hp-=dmg; player.invincible=30;
+  player.hp-=dmg; player.invincible=18;
   SFX.hit(); flashScreen('#ff3333',.12);
   if(player.hp<=0){player.hp=0; endGame();}
 }
@@ -988,8 +990,10 @@ function showDmgNum(x,y,dmg,rawDmg){
 // ════════════════════════════════════════════════
 function canEvolve(wep){
   const def=WEAPONS[wep.id];
-  if(!def.evolveWith || wep.level<8 || wep.evolved) return false;
-  return passives.some(p=>p.id===def.evolveWith);
+  if(!def.evolveWith || wep.level<6 || wep.evolved) return false;
+  // Passive must be at max level (5) to evolve
+  const pasPair = passives.find(p=>p.id===def.evolveWith);
+  return pasPair && pasPair.level>=5;
 }
 
 function getSynergyHint(id){
@@ -1051,7 +1055,7 @@ function buildUpgradePool(){
       color:def.color,
       desc:weaponLvDesc(wep.id, wep.level+1),
       tag:'SİLAH YÜKSELTMESİ',
-      synergy: hasPair && wep.level===7 ? '⭐ Bir sonraki seviye EVRİM!' : getSynergyHint(wep.id),
+      synergy: hasPair && wep.level===5 ? '⭐ Pasifi max yap → EVRİM!' : getSynergyHint(wep.id),
       levels:WEAPONS[wep.id].maxLevel, curLevel:wep.level,
       priority: hasPair ? 2 : 1,
       apply(){ weaponLevelUp(wep); }
@@ -1228,7 +1232,7 @@ function gainXP(amount){
   xp+=amount;
   while(xp>=xpToNext){
     xp-=xpToNext;
-    xpToNext=Math.ceil(xpToNext*1.26); // slightly faster to level up
+    xpToNext=Math.ceil(xpToNext*1.45); // balanced progression
     level++; pendingUpgrades++;
     SFX.levelUp(); flashScreen('#00ff88',.15);
     if(pendingUpgrades===1) showUpgrade();
@@ -1241,7 +1245,7 @@ function gainXP(amount){
 function startGame(){
   getAC();
   state='playing';
-  score=0;kills=0;level=1;xp=0;xpToNext=22;
+  score=0;kills=0;level=1;xp=0;xpToNext=55;
   gameTime=0;spawnTimer=0;pendingUpgrades=0;
   waveNum=1;
   triggeredMilestones=new Set();
@@ -1389,8 +1393,8 @@ function update(dt){
       if(e.dead||b.hit.has(j))continue;
       if(Math.hypot(b.x-e.x,b.y-e.y)<e.radius+b.r){
         let dmg=b.dmg;
-        if(b.type==='fireball') dmg*=(player.fireMult||1);
-        if(b.type==='holy') dmg*=(player.holyMult||1);
+        if(b.type==='fireball') dmg*=Math.min(1.5, player.fireMult||1);
+        if(b.type==='holy') dmg*=Math.min(1.4, player.holyMult||1);
         damageEnemy(j,dmg); b.hit.add(j);
         // Fireball explosion on hit
         if(b.type==='fireball'){
@@ -1398,7 +1402,7 @@ function update(dt){
           for(let k=enemies.length-1;k>=0;k--){
             if(k===j)continue;
             const en=enemies[k]; if(en.dead)continue;
-            if(Math.hypot(en.x-b.x,en.y-b.y)<br) damageEnemy(k,dmg*0.55*(player.fireMult||1));
+            if(Math.hypot(en.x-b.x,en.y-b.y)<br) damageEnemy(k,dmg*0.45);
           }
           for(let p=0;p<14;p++) spawnParticle(b.x+randn(br*.4),b.y+randn(br*.4),randn(4),randn(4),b.evolved?'#ff8800':'#ff4400',.4,4+Math.random()*4);
           b.dead=true; bullets.splice(i,1); break;
