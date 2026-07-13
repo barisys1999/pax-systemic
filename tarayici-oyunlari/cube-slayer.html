@@ -341,7 +341,7 @@ function setVolume(v){ masterVolume=v/100; isMuted=false; document.getElementByI
 // GAME STATE
 // ════════════════════════════════════════════════
 let state='menu';
-let score=0, kills=0, level=1, xp=0, xpToNext=55, gameTime=0;
+let score=0, kills=0, level=1, xp=0, xpToNext=18, gameTime=0;
 let pendingUpgrades=0, raf=null, lastTime=0, stateBefore=null;
 let waveNum=1;
 
@@ -959,8 +959,8 @@ function killEnemy(idx){
   }
   const cnt = {boss:26,elite:14,tank:9,swarm:3,fast:2,ghost:6,basic:5}[e.type]||5;
   for(let i=0;i<cnt;i++) spawnParticle(e.x,e.y,randn(4.5),randn(4.5),e.color,.5+Math.random()*.4,2+Math.random()*3);
-  const gems = {boss:14,elite:6,tank:4,fast:1,swarm:1,ghost:3,basic:2}[e.type]||2;
-  for(let i=0;i<gems;i++) spawnGem(e.x+randn(8),e.y+randn(8),e.type==='boss'?4:1);
+  const gems = {boss:14,elite:7,tank:5,fast:2,swarm:2,ghost:4,basic:3}[e.type]||3;
+  for(let i=0;i<gems;i++) spawnGem(e.x+randn(8),e.y+randn(8),e.type==='boss'?5:e.type==='elite'?3:e.type==='tank'?2:1);
   enemies.splice(idx,1);
 }
 
@@ -1233,7 +1233,9 @@ function gainXP(amount){
   xp+=amount;
   while(xp>=xpToNext){
     xp-=xpToNext;
-    xpToNext=Math.ceil(xpToNext*1.45); // balanced progression
+    // İlk 10 level daha kolay: düşük çarpan, sonra hızla zorlaşır
+    const mult = level < 10 ? 1.22 : 1.48;
+    xpToNext=Math.ceil(xpToNext*mult);
     level++; pendingUpgrades++;
     SFX.levelUp(); flashScreen('#00ff88',.15);
     if(pendingUpgrades===1) showUpgrade();
@@ -1246,7 +1248,7 @@ function gainXP(amount){
 function startGame(){
   getAC();
   state='playing';
-  score=0;kills=0;level=1;xp=0;xpToNext=55;
+  score=0;kills=0;level=1;xp=0;xpToNext=18;
   gameTime=0;spawnTimer=0;pendingUpgrades=0;
   waveNum=1;
   triggeredMilestones=new Set();
