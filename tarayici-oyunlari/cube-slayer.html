@@ -6,21 +6,19 @@
 <title>CUBE SLAYER</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body { background:#0a0a0f; overflow:hidden; font-family:'Segoe UI',system-ui,sans-serif; user-select:none; }
+body { background:#07070d; overflow:hidden; font-family:'Segoe UI',system-ui,sans-serif; user-select:none; }
 canvas { display:block; }
 
-/* ── HUD ── */
 #hud {
   position:fixed; top:0; left:0; right:0;
   padding:10px 16px 10px 62px;
   display:flex; align-items:center; gap:16px;
   pointer-events:none; z-index:10;
-  background:linear-gradient(to bottom,rgba(0,0,0,0.5),transparent);
+  background:linear-gradient(to bottom,rgba(0,0,0,0.6),transparent);
 }
 .hud-block { display:flex; flex-direction:column; gap:2px; min-width:100px; }
 .hud-label { font-size:9px; font-weight:700; letter-spacing:2px; color:rgba(255,255,255,0.3); text-transform:uppercase; }
 .hud-value { font-size:20px; font-weight:800; color:#fff; letter-spacing:1px; font-variant-numeric:tabular-nums; }
-
 .bar-wrap { flex:1; display:flex; flex-direction:column; gap:4px; }
 .bar-row { display:flex; align-items:center; gap:8px; }
 .bar-label { font-size:9px; font-weight:700; letter-spacing:1px; color:rgba(255,255,255,0.3); width:24px; }
@@ -29,17 +27,15 @@ canvas { display:block; }
 #hp-fill { background:linear-gradient(90deg,#ff3a3a,#ff6b6b); }
 #xp-fill { background:linear-gradient(90deg,#00c8ff,#7b6fff); }
 .bar-num { font-size:10px; font-weight:600; color:rgba(255,255,255,0.4); width:70px; text-align:right; font-variant-numeric:tabular-nums; }
-
 #timer-hud { font-size:22px; font-weight:800; color:#fff; font-variant-numeric:tabular-nums; letter-spacing:1px; }
 #wave-label { font-size:10px; font-weight:700; letter-spacing:2px; padding:3px 10px; border-radius:20px; background:rgba(255,80,80,0.15); color:#ff8888; border:1px solid rgba(255,80,80,0.3); }
 
-/* item slots bottom */
 #item-hud {
   position:fixed; bottom:14px; left:50%; transform:translateX(-50%);
   display:flex; gap:8px; z-index:10; pointer-events:none;
 }
 .item-slot {
-  width:48px; height:48px; border-radius:10px;
+  width:50px; height:50px; border-radius:10px;
   background:rgba(20,20,30,0.85); border:1px solid rgba(255,255,255,0.12);
   display:flex; flex-direction:column; align-items:center; justify-content:center;
   gap:1px; position:relative; overflow:hidden;
@@ -51,9 +47,7 @@ canvas { display:block; }
 .item-slot .slot-emoji { font-size:20px; line-height:1; }
 .item-slot .slot-lv { font-size:9px; font-weight:700; color:rgba(255,220,80,0.9); }
 .item-slot .slot-cd { position:absolute; bottom:0; left:0; right:0; height:3px; background:rgba(255,220,0,0.7); transform-origin:left; }
-.slot-label { font-size:7px; color:rgba(255,255,255,0.3); letter-spacing:0.5px; text-align:center; }
 
-/* ── SCREENS ── */
 .screen {
   position:fixed; inset:0; z-index:100;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -67,12 +61,10 @@ canvas { display:block; }
   margin-bottom:6px;
 }
 .sub { font-size:12px; letter-spacing:5px; color:rgba(255,255,255,0.25); text-transform:uppercase; margin-bottom:44px; }
-
 .info-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; max-width:520px; width:100%; margin-bottom:36px; padding:0 16px; }
 .info-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:14px 10px; text-align:center; }
 .ic-icon { font-size:22px; margin-bottom:5px; }
 .ic-text { font-size:10px; color:rgba(255,255,255,0.4); line-height:1.5; }
-
 .start-btn {
   padding:15px 52px; background:linear-gradient(135deg,#00c8ff,#7b6fff);
   border:none; border-radius:50px; cursor:pointer;
@@ -82,7 +74,6 @@ canvas { display:block; }
 }
 .start-btn:hover { transform:scale(1.04); box-shadow:0 0 60px rgba(123,111,255,0.6); }
 
-/* ── UPGRADE SCREEN ── */
 #upgrade-screen { z-index:200; }
 .up-title { font-size:11px; font-weight:700; letter-spacing:5px; color:#00c8ff; text-transform:uppercase; margin-bottom:6px; }
 .up-level {
@@ -110,11 +101,11 @@ canvas { display:block; }
 .uc-name { font-size:14px; font-weight:700; color:#fff; margin-bottom:6px; }
 .uc-desc { font-size:11px; color:rgba(255,255,255,0.38); line-height:1.55; }
 .uc-tag { display:inline-block; margin-top:11px; padding:3px 10px; border-radius:20px; font-size:9px; font-weight:800; letter-spacing:1.5px; background:var(--tag-bg,rgba(255,255,255,0.08)); color:var(--tag-col,rgba(255,255,255,0.4)); }
+.uc-synergy { font-size:10px; color:#ffd700; margin-top:6px; }
 .uc-lvbar { display:flex; gap:4px; justify-content:center; margin-top:10px; }
 .uc-lv-dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.12); }
 .uc-lv-dot.filled { background:var(--dot-col,#7b6fff); }
 
-/* ── GAMEOVER ── */
 .go-score { font-size:72px; font-weight:900; color:#fff; margin:8px 0 4px; }
 .go-sub { font-size:11px; color:rgba(255,255,255,0.25); letter-spacing:4px; margin-bottom:40px; }
 .stat-row { display:flex; gap:28px; margin-bottom:36px; }
@@ -122,7 +113,6 @@ canvas { display:block; }
 .si-num { font-size:30px; font-weight:800; color:#fff; }
 .si-label { font-size:9px; color:rgba(255,255,255,0.3); letter-spacing:2px; margin-top:2px; }
 
-/* ── SETTINGS ── */
 #settings-btn {
   position:fixed; top:12px; left:12px; z-index:300;
   width:38px; height:38px; border-radius:10px;
@@ -162,19 +152,27 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:16px; h
 .inv-empty { font-size:10px; color:rgba(255,255,255,0.18); font-style:italic; }
 .settings-close { align-self:center; padding:10px 30px; background:linear-gradient(135deg,#00c8ff,#7b6fff); border:none; border-radius:50px; cursor:pointer; font-size:12px; font-weight:700; color:#fff; letter-spacing:2px; text-transform:uppercase; }
 
-/* ── DAMAGE NUMBERS ── */
 .dmg-num { position:fixed; pointer-events:none; z-index:50; font-size:15px; font-weight:800; text-shadow:0 0 8px currentColor; animation:floatUp .9s ease-out forwards; }
 @keyframes floatUp { 0%{opacity:1;transform:translateY(0) scale(1);} 100%{opacity:0;transform:translateY(-55px) scale(0.6);} }
 
-/* ── WAVE ANNOUNCE ── */
 #wave-announce { position:fixed; top:40%; left:50%; transform:translate(-50%,-50%); font-size:42px; font-weight:900; color:#fff; text-shadow:0 0 40px rgba(255,100,100,0.9); letter-spacing:4px; z-index:55; pointer-events:none; display:none; animation:waveAnim 2s ease-out forwards; }
 @keyframes waveAnim { 0%{opacity:0;transform:translate(-50%,-50%) scale(0.5);}30%{opacity:1;transform:translate(-50%,-50%) scale(1.08);}70%{opacity:1;}100%{opacity:0;transform:translate(-50%,-50%) scale(1.3);} }
 
-/* ── EVOLVED BANNER ── */
 #evo-banner { position:fixed; top:30%; left:50%; transform:translateX(-50%); z-index:60; pointer-events:none; display:none; text-align:center; animation:evoBanner 2.5s ease-out forwards; }
 .evo-title { font-size:32px; font-weight:900; background:linear-gradient(135deg,#ffd700,#ffaa00); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; letter-spacing:2px; }
 .evo-sub { font-size:14px; color:rgba(255,220,80,0.7); letter-spacing:3px; margin-top:4px; }
 @keyframes evoBanner { 0%{opacity:0;transform:translateX(-50%) scale(0.7);}20%{opacity:1;transform:translateX(-50%) scale(1.05);}70%{opacity:1;}100%{opacity:0;transform:translateX(-50%) translateY(-30px);} }
+
+/* Boss warning */
+#boss-warning { position:fixed; top:20%; left:50%; transform:translateX(-50%); z-index:60; pointer-events:none; display:none; text-align:center; }
+.bw-text { font-size:28px; font-weight:900; color:#ff2244; text-shadow:0 0 30px rgba(255,0,50,1); letter-spacing:4px; animation:bwPulse .4s ease-in-out infinite alternate; }
+@keyframes bwPulse { from{opacity:0.6;} to{opacity:1;} }
+
+/* Milestone popup */
+#milestone-banner { position:fixed; top:15%; left:50%; transform:translateX(-50%); z-index:62; pointer-events:none; display:none; text-align:center; }
+.mb-inner { background:rgba(20,20,40,0.92); border:1px solid rgba(255,200,0,0.5); border-radius:16px; padding:14px 28px; backdrop-filter:blur(8px); }
+.mb-title { font-size:16px; font-weight:900; color:#ffd700; letter-spacing:2px; }
+.mb-sub { font-size:11px; color:rgba(255,220,100,0.6); margin-top:4px; letter-spacing:1px; }
 </style>
 </head>
 <body>
@@ -187,7 +185,7 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:16px; h
     <div class="info-card"><div class="ic-icon">🖱️</div><div class="ic-text">Mouse ile<br>hareket et</div></div>
     <div class="info-card"><div class="ic-icon">⚔️</div><div class="ic-text">Otomatik<br>saldır</div></div>
     <div class="info-card"><div class="ic-icon">⬆️</div><div class="ic-text">Level at<br>güçlen</div></div>
-    <div class="info-card"><div class="ic-icon">✨</div><div class="ic-text">İtemları<br>evrimleştir</div></div>
+    <div class="info-card"><div class="ic-icon">✨</div><div class="ic-text">Synergy ile<br>evrimleştir</div></div>
   </div>
   <button class="start-btn" onclick="startGame()">BAŞLA</button>
 </div>
@@ -209,6 +207,7 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:16px; h
     <div class="stat-item"><div class="si-num" id="go-level">1</div><div class="si-label">SEVİYE</div></div>
     <div class="stat-item"><div class="si-num" id="go-kills">0</div><div class="si-label">ÖLDÜRME</div></div>
     <div class="stat-item"><div class="si-num" id="go-time">0:00</div><div class="si-label">SÜRE</div></div>
+    <div class="stat-item"><div class="si-num" id="go-wave">1</div><div class="si-label">DALGA</div></div>
   </div>
   <button class="start-btn" onclick="startGame()">TEKRAR OYNA</button>
 </div>
@@ -260,12 +259,11 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:16px; h
   <div id="wave-label">WAVE 1</div>
 </div>
 
-<!-- ITEM HUD (bottom) -->
 <div id="item-hud"></div>
-
-<!-- Wave announce -->
 <div id="wave-announce"></div>
 <div id="evo-banner"><div class="evo-title" id="evo-title">⭐ EVRİM!</div><div class="evo-sub" id="evo-sub">İTEM ADI</div></div>
+<div id="boss-warning"><div class="bw-text">⚠️ BOSS GELİYOR ⚠️</div></div>
+<div id="milestone-banner"><div class="mb-inner"><div class="mb-title" id="mb-title">🌊 DALGA YOĞUNLAŞIYOR</div><div class="mb-sub" id="mb-sub">Dikkatli ol!</div></div></div>
 
 <canvas id="c"></canvas>
 
@@ -277,10 +275,7 @@ const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
 let W = canvas.width = window.innerWidth;
 let H = canvas.height = window.innerHeight;
-window.addEventListener('resize', () => {
-  W = canvas.width = window.innerWidth;
-  H = canvas.height = window.innerHeight;
-});
+window.addEventListener('resize', () => { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; });
 
 // ════════════════════════════════════════════════
 // AUDIO
@@ -325,6 +320,8 @@ const SFX = {
   axe()      { playTone({freq:220,freq2:110,type:'sawtooth',vol:.08,atk:.005,dec:.1,rel:.05,dur:.15,filter:600}); },
   magic()    { playTone({freq:660,type:'sine',vol:.06,atk:.01,dec:.08,rel:.04,dur:.12}); },
   lightning(){ playNoise({vol:.18,dec:.04,rel:.03,filter:3000}); playTone({freq:600,freq2:200,type:'sawtooth',vol:.08,dec:.04,dur:.07}); },
+  fire()     { playNoise({vol:.12,dec:.08,rel:.04,filter:1200}); playTone({freq:180,freq2:80,type:'sawtooth',vol:.06,dec:.1,dur:.15}); },
+  holy()     { playTone({freq:800,freq2:1000,type:'sine',vol:.08,atk:.01,dec:.12,rel:.08,dur:.2}); },
   die()      { playNoise({vol:.08,dec:.06,rel:.03,filter:600}); },
   bossDie()  { playNoise({vol:.28,dec:.3,rel:.15,filter:400}); },
   hit()      { playNoise({vol:.16,dec:.05,rel:.03,filter:300}); },
@@ -333,33 +330,29 @@ const SFX = {
   evolve()   { [784,988,1175,1568].forEach((f,i)=>setTimeout(()=>playTone({freq:f,type:'sine',vol:.2,dec:.2,rel:.12,dur:.3}),i*80)); },
   upgrade()  { playTone({freq:440,freq2:880,type:'sine',vol:.12,dec:.14,rel:.09,dur:.22}); },
   gameOver() { [440,330,220,110].forEach((f,i)=>setTimeout(()=>playTone({freq:f,type:'sawtooth',vol:.14,dec:.2,rel:.1,dur:.3}),i*120)); },
+  bossWarn() { [110,110,220].forEach((f,i)=>setTimeout(()=>playTone({freq:f,type:'sawtooth',vol:.18,dec:.25,rel:.1,dur:.35}),i*200)); },
 };
 let _lastShoot=0;
-function sfxShoot(t){ const n=Date.now(); if(n-_lastShoot<55)return; _lastShoot=n; if(t==='axe')SFX.axe(); else if(t==='magic')SFX.magic(); else SFX.shoot(); }
-
+function sfxShoot(t){ const n=Date.now(); if(n-_lastShoot<55)return; _lastShoot=n; if(t==='axe')SFX.axe(); else if(t==='magic')SFX.magic(); else if(t==='fire')SFX.fire(); else if(t==='holy')SFX.holy(); else SFX.shoot(); }
 function toggleMute(){ isMuted=!isMuted; if(masterGain) masterGain.gain.value=isMuted?0:masterVolume; const b=document.getElementById('mute-btn'); b.textContent=isMuted?'🔇':'🔊'; b.classList.toggle('muted',isMuted); }
 function setVolume(v){ masterVolume=v/100; isMuted=false; document.getElementById('mute-btn').textContent=masterVolume===0?'🔇':'🔊'; document.getElementById('mute-btn').classList.toggle('muted',masterVolume===0); if(masterGain) masterGain.gain.value=masterVolume; }
 
 // ════════════════════════════════════════════════
 // GAME STATE
 // ════════════════════════════════════════════════
-let state='menu'; // menu|playing|paused|upgrade|gameover
+let state='menu';
 let score=0, kills=0, level=1, xp=0, xpToNext=20, gameTime=0;
 let pendingUpgrades=0, raf=null, lastTime=0, stateBefore=null;
-let waveNum=1, nextWaveTime=30; // wave every 30s
+let waveNum=1;
 
 const player = {
-  x:0, y:0, hp:120, maxHp:120, speed:3.0, radius:13,
+  x:0, y:0, hp:120, maxHp:120, speed:3.2, radius:13,
   invincible:0, trail:[],
-  // stats
   dmgMult:1, dmgReduce:0, regen:0, vampirism:0,
-  magnetRange:100, bulletSpd:1, explosion:0, lifeOnHit:0,
-  cooldownReduce:1, // multiplier, <1 = faster
+  magnetRange:110, bulletSpd:1, explosion:0, lifeOnHit:0,
+  cooldownReduce:1,
 };
 
-// ── Active weapons & passives ──
-// weapons: {id, level, cd, maxCd, ...wep-specific}
-// passives: {id, level}
 let weapons = [];
 let passives = [];
 const MAX_WEAPONS = 6;
@@ -371,36 +364,24 @@ document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
 document.addEventListener('touchmove',e=>{mx=e.touches[0].clientX;my=e.touches[0].clientY;e.preventDefault();},{passive:false});
 
 // ════════════════════════════════════════════════
-// WEAPON DEFINITIONS  (max level 8, level 8 = evolved if has passive pair)
+// WEAPON DEFINITIONS
 // ════════════════════════════════════════════════
-/*
-  Each weapon has:
-  - id, name, emoji, color, desc
-  - maxLevel (8)
-  - evolveWith: passive id that causes evolution at level 8
-  - init(w): set defaults
-  - levelUp(w, lv): apply upgrades at given level
-  - fire(w): shoot logic
-  - tick(w,dt): continuous (optional)
-  - draw(w): visual (optional)
-*/
-
 const WEAPONS = {
   knife: {
     id:'knife', name:'Bıçak', emoji:'🔪', color:'#ffe066',
-    desc:'En yakın düşmana mermi fırlatır',
+    desc:'En yakın düşmana hızlı mermi fırlatır',
     evolveWith:'bracer',
     evolvedName:'Bıçak Fırtınası', evolvedEmoji:'🗡️',
     maxLevel:8,
-    init(w){ w.cd=0; w.maxCd=48; w.dmg=14; w.count=1; w.pierce=0; },
+    init(w){ w.cd=0; w.maxCd=45; w.dmg=15; w.count=1; w.pierce=0; },
     levelUp(w,lv){
       if(lv===2){w.dmg+=8;}
       if(lv===3){w.maxCd*=.85; w.count=2;}
       if(lv===4){w.dmg+=10; w.pierce=1;}
-      if(lv===5){w.maxCd*=.8; w.count=3;}
+      if(lv===5){w.maxCd*=.82; w.count=3;}
       if(lv===6){w.dmg+=14; w.pierce=2;}
-      if(lv===7){w.maxCd*=.75; w.count=4;}
-      if(lv===8){w.dmg+=20; w.count=6; w.pierce=99;} // evolved
+      if(lv===7){w.maxCd*=.78; w.count=4;}
+      if(lv===8){w.dmg+=22; w.count=6; w.pierce=99;}
     },
     fire(w){
       const alive=enemies.filter(e=>!e.dead);
@@ -408,32 +389,32 @@ const WEAPONS = {
       alive.sort((a,b)=>dist2(a,player)-dist2(b,player));
       const targets=alive.slice(0,w.count);
       const col=w.evolved?'#fff700':'#ffe066';
-      const spd=w.evolved?14:9;
+      const spd=w.evolved?15:10;
       targets.forEach(t=>{
         const a=Math.atan2(t.y-player.y,t.x-player.x);
-        spawnBullet(player.x,player.y,a,spd,w.dmg,col,w.evolved?7:5,w.pierce,'knife');
+        spawnBullet(player.x,player.y,a,spd,w.dmg,col,w.evolved?8:5,w.pierce,'knife');
       });
     }
   },
   axe: {
     id:'axe', name:'Balta', emoji:'🪓', color:'#ff8c42',
-    desc:'Tüm yönlere uçup geri döner',
+    desc:'Tüm yönlere uçup geri döner, yüksek hasar',
     evolveWith:'canteen',
     evolvedName:'Büyük Balta', evolvedEmoji:'🔱',
     maxLevel:8,
-    init(w){ w.cd=0; w.maxCd=85; w.dmg=32; w.count=2; },
+    init(w){ w.cd=0; w.maxCd=80; w.dmg=35; w.count=2; },
     levelUp(w,lv){
       if(lv===2){w.count=3;}
-      if(lv===3){w.dmg+=12;}
+      if(lv===3){w.dmg+=15;}
       if(lv===4){w.count=5;}
-      if(lv===5){w.dmg+=18;}
+      if(lv===5){w.dmg+=20;}
       if(lv===6){w.count=7; w.maxCd*=.85;}
-      if(lv===7){w.dmg+=25;}
-      if(lv===8){w.count=12; w.dmg+=35;} // evolved
+      if(lv===7){w.dmg+=28;}
+      if(lv===8){w.count=14; w.dmg+=40;}
     },
     fire(w){
       const col=w.evolved?'#ffdd00':'#ff8c42';
-      const spd=w.evolved?11:7, sz=w.evolved?14:9;
+      const spd=w.evolved?12:8, sz=w.evolved?15:10;
       for(let i=0;i<w.count;i++){
         const a=(i/w.count)*Math.PI*2;
         spawnBullet(player.x,player.y,a,spd,w.dmg,col,sz,99,'axe');
@@ -446,18 +427,18 @@ const WEAPONS = {
     evolveWith:'spellbook',
     evolvedName:'Ejderha Küresi', evolvedEmoji:'🔮',
     maxLevel:8,
-    init(w){ w.cd=0; w.maxCd=1; w.dmg=10; w.radius=88; w.orbs=1; w.angle=0; },
+    init(w){ w.cd=0; w.maxCd=1; w.dmg=11; w.radius=90; w.orbs=1; w.angle=0; },
     levelUp(w,lv){
       if(lv===2){w.orbs=2;}
-      if(lv===3){w.dmg+=5; w.radius+=12;}
+      if(lv===3){w.dmg+=6; w.radius+=14;}
       if(lv===4){w.orbs=3;}
-      if(lv===5){w.dmg+=8;}
-      if(lv===6){w.orbs=4; w.radius+=18;}
-      if(lv===7){w.dmg+=12;}
-      if(lv===8){w.orbs=7; w.dmg+=20; w.radius+=24;} // evolved
+      if(lv===5){w.dmg+=9;}
+      if(lv===6){w.orbs=4; w.radius+=20;}
+      if(lv===7){w.dmg+=13;}
+      if(lv===8){w.orbs=7; w.dmg+=22; w.radius+=26;}
     },
     tick(w,dt){
-      w.angle += dt*(w.evolved?4:2.8);
+      w.angle += dt*(w.evolved?4.2:3.0);
       const seen=new Set();
       for(let i=0;i<w.orbs;i++){
         const a=w.angle+(i/w.orbs)*Math.PI*2;
@@ -466,7 +447,7 @@ const WEAPONS = {
         for(let j=enemies.length-1;j>=0;j--){
           const e=enemies[j];
           if(e.dead||seen.has(j))continue;
-          if(Math.hypot(ox-e.x,oy-e.y)<20){ seen.add(j); damageEnemy(j,w.dmg*dt*3); }
+          if(Math.hypot(ox-e.x,oy-e.y)<22){ seen.add(j); damageEnemy(j,w.dmg*dt*3.5); }
         }
       }
     },
@@ -476,7 +457,7 @@ const WEAPONS = {
         const a=w.angle+(i/w.orbs)*Math.PI*2;
         const ox=player.x+Math.cos(a)*w.radius;
         const oy=player.y+Math.sin(a)*w.radius;
-        const R=w.evolved?16:10, ri=w.evolved?8:5;
+        const R=w.evolved?18:11, ri=w.evolved?9:6;
         const c1=w.evolved?'rgba(255,215,0,.9)':'rgba(199,125,255,.9)';
         const c2=w.evolved?'rgba(255,150,0,0)':'rgba(199,125,255,0)';
         ctx.beginPath(); ctx.arc(ox,oy,R,0,Math.PI*2);
@@ -489,19 +470,19 @@ const WEAPONS = {
   },
   lightning: {
     id:'lightning', name:'Yıldırım', emoji:'⚡', color:'#ffe566',
-    desc:'Rastgele düşmanlara zincir yıldırım çarpar',
+    desc:'Zincir yıldırım — düşmandan düşmana sıçrar',
     evolveWith:'skull',
     evolvedName:'Fırtına Efendisi', evolvedEmoji:'🌩️',
     maxLevel:8,
-    init(w){ w.cd=0; w.maxCd=70; w.dmg=38; w.chain=2; },
+    init(w){ w.cd=0; w.maxCd=65; w.dmg=40; w.chain=2; },
     levelUp(w,lv){
       if(lv===2){w.chain=3;}
-      if(lv===3){w.dmg+=15;}
+      if(lv===3){w.dmg+=18;}
       if(lv===4){w.chain=4; w.maxCd*=.88;}
-      if(lv===5){w.dmg+=22;}
+      if(lv===5){w.dmg+=25;}
       if(lv===6){w.chain=6;}
-      if(lv===7){w.maxCd*=.8; w.dmg+=28;}
-      if(lv===8){w.chain=14; w.dmg+=45; w.maxCd*=.7;} // evolved
+      if(lv===7){w.maxCd*=.8; w.dmg+=30;}
+      if(lv===8){w.chain=16; w.dmg+=50; w.maxCd*=.7;}
     },
     fire(w){
       const alive=enemies.filter(e=>!e.dead);
@@ -510,27 +491,27 @@ const WEAPONS = {
       targets.forEach((t,i)=>{
         setTimeout(()=>{
           if(t.dead)return;
-          damageEnemy(enemies.indexOf(t),w.evolved?w.dmg*1.6:w.dmg);
+          damageEnemy(enemies.indexOf(t),w.evolved?w.dmg*1.7:w.dmg);
           spawnLightning(player.x,player.y,t.x,t.y,w.evolved);
-        },i*(w.evolved?25:50));
+        },i*(w.evolved?22:45));
       });
     }
   },
   whip: {
     id:'whip', name:'Kamçı', emoji:'🪃', color:'#ff6655',
-    desc:'Yatay alan saldırısı, tüm düşmanları keser',
+    desc:'Yatay geniş alan saldırısı, tüm düşmanları keser',
     evolveWith:'hollow',
     evolvedName:'Kıyamet Orakı', evolvedEmoji:'⚔️',
     maxLevel:8,
-    init(w){ w.cd=0; w.maxCd=68; w.dmg=22; w.range=200; w.height=60; },
+    init(w){ w.cd=0; w.maxCd=65; w.dmg=24; w.range=200; w.height=62; },
     levelUp(w,lv){
-      if(lv===2){w.dmg+=8; w.range+=40;}
-      if(lv===3){w.height+=25;}
-      if(lv===4){w.dmg+=12;}
-      if(lv===5){w.range+=50; w.height+=30;}
-      if(lv===6){w.dmg+=18;}
-      if(lv===7){w.range+=60; w.height+=30;}
-      if(lv===8){w.dmg+=30; w.range+=80; w.height+=40;} // evolved
+      if(lv===2){w.dmg+=9; w.range+=45;}
+      if(lv===3){w.height+=28;}
+      if(lv===4){w.dmg+=13;}
+      if(lv===5){w.range+=55; w.height+=32;}
+      if(lv===6){w.dmg+=20;}
+      if(lv===7){w.range+=65; w.height+=32;}
+      if(lv===8){w.dmg+=34; w.range+=90; w.height+=44;}
     },
     fire(w){
       const dir=mx>player.x?1:-1;
@@ -541,12 +522,11 @@ const WEAPONS = {
         const e=enemies[j]; if(e.dead)continue;
         const dx=e.x-x0, dy=e.y-y0;
         if(Math.abs(dy)<H2 && dx*dir>0 && Math.abs(dx)<R){
-          damageEnemy(j,(w.evolved?1.4:1)*w.dmg);
+          damageEnemy(j,(w.evolved?1.5:1)*w.dmg);
           for(let k=0;k<3;k++) spawnParticle(e.x+randn(12),e.y+randn(12),dir*randn(3),randn(2),col,.4,3);
         }
       }
-      // visual flash
-      for(let k=0;k<8;k++) spawnParticle(x0+dir*randn(R*.6),y0+randn(H2*.8),dir*randn(4),randn(2),col,.35,4);
+      for(let k=0;k<10;k++) spawnParticle(x0+dir*randn(R*.6),y0+randn(H2*.8),dir*randn(4),randn(2),col,.35,4);
     }
   },
   garlic: {
@@ -555,24 +535,22 @@ const WEAPONS = {
     evolveWith:'pummarola',
     evolvedName:'Kıyamet Çiçeği', evolvedEmoji:'🌸',
     maxLevel:8,
-    init(w){ w.cd=0; w.maxCd=1; w.dmg=4; w.radius=80; w.knockback=1.5; },
+    init(w){ w.cd=0; w.maxCd=1; w.dmg=4.5; w.radius=82; w.knockback=1.6; },
     levelUp(w,lv){
-      if(lv===2){w.radius+=15;}
-      if(lv===3){w.dmg+=3;}
-      if(lv===4){w.radius+=20; w.knockback+=.5;}
-      if(lv===5){w.dmg+=5;}
-      if(lv===6){w.radius+=25;}
-      if(lv===7){w.dmg+=7; w.knockback+=.5;}
-      if(lv===8){w.radius+=35; w.dmg+=12; w.knockback+=1;} // evolved
+      if(lv===2){w.radius+=18;}
+      if(lv===3){w.dmg+=3.5;}
+      if(lv===4){w.radius+=22; w.knockback+=.6;}
+      if(lv===5){w.dmg+=5.5;}
+      if(lv===6){w.radius+=28;}
+      if(lv===7){w.dmg+=7.5; w.knockback+=.6;}
+      if(lv===8){w.radius+=38; w.dmg+=14; w.knockback+=1.2;}
     },
     tick(w,dt){
-      const col=w.evolved?'rgba(200,255,100,.06)':'rgba(180,255,80,.04)';
       for(let j=enemies.length-1;j>=0;j--){
         const e=enemies[j]; if(e.dead)continue;
         const d=Math.hypot(e.x-player.x,e.y-player.y);
         if(d<w.radius){
-          damageEnemy(j,w.dmg*dt*(w.evolved?4:3));
-          // knockback
+          damageEnemy(j,w.dmg*dt*(w.evolved?4.5:3.2));
           const a=Math.atan2(e.y-player.y,e.x-player.x);
           e.x+=Math.cos(a)*w.knockback*dt;
           e.y+=Math.sin(a)*w.knockback*dt;
@@ -582,81 +560,171 @@ const WEAPONS = {
     },
     fire(){},
     draw(w){
-      const alpha=w.evolved?.08:.05;
+      const alpha=w.evolved?.09:.055;
       ctx.beginPath(); ctx.arc(player.x,player.y,w.radius,0,Math.PI*2);
       const g=ctx.createRadialGradient(player.x,player.y,0,player.x,player.y,w.radius);
       g.addColorStop(0,w.evolved?`rgba(180,255,80,${alpha*2})`:`rgba(180,255,80,${alpha})`);
       g.addColorStop(1,'rgba(180,255,80,0)');
       ctx.fillStyle=g; ctx.fill();
     }
+  },
+  // ── YENİ: Fireball ──
+  fireball: {
+    id:'fireball', name:'Ateş Topu', emoji:'🔥', color:'#ff4400',
+    desc:'Büyük yavaş ateş topları fırlatır, alanda patlama yapar',
+    evolveWith:'inferno',
+    evolvedName:'Meteor Yağmuru', evolvedEmoji:'☄️',
+    maxLevel:8,
+    init(w){ w.cd=0; w.maxCd=95; w.dmg=55; w.blastR=60; w.count=1; },
+    levelUp(w,lv){
+      if(lv===2){w.dmg+=20; w.blastR+=12;}
+      if(lv===3){w.count=2;}
+      if(lv===4){w.dmg+=25; w.maxCd*=.88;}
+      if(lv===5){w.blastR+=18; w.count=3;}
+      if(lv===6){w.dmg+=30;}
+      if(lv===7){w.maxCd*=.82; w.count=4;}
+      if(lv===8){w.dmg+=45; w.blastR+=30; w.count=6;}
+    },
+    fire(w){
+      const alive=enemies.filter(e=>!e.dead);
+      if(!alive.length)return;
+      alive.sort((a,b)=>dist2(a,player)-dist2(b,player));
+      const targets=w.evolved?alive.slice(0,w.count):alive.slice(0,w.count);
+      targets.forEach((t,idx)=>{
+        setTimeout(()=>{
+          if(!t||t.dead)return;
+          const a=Math.atan2(t.y-player.y,t.x-player.x);
+          const spd=w.evolved?7:5;
+          const b={x:player.x,y:player.y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,
+            dmg:w.dmg,color:w.evolved?'#ff8800':'#ff4400',r:w.evolved?14:11,
+            pierce:99,type:'fireball',hit:new Set(),dead:false,life:0,
+            blastR:w.blastR*(w.evolved?1.6:1),evolved:w.evolved};
+          bullets.push(b); sfxShoot('fire');
+        },idx*80);
+      });
+    }
+  },
+  // ── YENİ: Holy Cross ──
+  cross: {
+    id:'cross', name:'Kutsal Haç', emoji:'✝️', color:'#ffeeaa',
+    desc:'Dört yönde dönen kutsal işaretler yayar',
+    evolveWith:'bible',
+    evolvedName:'İlahi Işık', evolvedEmoji:'☀️',
+    maxLevel:8,
+    init(w){ w.cd=0; w.maxCd=55; w.dmg=28; w.size=110; w.angle=0; },
+    levelUp(w,lv){
+      if(lv===2){w.dmg+=10;}
+      if(lv===3){w.size+=25; w.maxCd*=.9;}
+      if(lv===4){w.dmg+=14;}
+      if(lv===5){w.size+=30;}
+      if(lv===6){w.dmg+=18; w.maxCd*=.88;}
+      if(lv===7){w.size+=35;}
+      if(lv===8){w.dmg+=28; w.size+=50;}
+    },
+    tick(w,dt){
+      w.angle+=dt*(w.evolved?5:3.5);
+    },
+    fire(w){
+      // Fire 4 cross projectiles
+      const col=w.evolved?'#ffffc0':'#ffeeaa';
+      const spd=w.evolved?12:9;
+      for(let i=0;i<4;i++){
+        const a=w.angle+(i/4)*Math.PI*2;
+        spawnBullet(player.x,player.y,a,spd,w.dmg,col,w.evolved?12:8,2,'holy');
+      }
+    },
+    draw(w){
+      // Draw rotating cross glow
+      const alpha=w.evolved?.07:.04;
+      ctx.save(); ctx.translate(player.x,player.y);
+      for(let i=0;i<4;i++){
+        const a=w.angle+(i/4)*Math.PI*2;
+        const gx=Math.cos(a)*w.size*.5, gy=Math.sin(a)*w.size*.5;
+        const g=ctx.createRadialGradient(gx,gy,0,gx,gy,20);
+        g.addColorStop(0,`rgba(255,230,120,${alpha*3})`);
+        g.addColorStop(1,'rgba(255,230,120,0)');
+        ctx.beginPath(); ctx.arc(gx,gy,20,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+      }
+      ctx.restore();
+    }
   }
 };
 
 // ════════════════════════════════════════════════
-// PASSIVE DEFINITIONS
+// PASSIVE DEFINITIONS  — with synergy hints
 // ════════════════════════════════════════════════
-// Each passive: id, name, emoji, color, desc, maxLevel, pairsWith (weapon id),
-// apply(lv): called on pick / levelup
 const PASSIVES = {
   bracer: {
     id:'bracer', name:'Bileklik', emoji:'🧤', color:'#ffe066',
-    desc:'Mermi hızı artar (+15% / lv)',
+    desc:'Mermi hızı artar (+15% / lv) — Bıçak ile evrim!',
     pairsWith:'knife', maxLevel:5,
     apply(lv){ player.bulletSpd=1+lv*.15; }
   },
   canteen: {
     id:'canteen', name:'Matara', emoji:'🫙', color:'#ff8c42',
-    desc:'Her öldürme can kazanır (+1 / lv)',
+    desc:'Her öldürme can kazanır (+1.5 / lv) — Balta ile evrim!',
     pairsWith:'axe', maxLevel:5,
-    apply(lv){ player.vampirism=lv; }
+    apply(lv){ player.vampirism=lv*1.5; }
   },
   spellbook: {
     id:'spellbook', name:'Büyü Kitabı', emoji:'📖', color:'#c77dff',
-    desc:'Hasar çarpanı (+10% / lv)',
+    desc:'Hasar çarpanı (+12% / lv) — Sihir Çemberi ile evrim!',
     pairsWith:'magic', maxLevel:5,
-    apply(lv){ player.dmgMult=1+lv*.1; }
+    apply(lv){ player.dmgMult=1+lv*.12; }
   },
   skull: {
     id:'skull', name:'Kafatası', emoji:'💀', color:'#ffe566',
-    desc:'Cooldown azalır (-5% / lv)',
+    desc:'Cooldown azalır (-5% / lv) — Yıldırım ile evrim!',
     pairsWith:'lightning', maxLevel:5,
     apply(lv){ player.cooldownReduce=1-lv*.05; }
   },
   hollow: {
     id:'hollow', name:'Boşluk Taşı', emoji:'🪨', color:'#ff6655',
-    desc:'Alan hasarı patlama (+12 / lv)',
+    desc:'Patlama hasarı (+15 / lv) — Kamçı ile evrim!',
     pairsWith:'whip', maxLevel:5,
-    apply(lv){ player.explosion=lv*12; }
+    apply(lv){ player.explosion=lv*15; }
   },
   pummarola: {
     id:'pummarola', name:'Domates', emoji:'🍅', color:'#ccff66',
-    desc:'Rejenerasyon (+2 hp/s / lv)',
+    desc:'Rejenerasyon (+2.5 hp/s / lv) — Sarımsak ile evrim!',
     pairsWith:'garlic', maxLevel:5,
-    apply(lv){ player.regen=lv*2; }
+    apply(lv){ player.regen=lv*2.5; }
+  },
+  inferno: {
+    id:'inferno', name:'İnferno Taşı', emoji:'💎', color:'#ff4400',
+    desc:'Ateş alan hasarı (+20% / lv) — Ateş Topu ile evrim!',
+    pairsWith:'fireball', maxLevel:5,
+    apply(lv){ player.fireMult=1+lv*.20; }
+  },
+  bible: {
+    id:'bible', name:'İncil', emoji:'📜', color:'#ffeeaa',
+    desc:'Kutsal hasar bonusu (+15% / lv) — Kutsal Haç ile evrim!',
+    pairsWith:'cross', maxLevel:5,
+    apply(lv){ player.holyMult=1+lv*.15; }
   },
   armor: {
     id:'armor', name:'Zırh', emoji:'🛡️', color:'#88ccff',
-    desc:'Hasar azaltma (+8% / lv, max %40)',
-    pairsWith:null, maxLevel:5,
-    apply(lv){ player.dmgReduce=Math.min(.4,lv*.08); }
+    desc:'Hasar azaltma (+8% / lv, max %48)',
+    pairsWith:null, maxLevel:6,
+    apply(lv){ player.dmgReduce=Math.min(.48,lv*.08); }
   },
   wings: {
     id:'wings', name:'Kanatlar', emoji:'🪽', color:'#aaffee',
-    desc:'Hareket hızı (+12% / lv)',
+    desc:'Hareket hızı (+14% / lv)',
     pairsWith:null, maxLevel:5,
-    apply(lv){ player.speed=3.0*(1+lv*.12); }
+    apply(lv){ player.speed=3.2*(1+lv*.14); }
   },
   heart: {
     id:'heart', name:'Kalp', emoji:'❤️', color:'#ff4488',
-    desc:'Max can +25 / lv + tam iyileşme',
+    desc:'Max can +30 / lv + anlık iyileşme',
     pairsWith:null, maxLevel:5,
-    apply(lv){ player.maxHp=120+lv*25; player.hp=Math.min(player.hp+25,player.maxHp); }
+    apply(lv){ player.maxHp=120+lv*30; player.hp=Math.min(player.hp+30,player.maxHp); }
   },
   magnet: {
     id:'magnet', name:'Mıknatıs', emoji:'🧲', color:'#aabbff',
-    desc:'XP çekme menzili (×1.5 / lv)',
+    desc:'XP çekme menzili (×1.6 / lv)',
     pairsWith:null, maxLevel:4,
-    apply(lv){ player.magnetRange=100*Math.pow(1.5,lv); }
+    apply(lv){ player.magnetRange=110*Math.pow(1.6,lv); }
   },
 };
 
@@ -667,7 +735,6 @@ function dist2(a,b){ return (a.x-b.x)**2+(a.y-b.y)**2; }
 function randn(n){ return (Math.random()-.5)*2*n; }
 function clamp(v,mn,mx){ return Math.max(mn,Math.min(mx,v)); }
 function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=0|Math.random()*(i+1);[a[i],a[j]]=[a[j],a[i]];} return a; }
-function angleDiff(a,b){ let d=a-b; while(d>Math.PI)d-=Math.PI*2; while(d<-Math.PI)d+=Math.PI*2; return d; }
 function fmtTime(s){ return `${0|s/60}:${String(0|s%60).padStart(2,'0')}`; }
 
 // ════════════════════════════════════════════════
@@ -683,45 +750,63 @@ function spawnGem(x,y,value){ xpGems.push({x,y,vx:randn(2),vy:randn(2),value,dea
 
 function spawnLightning(x1,y1,x2,y2,big=false){
   SFX.lightning();
-  const steps=big?16:9, col=big?'#fff700':'#ffe566', sz=big?4:2.5;
+  const steps=big?18:10, col=big?'#fff700':'#ffe566', sz=big?4.5:2.5;
   let px=x1,py=y1;
   for(let i=1;i<=steps;i++){
     const t=i/steps;
-    const nx=x1+(x2-x1)*t+randn(big?30:18);
-    const ny=y1+(y2-y1)*t+randn(big?30:18);
-    spawnParticle((px+nx)/2,(py+ny)/2,0,0,col,.2,sz);
+    const nx=x1+(x2-x1)*t+randn(big?32:20);
+    const ny=y1+(y2-y1)*t+randn(big?32:20);
+    spawnParticle((px+nx)/2,(py+ny)/2,0,0,col,.22,sz);
     px=nx;py=ny;
   }
 }
 
 // ════════════════════════════════════════════════
-// WAVE / ENEMY SPAWNING  (Vampire Survivors style: time-based waves)
+// VAMPIRE SURVIVORS STYLE SPAWN — continuous, time-scaled
 // ════════════════════════════════════════════════
 /*
-  Waves escalate every 30 seconds.
-  Enemy types unlock progressively.
-  Multiple enemy groups spawn at specific intervals.
+  NO wave clears — enemies spawn continuously.
+  Every 60s = a milestone: sudden spike + announcement + new enemy types unlock.
+  Bosses: scripted at t=60,120,180,240... NOT random chance.
+  Difficulty: smooth curve on spawn rate & hp/speed, not sudden jumps.
 */
-function getWaveConfig(t){
-  const w=Math.floor(t/30)+1; // wave per 30s
-  // Base
-  let cfg = {
-    spawnRate: Math.max(22, 100-w*6),
-    count:     Math.min(8, 1+Math.floor(w/2)),
-    hpMult:    1+w*.35,
-    spdMult:   Math.min(1.6, 1+w*.04),
-    fastChance:Math.min(.35,.05+w*.025),
-    tankChance:Math.min(.2, w>.3?w*.015:0),
-    bossChance:w>=4?.02:.0,
-    eliteChance:Math.min(.12, w>=6?w*.008:0),
+
+const MILESTONES = [
+  { t:45,  msg:'🔴 Yoğunluk artıyor!',   sub:'Düşmanlar hızlandı', spawnBonus:10 },
+  { t:90,  msg:'💜 Elite akını!',         sub:'Elit düşmanlar geliyor', spawnBonus:8 },
+  { t:150, msg:'🟠 Tank sürüsü!',         sub:'Zırhlılar yaklaşıyor', spawnBonus:12 },
+  { t:210, msg:'⚡ Yıldırım hızı!',       sub:'Hızlılar saldırıyor', spawnBonus:15 },
+  { t:270, msg:'☠️ Cehennem başlıyor!',   sub:'Tüm türler artık aktif', spawnBonus:20 },
+  { t:360, msg:'💀 KAOS MODU!',           sub:'Geri dönüş yok...', spawnBonus:30 },
+];
+const BOSS_TIMES = [60, 120, 180, 240, 300, 420]; // seconds
+let triggeredMilestones = new Set();
+let triggeredBosses = new Set();
+let bossWarningShown = false;
+
+function getSpawnConfig(t) {
+  // Smooth curves instead of per-wave steps
+  const minutes = t / 60;
+  return {
+    // Spawn interval decreases smoothly: starts ~90 frames, goes to ~18
+    spawnRate: Math.max(18, 95 - minutes * 12),
+    // Count per spawn: 1→8 over 5 minutes
+    count: Math.min(8, 1 + Math.floor(minutes * 1.4)),
+    hpMult: 1 + minutes * 0.45,
+    spdMult: Math.min(2.0, 1 + minutes * 0.055),
+    // Enemy type probabilities unlock by time
+    fastChance:   t > 20  ? Math.min(0.35, (t-20)/400) : 0,
+    tankChance:   t > 60  ? Math.min(0.22, (t-60)/500) : 0,
+    eliteChance:  t > 80  ? Math.min(0.15, (t-80)/600) : 0,
+    swarmChance:  t > 100 ? Math.min(0.20, (t-100)/500) : 0,
+    ghostChance:  t > 180 ? Math.min(0.12, (t-180)/700) : 0,
   };
-  return cfg;
 }
 
 let spawnTimer=0;
 function tickSpawn(dt){
   if(state!=='playing')return;
-  const cfg=getWaveConfig(gameTime);
+  const cfg=getSpawnConfig(gameTime);
   spawnTimer+=dt;
   while(spawnTimer>=cfg.spawnRate){
     spawnTimer-=cfg.spawnRate;
@@ -729,35 +814,113 @@ function tickSpawn(dt){
   }
 }
 
-function spawnOneEnemy(cfg){
+function spawnOneEnemy(cfg, forceType=null){
   const side=0|Math.random()*4;
-  const pad=32;
+  const pad=36;
   let ex,ey;
   if(side===0){ex=-pad;ey=Math.random()*H;}
   if(side===1){ex=W+pad;ey=Math.random()*H;}
   if(side===2){ey=-pad;ex=Math.random()*W;}
   if(side===3){ey=H+pad;ex=Math.random()*W;}
 
-  const {hpMult,spdMult,fastChance,tankChance,bossChance,eliteChance}=cfg;
-  const roll=Math.random();
+  const {hpMult,spdMult,fastChance,tankChance,eliteChance,swarmChance,ghostChance}=cfg;
+  const type = forceType || rollEnemyType(fastChance,tankChance,eliteChance,swarmChance,ghostChance);
 
-  if(roll<bossChance){
-    enemies.push({x:ex,y:ey,hp:600*hpMult,maxHp:600*hpMult,speed:.75*spdMult,radius:28,color:'#ff0055',dead:false,type:'boss',flashTimer:0});
-    return;
+  const baseEnemies = {
+    basic: {hp:40,speed:1.2,radius:11,color:'#ff4455',dmgPerSec:8},
+    fast:  {hp:22,speed:2.4,radius:7, color:'#ff9900',dmgPerSec:7},
+    tank:  {hp:130,speed:0.68,radius:19,color:'#8855ff',dmgPerSec:12},
+    elite: {hp:200,speed:1.05,radius:21,color:'#aa00ff',dmgPerSec:16},
+    swarm: {hp:12,speed:1.6,radius:6, color:'#ff6699',dmgPerSec:6},  // NEW: many small
+    ghost: {hp:65,speed:1.35,radius:13,color:'#88ffee',dmgPerSec:10}, // NEW: phases through bullets 30%
+  };
+
+  const b=baseEnemies[type]||baseEnemies.basic;
+  enemies.push({
+    x:ex, y:ey,
+    hp: b.hp*hpMult, maxHp: b.hp*hpMult,
+    speed: b.speed*spdMult,
+    radius: b.radius,
+    color: b.color,
+    dead: false, type, flashTimer:0,
+    dmgPerSec: b.dmgPerSec,
+    phase: type==='ghost' ? true : false, // ghosts phase
+  });
+}
+
+function rollEnemyType(fast,tank,elite,swarm,ghost){
+  const r=Math.random();
+  let acc=0;
+  if((acc+=ghost)>r)return 'ghost';
+  if((acc+=elite)>r)return 'elite';
+  if((acc+=tank)>r)return 'tank';
+  if((acc+=swarm)>r)return 'swarm';
+  if((acc+=fast)>r)return 'fast';
+  return 'basic';
+}
+
+function spawnBoss(timeIdx){
+  const idx = BOSS_TIMES.indexOf(timeIdx);
+  const tier = idx+1;
+  const x = Math.random()<.5 ? -40 : W+40;
+  const y = H/2 + randn(H*.3);
+  const hpScale = 1 + gameTime/60 * 0.4;
+  enemies.push({
+    x,y,
+    hp: (500 + tier*200)*hpScale,
+    maxHp: (500 + tier*200)*hpScale,
+    speed: 0.7 + tier*0.05,
+    radius: 30 + tier*2,
+    color: ['#ff0055','#ff6600','#aa00ff','#ff0088','#ff4400','#ff00ff'][Math.min(idx,5)],
+    dead:false, type:'boss', flashTimer:0, tier,
+    dmgPerSec: 22 + tier*4,
+    phase: false,
+    // Boss special: shield at 50% hp
+    shieldAt: 0.5, shielded: false,
+  });
+  SFX.bossWarn();
+}
+
+// ════════════════════════════════════════════════
+// MILESTONE / BOSS CHECK
+// ════════════════════════════════════════════════
+function checkMilestonesAndBosses(){
+  // Boss spawn
+  for(const bt of BOSS_TIMES){
+    if(!triggeredBosses.has(bt) && gameTime >= bt){
+      triggeredBosses.add(bt);
+      // Show warning 3 seconds before → we show warning now since boss spawns immediately
+      showBossWarning();
+      setTimeout(()=>spawnBoss(bt), 800);
+    }
   }
-  if(roll<bossChance+eliteChance){
-    enemies.push({x:ex,y:ey,hp:180*hpMult,maxHp:180*hpMult,speed:1.0*spdMult,radius:20,color:'#aa00ff',dead:false,type:'elite',flashTimer:0});
-    return;
+  // Milestones
+  for(const m of MILESTONES){
+    if(!triggeredMilestones.has(m.t) && gameTime >= m.t){
+      triggeredMilestones.add(m.t);
+      showMilestoneBanner(m.msg, m.sub);
+      waveNum++;
+      document.getElementById('wave-label').textContent='WAVE '+waveNum;
+      // Spawn bonus burst
+      const cfg=getSpawnConfig(gameTime);
+      for(let i=0;i<m.spawnBonus;i++) setTimeout(()=>spawnOneEnemy(cfg), i*60);
+    }
   }
-  if(roll<bossChance+eliteChance+tankChance){
-    enemies.push({x:ex,y:ey,hp:110*hpMult,maxHp:110*hpMult,speed:.65*spdMult,radius:18,color:'#8855ff',dead:false,type:'tank',flashTimer:0});
-    return;
-  }
-  if(roll<bossChance+eliteChance+tankChance+fastChance){
-    enemies.push({x:ex,y:ey,hp:20*hpMult,maxHp:20*hpMult,speed:2.0*spdMult,radius:7,color:'#ff9900',dead:false,type:'fast',flashTimer:0});
-    return;
-  }
-  enemies.push({x:ex,y:ey,hp:38*hpMult,maxHp:38*hpMult,speed:1.15*spdMult,radius:11,color:'#ff4455',dead:false,type:'basic',flashTimer:0});
+}
+
+function showBossWarning(){
+  const el=document.getElementById('boss-warning');
+  el.style.display='block';
+  setTimeout(()=>el.style.display='none', 2500);
+}
+
+function showMilestoneBanner(title, sub){
+  const el=document.getElementById('milestone-banner');
+  document.getElementById('mb-title').textContent=title;
+  document.getElementById('mb-sub').textContent=sub;
+  el.style.display='block';
+  el.style.animation='none'; el.offsetHeight;
+  setTimeout(()=>el.style.display='none', 3000);
 }
 
 // ════════════════════════════════════════════════
@@ -768,6 +931,8 @@ function flashScreen(c,a){flashColor=c;flashAlpha=a;}
 
 function damageEnemy(idx,dmg){
   const e=enemies[idx]; if(!e||e.dead)return;
+  // Ghost phase: 35% chance to dodge bullet
+  if(e.phase && Math.random()<.35) return;
   dmg*=(player.dmgMult||1);
   e.hp-=dmg; e.flashTimer=6;
   if(dmg>=4) showDmgNum(e.x,e.y,Math.round(dmg),dmg);
@@ -777,31 +942,30 @@ function damageEnemy(idx,dmg){
 function killEnemy(idx){
   const e=enemies[idx]; if(!e||e.dead)return;
   e.dead=true; kills++;
-  score+=e.type==='boss'?200:e.type==='elite'?80:e.type==='tank'?35:e.type==='fast'?12:10;
+  const pts = {boss:220,elite:85,tank:38,fast:13,swarm:7,ghost:25,basic:10};
+  score += (pts[e.type]||10) * (e.tier||1);
   if(e.type==='boss')SFX.bossDie(); else SFX.die();
-  // vampirism
   if(player.vampirism) player.hp=Math.min(player.maxHp,player.hp+player.vampirism);
-  // explosion
   if(player.explosion){
+    const explR = player.explosion;
     for(let k=enemies.length-1;k>=0;k--){
       const en=enemies[k]; if(en.dead)continue;
-      const d=Math.hypot(en.x-e.x,en.y-e.y);
-      if(d<player.explosion) damageEnemy(k,40*(player.dmgMult||1));
+      if(Math.hypot(en.x-e.x,en.y-e.y)<explR) damageEnemy(k,50*(player.dmgMult||1));
     }
-    for(let p=0;p<8;p++) spawnParticle(e.x+randn(10),e.y+randn(10),randn(3.5),randn(3.5),'#ff6600',.4,4);
+    for(let p=0;p<10;p++) spawnParticle(e.x+randn(12),e.y+randn(12),randn(4),randn(4),'#ff6600',.45,4);
   }
-  const cnt=e.type==='boss'?24:e.type==='elite'?12:e.type==='tank'?8:5;
+  const cnt = {boss:26,elite:14,tank:9,swarm:3,fast:2,ghost:6,basic:5}[e.type]||5;
   for(let i=0;i<cnt;i++) spawnParticle(e.x,e.y,randn(4.5),randn(4.5),e.color,.5+Math.random()*.4,2+Math.random()*3);
-  const gems=e.type==='boss'?12:e.type==='elite'?5:e.type==='tank'?3:e.type==='fast'?1:2;
-  for(let i=0;i<gems;i++) spawnGem(e.x+randn(8),e.y+randn(8),e.type==='boss'?3:1);
+  const gems = {boss:14,elite:6,tank:4,fast:1,swarm:1,ghost:3,basic:2}[e.type]||2;
+  for(let i=0;i<gems;i++) spawnGem(e.x+randn(8),e.y+randn(8),e.type==='boss'?4:1);
   enemies.splice(idx,1);
 }
 
 function damagePlayer(dmg){
   if(player.invincible>0)return;
   dmg*=(1-(player.dmgReduce||0));
-  player.hp-=dmg; player.invincible=28;
-  SFX.hit(); flashScreen('#ff3333',.1);
+  player.hp-=dmg; player.invincible=30;
+  SFX.hit(); flashScreen('#ff3333',.12);
   if(player.hp<=0){player.hp=0; endGame();}
 }
 
@@ -809,30 +973,43 @@ function showDmgNum(x,y,dmg,rawDmg){
   const el=document.createElement('div');
   el.className='dmg-num';
   el.style.left=x+'px'; el.style.top=y+'px';
-  el.style.color=rawDmg>=80?'#ff0':rawDmg>=40?'#ffa':'#fff';
-  el.style.fontSize=rawDmg>=80?'20px':rawDmg>=40?'16px':'13px';
+  el.style.color=rawDmg>=100?'#ff0':rawDmg>=50?'#ffa':'#fff';
+  el.style.fontSize=rawDmg>=100?'22px':rawDmg>=50?'17px':'13px';
   el.textContent=dmg;
   document.body.appendChild(el);
   setTimeout(()=>el.remove(),900);
 }
 
 // ════════════════════════════════════════════════
-// UPGRADE SYSTEM  — Vampire Survivors style
+// UPGRADE SYSTEM — Smart pool with synergy hints
 // ════════════════════════════════════════════════
-/*
-  Pick pool priority:
-  1. EVOLVED option (if weapon max level + passive owned)
-  2. Weapon level-ups
-  3. New weapons (if slot open)
-  4. Passive level-ups
-  5. New passives (if slot open)
-  Always show 4 cards. Rarity affects glow color.
-*/
-
 function canEvolve(wep){
   const def=WEAPONS[wep.id];
   if(!def.evolveWith || wep.level<8 || wep.evolved) return false;
   return passives.some(p=>p.id===def.evolveWith);
+}
+
+function getSynergyHint(id){
+  // For a weapon, does the player own its pair passive? Hint if not
+  const wDef = WEAPONS[id];
+  if(wDef && wDef.evolveWith){
+    const hasPair = passives.some(p=>p.id===wDef.evolveWith);
+    const hasWeapon = weapons.some(w=>w.id===id);
+    if(hasWeapon && !hasPair){
+      const pDef = PASSIVES[wDef.evolveWith];
+      return `🔗 ${pDef.emoji}${pDef.name} ile evrileşir!`;
+    }
+  }
+  // For a passive, does the player own its pair weapon?
+  const pDef = PASSIVES[id];
+  if(pDef && pDef.pairsWith){
+    const hasPair = weapons.some(w=>w.id===pDef.pairsWith);
+    if(hasPair){
+      const wD = WEAPONS[pDef.pairsWith];
+      return `🔗 ${wD.emoji}${wD.name} ile evrileşir!`;
+    }
+  }
+  return null;
 }
 
 function buildUpgradePool(){
@@ -846,13 +1023,12 @@ function buildUpgradePool(){
         id:'evo_'+wep.id, rarity:'evolved',
         emoji:def.evolvedEmoji, name:def.evolvedName,
         color:'#ffd700',
-        desc:`${def.emoji}${def.name} + ${PASSIVES[def.evolveWith].emoji}${PASSIVES[def.evolveWith].name} → Efsanevi silah doğuyor!`,
-        tag:'⭐ EVRİM',
+        desc:`${def.emoji}${def.name} + ${PASSIVES[def.evolveWith].emoji}${PASSIVES[def.evolveWith].name} → Efsanevi güç!`,
+        tag:'⭐ EVRİM', synergy:null,
         levels:8, curLevel:8,
         apply(){
           wep.evolved=true;
-          WEAPONS[wep.id].levelUp(wep,9); // evolved bonus
-          // consume passive slot? No, keep it
+          WEAPONS[wep.id].levelUp(wep,9);
           showEvoBanner(def.evolvedEmoji+' '+def.evolvedName, def.emoji+' + '+PASSIVES[def.evolveWith].emoji);
           SFX.evolve();
         }
@@ -860,17 +1036,21 @@ function buildUpgradePool(){
     }
   });
 
-  // 2. Weapon level-ups
+  // 2. Weapon level-ups — prioritise weapons that have their passive pair
   weapons.forEach(wep=>{
     if(wep.evolved||wep.level>=WEAPONS[wep.id].maxLevel)return;
     const def=WEAPONS[wep.id];
+    const hasPair = def.evolveWith && passives.some(p=>p.id===def.evolveWith);
+    const rarity = wep.level>=6?'epic':wep.level>=4?'rare':'common';
     pool.push({
-      id:'wup_'+wep.id, rarity: wep.level>=6?'epic':wep.level>=4?'rare':'common',
+      id:'wup_'+wep.id, rarity,
       emoji:def.emoji, name:`${def.name} Lv${wep.level+1}`,
       color:def.color,
       desc:weaponLvDesc(wep.id, wep.level+1),
       tag:'SİLAH YÜKSELTMESİ',
+      synergy: hasPair && wep.level===7 ? '⭐ Bir sonraki seviye EVRİM!' : getSynergyHint(wep.id),
       levels:WEAPONS[wep.id].maxLevel, curLevel:wep.level,
+      priority: hasPair ? 2 : 1,
       apply(){ weaponLevelUp(wep); }
     });
   });
@@ -885,92 +1065,97 @@ function buildUpgradePool(){
         emoji:def.emoji, name:def.name,
         color:def.color, desc:def.desc,
         tag:'YENİ SİLAH',
-        levels:1, curLevel:0,
+        synergy: getSynergyHint(def.id),
+        levels:1, curLevel:0, priority:1,
         apply(){ addWeapon(def.id); }
       });
     });
   }
 
-  // 4. Passive level-ups
+  // 4. Passive level-ups — prioritise pairs with owned weapons
   passives.forEach(pas=>{
     const def=PASSIVES[pas.id];
     if(pas.level>=def.maxLevel)return;
+    const hasPairWeapon = def.pairsWith && weapons.some(w=>w.id===def.pairsWith);
     pool.push({
       id:'pup_'+pas.id, rarity:pas.level>=4?'epic':'common',
       emoji:def.emoji, name:`${def.name} Lv${pas.level+1}`,
       color:def.color, desc:def.desc,
       tag:'PASİF YÜKSELTMESİ',
+      synergy: null,
       levels:def.maxLevel, curLevel:pas.level,
+      priority: hasPairWeapon ? 2 : 1,
       apply(){ pas.level++; def.apply(pas.level); }
     });
   });
 
-  // 5. New passives
+  // 5. New passives — show synergy hint if player has the weapon
   if(passives.length<MAX_PASSIVES){
     const ownedP=new Set(passives.map(p=>p.id));
     Object.values(PASSIVES).forEach(def=>{
       if(ownedP.has(def.id))return;
+      const hasPairWeapon = def.pairsWith && weapons.some(w=>w.id===def.pairsWith);
       pool.push({
-        id:'new_p_'+def.id, rarity:'common',
+        id:'new_p_'+def.id, rarity: hasPairWeapon ? 'rare' : 'common',
         emoji:def.emoji, name:def.name,
         color:def.color, desc:def.desc,
-        tag:'YENİ PASİF',
+        tag: hasPairWeapon ? 'PASİF (SYNERGİ!)' : 'YENİ PASİF',
+        synergy: getSynergyHint(def.id),
         levels:def.maxLevel, curLevel:0,
+        priority: hasPairWeapon ? 3 : 1,
         apply(){ addPassive(def.id); }
       });
     });
   }
 
-  // Evolved first, then shuffle rest
+  // Sort by priority (higher = more likely to show)
   const evoItems=pool.filter(x=>x.rarity==='evolved');
-  const rest=shuffle(pool.filter(x=>x.rarity!=='evolved'));
-  const final=[...evoItems,...rest].slice(0,4);
-  return final;
+  const hiPri=shuffle(pool.filter(x=>x.rarity!=='evolved'&&(x.priority||1)>=2));
+  const loPri=shuffle(pool.filter(x=>x.rarity!=='evolved'&&(x.priority||1)<2));
+  const ordered=[...evoItems,...hiPri,...loPri];
+  return ordered.slice(0,4);
 }
 
 function weaponLvDesc(id, lv){
   const d={
-    knife:  ['','','Hasar +8','Hız+, 2 hedef','Hasar +10, delici','Hız+, 3 hedef','Hasar +14, 2x delik','Hız+, 4 hedef','⭐ 6 hedef, tam delici'],
-    axe:    ['','','3 yön','Hasar +12','5 yön','Hasar +18','7 yön, hız+','Hasar +25','⭐ 12 yön fırtınası'],
-    magic:  ['','','2 küre','Hasar+menzil','3 küre','Hasar +8','4 küre+menzil','Hasar +12','⭐ 7 küre ejderhası'],
-    lightning:['','','3 zincir','Hasar +15','4 zincir, hız+','Hasar +22','6 zincir','Hız+, hasar +28','⭐ 14 zincir fırtına'],
-    whip:   ['','','Alan+, hasar +8','Yükseklik +25','Hasar +12','Alan+, yükseklik +30','Hasar +18','Alan+, yükseklik +30','⭐ Devasa kıyamet orakı'],
-    garlic: ['','','Menzil +15','Hasar +3','Menzil +20, kb+','Hasar +5','Menzil +25','Hasar +7, kb+','⭐ Kıyamet çiçeği patlar'],
+    knife:  ['','','Hasar +8','Hız ↑, 2 hedef','Hasar +10, delici','Hız ↑, 3 hedef','Hasar +14, 2x delik','Hız ↑, 4 hedef','⭐ 6 hedef, tam delici'],
+    axe:    ['','','3 yön','Hasar +15','5 yön','Hasar +20','7 yön, hız ↑','Hasar +28','⭐ 14 yön, kıyamet'],
+    magic:  ['','','2 küre','Hasar ↑, menzil ↑','3 küre','Hasar +9','4 küre, menzil ↑','Hasar +13','⭐ 7 ejderha küresi'],
+    lightning:['','','3 zincir','Hasar +18','4 zincir, hız ↑','Hasar +25','6 zincir','Hız ↑, hasar +30','⭐ 16 zincir fırtına'],
+    whip:   ['','','Alan ↑, hasar +9','Yükseklik ↑','Hasar +13','Alan ↑, yükseklik ↑','Hasar +20','Alan ↑, yükseklik ↑','⭐ Kıyamet orakı'],
+    garlic: ['','','Menzil ↑','Hasar +3.5','Menzil ↑, itme ↑','Hasar +5.5','Menzil ↑','Hasar ↑, itme ↑','⭐ Kıyamet çiçeği'],
+    fireball:['','','Hasar +20, alan ↑','2 top','Hasar +25, hız ↑','Alan ↑, 3 top','Hasar +30','Hız ↑, 4 top','⭐ 6 top meteor'],
+    cross:  ['','','Hasar +10','Alan ↑, hız ↑','Hasar +14','Alan ↑','Hasar +18, hız ↑','Alan ↑↑','⭐ İlahi ışık patlaması'],
   };
   return d[id]?.[lv]||'Güçlendirir';
 }
 
 function addWeapon(id){
   const def=WEAPONS[id];
-  const w={id,level:1,cd:0,maxCd:1,evolved:false};
+  const w={id,level:1,cd:0,maxCd:1,evolved:false,angle:0};
   def.init(w); weapons.push(w); renderItemHUD();
 }
-
 function weaponLevelUp(wep){
   wep.level++;
   WEAPONS[wep.id].levelUp(wep,wep.level);
-  renderItemHUD();
-  flashScreen('#ffe566',.2);
+  renderItemHUD(); flashScreen('#ffe566',.2);
 }
-
 function addPassive(id){
   const def=PASSIVES[id];
   passives.push({id,level:1});
-  def.apply(1);
-  renderItemHUD();
+  def.apply(1); renderItemHUD();
 }
 
 function showEvoBanner(title,sub){
   const b=document.getElementById('evo-banner');
   document.getElementById('evo-title').textContent='⭐ '+title;
   document.getElementById('evo-sub').textContent=sub;
-  b.style.display='block';
-  b.style.animation='none'; b.offsetHeight; b.style.animation='';
+  b.style.display='block'; b.style.animation='none'; b.offsetHeight; b.style.animation='';
   setTimeout(()=>b.style.display='none',2500);
 }
 
 // ════════════════════════════════════════════════
-// ITEM HUD (bottom bar)
+// ITEM HUD
 // ════════════════════════════════════════════════
 function renderItemHUD(){
   const el=document.getElementById('item-hud');
@@ -1002,17 +1187,19 @@ function showUpgrade(){
   document.getElementById('up-level-num').textContent='LV '+level;
   const choices=buildUpgradePool();
   const hasPending=pendingUpgrades>1;
-  document.getElementById('up-subtitle').textContent=hasPending?`${pendingUpgrades} SEÇIM BEKLIYOR`:'BİR YETENEK SEÇ';
+  document.getElementById('up-subtitle').textContent=hasPending?`${pendingUpgrades} SEÇİM BEKLIYOR`:'BİR YETENEK SEÇ';
   const container=document.getElementById('up-cards');
   container.innerHTML=choices.map((c,i)=>{
     const rarityColors={common:'rgba(180,180,180,.15)',rare:'rgba(80,140,255,.15)',epic:'rgba(180,80,255,.2)',evolved:'rgba(255,200,0,.2)'};
     const tagColors={common:'#aaa',rare:'#88aaff',epic:'#cc66ff',evolved:'#ffd700'};
     const dots=c.levels>1?`<div class="uc-lvbar">${Array.from({length:c.levels},(_,k)=>`<div class="uc-lv-dot${k<c.curLevel?' filled':''}"></div>`).join('')}</div>`:'';
+    const synLine=c.synergy?`<div class="uc-synergy">${c.synergy}</div>`:'';
     return `<div class="up-card rarity-${c.rarity}" onclick="pickUpgrade(${i})"
       style="--glow:radial-gradient(circle at 50% 100%,${rarityColors[c.rarity]},transparent 70%);">
       <span class="uc-icon">${c.emoji}</span>
       <div class="uc-name">${c.name}</div>
       <div class="uc-desc">${c.desc}</div>
+      ${synLine}
       ${dots}
       <span class="uc-tag" style="--tag-bg:${rarityColors[c.rarity]};--tag-col:${tagColors[c.rarity]}">${c.tag}</span>
     </div>`;
@@ -1032,32 +1219,13 @@ window.pickUpgrade=function(i){
 };
 
 // ════════════════════════════════════════════════
-// WAVE ANNOUNCER
-// ════════════════════════════════════════════════
-function checkWave(){
-  if(gameTime>=nextWaveTime){
-    waveNum++;
-    nextWaveTime+=30;
-    document.getElementById('wave-label').textContent='WAVE '+waveNum;
-    const el=document.getElementById('wave-announce');
-    el.textContent='🌊 WAVE '+waveNum;
-    el.style.display='block';
-    el.style.animation='none'; el.offsetHeight; el.style.animation='waveAnim 2s ease-out forwards';
-    setTimeout(()=>el.style.display='none',2000);
-    // Wave spike: extra enemies
-    const cfg=getWaveConfig(gameTime);
-    for(let i=0;i<8+waveNum*2;i++) spawnOneEnemy(cfg);
-  }
-}
-
-// ════════════════════════════════════════════════
 // XP & LEVEL
 // ════════════════════════════════════════════════
 function gainXP(amount){
   xp+=amount;
   while(xp>=xpToNext){
     xp-=xpToNext;
-    xpToNext=Math.ceil(xpToNext*1.28);
+    xpToNext=Math.ceil(xpToNext*1.26); // slightly faster to level up
     level++; pendingUpgrades++;
     SFX.levelUp(); flashScreen('#00ff88',.15);
     if(pendingUpgrades===1) showUpgrade();
@@ -1070,16 +1238,19 @@ function gainXP(amount){
 function startGame(){
   getAC();
   state='playing';
-  score=0;kills=0;level=1;xp=0;xpToNext=20;
+  score=0;kills=0;level=1;xp=0;xpToNext=22;
   gameTime=0;spawnTimer=0;pendingUpgrades=0;
-  waveNum=1;nextWaveTime=30;
+  waveNum=1;
+  triggeredMilestones=new Set();
+  triggeredBosses=new Set();
 
   player.x=W/2; player.y=H/2;
-  player.hp=120; player.maxHp=120; player.speed=3.0;
+  player.hp=120; player.maxHp=120; player.speed=3.2;
   player.invincible=0; player.trail=[];
-  player.magnetRange=100; player.dmgMult=1; player.dmgReduce=0;
+  player.magnetRange=110; player.dmgMult=1; player.dmgReduce=0;
   player.regen=0; player.vampirism=0; player.bulletSpd=1;
   player.explosion=0; player.cooldownReduce=1;
+  player.fireMult=1; player.holyMult=1;
 
   enemies=[];bullets=[];xpGems=[];particles=[];
   weapons=[]; passives=[];
@@ -1100,6 +1271,7 @@ function endGame(){
   document.getElementById('go-level').textContent=level;
   document.getElementById('go-kills').textContent=kills;
   document.getElementById('go-time').textContent=fmtTime(gameTime);
+  document.getElementById('go-wave').textContent=waveNum;
   document.getElementById('gameover-screen').classList.remove('hidden');
 }
 
@@ -1123,7 +1295,6 @@ function toggleSettings(){
 }
 
 function renderInventory(){
-  // weapons
   const wEl=document.getElementById('inv-weapons');
   if(!weapons.length){ wEl.innerHTML='<div class="inv-empty">Henüz silah yok</div>'; }
   else wEl.innerHTML=weapons.map(w=>{
@@ -1138,20 +1309,15 @@ function renderInventory(){
       <div class="inv-badge ${evo?'evo':'norm'}">${evo?'⭐ EFSANEVİ':'LV '+w.level}</div>
     </div>`;
   }).join('');
-
-  // passives
   const pEl=document.getElementById('inv-passives');
-  const rows=[];
-  passives.forEach(p=>{
+  if(!passives.length){ pEl.innerHTML='<div class="inv-empty">Henüz güçlendirme yok</div>'; }
+  else pEl.innerHTML=passives.map(p=>{
     const def=PASSIVES[p.id];
-    rows.push({icon:def.emoji,name:def.name+' Lv'+p.level,desc:def.desc});
-  });
-  // bonus stats derived
-  if(!rows.length){ pEl.innerHTML='<div class="inv-empty">Henüz güçlendirme yok</div>'; }
-  else pEl.innerHTML=rows.map(r=>`<div class="inv-row">
-    <div class="inv-icon">${r.icon}</div>
-    <div class="inv-info"><div class="inv-name">${r.name}</div><div class="inv-desc">${r.desc}</div></div>
-  </div>`).join('');
+    return `<div class="inv-row">
+      <div class="inv-icon">${def.emoji}</div>
+      <div class="inv-info"><div class="inv-name">${def.name} Lv${p.level}</div><div class="inv-desc">${def.desc}</div></div>
+    </div>`;
+  }).join('');
 }
 
 // ════════════════════════════════════════════════
@@ -1168,18 +1334,17 @@ function loop(now){
 
 function update(dt){
   gameTime+=dt/60;
-  checkWave();
+  checkMilestonesAndBosses();
 
   // Player movement
   const dx=mx-player.x, dy=my-player.y, d=Math.hypot(dx,dy);
   if(d>5){ player.x+=(dx/d)*player.speed*dt; player.y+=(dy/d)*player.speed*dt; }
   player.x=clamp(player.x,20,W-20); player.y=clamp(player.y,20,H-20);
   player.trail.unshift({x:player.x,y:player.y});
-  if(player.trail.length>10) player.trail.pop();
+  if(player.trail.length>12) player.trail.pop();
   if(player.invincible>0) player.invincible-=dt;
   if(player.regen) player.hp=Math.min(player.maxHp,player.hp+player.regen*dt/60);
 
-  // Spawn
   tickSpawn(dt);
 
   // Weapons
@@ -1201,21 +1366,40 @@ function update(dt){
     const b=bullets[i];
     if(b.dead){bullets.splice(i,1);continue;}
     b.x+=b.vx*dt; b.y+=b.vy*dt; b.life+=dt;
+
     if(b.type==='axe'){
-      b.vx+=(player.x-b.x)*.006*dt; b.vy+=(player.y-b.y)*.006*dt;
+      b.vx+=(player.x-b.x)*.007*dt; b.vy+=(player.y-b.y)*.007*dt;
     }
+    // Fireball: slight homing
+    if(b.type==='fireball'){
+      const nearE = enemies.filter(e=>!e.dead).sort((a,c)=>dist2(a,b)-dist2(c,b))[0];
+      if(nearE){ b.vx+=(nearE.x-b.x)*.004*dt; b.vy+=(nearE.y-b.y)*.004*dt; }
+    }
+
     if(b.type!=='axe'){
-      if(b.x<0){b.x=0;b.vx=Math.abs(b.vx);}
-      if(b.x>W){b.x=W;b.vx=-Math.abs(b.vx);}
-      if(b.y<0){b.y=0;b.vy=Math.abs(b.vy);}
-      if(b.y>H){b.y=H;b.vy=-Math.abs(b.vy);}
+      if(b.x<-60||b.x>W+60||b.y<-60||b.y>H+60){ b.dead=true; bullets.splice(i,1); continue; }
     }
-    if(b.life>200){b.dead=true;bullets.splice(i,1);continue;}
+    if(b.life>220){b.dead=true;bullets.splice(i,1);continue;}
+
     for(let j=enemies.length-1;j>=0;j--){
       const e=enemies[j];
       if(e.dead||b.hit.has(j))continue;
       if(Math.hypot(b.x-e.x,b.y-e.y)<e.radius+b.r){
-        damageEnemy(j,b.dmg); b.hit.add(j);
+        let dmg=b.dmg;
+        if(b.type==='fireball') dmg*=(player.fireMult||1);
+        if(b.type==='holy') dmg*=(player.holyMult||1);
+        damageEnemy(j,dmg); b.hit.add(j);
+        // Fireball explosion on hit
+        if(b.type==='fireball'){
+          const br=b.blastR||60;
+          for(let k=enemies.length-1;k>=0;k--){
+            if(k===j)continue;
+            const en=enemies[k]; if(en.dead)continue;
+            if(Math.hypot(en.x-b.x,en.y-b.y)<br) damageEnemy(k,dmg*0.55*(player.fireMult||1));
+          }
+          for(let p=0;p<14;p++) spawnParticle(b.x+randn(br*.4),b.y+randn(br*.4),randn(4),randn(4),b.evolved?'#ff8800':'#ff4400',.4,4+Math.random()*4);
+          b.dead=true; bullets.splice(i,1); break;
+        }
         if(b.pierce<=0||b.hit.size>b.pierce){
           b.dead=true;
           for(let k=0;k<4;k++) spawnParticle(b.x,b.y,randn(3),randn(3),b.color,.22,2);
@@ -1232,8 +1416,15 @@ function update(dt){
     const a=Math.atan2(player.y-e.y,player.x-e.x);
     e.x+=Math.cos(a)*e.speed*dt; e.y+=Math.sin(a)*e.speed*dt;
     if(e.flashTimer>0) e.flashTimer-=dt;
+    // Boss shield at 50%
+    if(e.type==='boss' && !e.shielded && e.hp/e.maxHp<=e.shieldAt){
+      e.shielded=true;
+      // Spawn elite minions
+      const cfg=getSpawnConfig(gameTime);
+      for(let k=0;k<4;k++) spawnOneEnemy(cfg,'elite');
+    }
     const touch=Math.hypot(e.x-player.x,e.y-player.y)<e.radius+player.radius;
-    if(touch) damagePlayer((e.type==='boss'?24:e.type==='elite'?16:e.type==='tank'?12:8)*dt);
+    if(touch) damagePlayer((e.dmgPerSec||8)*dt/60);
   }
 
   // XP gems
@@ -1241,7 +1432,7 @@ function update(dt){
     const g=xpGems[i];
     if(g.dead){xpGems.splice(i,1);continue;}
     const gd=Math.hypot(g.x-player.x,g.y-player.y);
-    if(gd<player.magnetRange){ g.x+=(player.x-g.x)*.13*dt; g.y+=(player.y-g.y)*.13*dt; }
+    if(gd<player.magnetRange){ g.x+=(player.x-g.x)*.14*dt; g.y+=(player.y-g.y)*.14*dt; }
     else{ g.vx*=.97; g.vy*=.97; g.x+=g.vx*dt; g.y+=g.vy*dt; }
     if(gd<player.radius+10){ gainXP(g.value); SFX.xp(); g.dead=true; xpGems.splice(i,1); }
   }
@@ -1249,7 +1440,7 @@ function update(dt){
   // Particles
   for(let i=particles.length-1;i>=0;i--){
     const p=particles[i];
-    p.x+=p.vx*dt; p.y+=p.vy*dt; p.vx*=.94; p.vy*=.94; p.life-=dt/60;
+    p.x+=p.vx*dt; p.y+=p.vy*dt; p.vx*=.93; p.vy*=.93; p.life-=dt/60;
     if(p.life<=0) particles.splice(i,1);
   }
 
@@ -1270,7 +1461,7 @@ function drawFrame(dt=0){
   ctx.clearRect(0,0,W,H);
 
   // BG grid
-  ctx.strokeStyle='rgba(255,255,255,0.025)'; ctx.lineWidth=1;
+  ctx.strokeStyle='rgba(255,255,255,0.022)'; ctx.lineWidth=1;
   gridOff=(gridOff+.18)%GSIZ;
   for(let x=(gridOff%GSIZ)-GSIZ;x<W+GSIZ;x+=GSIZ){ ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke(); }
   for(let y=(gridOff%GSIZ)-GSIZ;y<H+GSIZ;y+=GSIZ){ ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke(); }
@@ -1295,46 +1486,79 @@ function drawFrame(dt=0){
   });
   ctx.globalAlpha=1;
 
-  // Weapon draws (garlic aura, magic orbs)
+  // Weapon auras (garlic, magic, cross)
   weapons.forEach(w=>{ const def=WEAPONS[w.id]; if(def.draw) def.draw(w); });
 
   // Enemies
   enemies.forEach(e=>{
     if(e.dead)return;
     ctx.save(); ctx.translate(e.x,e.y);
+    // Shadow
     ctx.beginPath(); ctx.ellipse(0,6,e.radius*.75,4,0,0,Math.PI*2);
     ctx.fillStyle='rgba(0,0,0,.3)'; ctx.fill();
+
     const flash=e.flashTimer>0, r=e.radius;
+    const fc=flash?'#fff':e.color;
+
     if(e.type==='boss'){
+      // Octagon boss
       ctx.beginPath();
       for(let i=0;i<8;i++){const a=i/8*Math.PI*2;i===0?ctx.moveTo(Math.cos(a)*r,Math.sin(a)*r):ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);}
-      ctx.closePath(); ctx.fillStyle=flash?'#fff':e.color; ctx.fill();
-      ctx.strokeStyle='rgba(255,0,80,.7)'; ctx.lineWidth=2.5; ctx.stroke();
-      // HP bar
-      ctx.fillStyle='rgba(0,0,0,.5)'; ctx.fillRect(-r,-r-12,r*2,5);
-      ctx.fillStyle='#ff3a3a'; ctx.fillRect(-r,-r-12,r*2*(e.hp/e.maxHp),5);
+      ctx.closePath(); ctx.fillStyle=fc; ctx.fill();
+      ctx.strokeStyle='rgba(255,0,80,.8)'; ctx.lineWidth=2.5; ctx.stroke();
+      // Boss HP bar
+      ctx.fillStyle='rgba(0,0,0,.6)'; ctx.fillRect(-r,-r-14,r*2,6);
+      ctx.fillStyle='#ff3a3a'; ctx.fillRect(-r,-r-14,r*2*(e.hp/e.maxHp),6);
+      // Shield indicator
+      if(e.shielded){
+        ctx.strokeStyle='rgba(0,150,255,.5)'; ctx.lineWidth=3;
+        ctx.beginPath(); ctx.arc(0,0,r+5,0,Math.PI*2); ctx.stroke();
+      }
+      // Tier label
+      ctx.fillStyle='rgba(255,255,255,.8)'; ctx.font=`bold ${r*.5}px sans-serif`;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('T'+(e.tier||1),0,0);
     } else if(e.type==='elite'){
       ctx.beginPath();
       for(let i=0;i<6;i++){const a=i/6*Math.PI*2;i===0?ctx.moveTo(Math.cos(a)*r,Math.sin(a)*r):ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);}
-      ctx.closePath(); ctx.fillStyle=flash?'#fff':e.color; ctx.fill();
-      ctx.strokeStyle='rgba(170,0,255,.6)'; ctx.lineWidth=2; ctx.stroke();
+      ctx.closePath(); ctx.fillStyle=fc; ctx.fill();
+      ctx.strokeStyle='rgba(170,0,255,.7)'; ctx.lineWidth=2; ctx.stroke();
       ctx.fillStyle='rgba(0,0,0,.5)'; ctx.fillRect(-r,-r-10,r*2,4);
       ctx.fillStyle='#aa00ff'; ctx.fillRect(-r,-r-10,r*2*(e.hp/e.maxHp),4);
     } else if(e.type==='tank'){
       ctx.beginPath(); ctx.moveTo(0,-r);ctx.lineTo(r,0);ctx.lineTo(0,r);ctx.lineTo(-r,0);ctx.closePath();
-      ctx.fillStyle=flash?'#fff':e.color; ctx.fill();
-      ctx.strokeStyle='rgba(136,85,255,.5)'; ctx.lineWidth=1.5; ctx.stroke();
+      ctx.fillStyle=fc; ctx.fill();
+      ctx.strokeStyle='rgba(136,85,255,.6)'; ctx.lineWidth=2; ctx.stroke();
     } else if(e.type==='fast'){
       ctx.beginPath(); ctx.moveTo(0,-r);ctx.lineTo(r,r*.8);ctx.lineTo(-r,r*.8);ctx.closePath();
-      ctx.fillStyle=flash?'#fff':e.color; ctx.fill();
-    } else {
+      ctx.fillStyle=fc; ctx.fill();
+    } else if(e.type==='swarm'){
+      // Small diamond
+      ctx.beginPath(); ctx.moveTo(0,-r);ctx.lineTo(r*.6,0);ctx.lineTo(0,r);ctx.lineTo(-r*.6,0);ctx.closePath();
+      ctx.fillStyle=fc; ctx.fill();
+    } else if(e.type==='ghost'){
+      // Semi-transparent circle
+      ctx.globalAlpha=flash?0.9:0.55;
       const rr=r*.3;
       ctx.beginPath();
       ctx.moveTo(-r+rr,-r);ctx.lineTo(r-rr,-r);ctx.arcTo(r,-r,r,-r+rr,rr);
       ctx.lineTo(r,r-rr);ctx.arcTo(r,r,r-rr,r,rr);
       ctx.lineTo(-r+rr,r);ctx.arcTo(-r,r,-r,r-rr,rr);
       ctx.lineTo(-r,-r+rr);ctx.arcTo(-r,-r,-r+rr,-r,rr);
-      ctx.closePath(); ctx.fillStyle=flash?'#fff':e.color; ctx.fill();
+      ctx.closePath(); ctx.fillStyle=fc; ctx.fill();
+      // Ghost eyes
+      ctx.globalAlpha=1;
+      ctx.fillStyle='rgba(0,0,0,.7)'; ctx.beginPath(); ctx.arc(-r*.3,-r*.15,r*.18,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(r*.3,-r*.15,r*.18,0,Math.PI*2); ctx.fill();
+    } else {
+      // Basic rounded rect
+      const rr=r*.3;
+      ctx.beginPath();
+      ctx.moveTo(-r+rr,-r);ctx.lineTo(r-rr,-r);ctx.arcTo(r,-r,r,-r+rr,rr);
+      ctx.lineTo(r,r-rr);ctx.arcTo(r,r,r-rr,r,rr);
+      ctx.lineTo(-r+rr,r);ctx.arcTo(-r,r,-r,r-rr,rr);
+      ctx.lineTo(-r,-r+rr);ctx.arcTo(-r,-r,-r+rr,-r,rr);
+      ctx.closePath(); ctx.fillStyle=fc; ctx.fill();
     }
     ctx.restore();
   });
@@ -1346,13 +1570,22 @@ function drawFrame(dt=0){
     const bg=ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r);
     bg.addColorStop(0,'#fff'); bg.addColorStop(1,b.color);
     ctx.fillStyle=bg; ctx.fill();
-    ctx.beginPath(); ctx.moveTo(b.x,b.y); ctx.lineTo(b.x-b.vx*3,b.y-b.vy*3);
-    ctx.strokeStyle=b.color+'88'; ctx.lineWidth=b.r*.8; ctx.stroke();
+    if(b.type==='fireball'){
+      // Fire glow
+      ctx.globalAlpha=0.35;
+      ctx.beginPath(); ctx.arc(b.x,b.y,b.r*2.2,0,Math.PI*2);
+      const fg=ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r*2.2);
+      fg.addColorStop(0,b.color+'88'); fg.addColorStop(1,'transparent');
+      ctx.fillStyle=fg; ctx.fill(); ctx.globalAlpha=1;
+    } else {
+      ctx.beginPath(); ctx.moveTo(b.x,b.y); ctx.lineTo(b.x-b.vx*2.5,b.y-b.vy*2.5);
+      ctx.strokeStyle=b.color+'88'; ctx.lineWidth=b.r*.8; ctx.stroke();
+    }
   });
 
   // Player trail
   player.trail.forEach((t,i)=>{
-    const a=(1-i/player.trail.length)*.28;
+    const a=(1-i/player.trail.length)*.3;
     const r=player.radius*(1-i/player.trail.length*.55);
     ctx.beginPath(); ctx.arc(t.x,t.y,r,0,Math.PI*2);
     ctx.fillStyle=`rgba(0,200,255,${a})`; ctx.fill();
@@ -1375,10 +1608,9 @@ function drawFrame(dt=0){
     ctx.restore();
   }
 
-  // Flash
+  // Screen flash
   if(flashAlpha>0){
-    ctx.fillStyle=flashColor;
-    ctx.globalAlpha=flashAlpha;
+    ctx.fillStyle=flashColor; ctx.globalAlpha=flashAlpha;
     ctx.fillRect(0,0,W,H);
     ctx.globalAlpha=1;
     flashAlpha*=.78;
