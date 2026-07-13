@@ -40,6 +40,8 @@
     position: relative; overflow: hidden;
   }
   .weapon-slot.active { border-color: rgba(255,220,0,0.5); background: rgba(255,220,0,0.08); }
+  .weapon-slot.legendary { border-color: rgba(255,215,0,0.9) !important; background: rgba(255,200,0,0.18) !important; box-shadow: 0 0 12px rgba(255,200,0,0.5); animation: legendaryPulse 1.5s ease-in-out infinite; }
+  @keyframes legendaryPulse { 0%,100%{box-shadow:0 0 10px rgba(255,200,0,0.4);} 50%{box-shadow:0 0 22px rgba(255,200,0,0.8);} }
   .weapon-cd {
     position: absolute; bottom: 0; left: 0; right: 0;
     height: 3px; background: rgba(255,220,0,0.7);
@@ -449,7 +451,7 @@ const WEAPON_DEFS = {
   knife: {
     id: 'knife', name: 'Bıçak', emoji: '🔪', color: '#ffe066',
     desc: 'En yakın düşmana mermi fırlatır',
-    maxLevel: 8,
+    maxLevel: 12,
     init(wep) { wep.cd = 0; wep.maxCd = 50; wep.dmg = 12; wep.count = 1; wep.pierce = 0; },
     levelUp(wep) {
       const lvl = wep.level;
@@ -459,7 +461,11 @@ const WEAPON_DEFS = {
       if (lvl === 5) { wep.dmg += 8; wep.pierce = 1; }
       if (lvl === 6) { wep.maxCd *= 0.75; }
       if (lvl === 7) { wep.count = 3; }
-      if (lvl === 8) { wep.dmg += 14; wep.pierce = 2; }
+      if (lvl === 8)  { wep.dmg += 14; wep.pierce = 2; }
+      if (lvl === 9)  { wep.count = 4; wep.maxCd *= 0.7; }
+      if (lvl === 10) { wep.dmg += 22; wep.pierce = 4; }
+      if (lvl === 11) { wep.count = 6; wep.maxCd *= 0.65; }
+      if (lvl === 12) { wep.legendary = true; wep.dmg += 35; wep.pierce = 99; wep.count = 8; }
     },
     fire(wep) {
       if (enemies.length === 0) return;
@@ -467,16 +473,17 @@ const WEAPON_DEFS = {
       if (!alive.length) return;
       alive.sort((a,b) => dist2(a,player) - dist2(b,player));
       const targets = alive.slice(0, wep.count);
+      const col = wep.legendary ? '#fff700' : '#ffe066';
       targets.forEach(target => {
         const angle = Math.atan2(target.y - player.y, target.x - player.x);
-        spawnBullet(player.x, player.y, angle, 9, wep.dmg, '#ffe066', 5, wep.pierce, 'knife');
+        spawnBullet(player.x, player.y, angle, wep.legendary ? 14 : 9, wep.dmg, col, wep.legendary ? 8 : 5, wep.pierce, 'knife');
       });
     }
   },
   axe: {
     id: 'axe', name: 'Balta', emoji: '🪓', color: '#ff8c42',
     desc: 'Tüm yönlere uçup geri döner',
-    maxLevel: 8,
+    maxLevel: 12,
     init(wep) { wep.cd = 0; wep.maxCd = 90; wep.dmg = 28; wep.count = 2; },
     levelUp(wep) {
       const lvl = wep.level;
@@ -486,19 +493,26 @@ const WEAPON_DEFS = {
       if (lvl === 5) { wep.dmg += 14; }
       if (lvl === 6) { wep.count = 6; }
       if (lvl === 7) { wep.maxCd *= 0.8; }
-      if (lvl === 8) { wep.dmg += 20; wep.count = 8; }
+      if (lvl === 8)  { wep.dmg += 20; wep.count = 8; }
+      if (lvl === 9)  { wep.dmg += 28; wep.maxCd *= 0.75; }
+      if (lvl === 10) { wep.count = 12; }
+      if (lvl === 11) { wep.dmg += 35; wep.maxCd *= 0.7; }
+      if (lvl === 12) { wep.legendary = true; wep.count = 16; wep.dmg += 50; }
     },
     fire(wep) {
+      const col = wep.legendary ? '#ffdd00' : '#ff8c42';
+      const spd = wep.legendary ? 10 : 7;
+      const sz  = wep.legendary ? 13 : 8;
       for (let i = 0; i < wep.count; i++) {
         const angle = (i / wep.count) * Math.PI * 2;
-        spawnBullet(player.x, player.y, angle, 7, wep.dmg, '#ff8c42', 8, 99, 'axe');
+        spawnBullet(player.x, player.y, angle, spd, wep.dmg, col, sz, 99, 'axe');
       }
     }
   },
   magic: {
     id: 'magic', name: 'Sihir Çemberi', emoji: '✨', color: '#c77dff',
     desc: 'Oyuncunun etrafında dönen koruma',
-    maxLevel: 8,
+    maxLevel: 12,
     init(wep) { wep.cd = 0; wep.maxCd = 1; wep.dmg = 8; wep.radius = 90; wep.orbs = 1; wep.angle = 0; },
     levelUp(wep) {
       const lvl = wep.level;
@@ -508,10 +522,14 @@ const WEAPON_DEFS = {
       if (lvl === 5) { wep.dmg += 6; }
       if (lvl === 6) { wep.orbs = 4; wep.radius += 15; }
       if (lvl === 7) { wep.dmg += 8; }
-      if (lvl === 8) { wep.orbs = 5; wep.dmg += 12; }
+      if (lvl === 8)  { wep.orbs = 5; wep.dmg += 12; }
+      if (lvl === 9)  { wep.dmg += 16; wep.radius += 20; }
+      if (lvl === 10) { wep.orbs = 7; }
+      if (lvl === 11) { wep.dmg += 20; wep.radius += 25; }
+      if (lvl === 12) { wep.legendary = true; wep.orbs = 10; wep.dmg += 30; wep.radius += 30; }
     },
     tick(wep, dt) {
-      wep.angle += dt * 2.5;
+      wep.angle += dt * (wep.legendary ? 3.5 : 2.5);
       const hitSet = new Set();
       for (let i = 0; i < wep.orbs; i++) {
         const a = wep.angle + (i / wep.orbs) * Math.PI * 2;
@@ -533,17 +551,21 @@ const WEAPON_DEFS = {
         const a = wep.angle + (i / wep.orbs) * Math.PI * 2;
         const ox = player.x + Math.cos(a) * wep.radius;
         const oy = player.y + Math.sin(a) * wep.radius;
+        const orbR = wep.legendary ? 14 : 9;
+        const orbInner = wep.legendary ? 7 : 5;
+        const c1 = wep.legendary ? 'rgba(255,220,50,0.95)' : 'rgba(199,125,255,0.9)';
+        const c2 = wep.legendary ? 'rgba(255,150,0,0)' : 'rgba(199,125,255,0)';
+        const cInner = wep.legendary ? '#fff700' : '#e0b3ff';
         ctx.beginPath();
-        ctx.arc(ox, oy, 9, 0, Math.PI*2);
-        const g = ctx.createRadialGradient(ox,oy,0,ox,oy,9);
-        g.addColorStop(0,'rgba(199,125,255,0.9)');
-        g.addColorStop(1,'rgba(199,125,255,0)');
+        ctx.arc(ox, oy, orbR, 0, Math.PI*2);
+        const g = ctx.createRadialGradient(ox,oy,0,ox,oy,orbR);
+        g.addColorStop(0, c1);
+        g.addColorStop(1, c2);
         ctx.fillStyle = g;
         ctx.fill();
-        // glow
         ctx.beginPath();
-        ctx.arc(ox, oy, 5, 0, Math.PI*2);
-        ctx.fillStyle = '#e0b3ff';
+        ctx.arc(ox, oy, orbInner, 0, Math.PI*2);
+        ctx.fillStyle = cInner;
         ctx.fill();
       }
     }
@@ -551,7 +573,7 @@ const WEAPON_DEFS = {
   lightning: {
     id: 'lightning', name: 'Yıldırım', emoji: '⚡', color: '#ffe566',
     desc: 'Rastgele düşmanlara çarpar, zincir yapar',
-    maxLevel: 8,
+    maxLevel: 12,
     init(wep) { wep.cd = 0; wep.maxCd = 75; wep.dmg = 35; wep.chain = 1; },
     levelUp(wep) {
       const lvl = wep.level;
@@ -561,7 +583,11 @@ const WEAPON_DEFS = {
       if (lvl === 5) { wep.dmg += 20; }
       if (lvl === 6) { wep.chain = 4; }
       if (lvl === 7) { wep.maxCd *= 0.8; }
-      if (lvl === 8) { wep.dmg += 30; wep.chain = 6; }
+      if (lvl === 8)  { wep.dmg += 30; wep.chain = 6; }
+      if (lvl === 9)  { wep.chain = 8; wep.maxCd *= 0.8; }
+      if (lvl === 10) { wep.dmg += 40; }
+      if (lvl === 11) { wep.chain = 12; wep.maxCd *= 0.75; }
+      if (lvl === 12) { wep.legendary = true; wep.dmg += 60; wep.chain = 20; wep.maxCd *= 0.6; }
     },
     fire(wep) {
       const alive = enemies.filter(e => !e.dead);
@@ -571,16 +597,17 @@ const WEAPON_DEFS = {
       targets.forEach((t, i) => {
         setTimeout(() => {
           if (t.dead) return;
-          damageEnemy(enemies.indexOf(t), wep.dmg);
-          spawnLightning(player.x, player.y, t.x, t.y);
-        }, i * 60);
+          const dmg = wep.legendary ? wep.dmg * 1.5 : wep.dmg;
+          damageEnemy(enemies.indexOf(t), dmg);
+          spawnLightning(player.x, player.y, t.x, t.y, wep.legendary);
+        }, i * (wep.legendary ? 30 : 60));
       });
     }
   },
   flamethrower: {
     id: 'flamethrower', name: 'Alev', emoji: '🔥', color: '#ff5e1a',
     desc: 'İleri yönde sürekli hasar verir',
-    maxLevel: 8,
+    maxLevel: 12,
     init(wep) { wep.cd = 0; wep.maxCd = 1; wep.dmg = 5; wep.range = 140; },
     levelUp(wep) {
       const lvl = wep.level;
@@ -590,11 +617,16 @@ const WEAPON_DEFS = {
       if (lvl === 5) { wep.range += 40; }
       if (lvl === 6) { wep.dmg += 4; }
       if (lvl === 7) { wep.range += 50; }
-      if (lvl === 8) { wep.dmg += 8; wep.range += 60; }
+      if (lvl === 8)  { wep.dmg += 8; wep.range += 60; }
+      if (lvl === 9)  { wep.dmg += 12; wep.range += 50; }
+      if (lvl === 10) { wep.spread = Math.PI / 3; wep.dmg += 10; }
+      if (lvl === 11) { wep.dmg += 18; wep.range += 60; }
+      if (lvl === 12) { wep.legendary = true; wep.dmg += 25; wep.range += 80; wep.spread = Math.PI / 2; }
     },
     tick(wep, dt) {
       const angle = Math.atan2(my - player.y, mx - player.x);
-      const spread = Math.PI / 5;
+      const spread = wep.spread || Math.PI / 5;
+      const flameCol = wep.legendary ? '#ff2200' : '#ff8844';
       for (let j = enemies.length - 1; j >= 0; j--) {
         const e = enemies[j];
         if (e.dead) continue;
@@ -603,8 +635,8 @@ const WEAPON_DEFS = {
         const a = Math.atan2(e.y - player.y, e.x - player.x);
         const diff = Math.abs(angleDiff(a, angle));
         if (diff < spread) {
-          damageEnemy(j, wep.dmg * dt * 3);
-          spawnParticle(e.x + randn(12), e.y + randn(12), randn(1.5), randn(1.5), '#ff8844', 0.4, 3);
+          damageEnemy(j, wep.dmg * dt * 3 * (wep.legendary ? 1.4 : 1));
+          spawnParticle(e.x + randn(12), e.y + randn(12), randn(1.5), randn(1.5), flameCol, 0.4, wep.legendary ? 5 : 3);
         }
       }
     },
@@ -619,12 +651,18 @@ const WEAPON_DEFS = {
       ctx.translate(player.x, player.y);
       ctx.rotate(angle);
       const grad = ctx.createRadialGradient(0,0,0,0,0,wep.range);
-      grad.addColorStop(0,'rgba(255,120,30,0.22)');
-      grad.addColorStop(0.6,'rgba(255,60,0,0.09)');
-      grad.addColorStop(1,'rgba(255,60,0,0)');
+      if (wep.legendary) {
+        grad.addColorStop(0,'rgba(255,50,0,0.38)');
+        grad.addColorStop(0.5,'rgba(255,120,0,0.18)');
+        grad.addColorStop(1,'rgba(255,60,0,0)');
+      } else {
+        grad.addColorStop(0,'rgba(255,120,30,0.22)');
+        grad.addColorStop(0.6,'rgba(255,60,0,0.09)');
+        grad.addColorStop(1,'rgba(255,60,0,0)');
+      }
       ctx.beginPath();
       ctx.moveTo(0,0);
-      ctx.arc(0,0,wep.range,-spread,spread);
+      ctx.arc(0,0,wep.range,-(wep.spread||Math.PI/5),(wep.spread||Math.PI/5));
       ctx.closePath();
       ctx.fillStyle = grad;
       ctx.fill();
@@ -660,6 +698,42 @@ const UPGRADE_POOL = [
     color: '#c77dff', tag: 'TOPLAMA',
     desc: 'XP toplama menzili 2×',
     apply() { player.magnetRange = (player.magnetRange || 120) * 2; }
+  },
+  {
+    id: 'vampirism', name: 'Vampirizm', emoji: '🩸',
+    color: '#cc0033', tag: 'YAŞAM ÇALMA',
+    desc: 'Her öldürme +3 can geri kazandırır',
+    apply() { player.vampirism = (player.vampirism || 0) + 3; }
+  },
+  {
+    id: 'dmg_boost', name: 'Güç Kristali', emoji: '💎',
+    color: '#00ffcc', tag: 'HASAR +%25',
+    desc: 'Tüm silah hasarı kalıcı olarak %25 artar',
+    apply() { player.dmgMult = (player.dmgMult || 1) * 1.25; }
+  },
+  {
+    id: 'shield', name: 'Enerji Kalkanı', emoji: '🔵',
+    color: '#00aaff', tag: 'SAVUNMA',
+    desc: 'Alınan hasar %20 azalır (max %60)',
+    apply() { player.dmgReduce = Math.min(0.6, (player.dmgReduce || 0) + 0.2); }
+  },
+  {
+    id: 'regen', name: 'Yenilenme', emoji: '💚',
+    color: '#00ff88', tag: 'REJENERASYON',
+    desc: 'Saniyede 1 can yenilenir',
+    apply() { player.regen = (player.regen || 0) + 1; }
+  },
+  {
+    id: 'bullet_spd', name: 'Hız Ruhu', emoji: '🌪️',
+    color: '#88ddff', tag: 'MERMİ HIZI',
+    desc: 'Tüm mermiler %30 daha hızlı gider',
+    apply() { player.bulletSpd = (player.bulletSpd || 1) * 1.3; }
+  },
+  {
+    id: 'explosion', name: 'Patlama Ruhu', emoji: '💥',
+    color: '#ff6600', tag: 'ALAN HASARI',
+    desc: 'Düşman ölünce çevredekilere hasar verir',
+    apply() { player.explosion = (player.explosion || 0) + 15; }
   },
   // Weapon upgrades generated dynamically
 ];
@@ -713,11 +787,11 @@ function weaponUpgradeDesc(wep) {
   const def = WEAPON_DEFS[wep.id];
   // Simple lookup
   const descs = {
-    knife: ['','','Hasar +6','Hız +20%','Çoklu hedef','Delici zırh','Hız +25%','Üçlü atış','Dev hasar'],
-    axe:   ['','','3 yön','Hasar +10','4 yön','Hasar +14','6 yön','Hız +20%','Maksimum güç'],
-    magic: ['','','2 küre','Hasar+menzil','3 küre','Hasar +6','4 küre+menzil','Hasar +8','5 küre max güç'],
-    lightning: ['','','Zincir 2','Hasar +15','Zincir 3+hız','Hasar +20','Zincir 4','Hız +20%','Mega hasar'],
-    flamethrower: ['','','Hasar +2','Menzil +30','Hasar +3','Menzil +40','Hasar +4','Menzil +50','Max alev']
+    knife:        ['','','Hasar +6','Hız +20%','Çoklu hedef','Delici zırh','Hız +25%','Üçlü atış','Dev hasar','4 hedef+hız','Hasar +22, delik','Altılı ateş','⭐ EFSANEVİ — Sekizli, tam delici'],
+    axe:          ['','','3 yön','Hasar +10','4 yön','Hasar +14','6 yön','Hız +20%','8 yön max','Hasar +28+hız','12 yön','Hasar +35+hız','⭐ EFSANEVİ — 16 yön fırtına'],
+    magic:        ['','','2 küre','Hasar+menzil','3 küre','Hasar +6','4 küre+menzil','Hasar +8','5 küre max güç','Hasar+menzil','7 küre','Hasar+menzil','⭐ EFSANEVİ — 10 altın küre'],
+    lightning:    ['','','Zincir 2','Hasar +15','Zincir 3+hız','Hasar +20','Zincir 4','Hız +20%','Mega hasar','Zincir 8+hız','Hasar +40','Zincir 12+hız','⭐ EFSANEVİ — 20 zincir şimşek'],
+    flamethrower: ['','','Hasar +2','Menzil +30','Hasar +3','Menzil +40','Hasar +4','Menzil +50','Max alev','Hasar +12+menzil','Geniş açı','Hasar +18+menzil','⭐ EFSANEVİ — 180° inferno']
   };
   return descs[wep.id]?.[lvl] || 'Güçlendirir';
 }
@@ -755,9 +829,10 @@ function renderWeaponHUD() {
   const el = document.getElementById('weapon-hud');
   el.innerHTML = weaponSlots.map((wep,i) => {
     const def = WEAPON_DEFS[wep.id];
-    return `<div class="weapon-slot active" id="ws${i}" title="${def.name} Lv${wep.level}">
-      <div class="weapon-emoji">${def.emoji}</div>
-      <div class="weapon-lv">LV${wep.level}</div>
+    const isLeg = wep.legendary;
+    return `<div class="weapon-slot active${isLeg?' legendary':''}" id="ws${i}" title="${def.name} Lv${wep.level}${isLeg?' ⭐ EFSANEVİ':''}">
+      <div class="weapon-emoji">${def.emoji}${isLeg?'<span style="font-size:9px;position:absolute;top:2px;right:3px;">⭐</span>':''}</div>
+      <div class="weapon-lv" style="${isLeg?'color:#fff700;':''}">LV${wep.level}${isLeg?'★':''}</div>
       <div class="weapon-cd" id="wcd${i}" style="width:0%"></div>
     </div>`;
   }).join('');
@@ -767,6 +842,7 @@ function renderWeaponHUD() {
 // SPAWN
 // ════════════════════════════════════════════════════
 function spawnBullet(x, y, angle, spd, dmg, color, r, pierce, type) {
+  spd *= (player.bulletSpd || 1);
   bullets.push({ x, y,
     vx: Math.cos(angle)*spd, vy: Math.sin(angle)*spd,
     dmg, color, r, pierce: pierce||0, type,
@@ -861,16 +937,17 @@ function spawnParticle(x, y, vx, vy, color, life, r) {
   particles.push({ x, y, vx, vy, color, life, maxLife: life, r });
 }
 
-function spawnLightning(x1,y1,x2,y2) {
+function spawnLightning(x1,y1,x2,y2,legendary=false) {
   SFX.lightning();
-  // Draw a lightning bolt as temporary particles
-  const steps = 8;
+  const steps = legendary ? 14 : 8;
+  const col   = legendary ? '#fff700' : '#ffe566';
+  const sz    = legendary ? 4 : 2;
   let px=x1,py=y1;
   for(let i=1;i<=steps;i++){
     const t=i/steps;
-    const nx=x1+(x2-x1)*t+randn(18);
-    const ny=y1+(y2-y1)*t+randn(18);
-    spawnParticle((px+nx)/2,(py+ny)/2,0,0,'#ffe566',0.15,2);
+    const nx=x1+(x2-x1)*t+randn(legendary?28:18);
+    const ny=y1+(y2-y1)*t+randn(legendary?28:18);
+    spawnParticle((px+nx)/2,(py+ny)/2,0,0,col,0.18,sz);
     px=nx;py=ny;
   }
 }
@@ -881,6 +958,7 @@ function spawnLightning(x1,y1,x2,y2) {
 function damageEnemy(idx, dmg) {
   const e = enemies[idx];
   if (!e || e.dead) return;
+  dmg *= (player.dmgMult || 1);
   e.hp -= dmg;
   e.flashTimer = 6;
   // Floating damage number
@@ -896,6 +974,19 @@ function killEnemy(idx) {
   kills++;
   score += e.type === 'boss' ? 100 : e.type === 'tank' ? 30 : e.type === 'fast' ? 15 : 10;
   if (e.type === 'boss') SFX.bossDie(); else SFX.enemyDie();
+  // Vampirism
+  if (player.vampirism) player.hp = Math.min(player.maxHp, player.hp + player.vampirism);
+  // Explosion passive
+  if (player.explosion) {
+    const radius = player.explosion;
+    for (let k = enemies.length-1; k >= 0; k--) {
+      const en = enemies[k];
+      if (en.dead) continue;
+      const d = Math.hypot(en.x - e.x, en.y - e.y);
+      if (d < radius) damageEnemy(k, 30 * (player.dmgMult||1));
+    }
+    for(let p=0;p<6;p++) spawnParticle(e.x+randn(10),e.y+randn(10),randn(3),randn(3),'#ff6600',0.35,4);
+  }
 
   // Particles
   const count = e.type==='boss' ? 20 : e.type==='tank' ? 10 : 6;
@@ -911,6 +1002,7 @@ function killEnemy(idx) {
 
 function damagePlayer(dmg) {
   if (player.invincible > 0) return;
+  dmg *= (1 - (player.dmgReduce || 0));
   player.hp -= dmg;
   player.invincible = 30;
   SFX.playerHit();
@@ -951,6 +1043,7 @@ function startGame() {
   player.hp = 100; player.maxHp = 100;
   player.speed = 2.8; player.invincible = 0;
   player.trail = []; player.magnetRange = 120;
+  player.dmgMult = 1; player.dmgReduce = 0; player.regen = 0; player.vampirism = 0; player.bulletSpd = 1; player.explosion = 0;
 
   enemies = []; bullets = []; xpGems = []; particles = [];
   weaponSlots = [];
@@ -1052,6 +1145,8 @@ function update(dt) {
   player.trail.unshift({x:player.x, y:player.y});
   if (player.trail.length > 8) player.trail.pop();
   if (player.invincible > 0) player.invincible -= dt;
+  // Rejenerasyon
+  if (player.regen) player.hp = Math.min(player.maxHp, player.hp + player.regen * dt / 60);
 
   // Spawn
   tickSpawn(dt);
