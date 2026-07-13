@@ -1233,8 +1233,8 @@ function gainXP(amount){
   xp+=amount;
   while(xp>=xpToNext){
     xp-=xpToNext;
-    // İlk 10 level daha kolay: düşük çarpan, sonra hızla zorlaşır
-    const mult = level < 10 ? 1.22 : 1.48;
+    // Lv1-7 arası çok hızlı, 7-15 orta, 15+ yavaşlar
+    const mult = level < 7 ? 1.18 : level < 15 ? 1.28 : 1.40;
     xpToNext=Math.ceil(xpToNext*mult);
     level++; pendingUpgrades++;
     SFX.levelUp(); flashScreen('#00ff88',.15);
