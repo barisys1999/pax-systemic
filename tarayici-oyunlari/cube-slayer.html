@@ -173,6 +173,60 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:16px; h
 .mb-inner { background:rgba(20,20,40,0.92); border:1px solid rgba(255,200,0,0.5); border-radius:16px; padding:14px 28px; backdrop-filter:blur(8px); }
 .mb-title { font-size:16px; font-weight:900; color:#ffd700; letter-spacing:2px; }
 .mb-sub { font-size:11px; color:rgba(255,220,100,0.6); margin-top:4px; letter-spacing:1px; }
+
+/* ── SANDIK ── */
+#chest-screen { z-index:210; }
+.chest-wrap { text-align:center; }
+.chest-icon-big { font-size:80px; line-height:1; margin-bottom:8px; cursor:pointer;
+  animation:chestBob .7s ease-in-out infinite alternate;
+  filter:drop-shadow(0 0 24px rgba(255,200,0,0.7)); transition:transform .12s; }
+.chest-icon-big:hover { transform:scale(1.12); }
+@keyframes chestBob { from{transform:translateY(0) rotate(-3deg);} to{transform:translateY(-8px) rotate(3deg);} }
+.chest-title { font-size:13px; font-weight:700; letter-spacing:5px; color:#ffd700; text-transform:uppercase; margin-bottom:4px; }
+.chest-sub { font-size:11px; color:rgba(255,255,255,0.3); letter-spacing:2px; margin-bottom:20px; }
+.chest-reward { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:24px; }
+.chest-card {
+  width:140px; background:rgba(255,200,0,0.07); border:1.5px solid rgba(255,200,0,0.35);
+  border-radius:16px; padding:20px 14px; text-align:center; cursor:pointer;
+  transition:all .18s; position:relative; overflow:hidden;
+}
+.chest-card:hover { transform:translateY(-6px); background:rgba(255,200,0,0.14); border-color:rgba(255,200,0,0.7); box-shadow:0 0 20px rgba(255,200,0,0.3); }
+.chest-card .cc-icon { font-size:36px; margin-bottom:8px; display:block; }
+.chest-card .cc-name { font-size:13px; font-weight:700; color:#fff; margin-bottom:4px; }
+.chest-card .cc-desc { font-size:10px; color:rgba(255,255,255,0.4); line-height:1.5; }
+#chest-counter {
+  position:fixed; bottom:74px; left:50%; transform:translateX(-50%);
+  display:flex; align-items:center; gap:8px; z-index:10; pointer-events:none;
+  background:rgba(20,20,30,0.7); border:1px solid rgba(255,200,0,0.25);
+  border-radius:20px; padding:5px 14px 5px 10px;
+}
+#chest-counter .cc-chest { font-size:18px; }
+#chest-counter .cc-bar-wrap { width:80px; height:5px; background:rgba(255,255,255,0.07); border-radius:3px; overflow:hidden; }
+#chest-counter .cc-bar { height:100%; background:linear-gradient(90deg,#ffd700,#ffaa00); border-radius:3px; transition:width .3s; }
+#chest-counter .cc-txt { font-size:10px; font-weight:700; color:rgba(255,200,0,0.7); }
+
+/* ── SKOR TABLOSU ── */
+#leaderboard-screen { z-index:220; }
+.lb-title { font-size:13px; font-weight:700; letter-spacing:5px; color:#00c8ff; text-transform:uppercase; margin-bottom:4px; }
+.lb-subtitle { font-size:11px; color:rgba(255,255,255,0.2); letter-spacing:2px; margin-bottom:20px; }
+.lb-new-score { font-size:52px; font-weight:900; color:#ffd700; text-shadow:0 0 30px rgba(255,215,0,0.6); margin-bottom:4px; }
+.lb-new-label { font-size:10px; letter-spacing:3px; color:rgba(255,215,0,0.5); margin-bottom:24px; }
+.lb-table { width:min(420px,90vw); }
+.lb-row { display:flex; align-items:center; gap:12px; padding:11px 16px;
+  border-radius:12px; margin-bottom:6px; background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.06); }
+.lb-row.lb-highlight { background:rgba(255,215,0,0.1); border-color:rgba(255,215,0,0.4); box-shadow:0 0 16px rgba(255,215,0,0.15); }
+.lb-rank { font-size:16px; font-weight:900; width:28px; text-align:center; color:rgba(255,255,255,0.25); }
+.lb-rank.gold { color:#ffd700; } .lb-rank.silver { color:#c0c0c0; } .lb-rank.bronze { color:#cd7f32; }
+.lb-info { flex:1; }
+.lb-score-val { font-size:18px; font-weight:800; color:#fff; }
+.lb-meta { font-size:10px; color:rgba(255,255,255,0.3); margin-top:2px; letter-spacing:1px; }
+.lb-wave-badge { font-size:9px; font-weight:700; padding:3px 9px; border-radius:20px; background:rgba(255,80,80,0.12); color:#ff8888; border:1px solid rgba(255,80,80,0.25); }
+.lb-btn-row { display:flex; gap:12px; margin-top:24px; }
+.lb-btn { padding:12px 32px; border:none; border-radius:50px; cursor:pointer; font-size:13px; font-weight:800; letter-spacing:2px; text-transform:uppercase; transition:transform .15s; }
+.lb-btn:hover { transform:scale(1.04); }
+.lb-btn.primary { background:linear-gradient(135deg,#00c8ff,#7b6fff); color:#fff; box-shadow:0 0 30px rgba(123,111,255,0.35); }
+.lb-btn.secondary { background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.5); border:1px solid rgba(255,255,255,0.1); }
 </style>
 </head>
 <body>
@@ -210,6 +264,36 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:16px; h
     <div class="stat-item"><div class="si-num" id="go-wave">1</div><div class="si-label">DALGA</div></div>
   </div>
   <button class="start-btn" onclick="startGame()">TEKRAR OYNA</button>
+</div>
+
+<!-- SANDIK EKRANI -->
+<div id="chest-screen" class="screen hidden">
+  <div class="chest-wrap">
+    <div class="chest-title">⚔️ SANDIK AÇILDI</div>
+    <div class="chest-sub" id="chest-kill-label">50 DÜŞMAN ÖLDÜRÜLDİ</div>
+    <div class="chest-icon-big" id="chest-icon" onclick="shakeChest()">📦</div>
+    <div id="chest-opened-msg" style="font-size:13px;color:rgba(255,215,0,0.7);letter-spacing:2px;min-height:20px;"></div>
+    <div class="chest-reward" id="chest-cards"></div>
+  </div>
+</div>
+
+<!-- SKOR TABLOSU -->
+<div id="leaderboard-screen" class="screen hidden">
+  <div class="lb-title">🏆 EN YÜKSEK SKORLAR</div>
+  <div class="lb-new-score" id="lb-new-score">0</div>
+  <div class="lb-new-label" id="lb-new-label">SKORUN</div>
+  <div class="lb-table" id="lb-table"></div>
+  <div class="lb-btn-row">
+    <button class="lb-btn primary" onclick="startGame()">TEKRAR OYNA</button>
+    <button class="lb-btn secondary" onclick="showMenu()">ANA MENÜ</button>
+  </div>
+</div>
+
+<!-- SANDIK SAYACI (HUD) -->
+<div id="chest-counter" style="display:none">
+  <span class="cc-chest">📦</span>
+  <div class="cc-bar-wrap"><div class="cc-bar" id="cc-bar" style="width:0%"></div></div>
+  <span class="cc-txt" id="cc-txt">0/50</span>
 </div>
 
 <!-- SETTINGS BTN -->
@@ -281,6 +365,13 @@ window.addEventListener('resize', () => { W = canvas.width = window.innerWidth; 
 // AUDIO
 // ════════════════════════════════════════════════
 let audioCtx=null, masterGain=null, isMuted=false, masterVolume=0.7;
+
+// Her ses kanalı için son çalma zamanı — throttle için
+const _sfxLast = {};
+// Aynı anda çalabilecek maksimum ses sayısı
+let _activeNodes = 0;
+const MAX_ACTIVE_NODES = 12;
+
 function getAC() {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext||window.webkitAudioContext)();
@@ -291,8 +382,11 @@ function getAC() {
   if (audioCtx.state==='suspended') audioCtx.resume();
   return audioCtx;
 }
-function playTone({freq=440,freq2,type='square',vol=0.12,atk=0.005,dec=0.08,rel=0.05,dur=0.15,filter}={}) {
+
+// Throttled playTone — aynı kanal çok sık çağrılırsa atla
+function playTone({freq=440,freq2,type='square',vol=0.12,atk=0.005,dec=0.08,rel=0.05,dur=0.15,filter,ch='_'}={}) {
   try {
+    if(_activeNodes >= MAX_ACTIVE_NODES) return;
     const ac=getAC(), now=ac.currentTime;
     const osc=ac.createOscillator(), g=ac.createGain();
     osc.type=type; osc.frequency.value=freq;
@@ -300,40 +394,58 @@ function playTone({freq=440,freq2,type='square',vol=0.12,atk=0.005,dec=0.08,rel=
     const dest=masterGain||ac.destination;
     if(filter){ const f=ac.createBiquadFilter(); f.type='lowpass'; f.frequency.value=filter; osc.connect(f); f.connect(g); } else osc.connect(g);
     g.gain.setValueAtTime(0,now); g.gain.linearRampToValueAtTime(vol,now+atk); g.gain.linearRampToValueAtTime(0,now+atk+dec+rel);
-    g.connect(dest); osc.start(now); osc.stop(now+atk+dec+rel+.05);
+    g.connect(dest); osc.start(now);
+    const stop=now+atk+dec+rel+.05;
+    osc.stop(stop);
+    _activeNodes++;
+    osc.onended=()=>{ _activeNodes=Math.max(0,_activeNodes-1); };
   } catch(e){}
 }
+
 function playNoise({vol=0.1,atk=.002,dec=.1,rel=.05,filter=800}={}) {
   try {
+    if(_activeNodes >= MAX_ACTIVE_NODES) return;
     const ac=getAC(),now=ac.currentTime;
-    const buf=ac.createBuffer(1,Math.ceil(ac.sampleRate*.3),ac.sampleRate);
+    // Önceden oluşturulmuş kısa buffer kullan
+    const bufLen=Math.ceil(ac.sampleRate*.08); // 80ms yeterli, 300ms değil
+    const buf=ac.createBuffer(1,bufLen,ac.sampleRate);
     const d=buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
     const src=ac.createBufferSource(); src.buffer=buf;
     const f=ac.createBiquadFilter(); f.type='lowpass'; f.frequency.value=filter;
     const g=ac.createGain(); g.gain.setValueAtTime(0,now); g.gain.linearRampToValueAtTime(vol,now+atk); g.gain.linearRampToValueAtTime(0,now+atk+dec+rel);
     src.connect(f); f.connect(g); g.connect(masterGain||ac.destination);
     src.start(now); src.stop(now+atk+dec+rel+.05);
+    _activeNodes++;
+    src.onended=()=>{ _activeNodes=Math.max(0,_activeNodes-1); };
   } catch(e){}
 }
+
+// Belirli bir kanal için minimum aralık (ms) geçmediyse ses çalma
+function throttled(ch, minMs, fn){
+  const now=Date.now();
+  if(!_sfxLast[ch] || now-_sfxLast[ch] >= minMs){ _sfxLast[ch]=now; fn(); }
+}
+
 const SFX = {
-  shoot()    { playTone({freq:880,freq2:440,type:'square',vol:.06,atk:.002,dec:.04,rel:.02,dur:.06,filter:2200}); },
-  axe()      { playTone({freq:220,freq2:110,type:'sawtooth',vol:.08,atk:.005,dec:.1,rel:.05,dur:.15,filter:600}); },
-  magic()    { playTone({freq:660,type:'sine',vol:.06,atk:.01,dec:.08,rel:.04,dur:.12}); },
-  lightning(){ playNoise({vol:.18,dec:.04,rel:.03,filter:3000}); playTone({freq:600,freq2:200,type:'sawtooth',vol:.08,dec:.04,dur:.07}); },
-  fire()     { playNoise({vol:.12,dec:.08,rel:.04,filter:1200}); playTone({freq:180,freq2:80,type:'sawtooth',vol:.06,dec:.1,dur:.15}); },
-  holy()     { playTone({freq:800,freq2:1000,type:'sine',vol:.08,atk:.01,dec:.12,rel:.08,dur:.2}); },
-  die()      { playNoise({vol:.08,dec:.06,rel:.03,filter:600}); },
-  bossDie()  { playNoise({vol:.28,dec:.3,rel:.15,filter:400}); },
-  hit()      { playNoise({vol:.16,dec:.05,rel:.03,filter:300}); },
-  levelUp()  { [523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone({freq:f,type:'sine',vol:.15,dec:.12,rel:.08,dur:.2}),i*65)); },
-  xp()       { playTone({freq:1400,freq2:1800,type:'sine',vol:.04,dec:.04,rel:.02,dur:.06}); },
-  evolve()   { [784,988,1175,1568].forEach((f,i)=>setTimeout(()=>playTone({freq:f,type:'sine',vol:.2,dec:.2,rel:.12,dur:.3}),i*80)); },
-  upgrade()  { playTone({freq:440,freq2:880,type:'sine',vol:.12,dec:.14,rel:.09,dur:.22}); },
-  gameOver() { [440,330,220,110].forEach((f,i)=>setTimeout(()=>playTone({freq:f,type:'sawtooth',vol:.14,dec:.2,rel:.1,dur:.3}),i*120)); },
-  bossWarn() { [110,110,220].forEach((f,i)=>setTimeout(()=>playTone({freq:f,type:'sawtooth',vol:.18,dec:.25,rel:.1,dur:.35}),i*200)); },
+  shoot()    { throttled('shoot', 80,  ()=>playTone({freq:880,freq2:440,type:'square',vol:.05,atk:.002,dec:.04,rel:.02,dur:.06,filter:2200})); },
+  axe()      { throttled('axe',  120,  ()=>playTone({freq:220,freq2:110,type:'sawtooth',vol:.07,atk:.005,dec:.1,rel:.05,dur:.15,filter:600})); },
+  magic()    { throttled('magic',150,  ()=>playTone({freq:660,type:'sine',vol:.05,atk:.01,dec:.08,rel:.04,dur:.12})); },
+  lightning(){ throttled('light',100,  ()=>{ playNoise({vol:.14,dec:.04,rel:.03,filter:3000}); playTone({freq:600,freq2:200,type:'sawtooth',vol:.06,dec:.04,dur:.07}); }); },
+  fire()     { throttled('fire', 130,  ()=>{ playNoise({vol:.09,dec:.08,rel:.04,filter:1200}); playTone({freq:180,freq2:80,type:'sawtooth',vol:.05,dec:.1,dur:.15}); }); },
+  holy()     { throttled('holy', 140,  ()=>playTone({freq:800,freq2:1000,type:'sine',vol:.07,atk:.01,dec:.12,rel:.08,dur:.2})); },
+  die()      { throttled('die',   60,  ()=>playNoise({vol:.06,dec:.05,rel:.02,filter:700})); },
+  bossDie()  { playNoise({vol:.22,dec:.25,rel:.12,filter:400}); },
+  hit()      { throttled('hit',  200,  ()=>playNoise({vol:.12,dec:.04,rel:.02,filter:350})); },
+  xp()       { throttled('xp',   80,  ()=>playTone({freq:1400,freq2:1800,type:'sine',vol:.03,dec:.04,rel:.02,dur:.06})); },
+  levelUp()  { [523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone({freq:f,type:'sine',vol:.13,dec:.12,rel:.08,dur:.2}),i*65)); },
+  evolve()   { [784,988,1175,1568].forEach((f,i)=>setTimeout(()=>playTone({freq:f,type:'sine',vol:.18,dec:.2,rel:.12,dur:.3}),i*80)); },
+  upgrade()  { playTone({freq:440,freq2:880,type:'sine',vol:.10,dec:.14,rel:.09,dur:.22}); },
+  gameOver() { [440,330,220,110].forEach((f,i)=>setTimeout(()=>playTone({freq:f,type:'sawtooth',vol:.12,dec:.2,rel:.1,dur:.3}),i*120)); },
+  bossWarn() { [110,110,220].forEach((f,i)=>setTimeout(()=>playTone({freq:f,type:'sawtooth',vol:.15,dec:.25,rel:.1,dur:.35}),i*200)); },
 };
+
 let _lastShoot=0;
-function sfxShoot(t){ const n=Date.now(); if(n-_lastShoot<55)return; _lastShoot=n; if(t==='axe')SFX.axe(); else if(t==='magic')SFX.magic(); else if(t==='fire')SFX.fire(); else if(t==='holy')SFX.holy(); else SFX.shoot(); }
+function sfxShoot(t){ const n=Date.now(); if(n-_lastShoot<80)return; _lastShoot=n; if(t==='axe')SFX.axe(); else if(t==='magic')SFX.magic(); else if(t==='fire')SFX.fire(); else if(t==='holy')SFX.holy(); else SFX.shoot(); }
 function toggleMute(){ isMuted=!isMuted; if(masterGain) masterGain.gain.value=isMuted?0:masterVolume; const b=document.getElementById('mute-btn'); b.textContent=isMuted?'🔇':'🔊'; b.classList.toggle('muted',isMuted); }
 function setVolume(v){ masterVolume=v/100; isMuted=false; document.getElementById('mute-btn').textContent=masterVolume===0?'🔇':'🔊'; document.getElementById('mute-btn').classList.toggle('muted',masterVolume===0); if(masterGain) masterGain.gain.value=masterVolume; }
 
@@ -344,6 +456,127 @@ let state='menu';
 let score=0, kills=0, level=1, xp=0, xpToNext=18, gameTime=0;
 let pendingUpgrades=0, raf=null, lastTime=0, stateBefore=null;
 let waveNum=1;
+
+// ── SANDIK & SKOR SİSTEMİ ──
+const CHEST_MILESTONE = 50; // her 50 öldürmede sandık
+let chestKillCount = 0;     // mevcut döngüdeki öldürme sayacı
+let chestPending = false;
+let chestResumeState = null;
+
+const CHEST_REWARDS = [
+  { icon:'❤️', name:'Can Dolumu',    desc:'+40 HP kazanırsın',          apply:()=>{ player.hp=Math.min(player.maxHp, player.hp+40); } },
+  { icon:'⚡', name:'Hız Patlaması', desc:'3 sn boyunca 2× hız',        apply:()=>{ player.speed*=2; setTimeout(()=>player.speed/=2,3000); } },
+  { icon:'💥', name:'Çift Hasar',    desc:'5 sn boyunca 2× hasar',       apply:()=>{ player.dmgMult*=2; setTimeout(()=>player.dmgMult/=2,5000); } },
+  { icon:'🧲', name:'Süper Mıknatıs',desc:'5 sn boyunca geniş mıknatıs',apply:()=>{ player.magnetRange+=200; setTimeout(()=>player.magnetRange-=200,5000); } },
+  { icon:'🛡️', name:'Kalkan',        desc:'5 sn dokunulmazlık',          apply:()=>{ player.invincible=300; } },
+  { icon:'🔥', name:'Ateş Dalgası',  desc:'Tüm ekranda patlama',         apply:()=>screenExplosion() },
+];
+
+function screenExplosion(){
+  enemies.forEach(e=>{ e.hp-=999; });
+}
+
+function updateChestHUD(){
+  const el=document.getElementById('chest-counter');
+  const bar=document.getElementById('cc-bar');
+  const txt=document.getElementById('cc-txt');
+  if(!el) return;
+  el.style.display='flex';
+  const pct=(chestKillCount/CHEST_MILESTONE)*100;
+  bar.style.width=pct+'%';
+  txt.textContent=chestKillCount+'/'+CHEST_MILESTONE;
+}
+
+function openChest(){
+  chestPending=false;
+  chestResumeState=state;
+  state='chest';
+  // 3 rastgele farklı ödül seç
+  const shuffled=[...CHEST_REWARDS].sort(()=>Math.random()-.5).slice(0,3);
+  document.getElementById('chest-kill-label').textContent=(kills)+' DÜŞMAN ÖLDÜRÜLDİ';
+  document.getElementById('chest-icon').textContent='📦';
+  document.getElementById('chest-opened-msg').textContent='';
+  const cards=document.getElementById('chest-cards');
+  cards.innerHTML='';
+  shuffled.forEach((r,i)=>{
+    const d=document.createElement('div');
+    d.className='chest-card';
+    d.innerHTML=`<span class="cc-icon">${r.icon}</span><div class="cc-name">${r.name}</div><div class="cc-desc">${r.desc}</div>`;
+    d.onclick=()=>pickChestReward(r);
+    cards.appendChild(d);
+  });
+  ['menu-screen','gameover-screen','upgrade-screen','leaderboard-screen'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  document.getElementById('chest-screen').classList.remove('hidden');
+}
+
+function shakeChest(){
+  const ic=document.getElementById('chest-icon');
+  ic.style.transform='scale(1.2) rotate(15deg)';
+  setTimeout(()=>ic.style.transform='',150);
+}
+
+function pickChestReward(r){
+  r.apply();
+  document.getElementById('chest-icon').textContent='🎁';
+  document.getElementById('chest-opened-msg').textContent='✨ '+r.name.toUpperCase()+' ALINDI!';
+  document.getElementById('chest-cards').innerHTML='';
+  setTimeout(()=>{
+    document.getElementById('chest-screen').classList.add('hidden');
+    state=chestResumeState||'playing';
+  }, 1200);
+}
+
+// ── SKOR TABLOSU ──
+const LB_KEY='cubeSlayerScores';
+const LB_MAX=10;
+
+function loadScores(){
+  try{ return JSON.parse(localStorage.getItem(LB_KEY))||[]; }catch(e){ return []; }
+}
+function saveScore(entry){ // {score, wave, level, kills, date}
+  const scores=loadScores();
+  scores.push(entry);
+  scores.sort((a,b)=>b.score-a.score);
+  scores.splice(LB_MAX);
+  localStorage.setItem(LB_KEY, JSON.stringify(scores));
+  return scores;
+}
+function showLeaderboard(currentScore){
+  const entry={ score:currentScore, wave:waveNum, level, kills, date:new Date().toLocaleDateString('tr-TR') };
+  const scores=saveScore(entry);
+  const myRank=scores.findIndex(s=>s===entry||s.score===currentScore&&s.wave===waveNum&&s.kills===kills);
+
+  document.getElementById('lb-new-score').textContent=currentScore.toLocaleString();
+  const isRecord=(myRank===0);
+  document.getElementById('lb-new-label').textContent=isRecord?'🎉 YENİ REKOR!':'SKORUN — '+(myRank+1)+'. SIRADA';
+
+  const rankIcons=['🥇','🥈','🥉'];
+  const rankClasses=['gold','silver','bronze'];
+  const table=document.getElementById('lb-table');
+  table.innerHTML='';
+  scores.slice(0,8).forEach((s,i)=>{
+    const row=document.createElement('div');
+    row.className='lb-row'+(i===myRank?' lb-highlight':'');
+    row.innerHTML=`
+      <div class="lb-rank ${rankClasses[i]||''}">${rankIcons[i]||('#'+(i+1))}</div>
+      <div class="lb-info">
+        <div class="lb-score-val">${s.score.toLocaleString()}</div>
+        <div class="lb-meta">SEVİYE ${s.level} · ${s.date}</div>
+      </div>
+      <div class="lb-wave-badge">WAVE ${s.wave}</div>
+    `;
+    table.appendChild(row);
+  });
+  ['menu-screen','gameover-screen','upgrade-screen','chest-screen'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  document.getElementById('leaderboard-screen').classList.remove('hidden');
+  state='leaderboard';
+}
+
+function showMenu(){
+  ['gameover-screen','upgrade-screen','chest-screen','leaderboard-screen'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  document.getElementById('menu-screen').classList.remove('hidden');
+  state='menu';
+}
 
 const player = {
   x:0, y:0, hp:120, maxHp:120, speed:3.2, radius:13,
@@ -748,7 +981,7 @@ function spawnBullet(x,y,angle,spd,dmg,color,r,pierce,type){
   bullets.push({x,y,vx:Math.cos(angle)*spd,vy:Math.sin(angle)*spd,dmg,color,r,pierce:pierce||0,type,hit:new Set(),dead:false,life:0});
   sfxShoot(type);
 }
-function spawnParticle(x,y,vx,vy,color,life,r){ particles.push({x,y,vx,vy,color,life,maxLife:life,r}); }
+function spawnParticle(x,y,vx,vy,color,life,r){ if(particles.length>300)return; particles.push({x,y,vx,vy,color,life,maxLife:life,r}); }
 function spawnGem(x,y,value){ xpGems.push({x,y,vx:randn(2),vy:randn(2),value,dead:false}); }
 
 function spawnLightning(x1,y1,x2,y2,big=false){
@@ -816,6 +1049,7 @@ function tickSpawn(dt){
 }
 
 function spawnOneEnemy(cfg, forceType=null){
+  if(enemies.length >= 120) return; // ekranda max 120 düşman
   const side=0|Math.random()*4;
   const pad=36;
   let ex,ey;
@@ -945,6 +1179,9 @@ function damageEnemy(idx,dmg){
 function killEnemy(idx){
   const e=enemies[idx]; if(!e||e.dead)return;
   e.dead=true; kills++;
+  chestKillCount++;
+  if(chestKillCount>=CHEST_MILESTONE){ chestKillCount=0; chestPending=true; }
+  updateChestHUD();
   const pts = {boss:220,elite:85,tank:38,fast:13,swarm:7,ghost:25,basic:10};
   score += (pts[e.type]||10) * (e.tier||1);
   if(e.type==='boss')SFX.bossDie(); else SFX.die();
@@ -1253,6 +1490,8 @@ function startGame(){
   waveNum=1;
   triggeredMilestones=new Set();
   triggeredBosses=new Set();
+  chestKillCount=0; chestPending=false;
+  updateChestHUD();
 
   player.x=W/2; player.y=H/2;
   player.hp=120; player.maxHp=120; player.speed=3.2;
@@ -1266,7 +1505,7 @@ function startGame(){
   weapons=[]; passives=[];
   addWeapon('knife');
 
-  ['menu-screen','gameover-screen','upgrade-screen'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  ['menu-screen','gameover-screen','upgrade-screen','chest-screen','leaderboard-screen'].forEach(id=>document.getElementById(id).classList.add('hidden'));
   document.getElementById('wave-label').textContent='WAVE 1';
   renderItemHUD();
 
@@ -1283,6 +1522,8 @@ function endGame(){
   document.getElementById('go-time').textContent=fmtTime(gameTime);
   document.getElementById('go-wave').textContent=waveNum;
   document.getElementById('gameover-screen').classList.remove('hidden');
+  // 2.5 sn sonra skor tablosuna geç
+  setTimeout(()=>{ if(state==='gameover') showLeaderboard(score); }, 2500);
 }
 
 // ════════════════════════════════════════════════
@@ -1338,7 +1579,10 @@ function loop(now){
   if(state==='paused'){lastTime=now;return;}
   const dt=Math.min((now-lastTime)/1000*60,4);
   lastTime=now;
-  if(state==='playing') update(dt);
+  if(state==='playing'){
+    if(chestPending){ openChest(); return; }
+    update(dt);
+  }
   drawFrame(dt);
 }
 
