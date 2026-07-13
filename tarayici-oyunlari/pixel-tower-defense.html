@@ -685,6 +685,11 @@ function init(){
   G.pathSet=new Set(PATH_CELLS.map(([x,y])=>`${x},${y}`));
   resizeCanvas();
   window.addEventListener('resize', resizeCanvas);
+  // Tam ekran geçişlerinde canvas'ı yeniden boyutlandır
+  document.addEventListener('fullscreenchange', resizeCanvas);
+  document.addEventListener('webkitfullscreenchange', resizeCanvas);
+  document.addEventListener('mozfullscreenchange', resizeCanvas);
+  document.addEventListener('MSFullscreenChange', resizeCanvas);
   buildSidebar();
   canvas.addEventListener('mousemove', onMouseMove);
   canvas.addEventListener('click', onCanvasClick);
@@ -700,15 +705,19 @@ function init(){
 }
 
 function resizeCanvas(){
-  const wrap=document.getElementById('canvas-wrap');
-  const W=wrap.clientWidth, H=wrap.clientHeight;
-  canvas.width=COLS*CELL; canvas.height=ROWS*CELL;
-  const scaleX=W/(COLS*CELL), scaleY=H/(ROWS*CELL);
-  const scale=Math.min(scaleX,scaleY);
-  canvas.style.width=(COLS*CELL*scale)+'px';
-  canvas.style.height=(ROWS*CELL*scale)+'px';
-  canvas.style.marginLeft=((W-COLS*CELL*scale)/2)+'px';
-  canvas.style.marginTop=((H-ROWS*CELL*scale)/2)+'px';
+  // Defer so the browser has time to apply new dimensions after fullscreen change
+  requestAnimationFrame(()=>{
+    const wrap=document.getElementById('canvas-wrap');
+    const W=wrap.clientWidth, H=wrap.clientHeight;
+    if(!W||!H) return;
+    canvas.width=COLS*CELL; canvas.height=ROWS*CELL;
+    const scaleX=W/(COLS*CELL), scaleY=H/(ROWS*CELL);
+    const scale=Math.min(scaleX,scaleY);
+    canvas.style.width=(COLS*CELL*scale)+'px';
+    canvas.style.height=(ROWS*CELL*scale)+'px';
+    canvas.style.marginLeft=((W-COLS*CELL*scale)/2)+'px';
+    canvas.style.marginTop=((H-ROWS*CELL*scale)/2)+'px';
+  });
 }
 
 // ═══════════════════════════════════════════
