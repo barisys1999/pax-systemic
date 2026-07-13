@@ -5,314 +5,206 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CUBE SLAYER</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #0a0a0f; overflow: hidden; font-family: 'Segoe UI', system-ui, sans-serif; }
-  canvas { display: block; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0a0a0f; overflow:hidden; font-family:'Segoe UI',system-ui,sans-serif; user-select:none; }
+canvas { display:block; }
 
-  /* ── HUD ── */
-  #hud {
-    position: fixed; top: 0; left: 0; right: 0;
-    padding: 14px 20px 14px 66px;
-    display: flex; align-items: center; gap: 20px;
-    pointer-events: none;
-    z-index: 10;
-  }
-  .hud-block { display: flex; flex-direction: column; gap: 3px; min-width: 120px; }
-  .hud-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: rgba(255,255,255,0.35); text-transform: uppercase; }
-  .hud-value { font-size: 22px; font-weight: 700; color: #fff; letter-spacing: 1px; font-variant-numeric: tabular-nums; }
+/* ── HUD ── */
+#hud {
+  position:fixed; top:0; left:0; right:0;
+  padding:10px 16px 10px 62px;
+  display:flex; align-items:center; gap:16px;
+  pointer-events:none; z-index:10;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.5),transparent);
+}
+.hud-block { display:flex; flex-direction:column; gap:2px; min-width:100px; }
+.hud-label { font-size:9px; font-weight:700; letter-spacing:2px; color:rgba(255,255,255,0.3); text-transform:uppercase; }
+.hud-value { font-size:20px; font-weight:800; color:#fff; letter-spacing:1px; font-variant-numeric:tabular-nums; }
 
-  .bar-wrap { flex: 1; display: flex; flex-direction: column; gap: 5px; }
-  .bar-row { display: flex; align-items: center; gap: 10px; }
-  .bar-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: rgba(255,255,255,0.35); width: 28px; }
-  .bar-track { flex: 1; height: 8px; background: rgba(255,255,255,0.07); border-radius: 4px; overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 4px; transition: width 0.1s; }
-  #hp-fill  { background: linear-gradient(90deg, #ff3a3a, #ff6b6b); }
-  #xp-fill  { background: linear-gradient(90deg, #00c8ff, #7b6fff); }
-  .bar-num { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5); width: 60px; text-align: right; font-variant-numeric: tabular-nums; }
+.bar-wrap { flex:1; display:flex; flex-direction:column; gap:4px; }
+.bar-row { display:flex; align-items:center; gap:8px; }
+.bar-label { font-size:9px; font-weight:700; letter-spacing:1px; color:rgba(255,255,255,0.3); width:24px; }
+.bar-track { flex:1; height:7px; background:rgba(255,255,255,0.06); border-radius:4px; overflow:hidden; }
+.bar-fill { height:100%; border-radius:4px; transition:width .1s; }
+#hp-fill { background:linear-gradient(90deg,#ff3a3a,#ff6b6b); }
+#xp-fill { background:linear-gradient(90deg,#00c8ff,#7b6fff); }
+.bar-num { font-size:10px; font-weight:600; color:rgba(255,255,255,0.4); width:70px; text-align:right; font-variant-numeric:tabular-nums; }
 
-  #weapon-hud { display: flex; gap: 10px; margin-left: auto; align-items: center; }
-  .weapon-slot {
-    width: 44px; height: 44px; border-radius: 8px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    display: flex; align-items: center; justify-content: center;
-    flex-direction: column; gap: 2px;
-    position: relative; overflow: hidden;
-  }
-  .weapon-slot.active { border-color: rgba(255,220,0,0.5); background: rgba(255,220,0,0.08); }
-  .weapon-slot.legendary { border-color: rgba(255,215,0,0.9) !important; background: rgba(255,200,0,0.18) !important; box-shadow: 0 0 12px rgba(255,200,0,0.5); animation: legendaryPulse 1.5s ease-in-out infinite; }
-  @keyframes legendaryPulse { 0%,100%{box-shadow:0 0 10px rgba(255,200,0,0.4);} 50%{box-shadow:0 0 22px rgba(255,200,0,0.8);} }
-  .weapon-cd {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    height: 3px; background: rgba(255,220,0,0.7);
-    transform-origin: left; transition: none;
-  }
-  .weapon-emoji { font-size: 18px; line-height: 1; }
-  .weapon-lv { font-size: 9px; font-weight: 700; color: rgba(255,220,0,0.8); letter-spacing: 0.5px; }
+#timer-hud { font-size:22px; font-weight:800; color:#fff; font-variant-numeric:tabular-nums; letter-spacing:1px; }
+#wave-label { font-size:10px; font-weight:700; letter-spacing:2px; padding:3px 10px; border-radius:20px; background:rgba(255,80,80,0.15); color:#ff8888; border:1px solid rgba(255,80,80,0.3); }
 
-  #timer-hud {
-    margin-left: auto;
-    font-size: 18px; font-weight: 700;
-    color: rgba(255,255,255,0.6);
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 1px;
-  }
+/* item slots bottom */
+#item-hud {
+  position:fixed; bottom:14px; left:50%; transform:translateX(-50%);
+  display:flex; gap:8px; z-index:10; pointer-events:none;
+}
+.item-slot {
+  width:48px; height:48px; border-radius:10px;
+  background:rgba(20,20,30,0.85); border:1px solid rgba(255,255,255,0.12);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:1px; position:relative; overflow:hidden;
+}
+.item-slot.weapon { border-color:rgba(255,220,80,0.4); }
+.item-slot.passive { border-color:rgba(100,200,255,0.3); }
+.item-slot.evolved { border-color:rgba(255,215,0,0.9) !important; background:rgba(255,200,0,0.15) !important; box-shadow:0 0 14px rgba(255,200,0,0.5); animation:legendPulse 1.5s ease-in-out infinite; }
+@keyframes legendPulse { 0%,100%{box-shadow:0 0 10px rgba(255,200,0,0.4);}50%{box-shadow:0 0 24px rgba(255,200,0,0.9);} }
+.item-slot .slot-emoji { font-size:20px; line-height:1; }
+.item-slot .slot-lv { font-size:9px; font-weight:700; color:rgba(255,220,80,0.9); }
+.item-slot .slot-cd { position:absolute; bottom:0; left:0; right:0; height:3px; background:rgba(255,220,0,0.7); transform-origin:left; }
+.slot-label { font-size:7px; color:rgba(255,255,255,0.3); letter-spacing:0.5px; text-align:center; }
 
-  /* ── SCREEN OVERLAYS ── */
-  .screen {
-    position: fixed; inset: 0; z-index: 100;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    background: rgba(10,10,15,0.92);
-    backdrop-filter: blur(8px);
-  }
-  .screen.hidden { display: none; }
+/* ── SCREENS ── */
+.screen {
+  position:fixed; inset:0; z-index:100;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:rgba(8,8,14,0.94); backdrop-filter:blur(10px);
+}
+.screen.hidden { display:none; }
+.logo {
+  font-size:60px; font-weight:900; letter-spacing:-1px;
+  background:linear-gradient(135deg,#00c8ff 0%,#7b6fff 50%,#ff6b9d 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  margin-bottom:6px;
+}
+.sub { font-size:12px; letter-spacing:5px; color:rgba(255,255,255,0.25); text-transform:uppercase; margin-bottom:44px; }
 
-  .screen-logo {
-    font-size: 56px; font-weight: 900; letter-spacing: -1px;
-    background: linear-gradient(135deg, #00c8ff 0%, #7b6fff 50%, #ff6b9d 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 8px;
-  }
-  .screen-sub { font-size: 13px; letter-spacing: 4px; color: rgba(255,255,255,0.3); text-transform: uppercase; margin-bottom: 48px; }
+.info-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; max-width:520px; width:100%; margin-bottom:36px; padding:0 16px; }
+.info-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:14px 10px; text-align:center; }
+.ic-icon { font-size:22px; margin-bottom:5px; }
+.ic-text { font-size:10px; color:rgba(255,255,255,0.4); line-height:1.5; }
 
-  .info-grid {
-    display: grid; grid-template-columns: repeat(3,1fr); gap: 12px;
-    max-width: 480px; width: 100%; margin-bottom: 40px;
-    padding: 0 20px;
-  }
-  .info-card {
-    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px; padding: 16px 12px;
-    text-align: center;
-  }
-  .info-card .ic-icon { font-size: 24px; margin-bottom: 6px; }
-  .info-card .ic-text { font-size: 11px; color: rgba(255,255,255,0.45); line-height: 1.5; }
+.start-btn {
+  padding:15px 52px; background:linear-gradient(135deg,#00c8ff,#7b6fff);
+  border:none; border-radius:50px; cursor:pointer;
+  font-size:17px; font-weight:800; color:#fff;
+  letter-spacing:2px; text-transform:uppercase;
+  box-shadow:0 0 40px rgba(123,111,255,0.4); transition:transform .15s, box-shadow .15s;
+}
+.start-btn:hover { transform:scale(1.04); box-shadow:0 0 60px rgba(123,111,255,0.6); }
 
-  .start-btn {
-    padding: 16px 56px;
-    background: linear-gradient(135deg, #00c8ff, #7b6fff);
-    border: none; border-radius: 50px; cursor: pointer;
-    font-size: 18px; font-weight: 800; color: #fff;
-    letter-spacing: 2px; text-transform: uppercase;
-    box-shadow: 0 0 40px rgba(123,111,255,0.4);
-    transition: transform 0.15s, box-shadow 0.15s;
-  }
-  .start-btn:hover { transform: scale(1.04); box-shadow: 0 0 60px rgba(123,111,255,0.6); }
+/* ── UPGRADE SCREEN ── */
+#upgrade-screen { z-index:200; }
+.up-title { font-size:11px; font-weight:700; letter-spacing:5px; color:#00c8ff; text-transform:uppercase; margin-bottom:6px; }
+.up-level {
+  font-size:56px; font-weight:900; line-height:1; margin-bottom:8px;
+  background:linear-gradient(135deg,#00c8ff,#7b6fff);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.up-subtitle { font-size:11px; color:rgba(255,255,255,0.25); letter-spacing:2px; margin-bottom:32px; }
+.up-cards { display:flex; gap:14px; padding:0 16px; flex-wrap:wrap; justify-content:center; }
+.up-card {
+  width:172px; background:rgba(255,255,255,0.03);
+  border:1.5px solid rgba(255,255,255,0.09);
+  border-radius:18px; padding:26px 18px;
+  cursor:pointer; transition:all .18s; text-align:center;
+  position:relative; overflow:hidden;
+}
+.up-card.rarity-common { border-color:rgba(180,180,180,0.2); }
+.up-card.rarity-rare   { border-color:rgba(80,140,255,0.4); }
+.up-card.rarity-epic   { border-color:rgba(180,80,255,0.5); }
+.up-card.rarity-evolved { border-color:rgba(255,200,0,0.8); background:rgba(255,200,0,0.06); }
+.up-card::before { content:''; position:absolute; inset:0; background:var(--glow,transparent); opacity:0; transition:opacity .18s; }
+.up-card:hover { transform:translateY(-5px); border-color:rgba(255,255,255,0.35); }
+.up-card:hover::before { opacity:1; }
+.uc-icon { font-size:42px; margin-bottom:12px; display:block; }
+.uc-name { font-size:14px; font-weight:700; color:#fff; margin-bottom:6px; }
+.uc-desc { font-size:11px; color:rgba(255,255,255,0.38); line-height:1.55; }
+.uc-tag { display:inline-block; margin-top:11px; padding:3px 10px; border-radius:20px; font-size:9px; font-weight:800; letter-spacing:1.5px; background:var(--tag-bg,rgba(255,255,255,0.08)); color:var(--tag-col,rgba(255,255,255,0.4)); }
+.uc-lvbar { display:flex; gap:4px; justify-content:center; margin-top:10px; }
+.uc-lv-dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.12); }
+.uc-lv-dot.filled { background:var(--dot-col,#7b6fff); }
 
-  /* ── UPGRADE SCREEN ── */
-  #upgrade-screen {
-    z-index: 200;
-  }
-  .upgrade-title {
-    font-size: 13px; font-weight: 700; letter-spacing: 4px;
-    color: #00c8ff; text-transform: uppercase; margin-bottom: 8px;
-  }
-  .upgrade-level {
-    font-size: 52px; font-weight: 900;
-    background: linear-gradient(135deg, #00c8ff, #7b6fff);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text; line-height: 1; margin-bottom: 36px;
-  }
-  .upgrade-cards {
-    display: flex; gap: 16px; padding: 0 20px;
-  }
-  .upgrade-card {
-    width: 180px; background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 16px; padding: 28px 20px;
-    cursor: pointer; transition: all 0.2s;
-    text-align: center; position: relative; overflow: hidden;
-  }
-  .upgrade-card::before {
-    content: ''; position: absolute; inset: 0;
-    background: var(--card-glow, transparent);
-    opacity: 0; transition: opacity 0.2s;
-  }
-  .upgrade-card:hover { border-color: rgba(255,255,255,0.3); transform: translateY(-4px); }
-  .upgrade-card:hover::before { opacity: 1; }
-  .upgrade-card .uc-icon { font-size: 40px; margin-bottom: 14px; display: block; }
-  .upgrade-card .uc-name { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 8px; }
-  .upgrade-card .uc-desc { font-size: 12px; color: rgba(255,255,255,0.4); line-height: 1.5; }
-  .upgrade-card .uc-tag {
-    display: inline-block; margin-top: 12px;
-    padding: 3px 10px; border-radius: 20px;
-    font-size: 10px; font-weight: 700; letter-spacing: 1px;
-    background: var(--tag-bg, rgba(255,255,255,0.1));
-    color: var(--tag-color, rgba(255,255,255,0.5));
-  }
+/* ── GAMEOVER ── */
+.go-score { font-size:72px; font-weight:900; color:#fff; margin:8px 0 4px; }
+.go-sub { font-size:11px; color:rgba(255,255,255,0.25); letter-spacing:4px; margin-bottom:40px; }
+.stat-row { display:flex; gap:28px; margin-bottom:36px; }
+.stat-item { text-align:center; }
+.si-num { font-size:30px; font-weight:800; color:#fff; }
+.si-label { font-size:9px; color:rgba(255,255,255,0.3); letter-spacing:2px; margin-top:2px; }
 
-  /* ── GAMEOVER ── */
-  .gameover-score { font-size: 80px; font-weight: 900; color: #fff; margin: 8px 0 4px; }
-  .gameover-sub { font-size: 13px; color: rgba(255,255,255,0.3); letter-spacing: 3px; margin-bottom: 48px; }
-  .stat-row { display: flex; gap: 32px; margin-bottom: 40px; }
-  .stat-item { text-align: center; }
-  .stat-item .si-num { font-size: 32px; font-weight: 800; color: #fff; }
-  .stat-item .si-label { font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 2px; margin-top: 2px; }
+/* ── SETTINGS ── */
+#settings-btn {
+  position:fixed; top:12px; left:12px; z-index:300;
+  width:38px; height:38px; border-radius:10px;
+  background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.13);
+  color:rgba(255,255,255,0.6); font-size:17px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:all .15s;
+}
+#settings-btn:hover { background:rgba(255,255,255,0.14); color:#fff; }
+#settings-modal { position:fixed; inset:0; z-index:500; display:flex; align-items:center; justify-content:center; background:rgba(8,8,14,0.8); backdrop-filter:blur(12px); }
+#settings-modal.hidden { display:none; }
+#settings-panel {
+  background:rgba(18,18,28,0.99); border:1px solid rgba(255,255,255,0.11);
+  border-radius:22px; padding:26px 26px; width:min(500px,95vw);
+  max-height:90vh; overflow-y:auto; display:flex; flex-direction:column; gap:16px;
+  box-shadow:0 0 80px rgba(0,0,0,0.7);
+}
+.sp-header { display:flex; align-items:center; justify-content:space-between; }
+.sp-title { font-size:11px; font-weight:700; letter-spacing:4px; color:rgba(255,255,255,0.3); text-transform:uppercase; }
+#pause-badge { font-size:9px; letter-spacing:2px; font-weight:700; padding:3px 10px; border-radius:20px; background:rgba(255,200,0,0.12); color:#ffd700; border:1px solid rgba(255,200,0,0.3); }
+.sp-divider { height:1px; background:rgba(255,255,255,0.06); }
+.setting-row { display:flex; align-items:center; gap:14px; }
+.setting-label { font-size:12px; font-weight:600; color:rgba(255,255,255,0.65); flex:1; }
+input[type=range] { flex:1; -webkit-appearance:none; height:5px; background:rgba(255,255,255,0.08); border-radius:3px; outline:none; cursor:pointer; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px; border-radius:50%; background:linear-gradient(135deg,#00c8ff,#7b6fff); cursor:pointer; box-shadow:0 0 8px rgba(123,111,255,0.5); }
+.mute-btn { width:34px; height:34px; border-radius:9px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); color:#fff; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.mute-btn.muted { background:rgba(255,60,60,0.12); border-color:rgba(255,60,60,0.3); }
+.inv-section { font-size:9px; font-weight:700; letter-spacing:3px; color:rgba(255,255,255,0.22); text-transform:uppercase; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.05); }
+#inv-weapons, #inv-passives { display:flex; flex-direction:column; gap:7px; }
+.inv-row { display:flex; align-items:center; gap:11px; padding:8px 11px; border-radius:10px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); }
+.inv-icon { font-size:20px; flex-shrink:0; }
+.inv-info { flex:1; min-width:0; }
+.inv-name { font-size:11px; font-weight:700; color:#fff; }
+.inv-desc { font-size:9px; color:rgba(255,255,255,0.3); margin-top:1px; }
+.inv-badge { font-size:9px; font-weight:800; padding:2px 8px; border-radius:20px; flex-shrink:0; }
+.inv-badge.evo { background:rgba(255,215,0,0.18); color:#ffd700; border:1px solid rgba(255,215,0,0.35); }
+.inv-badge.norm { background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.45); border:1px solid rgba(255,255,255,0.09); }
+.inv-empty { font-size:10px; color:rgba(255,255,255,0.18); font-style:italic; }
+.settings-close { align-self:center; padding:10px 30px; background:linear-gradient(135deg,#00c8ff,#7b6fff); border:none; border-radius:50px; cursor:pointer; font-size:12px; font-weight:700; color:#fff; letter-spacing:2px; text-transform:uppercase; }
 
-  /* ── SETTINGS BUTTON ── */
-  #settings-btn {
-    position: fixed; top: 14px; left: 14px; z-index: 300;
-    width: 38px; height: 38px; border-radius: 10px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: rgba(255,255,255,0.7); font-size: 18px;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    transition: background 0.15s, border-color 0.15s;
-    pointer-events: all;
-  }
-  #settings-btn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); color: #fff; }
+/* ── DAMAGE NUMBERS ── */
+.dmg-num { position:fixed; pointer-events:none; z-index:50; font-size:15px; font-weight:800; text-shadow:0 0 8px currentColor; animation:floatUp .9s ease-out forwards; }
+@keyframes floatUp { 0%{opacity:1;transform:translateY(0) scale(1);} 100%{opacity:0;transform:translateY(-55px) scale(0.6);} }
 
-  /* ── SETTINGS MODAL ── */
-  #settings-modal {
-    position: fixed; inset: 0; z-index: 500;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(10,10,15,0.75); backdrop-filter: blur(10px);
-  }
-  #settings-modal.hidden { display: none; }
-  #settings-panel {
-    background: rgba(20,20,30,0.98);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 20px; padding: 28px 28px;
-    width: min(480px, 94vw);
-    max-height: 88vh; overflow-y: auto;
-    display: flex; flex-direction: column; gap: 18px;
-    box-shadow: 0 0 60px rgba(0,0,0,0.6);
-  }
-  #settings-panel h2 {
-    font-size: 13px; font-weight: 700; letter-spacing: 4px;
-    color: rgba(255,255,255,0.35); text-transform: uppercase; margin: 0;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  #pause-badge {
-    font-size: 10px; letter-spacing: 2px; font-weight: 700;
-    padding: 3px 10px; border-radius: 20px;
-    background: rgba(255,200,0,0.15); color: #ffd700;
-    border: 1px solid rgba(255,200,0,0.3);
-  }
-  .setting-row { display: flex; align-items: center; gap: 16px; }
-  .setting-label { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7); flex: 1; }
-  .setting-row input[type=range] {
-    flex: 1; -webkit-appearance: none; height: 6px;
-    background: rgba(255,255,255,0.1); border-radius: 3px; outline: none;
-    cursor: pointer;
-  }
-  .setting-row input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
-    background: linear-gradient(135deg,#00c8ff,#7b6fff); cursor: pointer;
-    box-shadow: 0 0 8px rgba(123,111,255,0.5);
-  }
-  .mute-btn {
-    width: 38px; height: 38px; border-radius: 10px;
-    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
-    color: #fff; font-size: 18px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; transition: background 0.15s;
-  }
-  .mute-btn:hover { background: rgba(255,255,255,0.15); }
-  .mute-btn.muted { background: rgba(255,60,60,0.15); border-color: rgba(255,60,60,0.3); }
-  .settings-close {
-    align-self: center;
-    padding: 10px 32px;
-    background: linear-gradient(135deg,#00c8ff,#7b6fff);
-    border: none; border-radius: 50px; cursor: pointer;
-    font-size: 13px; font-weight: 700; color: #fff; letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-  .settings-close:hover { opacity: 0.85; }
+/* ── WAVE ANNOUNCE ── */
+#wave-announce { position:fixed; top:40%; left:50%; transform:translate(-50%,-50%); font-size:42px; font-weight:900; color:#fff; text-shadow:0 0 40px rgba(255,100,100,0.9); letter-spacing:4px; z-index:55; pointer-events:none; display:none; animation:waveAnim 2s ease-out forwards; }
+@keyframes waveAnim { 0%{opacity:0;transform:translate(-50%,-50%) scale(0.5);}30%{opacity:1;transform:translate(-50%,-50%) scale(1.08);}70%{opacity:1;}100%{opacity:0;transform:translate(-50%,-50%) scale(1.3);} }
 
-  /* ── SETTINGS INVENTORY ── */
-  .inv-section-title {
-    font-size: 10px; font-weight: 700; letter-spacing: 3px;
-    color: rgba(255,255,255,0.25); text-transform: uppercase;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-    padding-bottom: 10px; margin-bottom: 4px;
-  }
-  #inv-weapons, #inv-passives {
-    display: flex; flex-direction: column; gap: 8px;
-  }
-  .inv-row {
-    display: flex; align-items: center; gap: 12px;
-    padding: 8px 12px; border-radius: 10px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.07);
-  }
-  .inv-icon { font-size: 22px; line-height: 1; flex-shrink: 0; }
-  .inv-info { flex: 1; min-width: 0; }
-  .inv-name { font-size: 12px; font-weight: 700; color: #fff; }
-  .inv-desc { font-size: 10px; color: rgba(255,255,255,0.35); margin-top: 1px; }
-  .inv-badge {
-    font-size: 10px; font-weight: 800; padding: 3px 9px;
-    border-radius: 20px; flex-shrink: 0; letter-spacing: 0.5px;
-  }
-  .inv-badge.legendary { background: rgba(255,215,0,0.2); color: #ffd700; border: 1px solid rgba(255,215,0,0.4); }
-  .inv-badge.normal    { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.1); }
-  .inv-empty { font-size: 11px; color: rgba(255,255,255,0.2); font-style: italic; padding: 4px 0; }
-
-  /* ── DAMAGE NUMBERS ── */
-  .dmg-num {
-    position: fixed; pointer-events: none; z-index: 50;
-    font-size: 16px; font-weight: 800;
-    text-shadow: 0 0 8px currentColor;
-    animation: floatUp 0.8s ease-out forwards;
-  }
-  @keyframes floatUp {
-    0%   { opacity: 1; transform: translateY(0) scale(1); }
-    100% { opacity: 0; transform: translateY(-50px) scale(0.7); }
-  }
-
-  /* ── WAVE ANNOUNCE ── */
-  #wave-announce {
-    position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
-    font-size: 48px; font-weight: 900; color: #fff;
-    text-shadow: 0 0 40px rgba(255,100,100,0.8);
-    letter-spacing: 4px; z-index: 50; pointer-events: none;
-    animation: waveAnim 1.8s ease-out forwards;
-    display: none;
-  }
-  @keyframes waveAnim {
-    0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.6); }
-    30%  { opacity: 1; transform: translate(-50%,-50%) scale(1.05); }
-    70%  { opacity: 1; }
-    100% { opacity: 0; transform: translate(-50%,-50%) scale(1.2); }
-  }
+/* ── EVOLVED BANNER ── */
+#evo-banner { position:fixed; top:30%; left:50%; transform:translateX(-50%); z-index:60; pointer-events:none; display:none; text-align:center; animation:evoBanner 2.5s ease-out forwards; }
+.evo-title { font-size:32px; font-weight:900; background:linear-gradient(135deg,#ffd700,#ffaa00); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; letter-spacing:2px; }
+.evo-sub { font-size:14px; color:rgba(255,220,80,0.7); letter-spacing:3px; margin-top:4px; }
+@keyframes evoBanner { 0%{opacity:0;transform:translateX(-50%) scale(0.7);}20%{opacity:1;transform:translateX(-50%) scale(1.05);}70%{opacity:1;}100%{opacity:0;transform:translateX(-50%) translateY(-30px);} }
 </style>
 </head>
 <body>
 
-<!-- ── MENU ── -->
+<!-- MENU -->
 <div id="menu-screen" class="screen">
-  <div class="screen-logo">CUBE SLAYER</div>
-  <div class="screen-sub">Survivor Roguelite</div>
+  <div class="logo">CUBE SLAYER</div>
+  <div class="sub">Survivor Roguelite</div>
   <div class="info-grid">
-    <div class="info-card">
-      <div class="ic-icon">🖱️</div>
-      <div class="ic-text">Mouse ile<br>hareket et</div>
-    </div>
-    <div class="info-card">
-      <div class="ic-icon">⚔️</div>
-      <div class="ic-text">Otomatik<br>saldır</div>
-    </div>
-    <div class="info-card">
-      <div class="ic-icon">⬆️</div>
-      <div class="ic-text">Level atla<br>güçlen</div>
-    </div>
+    <div class="info-card"><div class="ic-icon">🖱️</div><div class="ic-text">Mouse ile<br>hareket et</div></div>
+    <div class="info-card"><div class="ic-icon">⚔️</div><div class="ic-text">Otomatik<br>saldır</div></div>
+    <div class="info-card"><div class="ic-icon">⬆️</div><div class="ic-text">Level at<br>güçlen</div></div>
+    <div class="info-card"><div class="ic-icon">✨</div><div class="ic-text">İtemları<br>evrimleştir</div></div>
   </div>
   <button class="start-btn" onclick="startGame()">BAŞLA</button>
 </div>
 
-<!-- ── UPGRADE ── -->
+<!-- UPGRADE -->
 <div id="upgrade-screen" class="screen hidden">
-  <div class="upgrade-title">LEVEL ATLADIN</div>
-  <div class="upgrade-level" id="upgrade-level-num">LV 2</div>
-  <div class="upgrade-cards" id="upgrade-cards"></div>
+  <div class="up-title">SEVİYE ATLADIN</div>
+  <div class="up-level" id="up-level-num">LV 2</div>
+  <div class="up-subtitle" id="up-subtitle">BİR YETENEK SEÇ</div>
+  <div class="up-cards" id="up-cards"></div>
 </div>
 
-<!-- ── GAMEOVER ── -->
+<!-- GAMEOVER -->
 <div id="gameover-screen" class="screen hidden">
-  <div class="screen-sub">GAME OVER</div>
-  <div class="gameover-score" id="go-score">0</div>
-  <div class="gameover-sub">SKOR</div>
+  <div class="sub">GAME OVER</div>
+  <div class="go-score" id="go-score">0</div>
+  <div class="go-sub">SKOR</div>
   <div class="stat-row">
     <div class="stat-item"><div class="si-num" id="go-level">1</div><div class="si-label">SEVİYE</div></div>
     <div class="stat-item"><div class="si-num" id="go-kills">0</div><div class="si-label">ÖLDÜRME</div></div>
@@ -321,27 +213,32 @@
   <button class="start-btn" onclick="startGame()">TEKRAR OYNA</button>
 </div>
 
-<!-- ── SETTINGS BUTTON (always visible) ── -->
+<!-- SETTINGS BTN -->
 <button id="settings-btn" onclick="toggleSettings()" title="Ayarlar">⚙️</button>
 
-<!-- ── SETTINGS MODAL ── -->
+<!-- SETTINGS MODAL -->
 <div id="settings-modal" class="hidden">
   <div id="settings-panel">
-    <h2>⚙ Ayarlar <span id="pause-badge" style="display:none">⏸ DURAKLATILDI</span></h2>
+    <div class="sp-header">
+      <div class="sp-title">⚙ Ayarlar</div>
+      <div id="pause-badge" style="display:none">⏸ DURAKLATILDI</div>
+    </div>
+    <div class="sp-divider"></div>
     <div class="setting-row">
       <span class="setting-label">🔊 Ses</span>
       <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
       <input type="range" id="vol-slider" min="0" max="100" value="80" oninput="setVolume(this.value)">
     </div>
-    <div class="inv-section-title">⚔️ Silahlar</div>
+    <div class="sp-divider"></div>
+    <div class="inv-section">⚔️ Silahlar</div>
     <div id="inv-weapons"><div class="inv-empty">Henüz silah yok</div></div>
-    <div class="inv-section-title">✨ Pasifler & Güçlendirmeler</div>
+    <div class="inv-section">✨ Pasifler</div>
     <div id="inv-passives"><div class="inv-empty">Henüz güçlendirme yok</div></div>
     <button class="settings-close" onclick="toggleSettings()">DEVAM ET</button>
   </div>
 </div>
 
-<!-- ── HUD ── -->
+<!-- HUD -->
 <div id="hud">
   <div class="hud-block">
     <div class="hud-label">Skor</div>
@@ -359,19 +256,23 @@
       <div class="bar-num" id="xp-num">0/10</div>
     </div>
   </div>
-  <div id="weapon-hud"></div>
   <div id="timer-hud">0:00</div>
+  <div id="wave-label">WAVE 1</div>
 </div>
 
-<!-- Wave Announce -->
+<!-- ITEM HUD (bottom) -->
+<div id="item-hud"></div>
+
+<!-- Wave announce -->
 <div id="wave-announce"></div>
+<div id="evo-banner"><div class="evo-title" id="evo-title">⭐ EVRİM!</div><div class="evo-sub" id="evo-sub">İTEM ADI</div></div>
 
 <canvas id="c"></canvas>
 
 <script>
-// ════════════════════════════════════════════════════
-// CANVAS SETUP
-// ════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
+// CANVAS
+// ════════════════════════════════════════════════
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
 let W = canvas.width = window.innerWidth;
@@ -379,1274 +280,1113 @@ let H = canvas.height = window.innerHeight;
 window.addEventListener('resize', () => {
   W = canvas.width = window.innerWidth;
   H = canvas.height = window.innerHeight;
-  if (state === 'playing' || state === 'upgrade') drawFrame();
 });
 
-// ════════════════════════════════════════════════════
-// AUDIO ENGINE
-// ════════════════════════════════════════════════════
-let audioCtx = null;
-let masterGain = null;
-let isMuted = false;
-let masterVolume = 0.8;
-
-function getAudio() {
+// ════════════════════════════════════════════════
+// AUDIO
+// ════════════════════════════════════════════════
+let audioCtx=null, masterGain=null, isMuted=false, masterVolume=0.7;
+function getAC() {
   if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    audioCtx = new (window.AudioContext||window.webkitAudioContext)();
     masterGain = audioCtx.createGain();
-    masterGain.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
+    masterGain.gain.value = masterVolume;
     masterGain.connect(audioCtx.destination);
   }
-  if (audioCtx.state === 'suspended') audioCtx.resume();
+  if (audioCtx.state==='suspended') audioCtx.resume();
   return audioCtx;
 }
-
-let stateBefore = null; // state before settings opened
-
-function toggleSettings() {
-  const modal = document.getElementById('settings-modal');
-  const isHidden = modal.classList.contains('hidden');
-  if (isHidden) {
-    // Opening: pause if playing
-    if (state === 'playing') { stateBefore = 'playing'; state = 'paused'; }
-    else { stateBefore = state; }
-    renderInventory();
-    document.getElementById('pause-badge').style.display = (state === 'paused') ? '' : 'none';
-    modal.classList.remove('hidden');
-  } else {
-    // Closing: resume if was playing
-    modal.classList.add('hidden');
-    if (stateBefore === 'playing') { state = 'playing'; lastTime = performance.now(); }
-    stateBefore = null;
-  }
-}
-
-function renderInventory() {
-  // ── Silahlar ──
-  const wEl = document.getElementById('inv-weapons');
-  if (!weaponSlots || weaponSlots.length === 0) {
-    wEl.innerHTML = '<div class="inv-empty">Henüz silah yok</div>';
-  } else {
-    wEl.innerHTML = weaponSlots.map(wep => {
-      const def = WEAPON_DEFS[wep.id];
-      const isLeg = wep.legendary;
-      const badgeCls = isLeg ? 'legendary' : 'normal';
-      const badgeTxt = isLeg ? '⭐ EFSANEVİ' : `LV ${wep.level}`;
-      return `<div class="inv-row">
-        <div class="inv-icon">${def.emoji}</div>
-        <div class="inv-info">
-          <div class="inv-name">${def.name}</div>
-          <div class="inv-desc">${def.desc}</div>
-        </div>
-        <div class="inv-badge ${badgeCls}">${badgeTxt}</div>
-      </div>`;
-    }).join('');
-  }
-
-  // ── Pasifler & stat yükseltmeleri ──
-  const pEl = document.getElementById('inv-passives');
-  const rows = [];
-  if (player.maxHp > 100) rows.push({ icon:'🛡️', name:'Zırh', desc:`Maksimum can: ${player.maxHp}` });
-  if (player.dmgMult && player.dmgMult > 1) rows.push({ icon:'💎', name:'Güç Kristali', desc:`Hasar çarpanı: ×${player.dmgMult.toFixed(2)}` });
-  if (player.dmgReduce && player.dmgReduce > 0) rows.push({ icon:'🔵', name:'Enerji Kalkanı', desc:`Hasar azaltma: %${Math.round(player.dmgReduce*100)}` });
-  if (player.regen && player.regen > 0) rows.push({ icon:'💚', name:'Yenilenme', desc:`Saniyede +${player.regen} can` });
-  if (player.vampirism && player.vampirism > 0) rows.push({ icon:'🩸', name:'Vampirizm', desc:`Öldürme başı +${player.vampirism} can` });
-  if (player.bulletSpd && player.bulletSpd > 1) rows.push({ icon:'🌪️', name:'Hız Ruhu', desc:`Mermi hızı: ×${player.bulletSpd.toFixed(2)}` });
-  if (player.explosion && player.explosion > 0) rows.push({ icon:'💥', name:'Patlama Ruhu', desc:`Patlama menzili: ${player.explosion}` });
-  if (player.magnetRange && player.magnetRange > 120) rows.push({ icon:'🧲', name:'Mıknatıs', desc:`XP menzili: ${Math.round(player.magnetRange)}` });
-  if (player.speed > 2.8) rows.push({ icon:'💨', name:'Çeviklik', desc:`Hız: ${player.speed.toFixed(2)}` });
-
-  if (rows.length === 0) {
-    pEl.innerHTML = '<div class="inv-empty">Henüz güçlendirme yok</div>';
-  } else {
-    pEl.innerHTML = rows.map(r => `<div class="inv-row">
-      <div class="inv-icon">${r.icon}</div>
-      <div class="inv-info">
-        <div class="inv-name">${r.name}</div>
-        <div class="inv-desc">${r.desc}</div>
-      </div>
-    </div>`).join('');
-  }
-}
-
-function toggleMute() {
-  isMuted = !isMuted;
-  const btn = document.getElementById('mute-btn');
-  if (masterGain) masterGain.gain.setValueAtTime(isMuted ? 0 : masterVolume, audioCtx.currentTime);
-  btn.textContent = isMuted ? '🔇' : '🔊';
-  btn.classList.toggle('muted', isMuted);
-}
-
-function setVolume(val) {
-  masterVolume = val / 100;
-  isMuted = false;
-  const btn = document.getElementById('mute-btn');
-  btn.textContent = masterVolume === 0 ? '🔇' : '🔊';
-  btn.classList.toggle('muted', masterVolume === 0);
-  if (masterGain) masterGain.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
-}
-
-// Genel ses çalma yardımcısı: osilatörler + zarf
-function playTone({ freq = 440, freq2, type = 'square', gainPeak = 0.18, attack = 0.005, decay = 0.08, sustain = 0, release = 0.05, duration = 0.15, detune = 0, filterFreq, filterQ } = {}) {
+function playTone({freq=440,freq2,type='square',vol=0.12,atk=0.005,dec=0.08,rel=0.05,dur=0.15,filter}={}) {
   try {
-    const ac = getAudio();
-    const now = ac.currentTime;
-
-    const osc = ac.createOscillator();
-    const gain = ac.createGain();
-
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, now);
-    if (freq2) osc.frequency.linearRampToValueAtTime(freq2, now + duration);
-    if (detune) osc.detune.setValueAtTime(detune, now);
-
-    // Filtre (isteğe bağlı)
-    let lastNode = osc;
-    if (filterFreq) {
-      const filter = ac.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(filterFreq, now);
-      if (filterQ) filter.Q.setValueAtTime(filterQ, now);
-      osc.connect(filter);
-      filter.connect(gain);
-    } else {
-      osc.connect(gain);
-    }
-
-    // ADSR zarf
-    gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(gainPeak, now + attack);
-    gain.gain.linearRampToValueAtTime(gainPeak * sustain, now + attack + decay);
-    gain.gain.linearRampToValueAtTime(0, now + attack + decay + release);
-
-    const dest = masterGain || ac.destination;
-    gain.connect(dest);
-    osc.start(now);
-    osc.stop(now + attack + decay + release + 0.01);
-  } catch(e) {}
+    const ac=getAC(), now=ac.currentTime;
+    const osc=ac.createOscillator(), g=ac.createGain();
+    osc.type=type; osc.frequency.value=freq;
+    if(freq2) osc.frequency.linearRampToValueAtTime(freq2,now+dur);
+    const dest=masterGain||ac.destination;
+    if(filter){ const f=ac.createBiquadFilter(); f.type='lowpass'; f.frequency.value=filter; osc.connect(f); f.connect(g); } else osc.connect(g);
+    g.gain.setValueAtTime(0,now); g.gain.linearRampToValueAtTime(vol,now+atk); g.gain.linearRampToValueAtTime(0,now+atk+dec+rel);
+    g.connect(dest); osc.start(now); osc.stop(now+atk+dec+rel+.05);
+  } catch(e){}
 }
-
-// Gürültü patlaması (patlama sesi için)
-function playNoise({ gainPeak = 0.15, attack = 0.002, decay = 0.12, release = 0.06, filterFreq = 800 } = {}) {
+function playNoise({vol=0.1,atk=.002,dec=.1,rel=.05,filter=800}={}) {
   try {
-    const ac = getAudio();
-    const now = ac.currentTime;
-    const bufSize = ac.sampleRate * 0.25;
-    const buf = ac.createBuffer(1, bufSize, ac.sampleRate);
-    const data = buf.getChannelData(0);
-    for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
-
-    const src = ac.createBufferSource();
-    src.buffer = buf;
-
-    const filter = ac.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(filterFreq, now);
-
-    const gain = ac.createGain();
-    gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(gainPeak, now + attack);
-    gain.gain.linearRampToValueAtTime(0, now + attack + decay + release);
-
-    src.connect(filter);
-    filter.connect(gain);
-    const dest = masterGain || ac.destination;
-    gain.connect(dest);
-    src.start(now);
-    src.stop(now + attack + decay + release + 0.05);
-  } catch(e) {}
+    const ac=getAC(),now=ac.currentTime;
+    const buf=ac.createBuffer(1,Math.ceil(ac.sampleRate*.3),ac.sampleRate);
+    const d=buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+    const src=ac.createBufferSource(); src.buffer=buf;
+    const f=ac.createBiquadFilter(); f.type='lowpass'; f.frequency.value=filter;
+    const g=ac.createGain(); g.gain.setValueAtTime(0,now); g.gain.linearRampToValueAtTime(vol,now+atk); g.gain.linearRampToValueAtTime(0,now+atk+dec+rel);
+    src.connect(f); f.connect(g); g.connect(masterGain||ac.destination);
+    src.start(now); src.stop(now+atk+dec+rel+.05);
+  } catch(e){}
 }
-
-// ── Ses efektleri ──
 const SFX = {
-  // Bıçak atışı: kısa, keskin tık
-  shoot() {
-    playTone({ freq: 880, freq2: 440, type: 'square', gainPeak: 0.08, attack: 0.002, decay: 0.04, release: 0.02, duration: 0.06, filterFreq: 2000 });
-  },
-  // Balta fırlatma: daha ağır, dönen his
-  axeThrow() {
-    playTone({ freq: 220, freq2: 110, type: 'sawtooth', gainPeak: 0.1, attack: 0.005, decay: 0.1, release: 0.05, duration: 0.15, filterFreq: 600 });
-  },
-  // Düşman ölümü (küçük)
-  enemyDie() {
-    playNoise({ gainPeak: 0.1, attack: 0.002, decay: 0.07, release: 0.04, filterFreq: 600 });
-    playTone({ freq: 180, freq2: 80, type: 'square', gainPeak: 0.07, attack: 0.002, decay: 0.06, release: 0.03, duration: 0.09 });
-  },
-  // Boss ölümü: büyük patlama
-  bossDie() {
-    playNoise({ gainPeak: 0.3, attack: 0.003, decay: 0.3, release: 0.15, filterFreq: 400 });
-    playTone({ freq: 120, freq2: 40, type: 'sawtooth', gainPeak: 0.2, attack: 0.005, decay: 0.25, release: 0.1, duration: 0.35, filterFreq: 300 });
-  },
-  // Oyuncuya hasar: düşük, sert vuruş
-  playerHit() {
-    playNoise({ gainPeak: 0.2, attack: 0.001, decay: 0.06, release: 0.03, filterFreq: 300 });
-    playTone({ freq: 90, freq2: 60, type: 'sawtooth', gainPeak: 0.12, attack: 0.001, decay: 0.05, release: 0.03, duration: 0.08 });
-  },
-  // Level atlama: yükselen melodik arpej
-  levelUp() {
-    [523, 659, 784, 1047].forEach((f, i) => {
-      setTimeout(() => playTone({ freq: f, type: 'sine', gainPeak: 0.18, attack: 0.01, decay: 0.12, release: 0.08, duration: 0.2 }), i * 70);
-    });
-  },
-  // XP toplama: küçük pling
-  xpPick() {
-    playTone({ freq: 1200, freq2: 1600, type: 'sine', gainPeak: 0.05, attack: 0.003, decay: 0.04, release: 0.02, duration: 0.06 });
-  },
-  // Yıldırım: elektrik çatırtısı
-  lightning() {
-    playNoise({ gainPeak: 0.22, attack: 0.001, decay: 0.05, release: 0.04, filterFreq: 3000 });
-    playTone({ freq: 600, freq2: 200, type: 'sawtooth', gainPeak: 0.1, attack: 0.001, decay: 0.04, release: 0.03, duration: 0.07, detune: 50 });
-  },
-  // Upgrade seçimi: onay sesi
-  upgrade() {
-    playTone({ freq: 440, freq2: 880, type: 'sine', gainPeak: 0.15, attack: 0.01, decay: 0.15, release: 0.1, duration: 0.25 });
-  },
-  // Game over: düşen ses
-  gameOver() {
-    [440, 330, 220, 110].forEach((f, i) => {
-      setTimeout(() => playTone({ freq: f, type: 'sawtooth', gainPeak: 0.15, attack: 0.01, decay: 0.2, release: 0.1, duration: 0.3 }), i * 120);
-    });
-  },
+  shoot()    { playTone({freq:880,freq2:440,type:'square',vol:.06,atk:.002,dec:.04,rel:.02,dur:.06,filter:2200}); },
+  axe()      { playTone({freq:220,freq2:110,type:'sawtooth',vol:.08,atk:.005,dec:.1,rel:.05,dur:.15,filter:600}); },
+  magic()    { playTone({freq:660,type:'sine',vol:.06,atk:.01,dec:.08,rel:.04,dur:.12}); },
+  lightning(){ playNoise({vol:.18,dec:.04,rel:.03,filter:3000}); playTone({freq:600,freq2:200,type:'sawtooth',vol:.08,dec:.04,dur:.07}); },
+  die()      { playNoise({vol:.08,dec:.06,rel:.03,filter:600}); },
+  bossDie()  { playNoise({vol:.28,dec:.3,rel:.15,filter:400}); },
+  hit()      { playNoise({vol:.16,dec:.05,rel:.03,filter:300}); },
+  levelUp()  { [523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone({freq:f,type:'sine',vol:.15,dec:.12,rel:.08,dur:.2}),i*65)); },
+  xp()       { playTone({freq:1400,freq2:1800,type:'sine',vol:.04,dec:.04,rel:.02,dur:.06}); },
+  evolve()   { [784,988,1175,1568].forEach((f,i)=>setTimeout(()=>playTone({freq:f,type:'sine',vol:.2,dec:.2,rel:.12,dur:.3}),i*80)); },
+  upgrade()  { playTone({freq:440,freq2:880,type:'sine',vol:.12,dec:.14,rel:.09,dur:.22}); },
+  gameOver() { [440,330,220,110].forEach((f,i)=>setTimeout(()=>playTone({freq:f,type:'sawtooth',vol:.14,dec:.2,rel:.1,dur:.3}),i*120)); },
 };
+let _lastShoot=0;
+function sfxShoot(t){ const n=Date.now(); if(n-_lastShoot<55)return; _lastShoot=n; if(t==='axe')SFX.axe(); else if(t==='magic')SFX.magic(); else SFX.shoot(); }
 
-// Shoot sesi throttle (çok sık tetiklenmesin)
-let _lastShootSfx = 0;
-function sfxShoot(type) {
-  const now = Date.now();
-  if (now - _lastShootSfx < 60) return;
-  _lastShootSfx = now;
-  if (type === 'axe') SFX.axeThrow(); else SFX.shoot();
-}
+function toggleMute(){ isMuted=!isMuted; if(masterGain) masterGain.gain.value=isMuted?0:masterVolume; const b=document.getElementById('mute-btn'); b.textContent=isMuted?'🔇':'🔊'; b.classList.toggle('muted',isMuted); }
+function setVolume(v){ masterVolume=v/100; isMuted=false; document.getElementById('mute-btn').textContent=masterVolume===0?'🔇':'🔊'; document.getElementById('mute-btn').classList.toggle('muted',masterVolume===0); if(masterGain) masterGain.gain.value=masterVolume; }
 
-// ════════════════════════════════════════════════════
-// STATE
-// ════════════════════════════════════════════════════
-let state = 'menu'; // menu | playing | upgrade | gameover
-let score = 0, kills = 0;
-let level = 1, xp = 0, xpToNext = 12;
-let gameTime = 0;   // seconds
-let raf = null;
-let lastTime = 0;
-let pendingUpgrades = 0;
+// ════════════════════════════════════════════════
+// GAME STATE
+// ════════════════════════════════════════════════
+let state='menu'; // menu|playing|paused|upgrade|gameover
+let score=0, kills=0, level=1, xp=0, xpToNext=20, gameTime=0;
+let pendingUpgrades=0, raf=null, lastTime=0, stateBefore=null;
+let waveNum=1, nextWaveTime=30; // wave every 30s
 
-// Player
 const player = {
-  x: 0, y: 0,
-  hp: 100, maxHp: 100,
-  speed: 2.8,
-  radius: 14,
-  invincible: 0,    // frames of iframe
-  trail: [],
+  x:0, y:0, hp:120, maxHp:120, speed:3.0, radius:13,
+  invincible:0, trail:[],
+  // stats
+  dmgMult:1, dmgReduce:0, regen:0, vampirism:0,
+  magnetRange:100, bulletSpd:1, explosion:0, lifeOnHit:0,
+  cooldownReduce:1, // multiplier, <1 = faster
 };
 
-// Weapons
-let weaponSlots = [];    // active weapon objects
+// ── Active weapons & passives ──
+// weapons: {id, level, cd, maxCd, ...wep-specific}
+// passives: {id, level}
+let weapons = [];
+let passives = [];
 const MAX_WEAPONS = 6;
+const MAX_PASSIVES = 6;
 
-// World arrays
-let enemies   = [];
-let bullets   = [];
-let xpGems    = [];
-let particles = [];
+let enemies=[], bullets=[], xpGems=[], particles=[];
+let mx=0, my=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+document.addEventListener('touchmove',e=>{mx=e.touches[0].clientX;my=e.touches[0].clientY;e.preventDefault();},{passive:false});
 
-// Mouse
-let mx = W/2, my = H/2;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-document.addEventListener('touchmove', e => {
-  mx = e.touches[0].clientX; my = e.touches[0].clientY;
-  e.preventDefault();
-}, { passive: false });
+// ════════════════════════════════════════════════
+// WEAPON DEFINITIONS  (max level 8, level 8 = evolved if has passive pair)
+// ════════════════════════════════════════════════
+/*
+  Each weapon has:
+  - id, name, emoji, color, desc
+  - maxLevel (8)
+  - evolveWith: passive id that causes evolution at level 8
+  - init(w): set defaults
+  - levelUp(w, lv): apply upgrades at given level
+  - fire(w): shoot logic
+  - tick(w,dt): continuous (optional)
+  - draw(w): visual (optional)
+*/
 
-// ════════════════════════════════════════════════════
-// WEAPON DEFINITIONS
-// ════════════════════════════════════════════════════
-const WEAPON_DEFS = {
+const WEAPONS = {
   knife: {
-    id: 'knife', name: 'Bıçak', emoji: '🔪', color: '#ffe066',
-    desc: 'En yakın düşmana mermi fırlatır',
-    maxLevel: 12,
-    init(wep) { wep.cd = 0; wep.maxCd = 50; wep.dmg = 12; wep.count = 1; wep.pierce = 0; },
-    levelUp(wep) {
-      const lvl = wep.level;
-      if (lvl === 2) { wep.dmg += 6; }
-      if (lvl === 3) { wep.maxCd *= 0.8; }
-      if (lvl === 4) { wep.count = 2; }
-      if (lvl === 5) { wep.dmg += 8; wep.pierce = 1; }
-      if (lvl === 6) { wep.maxCd *= 0.75; }
-      if (lvl === 7) { wep.count = 3; }
-      if (lvl === 8)  { wep.dmg += 14; wep.pierce = 2; }
-      if (lvl === 9)  { wep.count = 4; wep.maxCd *= 0.7; }
-      if (lvl === 10) { wep.dmg += 22; wep.pierce = 4; }
-      if (lvl === 11) { wep.count = 6; wep.maxCd *= 0.65; }
-      if (lvl === 12) { wep.legendary = true; wep.dmg += 35; wep.pierce = 99; wep.count = 8; }
+    id:'knife', name:'Bıçak', emoji:'🔪', color:'#ffe066',
+    desc:'En yakın düşmana mermi fırlatır',
+    evolveWith:'bracer',
+    evolvedName:'Bıçak Fırtınası', evolvedEmoji:'🗡️',
+    maxLevel:8,
+    init(w){ w.cd=0; w.maxCd=48; w.dmg=14; w.count=1; w.pierce=0; },
+    levelUp(w,lv){
+      if(lv===2){w.dmg+=8;}
+      if(lv===3){w.maxCd*=.85; w.count=2;}
+      if(lv===4){w.dmg+=10; w.pierce=1;}
+      if(lv===5){w.maxCd*=.8; w.count=3;}
+      if(lv===6){w.dmg+=14; w.pierce=2;}
+      if(lv===7){w.maxCd*=.75; w.count=4;}
+      if(lv===8){w.dmg+=20; w.count=6; w.pierce=99;} // evolved
     },
-    fire(wep) {
-      if (enemies.length === 0) return;
-      const alive = enemies.filter(e => !e.dead);
-      if (!alive.length) return;
-      alive.sort((a,b) => dist2(a,player) - dist2(b,player));
-      const targets = alive.slice(0, wep.count);
-      const col = wep.legendary ? '#fff700' : '#ffe066';
-      targets.forEach(target => {
-        const angle = Math.atan2(target.y - player.y, target.x - player.x);
-        spawnBullet(player.x, player.y, angle, wep.legendary ? 14 : 9, wep.dmg, col, wep.legendary ? 8 : 5, wep.pierce, 'knife');
+    fire(w){
+      const alive=enemies.filter(e=>!e.dead);
+      if(!alive.length)return;
+      alive.sort((a,b)=>dist2(a,player)-dist2(b,player));
+      const targets=alive.slice(0,w.count);
+      const col=w.evolved?'#fff700':'#ffe066';
+      const spd=w.evolved?14:9;
+      targets.forEach(t=>{
+        const a=Math.atan2(t.y-player.y,t.x-player.x);
+        spawnBullet(player.x,player.y,a,spd,w.dmg,col,w.evolved?7:5,w.pierce,'knife');
       });
     }
   },
   axe: {
-    id: 'axe', name: 'Balta', emoji: '🪓', color: '#ff8c42',
-    desc: 'Tüm yönlere uçup geri döner',
-    maxLevel: 12,
-    init(wep) { wep.cd = 0; wep.maxCd = 90; wep.dmg = 28; wep.count = 2; },
-    levelUp(wep) {
-      const lvl = wep.level;
-      if (lvl === 2) { wep.count = 3; }
-      if (lvl === 3) { wep.dmg += 10; }
-      if (lvl === 4) { wep.count = 4; }
-      if (lvl === 5) { wep.dmg += 14; }
-      if (lvl === 6) { wep.count = 6; }
-      if (lvl === 7) { wep.maxCd *= 0.8; }
-      if (lvl === 8)  { wep.dmg += 20; wep.count = 8; }
-      if (lvl === 9)  { wep.dmg += 28; wep.maxCd *= 0.75; }
-      if (lvl === 10) { wep.count = 12; }
-      if (lvl === 11) { wep.dmg += 35; wep.maxCd *= 0.7; }
-      if (lvl === 12) { wep.legendary = true; wep.count = 16; wep.dmg += 50; }
+    id:'axe', name:'Balta', emoji:'🪓', color:'#ff8c42',
+    desc:'Tüm yönlere uçup geri döner',
+    evolveWith:'canteen',
+    evolvedName:'Büyük Balta', evolvedEmoji:'🔱',
+    maxLevel:8,
+    init(w){ w.cd=0; w.maxCd=85; w.dmg=32; w.count=2; },
+    levelUp(w,lv){
+      if(lv===2){w.count=3;}
+      if(lv===3){w.dmg+=12;}
+      if(lv===4){w.count=5;}
+      if(lv===5){w.dmg+=18;}
+      if(lv===6){w.count=7; w.maxCd*=.85;}
+      if(lv===7){w.dmg+=25;}
+      if(lv===8){w.count=12; w.dmg+=35;} // evolved
     },
-    fire(wep) {
-      const col = wep.legendary ? '#ffdd00' : '#ff8c42';
-      const spd = wep.legendary ? 10 : 7;
-      const sz  = wep.legendary ? 13 : 8;
-      for (let i = 0; i < wep.count; i++) {
-        const angle = (i / wep.count) * Math.PI * 2;
-        spawnBullet(player.x, player.y, angle, spd, wep.dmg, col, sz, 99, 'axe');
+    fire(w){
+      const col=w.evolved?'#ffdd00':'#ff8c42';
+      const spd=w.evolved?11:7, sz=w.evolved?14:9;
+      for(let i=0;i<w.count;i++){
+        const a=(i/w.count)*Math.PI*2;
+        spawnBullet(player.x,player.y,a,spd,w.dmg,col,sz,99,'axe');
       }
     }
   },
   magic: {
-    id: 'magic', name: 'Sihir Çemberi', emoji: '✨', color: '#c77dff',
-    desc: 'Oyuncunun etrafında dönen koruma',
-    maxLevel: 12,
-    init(wep) { wep.cd = 0; wep.maxCd = 1; wep.dmg = 8; wep.radius = 90; wep.orbs = 1; wep.angle = 0; },
-    levelUp(wep) {
-      const lvl = wep.level;
-      if (lvl === 2) { wep.orbs = 2; }
-      if (lvl === 3) { wep.dmg += 4; wep.radius += 10; }
-      if (lvl === 4) { wep.orbs = 3; }
-      if (lvl === 5) { wep.dmg += 6; }
-      if (lvl === 6) { wep.orbs = 4; wep.radius += 15; }
-      if (lvl === 7) { wep.dmg += 8; }
-      if (lvl === 8)  { wep.orbs = 5; wep.dmg += 12; }
-      if (lvl === 9)  { wep.dmg += 16; wep.radius += 20; }
-      if (lvl === 10) { wep.orbs = 7; }
-      if (lvl === 11) { wep.dmg += 20; wep.radius += 25; }
-      if (lvl === 12) { wep.legendary = true; wep.orbs = 10; wep.dmg += 30; wep.radius += 30; }
+    id:'magic', name:'Sihir Çemberi', emoji:'✨', color:'#c77dff',
+    desc:'Etrafında dönen koruyucu küreler',
+    evolveWith:'spellbook',
+    evolvedName:'Ejderha Küresi', evolvedEmoji:'🔮',
+    maxLevel:8,
+    init(w){ w.cd=0; w.maxCd=1; w.dmg=10; w.radius=88; w.orbs=1; w.angle=0; },
+    levelUp(w,lv){
+      if(lv===2){w.orbs=2;}
+      if(lv===3){w.dmg+=5; w.radius+=12;}
+      if(lv===4){w.orbs=3;}
+      if(lv===5){w.dmg+=8;}
+      if(lv===6){w.orbs=4; w.radius+=18;}
+      if(lv===7){w.dmg+=12;}
+      if(lv===8){w.orbs=7; w.dmg+=20; w.radius+=24;} // evolved
     },
-    tick(wep, dt) {
-      wep.angle += dt * (wep.legendary ? 3.5 : 2.5);
-      const hitSet = new Set();
-      for (let i = 0; i < wep.orbs; i++) {
-        const a = wep.angle + (i / wep.orbs) * Math.PI * 2;
-        const ox = player.x + Math.cos(a) * wep.radius;
-        const oy = player.y + Math.sin(a) * wep.radius;
-        for (let j = enemies.length - 1; j >= 0; j--) {
-          const e = enemies[j];
-          if (e.dead || hitSet.has(j)) continue;
-          if (Math.hypot(ox - e.x, oy - e.y) < 18) {
-            hitSet.add(j);
-            damageEnemy(j, wep.dmg * dt * 3);
-          }
+    tick(w,dt){
+      w.angle += dt*(w.evolved?4:2.8);
+      const seen=new Set();
+      for(let i=0;i<w.orbs;i++){
+        const a=w.angle+(i/w.orbs)*Math.PI*2;
+        const ox=player.x+Math.cos(a)*w.radius;
+        const oy=player.y+Math.sin(a)*w.radius;
+        for(let j=enemies.length-1;j>=0;j--){
+          const e=enemies[j];
+          if(e.dead||seen.has(j))continue;
+          if(Math.hypot(ox-e.x,oy-e.y)<20){ seen.add(j); damageEnemy(j,w.dmg*dt*3); }
         }
       }
     },
-    fire() {},
-    draw(wep) {
-      for (let i = 0; i < wep.orbs; i++) {
-        const a = wep.angle + (i / wep.orbs) * Math.PI * 2;
-        const ox = player.x + Math.cos(a) * wep.radius;
-        const oy = player.y + Math.sin(a) * wep.radius;
-        const orbR = wep.legendary ? 14 : 9;
-        const orbInner = wep.legendary ? 7 : 5;
-        const c1 = wep.legendary ? 'rgba(255,220,50,0.95)' : 'rgba(199,125,255,0.9)';
-        const c2 = wep.legendary ? 'rgba(255,150,0,0)' : 'rgba(199,125,255,0)';
-        const cInner = wep.legendary ? '#fff700' : '#e0b3ff';
-        ctx.beginPath();
-        ctx.arc(ox, oy, orbR, 0, Math.PI*2);
-        const g = ctx.createRadialGradient(ox,oy,0,ox,oy,orbR);
-        g.addColorStop(0, c1);
-        g.addColorStop(1, c2);
-        ctx.fillStyle = g;
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(ox, oy, orbInner, 0, Math.PI*2);
-        ctx.fillStyle = cInner;
-        ctx.fill();
+    fire(){},
+    draw(w){
+      for(let i=0;i<w.orbs;i++){
+        const a=w.angle+(i/w.orbs)*Math.PI*2;
+        const ox=player.x+Math.cos(a)*w.radius;
+        const oy=player.y+Math.sin(a)*w.radius;
+        const R=w.evolved?16:10, ri=w.evolved?8:5;
+        const c1=w.evolved?'rgba(255,215,0,.9)':'rgba(199,125,255,.9)';
+        const c2=w.evolved?'rgba(255,150,0,0)':'rgba(199,125,255,0)';
+        ctx.beginPath(); ctx.arc(ox,oy,R,0,Math.PI*2);
+        const g=ctx.createRadialGradient(ox,oy,0,ox,oy,R);
+        g.addColorStop(0,c1); g.addColorStop(1,c2); ctx.fillStyle=g; ctx.fill();
+        ctx.beginPath(); ctx.arc(ox,oy,ri,0,Math.PI*2);
+        ctx.fillStyle=w.evolved?'#fff700':'#e0b3ff'; ctx.fill();
       }
     }
   },
   lightning: {
-    id: 'lightning', name: 'Yıldırım', emoji: '⚡', color: '#ffe566',
-    desc: 'Rastgele düşmanlara çarpar, zincir yapar',
-    maxLevel: 12,
-    init(wep) { wep.cd = 0; wep.maxCd = 75; wep.dmg = 35; wep.chain = 1; },
-    levelUp(wep) {
-      const lvl = wep.level;
-      if (lvl === 2) { wep.chain = 2; }
-      if (lvl === 3) { wep.dmg += 15; }
-      if (lvl === 4) { wep.chain = 3; wep.maxCd *= 0.85; }
-      if (lvl === 5) { wep.dmg += 20; }
-      if (lvl === 6) { wep.chain = 4; }
-      if (lvl === 7) { wep.maxCd *= 0.8; }
-      if (lvl === 8)  { wep.dmg += 30; wep.chain = 6; }
-      if (lvl === 9)  { wep.chain = 8; wep.maxCd *= 0.8; }
-      if (lvl === 10) { wep.dmg += 40; }
-      if (lvl === 11) { wep.chain = 12; wep.maxCd *= 0.75; }
-      if (lvl === 12) { wep.legendary = true; wep.dmg += 60; wep.chain = 20; wep.maxCd *= 0.6; }
+    id:'lightning', name:'Yıldırım', emoji:'⚡', color:'#ffe566',
+    desc:'Rastgele düşmanlara zincir yıldırım çarpar',
+    evolveWith:'skull',
+    evolvedName:'Fırtına Efendisi', evolvedEmoji:'🌩️',
+    maxLevel:8,
+    init(w){ w.cd=0; w.maxCd=70; w.dmg=38; w.chain=2; },
+    levelUp(w,lv){
+      if(lv===2){w.chain=3;}
+      if(lv===3){w.dmg+=15;}
+      if(lv===4){w.chain=4; w.maxCd*=.88;}
+      if(lv===5){w.dmg+=22;}
+      if(lv===6){w.chain=6;}
+      if(lv===7){w.maxCd*=.8; w.dmg+=28;}
+      if(lv===8){w.chain=14; w.dmg+=45; w.maxCd*=.7;} // evolved
     },
-    fire(wep) {
-      const alive = enemies.filter(e => !e.dead);
-      if (!alive.length) return;
-      const shuffled = alive.sort(() => Math.random() - 0.5);
-      const targets = shuffled.slice(0, wep.chain);
-      targets.forEach((t, i) => {
-        setTimeout(() => {
-          if (t.dead) return;
-          const dmg = wep.legendary ? wep.dmg * 1.5 : wep.dmg;
-          damageEnemy(enemies.indexOf(t), dmg);
-          spawnLightning(player.x, player.y, t.x, t.y, wep.legendary);
-        }, i * (wep.legendary ? 30 : 60));
+    fire(w){
+      const alive=enemies.filter(e=>!e.dead);
+      if(!alive.length)return;
+      const targets=alive.sort(()=>Math.random()-.5).slice(0,w.chain);
+      targets.forEach((t,i)=>{
+        setTimeout(()=>{
+          if(t.dead)return;
+          damageEnemy(enemies.indexOf(t),w.evolved?w.dmg*1.6:w.dmg);
+          spawnLightning(player.x,player.y,t.x,t.y,w.evolved);
+        },i*(w.evolved?25:50));
       });
     }
   },
-  flamethrower: {
-    id: 'flamethrower', name: 'Alev', emoji: '🔥', color: '#ff5e1a',
-    desc: 'İleri yönde sürekli hasar verir',
-    maxLevel: 12,
-    init(wep) { wep.cd = 0; wep.maxCd = 1; wep.dmg = 5; wep.range = 140; },
-    levelUp(wep) {
-      const lvl = wep.level;
-      if (lvl === 2) { wep.dmg += 2; }
-      if (lvl === 3) { wep.range += 30; }
-      if (lvl === 4) { wep.dmg += 3; }
-      if (lvl === 5) { wep.range += 40; }
-      if (lvl === 6) { wep.dmg += 4; }
-      if (lvl === 7) { wep.range += 50; }
-      if (lvl === 8)  { wep.dmg += 8; wep.range += 60; }
-      if (lvl === 9)  { wep.dmg += 12; wep.range += 50; }
-      if (lvl === 10) { wep.spread = Math.PI / 3; wep.dmg += 10; }
-      if (lvl === 11) { wep.dmg += 18; wep.range += 60; }
-      if (lvl === 12) { wep.legendary = true; wep.dmg += 25; wep.range += 80; wep.spread = Math.PI / 2; }
+  whip: {
+    id:'whip', name:'Kamçı', emoji:'🪃', color:'#ff6655',
+    desc:'Yatay alan saldırısı, tüm düşmanları keser',
+    evolveWith:'hollow',
+    evolvedName:'Kıyamet Orakı', evolvedEmoji:'⚔️',
+    maxLevel:8,
+    init(w){ w.cd=0; w.maxCd=68; w.dmg=22; w.range=200; w.height=60; },
+    levelUp(w,lv){
+      if(lv===2){w.dmg+=8; w.range+=40;}
+      if(lv===3){w.height+=25;}
+      if(lv===4){w.dmg+=12;}
+      if(lv===5){w.range+=50; w.height+=30;}
+      if(lv===6){w.dmg+=18;}
+      if(lv===7){w.range+=60; w.height+=30;}
+      if(lv===8){w.dmg+=30; w.range+=80; w.height+=40;} // evolved
     },
-    tick(wep, dt) {
-      const angle = Math.atan2(my - player.y, mx - player.x);
-      const spread = wep.spread || Math.PI / 5;
-      const flameCol = wep.legendary ? '#ff2200' : '#ff8844';
-      for (let j = enemies.length - 1; j >= 0; j--) {
-        const e = enemies[j];
-        if (e.dead) continue;
-        const d = Math.hypot(e.x - player.x, e.y - player.y);
-        if (d > wep.range) continue;
-        const a = Math.atan2(e.y - player.y, e.x - player.x);
-        const diff = Math.abs(angleDiff(a, angle));
-        if (diff < spread) {
-          damageEnemy(j, wep.dmg * dt * 3 * (wep.legendary ? 1.4 : 1));
-          spawnParticle(e.x + randn(12), e.y + randn(12), randn(1.5), randn(1.5), flameCol, 0.4, wep.legendary ? 5 : 3);
+    fire(w){
+      const dir=mx>player.x?1:-1;
+      const x0=player.x, y0=player.y;
+      const R=w.range, H2=w.height;
+      const col=w.evolved?'#ff2200':'#ff6655';
+      for(let j=enemies.length-1;j>=0;j--){
+        const e=enemies[j]; if(e.dead)continue;
+        const dx=e.x-x0, dy=e.y-y0;
+        if(Math.abs(dy)<H2 && dx*dir>0 && Math.abs(dx)<R){
+          damageEnemy(j,(w.evolved?1.4:1)*w.dmg);
+          for(let k=0;k<3;k++) spawnParticle(e.x+randn(12),e.y+randn(12),dir*randn(3),randn(2),col,.4,3);
+        }
+      }
+      // visual flash
+      for(let k=0;k<8;k++) spawnParticle(x0+dir*randn(R*.6),y0+randn(H2*.8),dir*randn(4),randn(2),col,.35,4);
+    }
+  },
+  garlic: {
+    id:'garlic', name:'Sarımsak', emoji:'🧄', color:'#ccff66',
+    desc:'Etrafında sürekli alan hasarı ve geri itme',
+    evolveWith:'pummarola',
+    evolvedName:'Kıyamet Çiçeği', evolvedEmoji:'🌸',
+    maxLevel:8,
+    init(w){ w.cd=0; w.maxCd=1; w.dmg=4; w.radius=80; w.knockback=1.5; },
+    levelUp(w,lv){
+      if(lv===2){w.radius+=15;}
+      if(lv===3){w.dmg+=3;}
+      if(lv===4){w.radius+=20; w.knockback+=.5;}
+      if(lv===5){w.dmg+=5;}
+      if(lv===6){w.radius+=25;}
+      if(lv===7){w.dmg+=7; w.knockback+=.5;}
+      if(lv===8){w.radius+=35; w.dmg+=12; w.knockback+=1;} // evolved
+    },
+    tick(w,dt){
+      const col=w.evolved?'rgba(200,255,100,.06)':'rgba(180,255,80,.04)';
+      for(let j=enemies.length-1;j>=0;j--){
+        const e=enemies[j]; if(e.dead)continue;
+        const d=Math.hypot(e.x-player.x,e.y-player.y);
+        if(d<w.radius){
+          damageEnemy(j,w.dmg*dt*(w.evolved?4:3));
+          // knockback
+          const a=Math.atan2(e.y-player.y,e.x-player.x);
+          e.x+=Math.cos(a)*w.knockback*dt;
+          e.y+=Math.sin(a)*w.knockback*dt;
+          if(Math.random()<.04) spawnParticle(e.x+randn(8),e.y+randn(8),randn(2),randn(2),w.evolved?'#ccff44':'#aaee44',.3,3);
         }
       }
     },
-    fire() {},
-    draw(wep) {
-      const angle = Math.atan2(my - player.y, mx - player.x);
-      const spread = Math.PI / 5;
-      const g = ctx.createConicalGradient
-        ? null
-        : null;
-      ctx.save();
-      ctx.translate(player.x, player.y);
-      ctx.rotate(angle);
-      const grad = ctx.createRadialGradient(0,0,0,0,0,wep.range);
-      if (wep.legendary) {
-        grad.addColorStop(0,'rgba(255,50,0,0.38)');
-        grad.addColorStop(0.5,'rgba(255,120,0,0.18)');
-        grad.addColorStop(1,'rgba(255,60,0,0)');
-      } else {
-        grad.addColorStop(0,'rgba(255,120,30,0.22)');
-        grad.addColorStop(0.6,'rgba(255,60,0,0.09)');
-        grad.addColorStop(1,'rgba(255,60,0,0)');
-      }
-      ctx.beginPath();
-      ctx.moveTo(0,0);
-      ctx.arc(0,0,wep.range,-(wep.spread||Math.PI/5),(wep.spread||Math.PI/5));
-      ctx.closePath();
-      ctx.fillStyle = grad;
-      ctx.fill();
-      ctx.restore();
+    fire(){},
+    draw(w){
+      const alpha=w.evolved?.08:.05;
+      ctx.beginPath(); ctx.arc(player.x,player.y,w.radius,0,Math.PI*2);
+      const g=ctx.createRadialGradient(player.x,player.y,0,player.x,player.y,w.radius);
+      g.addColorStop(0,w.evolved?`rgba(180,255,80,${alpha*2})`:`rgba(180,255,80,${alpha})`);
+      g.addColorStop(1,'rgba(180,255,80,0)');
+      ctx.fillStyle=g; ctx.fill();
     }
   }
 };
 
-// ════════════════════════════════════════════════════
-// UPGRADE POOL
-// ════════════════════════════════════════════════════
-const UPGRADE_POOL = [
-  {
-    id: 'max_hp', name: 'Zırh', emoji: '🛡️',
-    color: '#ff6b6b', tag: 'SAVUNMA',
-    desc: '+30 Maksimum Can ve tam iyileşme',
-    apply() { player.maxHp += 30; player.hp = Math.min(player.hp + 30, player.maxHp); }
+// ════════════════════════════════════════════════
+// PASSIVE DEFINITIONS
+// ════════════════════════════════════════════════
+// Each passive: id, name, emoji, color, desc, maxLevel, pairsWith (weapon id),
+// apply(lv): called on pick / levelup
+const PASSIVES = {
+  bracer: {
+    id:'bracer', name:'Bileklik', emoji:'🧤', color:'#ffe066',
+    desc:'Mermi hızı artar (+15% / lv)',
+    pairsWith:'knife', maxLevel:5,
+    apply(lv){ player.bulletSpd=1+lv*.15; }
   },
-  {
-    id: 'heal', name: 'İksir', emoji: '💉',
-    color: '#ff6b6b', tag: 'İYİLEŞME',
-    desc: 'Canın %40\'ını anında yeniler',
-    apply() { player.hp = Math.min(player.hp + player.maxHp * 0.4, player.maxHp); }
+  canteen: {
+    id:'canteen', name:'Matara', emoji:'🫙', color:'#ff8c42',
+    desc:'Her öldürme can kazanır (+1 / lv)',
+    pairsWith:'axe', maxLevel:5,
+    apply(lv){ player.vampirism=lv; }
   },
-  {
-    id: 'speed', name: 'Çeviklik', emoji: '💨',
-    color: '#00c8ff', tag: 'HAREKETLİLİK',
-    desc: 'Hareket hızı +20%',
-    apply() { player.speed *= 1.2; }
+  spellbook: {
+    id:'spellbook', name:'Büyü Kitabı', emoji:'📖', color:'#c77dff',
+    desc:'Hasar çarpanı (+10% / lv)',
+    pairsWith:'magic', maxLevel:5,
+    apply(lv){ player.dmgMult=1+lv*.1; }
   },
-  {
-    id: 'magnet', name: 'Mıknatıs', emoji: '🧲',
-    color: '#c77dff', tag: 'TOPLAMA',
-    desc: 'XP toplama menzili 2×',
-    apply() { player.magnetRange = (player.magnetRange || 120) * 2; }
+  skull: {
+    id:'skull', name:'Kafatası', emoji:'💀', color:'#ffe566',
+    desc:'Cooldown azalır (-5% / lv)',
+    pairsWith:'lightning', maxLevel:5,
+    apply(lv){ player.cooldownReduce=1-lv*.05; }
   },
-  {
-    id: 'vampirism', name: 'Vampirizm', emoji: '🩸',
-    color: '#cc0033', tag: 'YAŞAM ÇALMA',
-    desc: 'Her öldürme +1 can geri kazandırır (max 5 stack)',
-    apply() { player.vampirism = Math.min(5, (player.vampirism || 0) + 1); }
+  hollow: {
+    id:'hollow', name:'Boşluk Taşı', emoji:'🪨', color:'#ff6655',
+    desc:'Alan hasarı patlama (+12 / lv)',
+    pairsWith:'whip', maxLevel:5,
+    apply(lv){ player.explosion=lv*12; }
   },
-  {
-    id: 'dmg_boost', name: 'Güç Kristali', emoji: '💎',
-    color: '#00ffcc', tag: 'HASAR +%25',
-    desc: 'Tüm silah hasarı kalıcı olarak %35 artar',
-    apply() { player.dmgMult = (player.dmgMult || 1) * 1.35; }
+  pummarola: {
+    id:'pummarola', name:'Domates', emoji:'🍅', color:'#ccff66',
+    desc:'Rejenerasyon (+2 hp/s / lv)',
+    pairsWith:'garlic', maxLevel:5,
+    apply(lv){ player.regen=lv*2; }
   },
-  {
-    id: 'shield', name: 'Enerji Kalkanı', emoji: '🔵',
-    color: '#00aaff', tag: 'SAVUNMA',
-    desc: 'Alınan hasar %20 azalır (max %60)',
-    apply() { player.dmgReduce = Math.min(0.6, (player.dmgReduce || 0) + 0.2); }
+  armor: {
+    id:'armor', name:'Zırh', emoji:'🛡️', color:'#88ccff',
+    desc:'Hasar azaltma (+8% / lv, max %40)',
+    pairsWith:null, maxLevel:5,
+    apply(lv){ player.dmgReduce=Math.min(.4,lv*.08); }
   },
-  {
-    id: 'regen', name: 'Yenilenme', emoji: '💚',
-    color: '#00ff88', tag: 'REJENERASYON',
-    desc: 'Saniyede 2 can yenilenir',
-    apply() { player.regen = (player.regen || 0) + 2; }
+  wings: {
+    id:'wings', name:'Kanatlar', emoji:'🪽', color:'#aaffee',
+    desc:'Hareket hızı (+12% / lv)',
+    pairsWith:null, maxLevel:5,
+    apply(lv){ player.speed=3.0*(1+lv*.12); }
   },
-  {
-    id: 'bullet_spd', name: 'Hız Ruhu', emoji: '🌪️',
-    color: '#88ddff', tag: 'MERMİ HIZI',
-    desc: 'Tüm mermiler %30 daha hızlı gider',
-    apply() { player.bulletSpd = (player.bulletSpd || 1) * 1.3; }
+  heart: {
+    id:'heart', name:'Kalp', emoji:'❤️', color:'#ff4488',
+    desc:'Max can +25 / lv + tam iyileşme',
+    pairsWith:null, maxLevel:5,
+    apply(lv){ player.maxHp=120+lv*25; player.hp=Math.min(player.hp+25,player.maxHp); }
   },
-  {
-    id: 'explosion', name: 'Patlama Ruhu', emoji: '💥',
-    color: '#ff6600', tag: 'ALAN HASARI',
-    desc: 'Düşman ölünce çevredekilere hasar verir',
-    apply() { player.explosion = (player.explosion || 0) + 15; }
+  magnet: {
+    id:'magnet', name:'Mıknatıs', emoji:'🧲', color:'#aabbff',
+    desc:'XP çekme menzili (×1.5 / lv)',
+    pairsWith:null, maxLevel:4,
+    apply(lv){ player.magnetRange=100*Math.pow(1.5,lv); }
   },
-  // Weapon upgrades generated dynamically
-];
+};
 
-function buildUpgradeChoices() {
-  const choices = [];
-
-  // Weapon specific upgrades
-  weaponSlots.forEach(wep => {
-    if (wep.level < WEAPON_DEFS[wep.id].maxLevel) {
-      choices.push({
-        id: 'wup_' + wep.id,
-        name: `${WEAPON_DEFS[wep.id].emoji} ${WEAPON_DEFS[wep.id].name} Lv${wep.level+1}`,
-        emoji: WEAPON_DEFS[wep.id].emoji,
-        color: WEAPON_DEFS[wep.id].color,
-        tag: 'SİLAH',
-        desc: weaponUpgradeDesc(wep),
-        apply() { weaponLevelUp(wep); }
-      });
-    }
-  });
-
-  // New weapon slots
-  const existingIds = weaponSlots.map(w => w.id);
-  if (weaponSlots.length < MAX_WEAPONS) {
-    Object.values(WEAPON_DEFS).forEach(def => {
-      if (!existingIds.includes(def.id)) {
-        choices.push({
-          id: 'new_' + def.id,
-          name: `Yeni: ${def.name}`,
-          emoji: def.emoji,
-          color: def.color,
-          tag: 'YENİ SİLAH',
-          desc: def.desc,
-          apply() { addWeapon(def.id); }
-        });
-      }
-    });
-  }
-
-  // Stat upgrades
-  UPGRADE_POOL.forEach(u => choices.push(u));
-
-  // Shuffle, pick 3
-  shuffle(choices);
-  return choices.slice(0, 3);
-}
-
-function weaponUpgradeDesc(wep) {
-  const lvl = wep.level + 1;
-  const def = WEAPON_DEFS[wep.id];
-  // Simple lookup
-  const descs = {
-    knife:        ['','','Hasar +6','Hız +20%','Çoklu hedef','Delici zırh','Hız +25%','Üçlü atış','Dev hasar','4 hedef+hız','Hasar +22, delik','Altılı ateş','⭐ EFSANEVİ — Sekizli, tam delici'],
-    axe:          ['','','3 yön','Hasar +10','4 yön','Hasar +14','6 yön','Hız +20%','8 yön max','Hasar +28+hız','12 yön','Hasar +35+hız','⭐ EFSANEVİ — 16 yön fırtına'],
-    magic:        ['','','2 küre','Hasar+menzil','3 küre','Hasar +6','4 küre+menzil','Hasar +8','5 küre max güç','Hasar+menzil','7 küre','Hasar+menzil','⭐ EFSANEVİ — 10 altın küre'],
-    lightning:    ['','','Zincir 2','Hasar +15','Zincir 3+hız','Hasar +20','Zincir 4','Hız +20%','Mega hasar','Zincir 8+hız','Hasar +40','Zincir 12+hız','⭐ EFSANEVİ — 20 zincir şimşek'],
-    flamethrower: ['','','Hasar +2','Menzil +30','Hasar +3','Menzil +40','Hasar +4','Menzil +50','Max alev','Hasar +12+menzil','Geniş açı','Hasar +18+menzil','⭐ EFSANEVİ — 180° inferno']
-  };
-  return descs[wep.id]?.[lvl] || 'Güçlendirir';
-}
-
-// ════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
 // HELPERS
-// ════════════════════════════════════════════════════
-function dist2(a, b) { return (a.x-b.x)**2 + (a.y-b.y)**2; }
-function shuffle(arr) { for (let i=arr.length-1;i>0;i--){const j=0|Math.random()*(i+1);[arr[i],arr[j]]=[arr[j],arr[i]];} return arr; }
-function randn(n) { return (Math.random()-0.5)*2*n; }
-function clamp(v,mn,mx) { return Math.max(mn,Math.min(mx,v)); }
-function angleDiff(a,b) { let d=a-b; while(d>Math.PI)d-=Math.PI*2; while(d<-Math.PI)d+=Math.PI*2; return d; }
-function fmtTime(s) { return `${0|s/60}:${String(0|s%60).padStart(2,'0')}`; }
+// ════════════════════════════════════════════════
+function dist2(a,b){ return (a.x-b.x)**2+(a.y-b.y)**2; }
+function randn(n){ return (Math.random()-.5)*2*n; }
+function clamp(v,mn,mx){ return Math.max(mn,Math.min(mx,v)); }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=0|Math.random()*(i+1);[a[i],a[j]]=[a[j],a[i]];} return a; }
+function angleDiff(a,b){ let d=a-b; while(d>Math.PI)d-=Math.PI*2; while(d<-Math.PI)d+=Math.PI*2; return d; }
+function fmtTime(s){ return `${0|s/60}:${String(0|s%60).padStart(2,'0')}`; }
 
-// ════════════════════════════════════════════════════
-// WEAPON MANAGEMENT
-// ════════════════════════════════════════════════════
-function addWeapon(id) {
-  const def = WEAPON_DEFS[id];
-  const wep = { id, level: 1, cd: 0, maxCd: 1 };
-  def.init(wep);
-  weaponSlots.push(wep);
-  renderWeaponHUD();
-}
-
-function weaponLevelUp(wep) {
-  wep.level++;
-  WEAPON_DEFS[wep.id].levelUp(wep);
-  renderWeaponHUD();
-  // Flash effect
-  flashScreen('#ffe566', 0.25);
-}
-
-function renderWeaponHUD() {
-  const el = document.getElementById('weapon-hud');
-  el.innerHTML = weaponSlots.map((wep,i) => {
-    const def = WEAPON_DEFS[wep.id];
-    const isLeg = wep.legendary;
-    return `<div class="weapon-slot active${isLeg?' legendary':''}" id="ws${i}" title="${def.name} Lv${wep.level}${isLeg?' ⭐ EFSANEVİ':''}">
-      <div class="weapon-emoji">${def.emoji}${isLeg?'<span style="font-size:9px;position:absolute;top:2px;right:3px;">⭐</span>':''}</div>
-      <div class="weapon-lv" style="${isLeg?'color:#fff700;':''}">LV${wep.level}${isLeg?'★':''}</div>
-      <div class="weapon-cd" id="wcd${i}" style="width:0%"></div>
-    </div>`;
-  }).join('');
-}
-
-// ════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
 // SPAWN
-// ════════════════════════════════════════════════════
-function spawnBullet(x, y, angle, spd, dmg, color, r, pierce, type) {
-  spd *= (player.bulletSpd || 1);
-  bullets.push({ x, y,
-    vx: Math.cos(angle)*spd, vy: Math.sin(angle)*spd,
-    dmg, color, r, pierce: pierce||0, type,
-    hit: new Set(), dead: false, life: 0
-  });
+// ════════════════════════════════════════════════
+function spawnBullet(x,y,angle,spd,dmg,color,r,pierce,type){
+  spd*=player.bulletSpd;
+  bullets.push({x,y,vx:Math.cos(angle)*spd,vy:Math.sin(angle)*spd,dmg,color,r,pierce:pierce||0,type,hit:new Set(),dead:false,life:0});
   sfxShoot(type);
 }
+function spawnParticle(x,y,vx,vy,color,life,r){ particles.push({x,y,vx,vy,color,life,maxLife:life,r}); }
+function spawnGem(x,y,value){ xpGems.push({x,y,vx:randn(2),vy:randn(2),value,dead:false}); }
 
-// ── LEVEL-BASED DIFFICULTY CONFIG ──
-// Her level için: { rate: spawn aralığı (frame), count: tek seferde kaç düşman, tankChance, fastChance, bossKillThreshold }
-function getDiffConfig() {
-  const lv = level;
-  // rate: kaç frame'de bir spawn (60 = 1 saniye). Düşük = daha hızlı spawn.
-  // count: her spawn tick'inde çıkan düşman sayısı
-  // hpScale/spdScale: düşman güç çarpanı
-  if (lv === 1)  return { rate: 120, count: 1, fastChance: 0,    tankChance: 0,    hpScale: 1.4,  spdScale: 0.8 };
-  if (lv === 2)  return { rate: 100, count: 1, fastChance: 0,    tankChance: 0,    hpScale: 1.6,  spdScale: 0.85 };
-  if (lv === 3)  return { rate: 90,  count: 1, fastChance: 0.1,  tankChance: 0,    hpScale: 1.85, spdScale: 0.9 };
-  if (lv === 4)  return { rate: 80,  count: 1, fastChance: 0.15, tankChance: 0,    hpScale: 2.1,  spdScale: 0.92 };
-  if (lv === 5)  return { rate: 72,  count: 2, fastChance: 0.18, tankChance: 0.05, hpScale: 2.4,  spdScale: 0.95 };
-  if (lv === 6)  return { rate: 65,  count: 2, fastChance: 0.2,  tankChance: 0.08, hpScale: 2.7,  spdScale: 0.97 };
-  if (lv === 7)  return { rate: 58,  count: 2, fastChance: 0.22, tankChance: 0.1,  hpScale: 3.0,  spdScale: 1.0 };
-  if (lv === 8)  return { rate: 52,  count: 2, fastChance: 0.25, tankChance: 0.12, hpScale: 3.4,  spdScale: 1.02 };
-  if (lv === 9)  return { rate: 46,  count: 3, fastChance: 0.28, tankChance: 0.14, hpScale: 3.8,  spdScale: 1.05 };
-  if (lv === 10) return { rate: 40,  count: 3, fastChance: 0.3,  tankChance: 0.15, hpScale: 4.3,  spdScale: 1.08 };
-  // lv 11+: daha dengeli artış
-  const extra = lv - 10;
-  return {
-    rate:       Math.max(28, 40 - extra * 1.2),
-    count:      Math.min(5, 3 + Math.floor(extra / 4)),
-    fastChance: Math.min(0.3, 0.3 + extra * 0.005),
-    tankChance: Math.min(0.2, 0.15 + extra * 0.005),
-    hpScale:    4.3 + extra * 0.28,
-    spdScale:   Math.min(1.35, 1.08 + extra * 0.018),
-  };
-}
-
-function spawnEnemy() {
-  if (state !== 'playing') return;
-  const side = 0|Math.random()*4;
-  const pad = 30;
-  let ex, ey;
-  if (side===0){ ex=-pad;   ey=Math.random()*H; }
-  if (side===1){ ex=W+pad;  ey=Math.random()*H; }
-  if (side===2){ ey=-pad;   ex=Math.random()*W; }
-  if (side===3){ ey=H+pad;  ex=Math.random()*W; }
-
-  const cfg = getDiffConfig();
-  const { hpScale, spdScale, fastChance, tankChance } = cfg;
-
-  // Boss: her 30 öldürmede bir, level 5'ten itibaren
-  const isBoss = level >= 5 && kills > 0 && kills % 30 === 0 && Math.random() < 0.06;
-
-  if (isBoss) {
-    enemies.push({ x:ex, y:ey, hp: 400*hpScale, maxHp: 400*hpScale, speed: 0.7*spdScale,
-      radius: 24, color: '#ff0066', dead: false, type:'boss', flashTimer:0 });
-    return;
-  }
-
-  const roll = Math.random();
-  if (roll < tankChance) {
-    // Tank
-    enemies.push({ x:ex, y:ey, hp: 100*hpScale, maxHp: 100*hpScale, speed: 0.65*spdScale,
-      radius: 17, color: '#8855ff', dead: false, type:'tank', flashTimer:0 });
-  } else if (roll < tankChance + fastChance) {
-    // Fast
-    enemies.push({ x:ex, y:ey, hp: 18*hpScale, maxHp: 18*hpScale, speed: 1.9*spdScale,
-      radius: 8, color: '#ff9900', dead: false, type:'fast', flashTimer:0 });
-  } else {
-    // Basic
-    enemies.push({ x:ex, y:ey, hp: 35*hpScale, maxHp: 35*hpScale, speed: 1.2*spdScale,
-      radius: 11, color: '#ff4455', dead: false, type:'basic', flashTimer:0 });
-  }
-}
-
-let spawnTimer = 0;
-function tickSpawn(dt) {
-  if (state !== 'playing') return;
-  const cfg = getDiffConfig();
-  spawnTimer += dt;
-  while (spawnTimer >= cfg.rate) {
-    spawnTimer -= cfg.rate;
-    for (let i = 0; i < cfg.count; i++) spawnEnemy();
-  }
-}
-
-function spawnGem(x, y, value) {
-  xpGems.push({ x, y, vx: randn(2), vy: randn(2), value, dead: false });
-}
-
-function spawnParticle(x, y, vx, vy, color, life, r) {
-  particles.push({ x, y, vx, vy, color, life, maxLife: life, r });
-}
-
-function spawnLightning(x1,y1,x2,y2,legendary=false) {
+function spawnLightning(x1,y1,x2,y2,big=false){
   SFX.lightning();
-  const steps = legendary ? 14 : 8;
-  const col   = legendary ? '#fff700' : '#ffe566';
-  const sz    = legendary ? 4 : 2;
+  const steps=big?16:9, col=big?'#fff700':'#ffe566', sz=big?4:2.5;
   let px=x1,py=y1;
   for(let i=1;i<=steps;i++){
     const t=i/steps;
-    const nx=x1+(x2-x1)*t+randn(legendary?28:18);
-    const ny=y1+(y2-y1)*t+randn(legendary?28:18);
-    spawnParticle((px+nx)/2,(py+ny)/2,0,0,col,0.18,sz);
+    const nx=x1+(x2-x1)*t+randn(big?30:18);
+    const ny=y1+(y2-y1)*t+randn(big?30:18);
+    spawnParticle((px+nx)/2,(py+ny)/2,0,0,col,.2,sz);
     px=nx;py=ny;
   }
 }
 
-// ════════════════════════════════════════════════════
-// DAMAGE
-// ════════════════════════════════════════════════════
-function damageEnemy(idx, dmg) {
-  const e = enemies[idx];
-  if (!e || e.dead) return;
-  dmg *= (player.dmgMult || 1);
-  e.hp -= dmg;
-  e.flashTimer = 6;
-  // Floating damage number
-  if (dmg >= 5) showDmgNum(e.x, e.y, Math.round(dmg));
-
-  if (e.hp <= 0) killEnemy(idx);
+// ════════════════════════════════════════════════
+// WAVE / ENEMY SPAWNING  (Vampire Survivors style: time-based waves)
+// ════════════════════════════════════════════════
+/*
+  Waves escalate every 30 seconds.
+  Enemy types unlock progressively.
+  Multiple enemy groups spawn at specific intervals.
+*/
+function getWaveConfig(t){
+  const w=Math.floor(t/30)+1; // wave per 30s
+  // Base
+  let cfg = {
+    spawnRate: Math.max(22, 100-w*6),
+    count:     Math.min(8, 1+Math.floor(w/2)),
+    hpMult:    1+w*.35,
+    spdMult:   Math.min(1.6, 1+w*.04),
+    fastChance:Math.min(.35,.05+w*.025),
+    tankChance:Math.min(.2, w>.3?w*.015:0),
+    bossChance:w>=4?.02:.0,
+    eliteChance:Math.min(.12, w>=6?w*.008:0),
+  };
+  return cfg;
 }
 
-function killEnemy(idx) {
-  const e = enemies[idx];
-  if (!e || e.dead) return;
-  e.dead = true;
-  kills++;
-  score += e.type === 'boss' ? 100 : e.type === 'tank' ? 30 : e.type === 'fast' ? 15 : 10;
-  if (e.type === 'boss') SFX.bossDie(); else SFX.enemyDie();
-  // Vampirism
-  if (player.vampirism) player.hp = Math.min(player.maxHp, player.hp + player.vampirism);
-  // Explosion passive
-  if (player.explosion) {
-    const radius = player.explosion;
-    for (let k = enemies.length-1; k >= 0; k--) {
-      const en = enemies[k];
-      if (en.dead) continue;
-      const d = Math.hypot(en.x - e.x, en.y - e.y);
-      if (d < radius) damageEnemy(k, 45 * (player.dmgMult||1));
+let spawnTimer=0;
+function tickSpawn(dt){
+  if(state!=='playing')return;
+  const cfg=getWaveConfig(gameTime);
+  spawnTimer+=dt;
+  while(spawnTimer>=cfg.spawnRate){
+    spawnTimer-=cfg.spawnRate;
+    for(let i=0;i<cfg.count;i++) spawnOneEnemy(cfg);
+  }
+}
+
+function spawnOneEnemy(cfg){
+  const side=0|Math.random()*4;
+  const pad=32;
+  let ex,ey;
+  if(side===0){ex=-pad;ey=Math.random()*H;}
+  if(side===1){ex=W+pad;ey=Math.random()*H;}
+  if(side===2){ey=-pad;ex=Math.random()*W;}
+  if(side===3){ey=H+pad;ex=Math.random()*W;}
+
+  const {hpMult,spdMult,fastChance,tankChance,bossChance,eliteChance}=cfg;
+  const roll=Math.random();
+
+  if(roll<bossChance){
+    enemies.push({x:ex,y:ey,hp:600*hpMult,maxHp:600*hpMult,speed:.75*spdMult,radius:28,color:'#ff0055',dead:false,type:'boss',flashTimer:0});
+    return;
+  }
+  if(roll<bossChance+eliteChance){
+    enemies.push({x:ex,y:ey,hp:180*hpMult,maxHp:180*hpMult,speed:1.0*spdMult,radius:20,color:'#aa00ff',dead:false,type:'elite',flashTimer:0});
+    return;
+  }
+  if(roll<bossChance+eliteChance+tankChance){
+    enemies.push({x:ex,y:ey,hp:110*hpMult,maxHp:110*hpMult,speed:.65*spdMult,radius:18,color:'#8855ff',dead:false,type:'tank',flashTimer:0});
+    return;
+  }
+  if(roll<bossChance+eliteChance+tankChance+fastChance){
+    enemies.push({x:ex,y:ey,hp:20*hpMult,maxHp:20*hpMult,speed:2.0*spdMult,radius:7,color:'#ff9900',dead:false,type:'fast',flashTimer:0});
+    return;
+  }
+  enemies.push({x:ex,y:ey,hp:38*hpMult,maxHp:38*hpMult,speed:1.15*spdMult,radius:11,color:'#ff4455',dead:false,type:'basic',flashTimer:0});
+}
+
+// ════════════════════════════════════════════════
+// DAMAGE
+// ════════════════════════════════════════════════
+let flashColor='', flashAlpha=0;
+function flashScreen(c,a){flashColor=c;flashAlpha=a;}
+
+function damageEnemy(idx,dmg){
+  const e=enemies[idx]; if(!e||e.dead)return;
+  dmg*=(player.dmgMult||1);
+  e.hp-=dmg; e.flashTimer=6;
+  if(dmg>=4) showDmgNum(e.x,e.y,Math.round(dmg),dmg);
+  if(e.hp<=0) killEnemy(idx);
+}
+
+function killEnemy(idx){
+  const e=enemies[idx]; if(!e||e.dead)return;
+  e.dead=true; kills++;
+  score+=e.type==='boss'?200:e.type==='elite'?80:e.type==='tank'?35:e.type==='fast'?12:10;
+  if(e.type==='boss')SFX.bossDie(); else SFX.die();
+  // vampirism
+  if(player.vampirism) player.hp=Math.min(player.maxHp,player.hp+player.vampirism);
+  // explosion
+  if(player.explosion){
+    for(let k=enemies.length-1;k>=0;k--){
+      const en=enemies[k]; if(en.dead)continue;
+      const d=Math.hypot(en.x-e.x,en.y-e.y);
+      if(d<player.explosion) damageEnemy(k,40*(player.dmgMult||1));
     }
-    for(let p=0;p<6;p++) spawnParticle(e.x+randn(10),e.y+randn(10),randn(3),randn(3),'#ff6600',0.35,4);
+    for(let p=0;p<8;p++) spawnParticle(e.x+randn(10),e.y+randn(10),randn(3.5),randn(3.5),'#ff6600',.4,4);
+  }
+  const cnt=e.type==='boss'?24:e.type==='elite'?12:e.type==='tank'?8:5;
+  for(let i=0;i<cnt;i++) spawnParticle(e.x,e.y,randn(4.5),randn(4.5),e.color,.5+Math.random()*.4,2+Math.random()*3);
+  const gems=e.type==='boss'?12:e.type==='elite'?5:e.type==='tank'?3:e.type==='fast'?1:2;
+  for(let i=0;i<gems;i++) spawnGem(e.x+randn(8),e.y+randn(8),e.type==='boss'?3:1);
+  enemies.splice(idx,1);
+}
+
+function damagePlayer(dmg){
+  if(player.invincible>0)return;
+  dmg*=(1-(player.dmgReduce||0));
+  player.hp-=dmg; player.invincible=28;
+  SFX.hit(); flashScreen('#ff3333',.1);
+  if(player.hp<=0){player.hp=0; endGame();}
+}
+
+function showDmgNum(x,y,dmg,rawDmg){
+  const el=document.createElement('div');
+  el.className='dmg-num';
+  el.style.left=x+'px'; el.style.top=y+'px';
+  el.style.color=rawDmg>=80?'#ff0':rawDmg>=40?'#ffa':'#fff';
+  el.style.fontSize=rawDmg>=80?'20px':rawDmg>=40?'16px':'13px';
+  el.textContent=dmg;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),900);
+}
+
+// ════════════════════════════════════════════════
+// UPGRADE SYSTEM  — Vampire Survivors style
+// ════════════════════════════════════════════════
+/*
+  Pick pool priority:
+  1. EVOLVED option (if weapon max level + passive owned)
+  2. Weapon level-ups
+  3. New weapons (if slot open)
+  4. Passive level-ups
+  5. New passives (if slot open)
+  Always show 4 cards. Rarity affects glow color.
+*/
+
+function canEvolve(wep){
+  const def=WEAPONS[wep.id];
+  if(!def.evolveWith || wep.level<8 || wep.evolved) return false;
+  return passives.some(p=>p.id===def.evolveWith);
+}
+
+function buildUpgradePool(){
+  const pool=[];
+
+  // 1. Evolution options (highest priority)
+  weapons.forEach(wep=>{
+    if(canEvolve(wep)){
+      const def=WEAPONS[wep.id];
+      pool.unshift({
+        id:'evo_'+wep.id, rarity:'evolved',
+        emoji:def.evolvedEmoji, name:def.evolvedName,
+        color:'#ffd700',
+        desc:`${def.emoji}${def.name} + ${PASSIVES[def.evolveWith].emoji}${PASSIVES[def.evolveWith].name} → Efsanevi silah doğuyor!`,
+        tag:'⭐ EVRİM',
+        levels:8, curLevel:8,
+        apply(){
+          wep.evolved=true;
+          WEAPONS[wep.id].levelUp(wep,9); // evolved bonus
+          // consume passive slot? No, keep it
+          showEvoBanner(def.evolvedEmoji+' '+def.evolvedName, def.emoji+' + '+PASSIVES[def.evolveWith].emoji);
+          SFX.evolve();
+        }
+      });
+    }
+  });
+
+  // 2. Weapon level-ups
+  weapons.forEach(wep=>{
+    if(wep.evolved||wep.level>=WEAPONS[wep.id].maxLevel)return;
+    const def=WEAPONS[wep.id];
+    pool.push({
+      id:'wup_'+wep.id, rarity: wep.level>=6?'epic':wep.level>=4?'rare':'common',
+      emoji:def.emoji, name:`${def.name} Lv${wep.level+1}`,
+      color:def.color,
+      desc:weaponLvDesc(wep.id, wep.level+1),
+      tag:'SİLAH YÜKSELTMESİ',
+      levels:WEAPONS[wep.id].maxLevel, curLevel:wep.level,
+      apply(){ weaponLevelUp(wep); }
+    });
+  });
+
+  // 3. New weapons
+  if(weapons.length<MAX_WEAPONS){
+    const owned=new Set(weapons.map(w=>w.id));
+    Object.values(WEAPONS).forEach(def=>{
+      if(owned.has(def.id))return;
+      pool.push({
+        id:'new_'+def.id, rarity:'rare',
+        emoji:def.emoji, name:def.name,
+        color:def.color, desc:def.desc,
+        tag:'YENİ SİLAH',
+        levels:1, curLevel:0,
+        apply(){ addWeapon(def.id); }
+      });
+    });
   }
 
-  // Particles
-  const count = e.type==='boss' ? 20 : e.type==='tank' ? 10 : 6;
-  for (let i=0; i<count; i++)
-    spawnParticle(e.x, e.y, randn(4), randn(4), e.color, 0.5+Math.random()*0.4, 2+Math.random()*3);
+  // 4. Passive level-ups
+  passives.forEach(pas=>{
+    const def=PASSIVES[pas.id];
+    if(pas.level>=def.maxLevel)return;
+    pool.push({
+      id:'pup_'+pas.id, rarity:pas.level>=4?'epic':'common',
+      emoji:def.emoji, name:`${def.name} Lv${pas.level+1}`,
+      color:def.color, desc:def.desc,
+      tag:'PASİF YÜKSELTMESİ',
+      levels:def.maxLevel, curLevel:pas.level,
+      apply(){ pas.level++; def.apply(pas.level); }
+    });
+  });
 
-  // XP gems
-  const gemCount = e.type==='boss' ? 8 : e.type==='tank' ? 3 : e.type==='fast' ? 1 : 2;
-  for (let i=0;i<gemCount;i++) spawnGem(e.x+randn(10), e.y+randn(10), 1);
+  // 5. New passives
+  if(passives.length<MAX_PASSIVES){
+    const ownedP=new Set(passives.map(p=>p.id));
+    Object.values(PASSIVES).forEach(def=>{
+      if(ownedP.has(def.id))return;
+      pool.push({
+        id:'new_p_'+def.id, rarity:'common',
+        emoji:def.emoji, name:def.name,
+        color:def.color, desc:def.desc,
+        tag:'YENİ PASİF',
+        levels:def.maxLevel, curLevel:0,
+        apply(){ addPassive(def.id); }
+      });
+    });
+  }
 
-  enemies.splice(idx, 1);
+  // Evolved first, then shuffle rest
+  const evoItems=pool.filter(x=>x.rarity==='evolved');
+  const rest=shuffle(pool.filter(x=>x.rarity!=='evolved'));
+  const final=[...evoItems,...rest].slice(0,4);
+  return final;
 }
 
-function damagePlayer(dmg) {
-  if (player.invincible > 0) return;
-  dmg *= (1 - (player.dmgReduce || 0));
-  player.hp -= dmg;
-  player.invincible = 30;
-  SFX.playerHit();
-  flashScreen('#ff3333', 0.12);
-  if (player.hp <= 0) { player.hp = 0; endGame(); }
+function weaponLvDesc(id, lv){
+  const d={
+    knife:  ['','','Hasar +8','Hız+, 2 hedef','Hasar +10, delici','Hız+, 3 hedef','Hasar +14, 2x delik','Hız+, 4 hedef','⭐ 6 hedef, tam delici'],
+    axe:    ['','','3 yön','Hasar +12','5 yön','Hasar +18','7 yön, hız+','Hasar +25','⭐ 12 yön fırtınası'],
+    magic:  ['','','2 küre','Hasar+menzil','3 küre','Hasar +8','4 küre+menzil','Hasar +12','⭐ 7 küre ejderhası'],
+    lightning:['','','3 zincir','Hasar +15','4 zincir, hız+','Hasar +22','6 zincir','Hız+, hasar +28','⭐ 14 zincir fırtına'],
+    whip:   ['','','Alan+, hasar +8','Yükseklik +25','Hasar +12','Alan+, yükseklik +30','Hasar +18','Alan+, yükseklik +30','⭐ Devasa kıyamet orakı'],
+    garlic: ['','','Menzil +15','Hasar +3','Menzil +20, kb+','Hasar +5','Menzil +25','Hasar +7, kb+','⭐ Kıyamet çiçeği patlar'],
+  };
+  return d[id]?.[lv]||'Güçlendirir';
 }
 
-// ════════════════════════════════════════════════════
-// FLASH OVERLAY
-// ════════════════════════════════════════════════════
-let flashColor = null, flashAlpha = 0;
-function flashScreen(color, alpha) { flashColor = color; flashAlpha = alpha; }
-
-// ════════════════════════════════════════════════════
-// FLOATING DAMAGE NUMBERS
-// ════════════════════════════════════════════════════
-function showDmgNum(x, y, dmg) {
-  const el = document.createElement('div');
-  el.className = 'dmg-num';
-  el.style.left = x + 'px';
-  el.style.top = y + 'px';
-  el.style.color = dmg >= 50 ? '#ff0' : dmg >= 25 ? '#ffa' : '#fff';
-  el.textContent = dmg;
-  document.body.appendChild(el);
-  setTimeout(() => el.remove(), 800);
+function addWeapon(id){
+  const def=WEAPONS[id];
+  const w={id,level:1,cd:0,maxCd:1,evolved:false};
+  def.init(w); weapons.push(w); renderItemHUD();
 }
 
-// ════════════════════════════════════════════════════
-// GAME LIFECYCLE
-// ════════════════════════════════════════════════════
-function startGame() {
-  getAudio(); // kullanıcı etkileşimiyle AudioContext'i aç
-  state = 'playing';
-  score = 0; kills = 0; level = 1; xp = 0; xpToNext = 12;
-  gameTime = 0; spawnTimer = 0; pendingUpgrades = 0;
-
-  player.x = W/2; player.y = H/2;
-  player.hp = 100; player.maxHp = 100;
-  player.speed = 2.8; player.invincible = 0;
-  player.trail = []; player.magnetRange = 120;
-  player.dmgMult = 1; player.dmgReduce = 0; player.regen = 0; player.vampirism = 0; player.bulletSpd = 1; player.explosion = 0;
-
-  enemies = []; bullets = []; xpGems = []; particles = [];
-  weaponSlots = [];
-  addWeapon('knife');
-
-  document.getElementById('menu-screen').classList.add('hidden');
-  document.getElementById('gameover-screen').classList.add('hidden');
-  document.getElementById('upgrade-screen').classList.add('hidden');
-
-  lastTime = performance.now();
-  if (raf) cancelAnimationFrame(raf);
-  raf = requestAnimationFrame(loop);
+function weaponLevelUp(wep){
+  wep.level++;
+  WEAPONS[wep.id].levelUp(wep,wep.level);
+  renderItemHUD();
+  flashScreen('#ffe566',.2);
 }
 
-function endGame() {
-  state = 'gameover';
-  SFX.gameOver();
-  document.getElementById('go-score').textContent = score.toLocaleString();
-  document.getElementById('go-level').textContent = level;
-  document.getElementById('go-kills').textContent = kills;
-  document.getElementById('go-time').textContent = fmtTime(gameTime);
-  document.getElementById('gameover-screen').classList.remove('hidden');
+function addPassive(id){
+  const def=PASSIVES[id];
+  passives.push({id,level:1});
+  def.apply(1);
+  renderItemHUD();
 }
 
-function showUpgrade() {
-  state = 'upgrade';
-  const screen = document.getElementById('upgrade-screen');
-  document.getElementById('upgrade-level-num').textContent = `LV ${level}`;
-  screen.classList.remove('hidden');
+function showEvoBanner(title,sub){
+  const b=document.getElementById('evo-banner');
+  document.getElementById('evo-title').textContent='⭐ '+title;
+  document.getElementById('evo-sub').textContent=sub;
+  b.style.display='block';
+  b.style.animation='none'; b.offsetHeight; b.style.animation='';
+  setTimeout(()=>b.style.display='none',2500);
+}
 
-  const choices = buildUpgradeChoices();
-  const container = document.getElementById('upgrade-cards');
-  container.innerHTML = choices.map((c,i) => `
-    <div class="upgrade-card" onclick="pickUpgrade(${i})"
-      style="--card-glow: radial-gradient(circle at 50% 100%, ${c.color}22, transparent 70%);">
+// ════════════════════════════════════════════════
+// ITEM HUD (bottom bar)
+// ════════════════════════════════════════════════
+function renderItemHUD(){
+  const el=document.getElementById('item-hud');
+  const wSlots=weapons.map((w,i)=>{
+    const def=WEAPONS[w.id];
+    const cls='item-slot weapon'+(w.evolved?' evolved':'');
+    const emoji=w.evolved?def.evolvedEmoji:def.emoji;
+    return `<div class="${cls}" id="ws${i}" title="${w.evolved?def.evolvedName:def.name} Lv${w.level}">
+      <div class="slot-emoji">${emoji}</div>
+      <div class="slot-lv">${w.evolved?'⭐':'LV'+w.level}</div>
+      <div class="slot-cd" id="wcd${i}" style="width:0%"></div>
+    </div>`;
+  });
+  const pSlots=passives.map(p=>{
+    const def=PASSIVES[p.id];
+    return `<div class="item-slot passive" title="${def.name} Lv${p.level}">
+      <div class="slot-emoji">${def.emoji}</div>
+      <div class="slot-lv" style="color:#88ddff">LV${p.level}</div>
+    </div>`;
+  });
+  el.innerHTML=[...wSlots,...pSlots].join('');
+}
+
+// ════════════════════════════════════════════════
+// UPGRADE SCREEN
+// ════════════════════════════════════════════════
+function showUpgrade(){
+  state='upgrade';
+  document.getElementById('up-level-num').textContent='LV '+level;
+  const choices=buildUpgradePool();
+  const hasPending=pendingUpgrades>1;
+  document.getElementById('up-subtitle').textContent=hasPending?`${pendingUpgrades} SEÇIM BEKLIYOR`:'BİR YETENEK SEÇ';
+  const container=document.getElementById('up-cards');
+  container.innerHTML=choices.map((c,i)=>{
+    const rarityColors={common:'rgba(180,180,180,.15)',rare:'rgba(80,140,255,.15)',epic:'rgba(180,80,255,.2)',evolved:'rgba(255,200,0,.2)'};
+    const tagColors={common:'#aaa',rare:'#88aaff',epic:'#cc66ff',evolved:'#ffd700'};
+    const dots=c.levels>1?`<div class="uc-lvbar">${Array.from({length:c.levels},(_,k)=>`<div class="uc-lv-dot${k<c.curLevel?' filled':''}"></div>`).join('')}</div>`:'';
+    return `<div class="up-card rarity-${c.rarity}" onclick="pickUpgrade(${i})"
+      style="--glow:radial-gradient(circle at 50% 100%,${rarityColors[c.rarity]},transparent 70%);">
       <span class="uc-icon">${c.emoji}</span>
       <div class="uc-name">${c.name}</div>
       <div class="uc-desc">${c.desc}</div>
-      <span class="uc-tag" style="--tag-bg: ${c.color}22; --tag-color: ${c.color}">${c.tag}</span>
-    </div>
-  `).join('');
-  // Store choices for onclick
-  window._upgradeChoices = choices;
+      ${dots}
+      <span class="uc-tag" style="--tag-bg:${rarityColors[c.rarity]};--tag-col:${tagColors[c.rarity]}">${c.tag}</span>
+    </div>`;
+  }).join('');
+  window._upChoices=choices;
+  document.getElementById('upgrade-screen').classList.remove('hidden');
 }
 
-window.pickUpgrade = function(i) {
-  const c = window._upgradeChoices[i];
-  if (!c) return;
-  SFX.upgrade();
+window.pickUpgrade=function(i){
+  const c=window._upChoices[i]; if(!c)return;
+  if(c.rarity!=='evolved') SFX.upgrade();
   c.apply();
   document.getElementById('upgrade-screen').classList.add('hidden');
   pendingUpgrades--;
-  if (pendingUpgrades > 0) {
-    // Another upgrade waiting
-    setTimeout(showUpgrade, 100);
-  } else {
-    state = 'playing';
-  }
+  if(pendingUpgrades>0) setTimeout(showUpgrade,80);
+  else state='playing';
 };
 
-function gainXP(amount) {
-  xp += amount;
-  while (xp >= xpToNext) {
-    xp -= xpToNext;
-    xpToNext = Math.ceil(xpToNext * 1.25);
-    level++;
-    pendingUpgrades++;
-    // Level atlarken can tamamen yenilenir
-    player.hp = player.maxHp;
-    SFX.levelUp();
-    flashScreen('#00ff88', 0.18);
-    if (pendingUpgrades === 1) showUpgrade();
+// ════════════════════════════════════════════════
+// WAVE ANNOUNCER
+// ════════════════════════════════════════════════
+function checkWave(){
+  if(gameTime>=nextWaveTime){
+    waveNum++;
+    nextWaveTime+=30;
+    document.getElementById('wave-label').textContent='WAVE '+waveNum;
+    const el=document.getElementById('wave-announce');
+    el.textContent='🌊 WAVE '+waveNum;
+    el.style.display='block';
+    el.style.animation='none'; el.offsetHeight; el.style.animation='waveAnim 2s ease-out forwards';
+    setTimeout(()=>el.style.display='none',2000);
+    // Wave spike: extra enemies
+    const cfg=getWaveConfig(gameTime);
+    for(let i=0;i<8+waveNum*2;i++) spawnOneEnemy(cfg);
   }
 }
 
-// ════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
+// XP & LEVEL
+// ════════════════════════════════════════════════
+function gainXP(amount){
+  xp+=amount;
+  while(xp>=xpToNext){
+    xp-=xpToNext;
+    xpToNext=Math.ceil(xpToNext*1.28);
+    level++; pendingUpgrades++;
+    SFX.levelUp(); flashScreen('#00ff88',.15);
+    if(pendingUpgrades===1) showUpgrade();
+  }
+}
+
+// ════════════════════════════════════════════════
+// GAME LIFECYCLE
+// ════════════════════════════════════════════════
+function startGame(){
+  getAC();
+  state='playing';
+  score=0;kills=0;level=1;xp=0;xpToNext=20;
+  gameTime=0;spawnTimer=0;pendingUpgrades=0;
+  waveNum=1;nextWaveTime=30;
+
+  player.x=W/2; player.y=H/2;
+  player.hp=120; player.maxHp=120; player.speed=3.0;
+  player.invincible=0; player.trail=[];
+  player.magnetRange=100; player.dmgMult=1; player.dmgReduce=0;
+  player.regen=0; player.vampirism=0; player.bulletSpd=1;
+  player.explosion=0; player.cooldownReduce=1;
+
+  enemies=[];bullets=[];xpGems=[];particles=[];
+  weapons=[]; passives=[];
+  addWeapon('knife');
+
+  ['menu-screen','gameover-screen','upgrade-screen'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  document.getElementById('wave-label').textContent='WAVE 1';
+  renderItemHUD();
+
+  if(raf) cancelAnimationFrame(raf);
+  lastTime=performance.now();
+  raf=requestAnimationFrame(loop);
+}
+
+function endGame(){
+  state='gameover'; SFX.gameOver();
+  document.getElementById('go-score').textContent=score.toLocaleString();
+  document.getElementById('go-level').textContent=level;
+  document.getElementById('go-kills').textContent=kills;
+  document.getElementById('go-time').textContent=fmtTime(gameTime);
+  document.getElementById('gameover-screen').classList.remove('hidden');
+}
+
+// ════════════════════════════════════════════════
+// SETTINGS
+// ════════════════════════════════════════════════
+function toggleSettings(){
+  const modal=document.getElementById('settings-modal');
+  const hidden=modal.classList.contains('hidden');
+  if(hidden){
+    if(state==='playing'){stateBefore='playing';state='paused';}
+    else stateBefore=state;
+    renderInventory();
+    document.getElementById('pause-badge').style.display=(state==='paused')?'':'none';
+    modal.classList.remove('hidden');
+  } else {
+    modal.classList.add('hidden');
+    if(stateBefore==='playing'){state='playing';lastTime=performance.now();}
+    stateBefore=null;
+  }
+}
+
+function renderInventory(){
+  // weapons
+  const wEl=document.getElementById('inv-weapons');
+  if(!weapons.length){ wEl.innerHTML='<div class="inv-empty">Henüz silah yok</div>'; }
+  else wEl.innerHTML=weapons.map(w=>{
+    const def=WEAPONS[w.id];
+    const evo=w.evolved;
+    return `<div class="inv-row">
+      <div class="inv-icon">${evo?def.evolvedEmoji:def.emoji}</div>
+      <div class="inv-info">
+        <div class="inv-name">${evo?def.evolvedName:def.name}</div>
+        <div class="inv-desc">${evo?'Efsanevi — maksimum güç':def.desc}</div>
+      </div>
+      <div class="inv-badge ${evo?'evo':'norm'}">${evo?'⭐ EFSANEVİ':'LV '+w.level}</div>
+    </div>`;
+  }).join('');
+
+  // passives
+  const pEl=document.getElementById('inv-passives');
+  const rows=[];
+  passives.forEach(p=>{
+    const def=PASSIVES[p.id];
+    rows.push({icon:def.emoji,name:def.name+' Lv'+p.level,desc:def.desc});
+  });
+  // bonus stats derived
+  if(!rows.length){ pEl.innerHTML='<div class="inv-empty">Henüz güçlendirme yok</div>'; }
+  else pEl.innerHTML=rows.map(r=>`<div class="inv-row">
+    <div class="inv-icon">${r.icon}</div>
+    <div class="inv-info"><div class="inv-name">${r.name}</div><div class="inv-desc">${r.desc}</div></div>
+  </div>`).join('');
+}
+
+// ════════════════════════════════════════════════
 // MAIN LOOP
-// ════════════════════════════════════════════════════
-function loop(now) {
-  raf = requestAnimationFrame(loop);
-  if (state === 'paused') { lastTime = now; return; }
-  const dt = Math.min((now - lastTime) / 1000 * 60, 4); // delta in "frames" @ 60fps
-  lastTime = now;
-  if (state === 'playing') update(dt);
+// ════════════════════════════════════════════════
+function loop(now){
+  raf=requestAnimationFrame(loop);
+  if(state==='paused'){lastTime=now;return;}
+  const dt=Math.min((now-lastTime)/1000*60,4);
+  lastTime=now;
+  if(state==='playing') update(dt);
   drawFrame(dt);
 }
 
-function update(dt) {
-  gameTime += dt / 60;
+function update(dt){
+  gameTime+=dt/60;
+  checkWave();
 
   // Player movement
-  const dx = mx - player.x, dy = my - player.y;
-  const d = Math.hypot(dx, dy);
-  if (d > 6) {
-    player.x += (dx/d) * player.speed * dt;
-    player.y += (dy/d) * player.speed * dt;
-  }
-  player.x = clamp(player.x, 20, W-20);
-  player.y = clamp(player.y, 20, H-20);
-  player.trail.unshift({x:player.x, y:player.y});
-  if (player.trail.length > 8) player.trail.pop();
-  if (player.invincible > 0) player.invincible -= dt;
-  // Rejenerasyon
-  if (player.regen) player.hp = Math.min(player.maxHp, player.hp + player.regen * dt / 60);
+  const dx=mx-player.x, dy=my-player.y, d=Math.hypot(dx,dy);
+  if(d>5){ player.x+=(dx/d)*player.speed*dt; player.y+=(dy/d)*player.speed*dt; }
+  player.x=clamp(player.x,20,W-20); player.y=clamp(player.y,20,H-20);
+  player.trail.unshift({x:player.x,y:player.y});
+  if(player.trail.length>10) player.trail.pop();
+  if(player.invincible>0) player.invincible-=dt;
+  if(player.regen) player.hp=Math.min(player.maxHp,player.hp+player.regen*dt/60);
 
   // Spawn
   tickSpawn(dt);
 
   // Weapons
-  weaponSlots.forEach((wep, wi) => {
-    const def = WEAPON_DEFS[wep.id];
-    if (def.tick) def.tick(wep, dt);
-    wep.cd -= dt;
-    if (wep.cd <= 0 && enemies.filter(e=>!e.dead).length > 0) {
+  weapons.forEach((wep,wi)=>{
+    const def=WEAPONS[wep.id];
+    if(def.tick) def.tick(wep,dt);
+    const effCd=wep.maxCd*(player.cooldownReduce||1);
+    wep.cd-=dt;
+    if(wep.cd<=0 && enemies.filter(e=>!e.dead).length>0){
       def.fire(wep);
-      wep.cd = wep.maxCd;
+      wep.cd=effCd;
     }
-    // Update HUD cooldown
-    const cdEl = document.getElementById('wcd'+wi);
-    if (cdEl) cdEl.style.width = (100 * Math.max(0, wep.cd) / wep.maxCd) + '%';
+    const cdEl=document.getElementById('wcd'+wi);
+    if(cdEl) cdEl.style.width=(100*Math.max(0,wep.cd)/effCd)+'%';
   });
 
   // Bullets
-  for (let i = bullets.length-1; i >= 0; i--) {
-    const b = bullets[i];
-    if (b.dead) { bullets.splice(i,1); continue; }
-    b.x += b.vx * dt; b.y += b.vy * dt;
-    b.life += dt;
-
-    // Axe return
-    if (b.type === 'axe') {
-      b.vx += (player.x - b.x) * 0.006 * dt;
-      b.vy += (player.y - b.y) * 0.006 * dt;
+  for(let i=bullets.length-1;i>=0;i--){
+    const b=bullets[i];
+    if(b.dead){bullets.splice(i,1);continue;}
+    b.x+=b.vx*dt; b.y+=b.vy*dt; b.life+=dt;
+    if(b.type==='axe'){
+      b.vx+=(player.x-b.x)*.006*dt; b.vy+=(player.y-b.y)*.006*dt;
     }
-
-    // Clamp bullets to screen — bounce off edges instead of going offscreen
-    if (b.type !== 'axe') {
-      if (b.x < 0)   { b.x = 0;   b.vx = Math.abs(b.vx); }
-      if (b.x > W)   { b.x = W;   b.vx = -Math.abs(b.vx); }
-      if (b.y < 0)   { b.y = 0;   b.vy = Math.abs(b.vy); }
-      if (b.y > H)   { b.y = H;   b.vy = -Math.abs(b.vy); }
+    if(b.type!=='axe'){
+      if(b.x<0){b.x=0;b.vx=Math.abs(b.vx);}
+      if(b.x>W){b.x=W;b.vx=-Math.abs(b.vx);}
+      if(b.y<0){b.y=0;b.vy=Math.abs(b.vy);}
+      if(b.y>H){b.y=H;b.vy=-Math.abs(b.vy);}
     }
-    // Remove only if lifetime expired
-    if (b.life > 180) {
-      b.dead = true; bullets.splice(i,1); continue;
-    }
-
-    // Hit enemies
-    for (let j = enemies.length-1; j >= 0; j--) {
-      const e = enemies[j];
-      if (e.dead || b.hit.has(j)) continue;
-      if (Math.hypot(b.x-e.x, b.y-e.y) < e.radius + b.r) {
-        damageEnemy(j, b.dmg);
-        b.hit.add(j);
-        if (b.pierce <= 0 || b.hit.size > b.pierce) {
-          b.dead = true;
-          // Impact particles
-          for(let k=0;k<4;k++) spawnParticle(b.x,b.y,randn(3),randn(3),b.color,0.25,2);
-          bullets.splice(i,1);
-          break;
+    if(b.life>200){b.dead=true;bullets.splice(i,1);continue;}
+    for(let j=enemies.length-1;j>=0;j--){
+      const e=enemies[j];
+      if(e.dead||b.hit.has(j))continue;
+      if(Math.hypot(b.x-e.x,b.y-e.y)<e.radius+b.r){
+        damageEnemy(j,b.dmg); b.hit.add(j);
+        if(b.pierce<=0||b.hit.size>b.pierce){
+          b.dead=true;
+          for(let k=0;k<4;k++) spawnParticle(b.x,b.y,randn(3),randn(3),b.color,.22,2);
+          bullets.splice(i,1); break;
         }
       }
     }
   }
 
   // Enemies
-  for (let i = enemies.length-1; i >= 0; i--) {
-    const e = enemies[i];
-    if (e.dead) { enemies.splice(i,1); continue; }
-    const angle = Math.atan2(player.y-e.y, player.x-e.x);
-    e.x += Math.cos(angle)*e.speed*dt;
-    e.y += Math.sin(angle)*e.speed*dt;
-    if (e.flashTimer > 0) e.flashTimer -= dt;
-
-    const touch = Math.hypot(e.x-player.x, e.y-player.y) < e.radius + player.radius;
-    if (touch) damagePlayer((e.type==='boss'?22:e.type==='tank'?12:8) * dt);
-  }
-
-  // XP Gems
-  for (let i = xpGems.length-1; i >= 0; i--) {
-    const g = xpGems[i];
-    if (g.dead) { xpGems.splice(i,1); continue; }
-    const gd = Math.hypot(g.x-player.x, g.y-player.y);
-    if (gd < player.magnetRange) {
-      g.x += (player.x-g.x)*0.12*dt;
-      g.y += (player.y-g.y)*0.12*dt;
-    } else {
-      g.vx *= 0.97; g.vy *= 0.97;
-      g.x += g.vx*dt; g.y += g.vy*dt;
-    }
-    if (gd < player.radius + 8) {
-      gainXP(g.value);
-      SFX.xpPick();
-      g.dead = true;
-      xpGems.splice(i,1);
-    }
-  }
-
-  // Particles
-  for (let i = particles.length-1; i >= 0; i--) {
-    const p = particles[i];
-    p.x += p.vx*dt; p.y += p.vy*dt;
-    p.vx *= 0.95; p.vy *= 0.95;
-    p.life -= dt/60;
-    if (p.life <= 0) { particles.splice(i,1); }
-  }
-
-  // HUD
-  document.getElementById('hud-score').textContent = score.toLocaleString();
-  document.getElementById('hp-fill').style.width = (100*player.hp/player.maxHp)+'%';
-  document.getElementById('hp-num').textContent = `${Math.ceil(player.hp)}/${player.maxHp}`;
-  document.getElementById('xp-fill').style.width = (100*xp/xpToNext)+'%';
-  document.getElementById('xp-num').textContent = `${xp}/${xpToNext}`;
-  document.getElementById('timer-hud').textContent = fmtTime(gameTime);
-}
-
-// ════════════════════════════════════════════════════
-// DRAW
-// ════════════════════════════════════════════════════
-const GRID_SIZE = 48;
-let gridOffset = 0;
-
-function drawFrame(dt=0) {
-  ctx.clearRect(0,0,W,H);
-
-  // Background grid
-  ctx.strokeStyle = 'rgba(255,255,255,0.028)';
-  ctx.lineWidth = 1;
-  gridOffset = (gridOffset + 0.15) % GRID_SIZE;
-  for(let x=(gridOffset%GRID_SIZE)-GRID_SIZE;x<W+GRID_SIZE;x+=GRID_SIZE){
-    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
-  }
-  for(let y=(gridOffset%GRID_SIZE)-GRID_SIZE;y<H+GRID_SIZE;y+=GRID_SIZE){
-    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+  for(let i=enemies.length-1;i>=0;i--){
+    const e=enemies[i];
+    if(e.dead){enemies.splice(i,1);continue;}
+    const a=Math.atan2(player.y-e.y,player.x-e.x);
+    e.x+=Math.cos(a)*e.speed*dt; e.y+=Math.sin(a)*e.speed*dt;
+    if(e.flashTimer>0) e.flashTimer-=dt;
+    const touch=Math.hypot(e.x-player.x,e.y-player.y)<e.radius+player.radius;
+    if(touch) damagePlayer((e.type==='boss'?24:e.type==='elite'?16:e.type==='tank'?12:8)*dt);
   }
 
   // XP gems
-  xpGems.forEach(g => {
-    if(g.dead) return;
-    ctx.beginPath();
-    ctx.arc(g.x, g.y, 5, 0, Math.PI*2);
-    const gg = ctx.createRadialGradient(g.x,g.y,0,g.x,g.y,5);
+  for(let i=xpGems.length-1;i>=0;i--){
+    const g=xpGems[i];
+    if(g.dead){xpGems.splice(i,1);continue;}
+    const gd=Math.hypot(g.x-player.x,g.y-player.y);
+    if(gd<player.magnetRange){ g.x+=(player.x-g.x)*.13*dt; g.y+=(player.y-g.y)*.13*dt; }
+    else{ g.vx*=.97; g.vy*=.97; g.x+=g.vx*dt; g.y+=g.vy*dt; }
+    if(gd<player.radius+10){ gainXP(g.value); SFX.xp(); g.dead=true; xpGems.splice(i,1); }
+  }
+
+  // Particles
+  for(let i=particles.length-1;i>=0;i--){
+    const p=particles[i];
+    p.x+=p.vx*dt; p.y+=p.vy*dt; p.vx*=.94; p.vy*=.94; p.life-=dt/60;
+    if(p.life<=0) particles.splice(i,1);
+  }
+
+  // HUD update
+  document.getElementById('hud-score').textContent=score.toLocaleString();
+  document.getElementById('hp-fill').style.width=(100*player.hp/player.maxHp)+'%';
+  document.getElementById('hp-num').textContent=`${Math.ceil(player.hp)}/${player.maxHp}`;
+  document.getElementById('xp-fill').style.width=(100*xp/xpToNext)+'%';
+  document.getElementById('xp-num').textContent=`${xp}/${xpToNext}`;
+  document.getElementById('timer-hud').textContent=fmtTime(gameTime);
+}
+
+// ════════════════════════════════════════════════
+// DRAW
+// ════════════════════════════════════════════════
+const GSIZ=52; let gridOff=0;
+function drawFrame(dt=0){
+  ctx.clearRect(0,0,W,H);
+
+  // BG grid
+  ctx.strokeStyle='rgba(255,255,255,0.025)'; ctx.lineWidth=1;
+  gridOff=(gridOff+.18)%GSIZ;
+  for(let x=(gridOff%GSIZ)-GSIZ;x<W+GSIZ;x+=GSIZ){ ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke(); }
+  for(let y=(gridOff%GSIZ)-GSIZ;y<H+GSIZ;y+=GSIZ){ ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke(); }
+
+  // XP gems
+  xpGems.forEach(g=>{
+    if(g.dead)return;
+    ctx.beginPath(); ctx.arc(g.x,g.y,5,0,Math.PI*2);
+    const gg=ctx.createRadialGradient(g.x,g.y,0,g.x,g.y,5);
     gg.addColorStop(0,'#80ffff'); gg.addColorStop(1,'#00c8ff');
-    ctx.fillStyle = gg;
-    ctx.fill();
-    // glow
-    ctx.beginPath(); ctx.arc(g.x,g.y,3,0,Math.PI*2);
+    ctx.fillStyle=gg; ctx.fill();
+    ctx.beginPath(); ctx.arc(g.x,g.y,2.5,0,Math.PI*2);
     ctx.fillStyle='#fff'; ctx.fill();
   });
 
   // Particles
-  particles.forEach(p => {
-    const alpha = p.life / p.maxLife;
-    ctx.globalAlpha = alpha;
-    ctx.beginPath(); ctx.arc(p.x,p.y,p.r*alpha,0,Math.PI*2);
-    ctx.fillStyle = p.color; ctx.fill();
+  particles.forEach(p=>{
+    const a=p.life/p.maxLife;
+    ctx.globalAlpha=a;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r*a,0,Math.PI*2);
+    ctx.fillStyle=p.color; ctx.fill();
   });
-  ctx.globalAlpha = 1;
+  ctx.globalAlpha=1;
+
+  // Weapon draws (garlic aura, magic orbs)
+  weapons.forEach(w=>{ const def=WEAPONS[w.id]; if(def.draw) def.draw(w); });
 
   // Enemies
-  enemies.forEach(e => {
-    if(e.dead) return;
-    ctx.save();
-    ctx.translate(e.x, e.y);
-
-    // Shadow
-    ctx.beginPath(); ctx.ellipse(0,6,e.radius*0.8,4,0,0,Math.PI*2);
-    ctx.fillStyle='rgba(0,0,0,0.25)'; ctx.fill();
-
-    const flash = e.flashTimer > 0;
-    const r = e.radius;
-    if (e.type === 'boss') {
-      // Boss: octagon shape
+  enemies.forEach(e=>{
+    if(e.dead)return;
+    ctx.save(); ctx.translate(e.x,e.y);
+    ctx.beginPath(); ctx.ellipse(0,6,e.radius*.75,4,0,0,Math.PI*2);
+    ctx.fillStyle='rgba(0,0,0,.3)'; ctx.fill();
+    const flash=e.flashTimer>0, r=e.radius;
+    if(e.type==='boss'){
       ctx.beginPath();
-      for(let i=0;i<8;i++){
-        const a=i/8*Math.PI*2; const x=Math.cos(a)*r; const y=Math.sin(a)*r;
-        i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
-      }
-      ctx.closePath();
-      ctx.fillStyle = flash ? '#fff' : e.color;
-      ctx.fill();
-      ctx.strokeStyle='rgba(255,0,102,0.6)'; ctx.lineWidth=2; ctx.stroke();
+      for(let i=0;i<8;i++){const a=i/8*Math.PI*2;i===0?ctx.moveTo(Math.cos(a)*r,Math.sin(a)*r):ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);}
+      ctx.closePath(); ctx.fillStyle=flash?'#fff':e.color; ctx.fill();
+      ctx.strokeStyle='rgba(255,0,80,.7)'; ctx.lineWidth=2.5; ctx.stroke();
       // HP bar
-      ctx.fillStyle='rgba(0,0,0,0.5)';
-      ctx.fillRect(-r, -r-10, r*2, 5);
-      ctx.fillStyle='#ff3a3a';
-      ctx.fillRect(-r, -r-10, r*2*(e.hp/e.maxHp), 5);
-    } else if (e.type === 'tank') {
-      // Tank: rounded diamond
+      ctx.fillStyle='rgba(0,0,0,.5)'; ctx.fillRect(-r,-r-12,r*2,5);
+      ctx.fillStyle='#ff3a3a'; ctx.fillRect(-r,-r-12,r*2*(e.hp/e.maxHp),5);
+    } else if(e.type==='elite'){
       ctx.beginPath();
-      ctx.moveTo(0,-r); ctx.lineTo(r,0); ctx.lineTo(0,r); ctx.lineTo(-r,0); ctx.closePath();
-      ctx.fillStyle = flash ? '#fff' : e.color;
-      ctx.fill();
-      ctx.strokeStyle='rgba(136,85,255,0.5)'; ctx.lineWidth=1.5; ctx.stroke();
-    } else if (e.type === 'fast') {
-      // Fast: triangle
-      ctx.beginPath();
-      ctx.moveTo(0,-r); ctx.lineTo(r,r); ctx.lineTo(-r,r); ctx.closePath();
-      ctx.fillStyle = flash ? '#fff' : e.color;
-      ctx.fill();
+      for(let i=0;i<6;i++){const a=i/6*Math.PI*2;i===0?ctx.moveTo(Math.cos(a)*r,Math.sin(a)*r):ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);}
+      ctx.closePath(); ctx.fillStyle=flash?'#fff':e.color; ctx.fill();
+      ctx.strokeStyle='rgba(170,0,255,.6)'; ctx.lineWidth=2; ctx.stroke();
+      ctx.fillStyle='rgba(0,0,0,.5)'; ctx.fillRect(-r,-r-10,r*2,4);
+      ctx.fillStyle='#aa00ff'; ctx.fillRect(-r,-r-10,r*2*(e.hp/e.maxHp),4);
+    } else if(e.type==='tank'){
+      ctx.beginPath(); ctx.moveTo(0,-r);ctx.lineTo(r,0);ctx.lineTo(0,r);ctx.lineTo(-r,0);ctx.closePath();
+      ctx.fillStyle=flash?'#fff':e.color; ctx.fill();
+      ctx.strokeStyle='rgba(136,85,255,.5)'; ctx.lineWidth=1.5; ctx.stroke();
+    } else if(e.type==='fast'){
+      ctx.beginPath(); ctx.moveTo(0,-r);ctx.lineTo(r,r*.8);ctx.lineTo(-r,r*.8);ctx.closePath();
+      ctx.fillStyle=flash?'#fff':e.color; ctx.fill();
     } else {
-      // Basic: square with rounded corners via arc
-      const rr = r*0.3;
+      const rr=r*.3;
       ctx.beginPath();
-      ctx.moveTo(-r+rr,-r); ctx.lineTo(r-rr,-r); ctx.arcTo(r,-r,r,-r+rr,rr);
-      ctx.lineTo(r,r-rr); ctx.arcTo(r,r,r-rr,r,rr);
-      ctx.lineTo(-r+rr,r); ctx.arcTo(-r,r,-r,r-rr,rr);
-      ctx.lineTo(-r,-r+rr); ctx.arcTo(-r,-r,-r+rr,-r,rr);
-      ctx.closePath();
-      ctx.fillStyle = flash ? '#fff' : e.color;
-      ctx.fill();
+      ctx.moveTo(-r+rr,-r);ctx.lineTo(r-rr,-r);ctx.arcTo(r,-r,r,-r+rr,rr);
+      ctx.lineTo(r,r-rr);ctx.arcTo(r,r,r-rr,r,rr);
+      ctx.lineTo(-r+rr,r);ctx.arcTo(-r,r,-r,r-rr,rr);
+      ctx.lineTo(-r,-r+rr);ctx.arcTo(-r,-r,-r+rr,-r,rr);
+      ctx.closePath(); ctx.fillStyle=flash?'#fff':e.color; ctx.fill();
     }
     ctx.restore();
   });
 
-  // Weapon visuals (orbits, flame)
-  weaponSlots.forEach(wep => {
-    const def = WEAPON_DEFS[wep.id];
-    if (def.draw) def.draw(wep);
-  });
-
   // Bullets
-  bullets.forEach(b => {
-    if(b.dead) return;
-    ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI*2);
-    const bg = ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r);
+  bullets.forEach(b=>{
+    if(b.dead)return;
+    ctx.beginPath(); ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
+    const bg=ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r);
     bg.addColorStop(0,'#fff'); bg.addColorStop(1,b.color);
     ctx.fillStyle=bg; ctx.fill();
-    // Trail
-    ctx.beginPath(); ctx.moveTo(b.x,b.y);
-    ctx.lineTo(b.x-b.vx*3, b.y-b.vy*3);
-    ctx.strokeStyle=b.color+'88'; ctx.lineWidth=b.r*0.8; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(b.x,b.y); ctx.lineTo(b.x-b.vx*3,b.y-b.vy*3);
+    ctx.strokeStyle=b.color+'88'; ctx.lineWidth=b.r*.8; ctx.stroke();
   });
 
   // Player trail
-  player.trail.forEach((t,i) => {
-    const alpha = (1 - i/player.trail.length) * 0.3;
-    const r = player.radius * (1 - i/player.trail.length * 0.6);
+  player.trail.forEach((t,i)=>{
+    const a=(1-i/player.trail.length)*.28;
+    const r=player.radius*(1-i/player.trail.length*.55);
     ctx.beginPath(); ctx.arc(t.x,t.y,r,0,Math.PI*2);
-    ctx.fillStyle=`rgba(0,200,255,${alpha})`; ctx.fill();
+    ctx.fillStyle=`rgba(0,200,255,${a})`; ctx.fill();
   });
 
   // Player
-  const blink = player.invincible > 0 && Math.floor(player.invincible/4)%2===0;
-  if (!blink) {
-    ctx.save();
-    ctx.translate(player.x, player.y);
-
-    // Glow
-    const pg = ctx.createRadialGradient(0,0,0,0,0,player.radius*2.5);
-    pg.addColorStop(0,'rgba(0,200,255,0.25)'); pg.addColorStop(1,'transparent');
-    ctx.beginPath(); ctx.arc(0,0,player.radius*2.5,0,Math.PI*2);
-    ctx.fillStyle=pg; ctx.fill();
-
-    // Body (diamond shape)
+  const blink=player.invincible>0&&Math.floor(player.invincible/5)%2===0;
+  if(!blink){
+    ctx.save(); ctx.translate(player.x,player.y);
+    const pg=ctx.createRadialGradient(0,0,0,0,0,player.radius*2.8);
+    pg.addColorStop(0,'rgba(0,200,255,.22)'); pg.addColorStop(1,'transparent');
+    ctx.beginPath(); ctx.arc(0,0,player.radius*2.8,0,Math.PI*2); ctx.fillStyle=pg; ctx.fill();
     ctx.beginPath();
-    ctx.moveTo(0,-player.radius); ctx.lineTo(player.radius,0);
-    ctx.lineTo(0,player.radius); ctx.lineTo(-player.radius,0); ctx.closePath();
-    const bodyG = ctx.createLinearGradient(0,-player.radius,0,player.radius);
-    bodyG.addColorStop(0,'#00e8ff'); bodyG.addColorStop(1,'#0088ff');
-    ctx.fillStyle=bodyG; ctx.fill();
-    ctx.strokeStyle='rgba(255,255,255,0.6)'; ctx.lineWidth=2; ctx.stroke();
-
-    // Core
-    ctx.beginPath(); ctx.arc(0,0,5,0,Math.PI*2);
-    ctx.fillStyle='#fff'; ctx.fill();
-
+    ctx.moveTo(0,-player.radius);ctx.lineTo(player.radius,0);ctx.lineTo(0,player.radius);ctx.lineTo(-player.radius,0);ctx.closePath();
+    const bg=ctx.createLinearGradient(0,-player.radius,0,player.radius);
+    bg.addColorStop(0,'#00e8ff'); bg.addColorStop(1,'#0066ff');
+    ctx.fillStyle=bg; ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,.65)'; ctx.lineWidth=2; ctx.stroke();
+    ctx.beginPath(); ctx.arc(0,0,4.5,0,Math.PI*2); ctx.fillStyle='#fff'; ctx.fill();
     ctx.restore();
   }
 
-  // Flash overlay
-  if (flashAlpha > 0) {
-    ctx.fillStyle = flashColor || '#fff';
-    ctx.globalAlpha = flashAlpha;
+  // Flash
+  if(flashAlpha>0){
+    ctx.fillStyle=flashColor;
+    ctx.globalAlpha=flashAlpha;
     ctx.fillRect(0,0,W,H);
-    ctx.globalAlpha = 1;
-    flashAlpha *= 0.8;
-    if (flashAlpha < 0.01) flashAlpha = 0;
+    ctx.globalAlpha=1;
+    flashAlpha*=.78;
+    if(flashAlpha<.01) flashAlpha=0;
   }
 }
 
-// ════════════════════════════════════════════════════
-// INIT: click on canvas to start from menu
-// ════════════════════════════════════════════════════
-
-// Draw initial background
 drawFrame();
-
-// Fix fmtTime (template literal was broken, redefine)
 </script>
-
 </body>
 </html>
