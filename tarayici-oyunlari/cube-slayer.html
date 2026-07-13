@@ -174,13 +174,22 @@
   #settings-panel {
     background: rgba(20,20,30,0.98);
     border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 20px; padding: 32px 36px;
-    min-width: 320px; display: flex; flex-direction: column; gap: 24px;
+    border-radius: 20px; padding: 28px 28px;
+    width: min(480px, 94vw);
+    max-height: 88vh; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 18px;
     box-shadow: 0 0 60px rgba(0,0,0,0.6);
   }
   #settings-panel h2 {
     font-size: 13px; font-weight: 700; letter-spacing: 4px;
     color: rgba(255,255,255,0.35); text-transform: uppercase; margin: 0;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  #pause-badge {
+    font-size: 10px; letter-spacing: 2px; font-weight: 700;
+    padding: 3px 10px; border-radius: 20px;
+    background: rgba(255,200,0,0.15); color: #ffd700;
+    border: 1px solid rgba(255,200,0,0.3);
   }
   .setting-row { display: flex; align-items: center; gap: 16px; }
   .setting-label { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7); flex: 1; }
@@ -211,6 +220,34 @@
     text-transform: uppercase;
   }
   .settings-close:hover { opacity: 0.85; }
+
+  /* ── SETTINGS INVENTORY ── */
+  .inv-section-title {
+    font-size: 10px; font-weight: 700; letter-spacing: 3px;
+    color: rgba(255,255,255,0.25); text-transform: uppercase;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding-bottom: 10px; margin-bottom: 4px;
+  }
+  #inv-weapons, #inv-passives {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .inv-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 12px; border-radius: 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+  .inv-icon { font-size: 22px; line-height: 1; flex-shrink: 0; }
+  .inv-info { flex: 1; min-width: 0; }
+  .inv-name { font-size: 12px; font-weight: 700; color: #fff; }
+  .inv-desc { font-size: 10px; color: rgba(255,255,255,0.35); margin-top: 1px; }
+  .inv-badge {
+    font-size: 10px; font-weight: 800; padding: 3px 9px;
+    border-radius: 20px; flex-shrink: 0; letter-spacing: 0.5px;
+  }
+  .inv-badge.legendary { background: rgba(255,215,0,0.2); color: #ffd700; border: 1px solid rgba(255,215,0,0.4); }
+  .inv-badge.normal    { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.1); }
+  .inv-empty { font-size: 11px; color: rgba(255,255,255,0.2); font-style: italic; padding: 4px 0; }
 
   /* ── DAMAGE NUMBERS ── */
   .dmg-num {
@@ -290,13 +327,17 @@
 <!-- ── SETTINGS MODAL ── -->
 <div id="settings-modal" class="hidden">
   <div id="settings-panel">
-    <h2>⚙ Ayarlar</h2>
+    <h2>⚙ Ayarlar <span id="pause-badge" style="display:none">⏸ DURAKLATILDI</span></h2>
     <div class="setting-row">
       <span class="setting-label">🔊 Ses</span>
       <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
       <input type="range" id="vol-slider" min="0" max="100" value="80" oninput="setVolume(this.value)">
     </div>
-    <button class="settings-close" onclick="toggleSettings()">KAPAT</button>
+    <div class="inv-section-title">⚔️ Silahlar</div>
+    <div id="inv-weapons"><div class="inv-empty">Henüz silah yok</div></div>
+    <div class="inv-section-title">✨ Pasifler & Güçlendirmeler</div>
+    <div id="inv-passives"><div class="inv-empty">Henüz güçlendirme yok</div></div>
+    <button class="settings-close" onclick="toggleSettings()">DEVAM ET</button>
   </div>
 </div>
 
@@ -360,9 +401,72 @@ function getAudio() {
   return audioCtx;
 }
 
+let stateBefore = null; // state before settings opened
+
 function toggleSettings() {
   const modal = document.getElementById('settings-modal');
-  modal.classList.toggle('hidden');
+  const isHidden = modal.classList.contains('hidden');
+  if (isHidden) {
+    // Opening: pause if playing
+    if (state === 'playing') { stateBefore = 'playing'; state = 'paused'; }
+    else { stateBefore = state; }
+    renderInventory();
+    document.getElementById('pause-badge').style.display = (state === 'paused') ? '' : 'none';
+    modal.classList.remove('hidden');
+  } else {
+    // Closing: resume if was playing
+    modal.classList.add('hidden');
+    if (stateBefore === 'playing') { state = 'playing'; lastTime = performance.now(); }
+    stateBefore = null;
+  }
+}
+
+function renderInventory() {
+  // ── Silahlar ──
+  const wEl = document.getElementById('inv-weapons');
+  if (!weaponSlots || weaponSlots.length === 0) {
+    wEl.innerHTML = '<div class="inv-empty">Henüz silah yok</div>';
+  } else {
+    wEl.innerHTML = weaponSlots.map(wep => {
+      const def = WEAPON_DEFS[wep.id];
+      const isLeg = wep.legendary;
+      const badgeCls = isLeg ? 'legendary' : 'normal';
+      const badgeTxt = isLeg ? '⭐ EFSANEVİ' : `LV ${wep.level}`;
+      return `<div class="inv-row">
+        <div class="inv-icon">${def.emoji}</div>
+        <div class="inv-info">
+          <div class="inv-name">${def.name}</div>
+          <div class="inv-desc">${def.desc}</div>
+        </div>
+        <div class="inv-badge ${badgeCls}">${badgeTxt}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Pasifler & stat yükseltmeleri ──
+  const pEl = document.getElementById('inv-passives');
+  const rows = [];
+  if (player.maxHp > 100) rows.push({ icon:'🛡️', name:'Zırh', desc:`Maksimum can: ${player.maxHp}` });
+  if (player.dmgMult && player.dmgMult > 1) rows.push({ icon:'💎', name:'Güç Kristali', desc:`Hasar çarpanı: ×${player.dmgMult.toFixed(2)}` });
+  if (player.dmgReduce && player.dmgReduce > 0) rows.push({ icon:'🔵', name:'Enerji Kalkanı', desc:`Hasar azaltma: %${Math.round(player.dmgReduce*100)}` });
+  if (player.regen && player.regen > 0) rows.push({ icon:'💚', name:'Yenilenme', desc:`Saniyede +${player.regen} can` });
+  if (player.vampirism && player.vampirism > 0) rows.push({ icon:'🩸', name:'Vampirizm', desc:`Öldürme başı +${player.vampirism} can` });
+  if (player.bulletSpd && player.bulletSpd > 1) rows.push({ icon:'🌪️', name:'Hız Ruhu', desc:`Mermi hızı: ×${player.bulletSpd.toFixed(2)}` });
+  if (player.explosion && player.explosion > 0) rows.push({ icon:'💥', name:'Patlama Ruhu', desc:`Patlama menzili: ${player.explosion}` });
+  if (player.magnetRange && player.magnetRange > 120) rows.push({ icon:'🧲', name:'Mıknatıs', desc:`XP menzili: ${Math.round(player.magnetRange)}` });
+  if (player.speed > 2.8) rows.push({ icon:'💨', name:'Çeviklik', desc:`Hız: ${player.speed.toFixed(2)}` });
+
+  if (rows.length === 0) {
+    pEl.innerHTML = '<div class="inv-empty">Henüz güçlendirme yok</div>';
+  } else {
+    pEl.innerHTML = rows.map(r => `<div class="inv-row">
+      <div class="inv-icon">${r.icon}</div>
+      <div class="inv-info">
+        <div class="inv-name">${r.name}</div>
+        <div class="inv-desc">${r.desc}</div>
+      </div>
+    </div>`).join('');
+  }
 }
 
 function toggleMute() {
@@ -1233,6 +1337,7 @@ function gainXP(amount) {
 // ════════════════════════════════════════════════════
 function loop(now) {
   raf = requestAnimationFrame(loop);
+  if (state === 'paused') { lastTime = now; return; }
   const dt = Math.min((now - lastTime) / 1000 * 60, 4); // delta in "frames" @ 60fps
   lastTime = now;
   if (state === 'playing') update(dt);
