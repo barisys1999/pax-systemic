@@ -238,11 +238,35 @@
         }
     });
 
-    // Resize desteği
-    window.addEventListener('resize', () => {
-        title.position.set(app.screen.width / 2, app.screen.height / 2 - 150);
-        highScoreDisplay.position.set(app.screen.width / 2, app.screen.height / 2 + 200);
-        gameOverText.position.set(app.screen.width / 2, app.screen.height / 2 - 100);
+    // Resize desteği — tüm UI elemanlarını yeniden ortala
+    function repositionAll() {
+        const cx = app.screen.width  / 2;
+        const cy = app.screen.height / 2;
+
+        // Menü
+        title.position.set(cx, cy - 150);
+        highScoreDisplay.position.set(cx, cy + 200);
+
+        // Menü butonları (menuContainer'daki son 3 çocuk)
+        const btns = menuContainer.children.filter(c => c !== title && c !== highScoreDisplay);
+        const offsets = [-50, 30, 110];
+        btns.forEach((btn, i) => btn.position.set(cx, cy + offsets[i]));
+
+        // Oyun sonu
+        gameOverText.position.set(cx, cy - 100);
+        menuBtn.position.set(cx, cy + 80);
+
+        // Hit alanını yeniden boyutlandır
+        hitArea.clear()
+            .rect(0, 0, app.screen.width, app.screen.height)
+            .fill({ color: 0x2f3640, alpha: 0.001 });
+    }
+
+    window.addEventListener('resize', repositionAll);
+
+    // Tam ekran değişikliğinde de tetikle
+    document.addEventListener('fullscreenchange', () => {
+        setTimeout(repositionAll, 100);
     });
 
     showMenu();
