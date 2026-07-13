@@ -12,7 +12,7 @@
   /* ── HUD ── */
   #hud {
     position: fixed; top: 0; left: 0; right: 0;
-    padding: 14px 20px;
+    padding: 14px 20px 14px 66px;
     display: flex; align-items: center; gap: 20px;
     pointer-events: none;
     z-index: 10;
@@ -151,6 +151,67 @@
   .stat-item .si-num { font-size: 32px; font-weight: 800; color: #fff; }
   .stat-item .si-label { font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 2px; margin-top: 2px; }
 
+  /* ── SETTINGS BUTTON ── */
+  #settings-btn {
+    position: fixed; top: 14px; left: 14px; z-index: 300;
+    width: 38px; height: 38px; border-radius: 10px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.7); font-size: 18px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+    pointer-events: all;
+  }
+  #settings-btn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); color: #fff; }
+
+  /* ── SETTINGS MODAL ── */
+  #settings-modal {
+    position: fixed; inset: 0; z-index: 500;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(10,10,15,0.75); backdrop-filter: blur(10px);
+  }
+  #settings-modal.hidden { display: none; }
+  #settings-panel {
+    background: rgba(20,20,30,0.98);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px; padding: 32px 36px;
+    min-width: 320px; display: flex; flex-direction: column; gap: 24px;
+    box-shadow: 0 0 60px rgba(0,0,0,0.6);
+  }
+  #settings-panel h2 {
+    font-size: 13px; font-weight: 700; letter-spacing: 4px;
+    color: rgba(255,255,255,0.35); text-transform: uppercase; margin: 0;
+  }
+  .setting-row { display: flex; align-items: center; gap: 16px; }
+  .setting-label { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7); flex: 1; }
+  .setting-row input[type=range] {
+    flex: 1; -webkit-appearance: none; height: 6px;
+    background: rgba(255,255,255,0.1); border-radius: 3px; outline: none;
+    cursor: pointer;
+  }
+  .setting-row input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+    background: linear-gradient(135deg,#00c8ff,#7b6fff); cursor: pointer;
+    box-shadow: 0 0 8px rgba(123,111,255,0.5);
+  }
+  .mute-btn {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+    color: #fff; font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: background 0.15s;
+  }
+  .mute-btn:hover { background: rgba(255,255,255,0.15); }
+  .mute-btn.muted { background: rgba(255,60,60,0.15); border-color: rgba(255,60,60,0.3); }
+  .settings-close {
+    align-self: center;
+    padding: 10px 32px;
+    background: linear-gradient(135deg,#00c8ff,#7b6fff);
+    border: none; border-radius: 50px; cursor: pointer;
+    font-size: 13px; font-weight: 700; color: #fff; letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .settings-close:hover { opacity: 0.85; }
+
   /* ── DAMAGE NUMBERS ── */
   .dmg-num {
     position: fixed; pointer-events: none; z-index: 50;
@@ -223,6 +284,22 @@
   <button class="start-btn" onclick="startGame()">TEKRAR OYNA</button>
 </div>
 
+<!-- ── SETTINGS BUTTON (always visible) ── -->
+<button id="settings-btn" onclick="toggleSettings()" title="Ayarlar">⚙️</button>
+
+<!-- ── SETTINGS MODAL ── -->
+<div id="settings-modal" class="hidden">
+  <div id="settings-panel">
+    <h2>⚙ Ayarlar</h2>
+    <div class="setting-row">
+      <span class="setting-label">🔊 Ses</span>
+      <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
+      <input type="range" id="vol-slider" min="0" max="100" value="80" oninput="setVolume(this.value)">
+    </div>
+    <button class="settings-close" onclick="toggleSettings()">KAPAT</button>
+  </div>
+</div>
+
 <!-- ── HUD ── -->
 <div id="hud">
   <div class="hud-block">
@@ -268,11 +345,41 @@ window.addEventListener('resize', () => {
 // AUDIO ENGINE
 // ════════════════════════════════════════════════════
 let audioCtx = null;
+let masterGain = null;
+let isMuted = false;
+let masterVolume = 0.8;
 
 function getAudio() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = audioCtx.createGain();
+    masterGain.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
+    masterGain.connect(audioCtx.destination);
+  }
   if (audioCtx.state === 'suspended') audioCtx.resume();
   return audioCtx;
+}
+
+function toggleSettings() {
+  const modal = document.getElementById('settings-modal');
+  modal.classList.toggle('hidden');
+}
+
+function toggleMute() {
+  isMuted = !isMuted;
+  const btn = document.getElementById('mute-btn');
+  if (masterGain) masterGain.gain.setValueAtTime(isMuted ? 0 : masterVolume, audioCtx.currentTime);
+  btn.textContent = isMuted ? '🔇' : '🔊';
+  btn.classList.toggle('muted', isMuted);
+}
+
+function setVolume(val) {
+  masterVolume = val / 100;
+  isMuted = false;
+  const btn = document.getElementById('mute-btn');
+  btn.textContent = masterVolume === 0 ? '🔇' : '🔊';
+  btn.classList.toggle('muted', masterVolume === 0);
+  if (masterGain) masterGain.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
 }
 
 // Genel ses çalma yardımcısı: osilatörler + zarf
@@ -308,7 +415,8 @@ function playTone({ freq = 440, freq2, type = 'square', gainPeak = 0.18, attack 
     gain.gain.linearRampToValueAtTime(gainPeak * sustain, now + attack + decay);
     gain.gain.linearRampToValueAtTime(0, now + attack + decay + release);
 
-    gain.connect(ac.destination);
+    const dest = masterGain || ac.destination;
+    gain.connect(dest);
     osc.start(now);
     osc.stop(now + attack + decay + release + 0.01);
   } catch(e) {}
@@ -338,7 +446,8 @@ function playNoise({ gainPeak = 0.15, attack = 0.002, decay = 0.12, release = 0.
 
     src.connect(filter);
     filter.connect(gain);
-    gain.connect(ac.destination);
+    const dest = masterGain || ac.destination;
+    gain.connect(dest);
     src.start(now);
     src.stop(now + attack + decay + release + 0.05);
   } catch(e) {}
@@ -702,14 +811,14 @@ const UPGRADE_POOL = [
   {
     id: 'vampirism', name: 'Vampirizm', emoji: '🩸',
     color: '#cc0033', tag: 'YAŞAM ÇALMA',
-    desc: 'Her öldürme +3 can geri kazandırır',
-    apply() { player.vampirism = (player.vampirism || 0) + 3; }
+    desc: 'Her öldürme +1 can geri kazandırır (max 5 stack)',
+    apply() { player.vampirism = Math.min(5, (player.vampirism || 0) + 1); }
   },
   {
     id: 'dmg_boost', name: 'Güç Kristali', emoji: '💎',
     color: '#00ffcc', tag: 'HASAR +%25',
-    desc: 'Tüm silah hasarı kalıcı olarak %25 artar',
-    apply() { player.dmgMult = (player.dmgMult || 1) * 1.25; }
+    desc: 'Tüm silah hasarı kalıcı olarak %35 artar',
+    apply() { player.dmgMult = (player.dmgMult || 1) * 1.35; }
   },
   {
     id: 'shield', name: 'Enerji Kalkanı', emoji: '🔵',
@@ -720,8 +829,8 @@ const UPGRADE_POOL = [
   {
     id: 'regen', name: 'Yenilenme', emoji: '💚',
     color: '#00ff88', tag: 'REJENERASYON',
-    desc: 'Saniyede 1 can yenilenir',
-    apply() { player.regen = (player.regen || 0) + 1; }
+    desc: 'Saniyede 2 can yenilenir',
+    apply() { player.regen = (player.regen || 0) + 2; }
   },
   {
     id: 'bullet_spd', name: 'Hız Ruhu', emoji: '🌪️',
@@ -868,15 +977,15 @@ function getDiffConfig() {
   if (lv === 8)  return { rate: 52,  count: 2, fastChance: 0.25, tankChance: 0.12, hpScale: 3.4,  spdScale: 1.02 };
   if (lv === 9)  return { rate: 46,  count: 3, fastChance: 0.28, tankChance: 0.14, hpScale: 3.8,  spdScale: 1.05 };
   if (lv === 10) return { rate: 40,  count: 3, fastChance: 0.3,  tankChance: 0.15, hpScale: 4.3,  spdScale: 1.08 };
-  // lv 11+: giderek sertleşir
+  // lv 11+: daha dengeli artış
   const extra = lv - 10;
   return {
-    rate:       Math.max(20, 40 - extra * 1.5),
-    count:      Math.min(6, 3 + Math.floor(extra / 3)),
-    fastChance: Math.min(0.35, 0.3 + extra * 0.01),
-    tankChance: Math.min(0.25, 0.15 + extra * 0.01),
-    hpScale:    4.3 + extra * 0.5,
-    spdScale:   1.08 + extra * 0.03,
+    rate:       Math.max(28, 40 - extra * 1.2),
+    count:      Math.min(5, 3 + Math.floor(extra / 4)),
+    fastChance: Math.min(0.3, 0.3 + extra * 0.005),
+    tankChance: Math.min(0.2, 0.15 + extra * 0.005),
+    hpScale:    4.3 + extra * 0.28,
+    spdScale:   Math.min(1.35, 1.08 + extra * 0.018),
   };
 }
 
@@ -983,7 +1092,7 @@ function killEnemy(idx) {
       const en = enemies[k];
       if (en.dead) continue;
       const d = Math.hypot(en.x - e.x, en.y - e.y);
-      if (d < radius) damageEnemy(k, 30 * (player.dmgMult||1));
+      if (d < radius) damageEnemy(k, 45 * (player.dmgMult||1));
     }
     for(let p=0;p<6;p++) spawnParticle(e.x+randn(10),e.y+randn(10),randn(3),randn(3),'#ff6600',0.35,4);
   }
