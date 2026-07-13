@@ -704,20 +704,36 @@ function init(){
   });
 }
 
+function applyCanvasSize(){
+  const wrap=document.getElementById('canvas-wrap');
+  const W=wrap.clientWidth, H=wrap.clientHeight;
+  if(!W||!H) return false;
+  canvas.width=COLS*CELL; canvas.height=ROWS*CELL;
+  const scaleX=W/(COLS*CELL), scaleY=H/(ROWS*CELL);
+  const scale=Math.min(scaleX,scaleY);
+  canvas.style.width=(COLS*CELL*scale)+'px';
+  canvas.style.height=(ROWS*CELL*scale)+'px';
+  canvas.style.marginLeft=((W-COLS*CELL*scale)/2)+'px';
+  canvas.style.marginTop=((H-ROWS*CELL*scale)/2)+'px';
+  return true;
+}
+
 function resizeCanvas(){
-  // Defer so the browser has time to apply new dimensions after fullscreen change
-  requestAnimationFrame(()=>{
+  // Tam ekran geçişinde tarayıcı layout'u birkaç frame sonra tamamlıyor.
+  // Boyutlar stabil olana kadar (max 10 frame) tekrar dene.
+  let attempts=0;
+  let lastW=0, lastH=0;
+  function tryResize(){
     const wrap=document.getElementById('canvas-wrap');
     const W=wrap.clientWidth, H=wrap.clientHeight;
-    if(!W||!H) return;
-    canvas.width=COLS*CELL; canvas.height=ROWS*CELL;
-    const scaleX=W/(COLS*CELL), scaleY=H/(ROWS*CELL);
-    const scale=Math.min(scaleX,scaleY);
-    canvas.style.width=(COLS*CELL*scale)+'px';
-    canvas.style.height=(ROWS*CELL*scale)+'px';
-    canvas.style.marginLeft=((W-COLS*CELL*scale)/2)+'px';
-    canvas.style.marginTop=((H-ROWS*CELL*scale)/2)+'px';
-  });
+    attempts++;
+    if((W!==lastW||H!==lastH) && W>0 && H>0){
+      lastW=W; lastH=H;
+      applyCanvasSize();
+    }
+    if(attempts<10) requestAnimationFrame(tryResize);
+  }
+  requestAnimationFrame(tryResize);
 }
 
 // ═══════════════════════════════════════════
