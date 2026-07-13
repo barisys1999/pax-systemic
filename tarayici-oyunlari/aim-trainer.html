@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aim Trainer | Pax Systemic</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #2f3640; overflow: hidden; width: 100vw; height: 100vh; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@8.9.2/dist/pixi.min.js"></script>
+<script>
+(async () => {
+    const { Application, Graphics, Text, TextStyle, Container } = PIXI;
+
+    // 1. Uygulamayı oluştur
+    const app = new Application();
+    await app.init({ background: '#2f3640', resizeTo: window });
+    document.body.appendChild(app.canvas);
+
+    // 2. Oyun Durumları ve Zorluk Ayarları
+    let gameState = 'menu';
+    let score = 0;
+    let totalClicks = 0;
+    let timeLeft = 30;
+    let currentDifficulty = null;
+    let lastTime = 0;
+
+    const difficulties = {
+        kolay:  { id: 'kolay',  speed: 0.006, baseScale: 1.4, color: 0x2ecc71, label: 'KOLAY'  },
+        normal: { id: 'normal', speed: 0.015, baseScale: 1.0, color: 0xf39c12, label: 'NORMAL' },
+        zor:    { id: 'zor',    speed: 0.030, baseScale: 0.6, color: 0xe74c3c, label: 'ZOR'    }
+    };
+
+    // 3. Ana Katmanlar
+    const menuContainer     = new Container();
+    const gameContainer     = new Container();
+    const uiContainer       = new Container();
+    const gameOverContainer = new Container();
+
+    app.stage.addChild(gameContainer, uiContainer, menuContainer, gameOverContainer);
+
+    // --- UI ---
+    const uiStyle    = new TextStyle({ fontFamily: 'Arial', fontSize: 24, fill: '#f5f6fa', fontWeight: 'bold' });
+    const scoreText  = new Text({ text: 'Skor: 0',       style: uiStyle });
+    const accuracyText = new Text({ text: 'İsabet: %100', style: uiStyle });
+    const timeText   = new Text({ text: 'Süre: 30',      style: uiStyle });
+
+    scoreText.position.set(20, 20);
+    accuracyText.position.set(20, 60);
+    timeText.position.set(20, 100);
+    uiContainer.addChild(scoreText, accuracyText, timeText);
+    uiContainer.visible = false;
+
+    // --- OYUN ALANI ---
+    const hitArea = new Graphics()
+        .rect(0, 0, app.screen.width, app.screen.height)
+        .fill({ color: 0x2f3640, alpha: 0.001 });
+    hitArea.eventMode = 'static';
+    hitArea.on('pointerdown', () => {
+        if (gameState !== 'playing') return;
+        totalClicks++;
+        updateUI();
+    });
+
+    const targetsContainer = new Container();
+    gameContainer.addChild(hitArea, targetsContainer);
+    gameContainer.visible = false;
+
+    let currentTarget = null;
+    let targetLife    = 1.0;
+
+    // --- MENÜ ---
+    const titleStyle = new TextStyle({
+        fontFamily: 'Arial', fontSize: 48, fill: '#ffffff',
+        fontWeight: 'bold', dropShadow: true, dropShadowBlur: 5
+    });
+    const title = new Text({ text: 'AIM TRAINER', style: titleStyle });
+    title.anchor.set(0.5);
+    title.position.set(app.screen.width / 2, app.screen.height / 2 - 150);
+    menuContainer.addChild(title);
+
+    const highScoreStyle = new TextStyle({
+        fontFamily: 'Arial', fontSize: 20, fill: '#bdc3c7',
+        align: 'center', lineHeight: 30
+    });
+    const highScoreDisplay = new Text({ text: '', style: highScoreStyle });
+    highScoreDisplay.anchor.set(0.5);
+    highScoreDisplay.position.set(app.screen.width / 2, app.screen.height / 2 + 200);
+    menuContainer.addChild(highScoreDisplay);
+
+    function createButton(text, color, yOffset, onClick) {
+        const btnContainer = new Container();
+        const btnBg   = new Graphics().roundRect(-100, -30, 200, 60, 15).fill(color);
+        const btnText = new Text({
+            text,
+            style: new TextStyle({ fontFamily: 'Arial', fontSize: 24, fill: '#ffffff', fontWeight: 'bold' })
+        });
+        btnText.anchor.set(0.5);
+        btnContainer.addChild(btnBg, btnText);
+        btnContainer.position.set(app.screen.width / 2, app.screen.height / 2 + yOffset);
+        btnContainer.eventMode = 'static';
+        btnContainer.cursor = 'pointer';
+        btnContainer.on('pointerover', () => btnContainer.scale.set(1.1));
+        btnContainer.on('pointerout',  () => btnContainer.scale.set(1.0));
+        btnContainer.on('pointerdown', onClick);
+        return btnContainer;
+    }
+
+    menuContainer.addChild(
+        createButton('KOLAY',  difficulties.kolay.color,  -50, () => startGame(difficulties.kolay)),
+        createButton('NORMAL', difficulties.normal.color,  30, () => startGame(difficulties.normal)),
+        createButton('ZOR',    difficulties.zor.color,    110, () => startGame(difficulties.zor))
+    );
+
+    // --- OYUN SONU ---
+    const gameOverText = new Text({
+        text: '',
+        style: new TextStyle({
+            fontFamily: 'Arial', fontSize: 36, fill: '#f1c40f',
+            align: 'center', fontWeight: 'bold', lineHeight: 45
+        })
+    });
+    gameOverText.anchor.set(0.5);
+    gameOverText.position.set(app.screen.width / 2, app.screen.height / 2 - 100);
+
+    const menuBtn = createButton('ANA MENÜYE DÖN', 0x3498db, 80, showMenu);
+    gameOverContainer.addChild(gameOverText, menuBtn);
+    gameOverContainer.visible = false;
+
+    // --- MEKANİKLER ---
+    function showMenu() {
+        gameState = 'menu';
+        menuContainer.visible     = true;
+        gameContainer.visible     = false;
+        uiContainer.visible       = false;
+        gameOverContainer.visible = false;
+        if (currentTarget) { currentTarget.destroy(); currentTarget = null; }
+
+        const bestKolay  = localStorage.getItem('aim_highscore_kolay')  || 0;
+        const bestNormal = localStorage.getItem('aim_highscore_normal') || 0;
+        const bestZor    = localStorage.getItem('aim_highscore_zor')    || 0;
+        highScoreDisplay.text =
+            `🏆 EN YÜKSEK SKORLAR 🏆\nKolay: ${bestKolay}   |   Normal: ${bestNormal}   |   Zor: ${bestZor}`;
+    }
+
+    function startGame(difficultyObj) {
+        currentDifficulty = difficultyObj;
+        score       = 0;
+        totalClicks = 0;
+        timeLeft    = 30;
+        gameState   = 'playing';
+
+        updateUI();
+        menuContainer.visible     = false;
+        gameOverContainer.visible = false;
+        gameContainer.visible     = true;
+        uiContainer.visible       = true;
+
+        lastTime = Date.now();
+        spawnTarget();
+    }
+
+    function spawnTarget() {
+        if (currentTarget) { currentTarget.destroy(); currentTarget = null; }
+
+        currentTarget = new Graphics()
+            .circle(0, 0, 40).fill(0xe84118)
+            .circle(0, 0, 25).fill(0xf5f6fa)
+            .circle(0, 0, 10).fill(0xe84118);
+
+        const padding  = 60;
+        currentTarget.x = padding + Math.random() * (app.screen.width  - padding * 2);
+        currentTarget.y = padding + Math.random() * (app.screen.height - padding * 2);
+        currentTarget.eventMode = 'static';
+        currentTarget.cursor    = 'crosshair';
+        targetLife = 1.0;
+        currentTarget.scale.set(currentDifficulty.baseScale);
+
+        currentTarget.on('pointerdown', (e) => {
+            if (gameState !== 'playing') return;
+            e.stopPropagation();
+            score++;
+            totalClicks++;
+            updateUI();
+            spawnTarget();
+        });
+
+        targetsContainer.addChild(currentTarget);
+    }
+
+    function updateUI() {
+        scoreText.text    = `Skor: ${score}`;
+        timeText.text     = `Süre: ${timeLeft}`;
+        const accuracy    = totalClicks === 0 ? 100 : Math.round((score / totalClicks) * 100);
+        accuracyText.text = `İsabet: %${accuracy}`;
+    }
+
+    function endGame() {
+        gameState = 'gameover';
+        gameContainer.visible     = false;
+        uiContainer.visible       = false;
+        gameOverContainer.visible = true;
+
+        const accuracy    = totalClicks === 0 ? 0 : Math.round((score / totalClicks) * 100);
+        const key         = 'aim_highscore_' + currentDifficulty.id;
+        const currentBest = parseInt(localStorage.getItem(key)) || 0;
+        let recordMessage = '';
+
+        if (score > currentBest) {
+            localStorage.setItem(key, score);
+            recordMessage = '\n\n🎉 YENİ REKOR! 🎉';
+        }
+
+        gameOverText.text =
+            `SÜRE BİTTİ!\nZorluk: ${currentDifficulty.label}\nToplam Skor: ${score}\nİsabet Oranı: %${accuracy}${recordMessage}`;
+    }
+
+    // --- OYUN DÖNGÜSÜ ---
+    app.ticker.add((ticker) => {
+        if (gameState !== 'playing') return;
+
+        const now = Date.now();
+        if (now - lastTime >= 1000) {
+            timeLeft--;
+            timeText.text = `Süre: ${timeLeft}`;
+            lastTime = now;
+            if (timeLeft <= 0) endGame();
+        }
+
+        if (currentTarget) {
+            targetLife -= currentDifficulty.speed * ticker.deltaTime;
+            currentTarget.scale.set(targetLife * currentDifficulty.baseScale);
+            if (targetLife <= 0) spawnTarget();
+        }
+    });
+
+    // Resize desteği
+    window.addEventListener('resize', () => {
+        title.position.set(app.screen.width / 2, app.screen.height / 2 - 150);
+        highScoreDisplay.position.set(app.screen.width / 2, app.screen.height / 2 + 200);
+        gameOverText.position.set(app.screen.width / 2, app.screen.height / 2 - 100);
+    });
+
+    showMenu();
+})();
+</script>
+</body>
+</html>
