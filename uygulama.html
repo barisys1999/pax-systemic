@@ -542,14 +542,16 @@ window.loadCmsItems = async function(col) {
     const emptyEl  = document.getElementById('empty'    + cap(col));
     gridEl.innerHTML = ''; loadEl.style.display = 'block'; emptyEl.style.display = 'none';
     try {
-        const q    = query(collection(db, col), orderBy('order', 'asc'));
-        const snap = await getDocs(q);
+        // orderBy olmadan çek, client tarafında sırala (order alanı olmayan belgelerde hata vermez)
+        const snap = await getDocs(collection(db, col));
         const items = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+        items.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
         loadEl.style.display = 'none';
         if (items.length === 0) { emptyEl.style.display = 'block'; return; }
         gridEl.innerHTML = items.map(item => {
             const imgCount = (item.images || []).length;
             const isLive   = !item.isDev;
+            const subLine  = item.subtitle || item.shortDesc || '';
             return `<div class="cms-card">
                 <div class="cms-card__top">
                     <div class="cms-card__icon">
@@ -557,14 +559,14 @@ window.loadCmsItems = async function(col) {
                     </div>
                     <div class="cms-card__info">
                         <div class="cms-card__title">${esc(item.title)}</div>
-                        <div class="cms-card__sub">${esc(item.subtitle||'')}</div>
+                        <div class="cms-card__sub">${esc(subLine)}</div>
                     </div>
                 </div>
                 <div class="cms-card__badges">
                     <span class="cms-badge ${isLive?'live':'dev'}">${isLive?'Yayında':'Geliştiriliyor'}</span>
                     <span class="cms-badge cat">${esc(item.catName||item.category||'')}</span>
                 </div>
-                <div class="cms-card__imgs">🖼 ${imgCount} görsel</div>
+                <div class="cms-card__imgs">🖼 ${imgCount} görsel · #${item.order??'—'}</div>
                 <div class="cms-card__actions">
                     <button class="cms-action edit" onclick="editCmsItem('${col}','${item._id}')">✎ Düzenle</button>
                     <button class="cms-action del"  onclick="deleteCmsItem('${col}','${item._id}','${esc(item.title)}')">✕ Sil</button>
@@ -912,8 +914,7 @@ window.saveCmsItem = async function() {
 // ── Edit ──────────────────────────────
 window.editCmsItem = async function(col, id) {
     try {
-        const q    = query(collection(db, col), orderBy('order', 'asc'));
-        const snap = await getDocs(q);
+        const snap = await getDocs(collection(db, col));
         const item = snap.docs.find(d => d.id === id);
         if (!item) { showToast('Öğe bulunamadı', 'error'); return; }
         openCmsModal(col, { _id: id, ...item.data() }, id);
