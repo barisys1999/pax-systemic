@@ -82,11 +82,11 @@ canvas { display:block; }
   -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
 }
 .up-subtitle { font-size:11px; color:rgba(255,255,255,0.25); letter-spacing:2px; margin-bottom:32px; }
-.up-cards { display:flex; gap:14px; padding:0 16px; flex-wrap:wrap; justify-content:center; }
+.up-cards { display:flex; gap:10px; padding:0 12px; flex-wrap:wrap; justify-content:center; max-width:720px; }
 .up-card {
-  width:172px; background:rgba(255,255,255,0.03);
+  width:148px; background:rgba(255,255,255,0.03);
   border:1.5px solid rgba(255,255,255,0.09);
-  border-radius:18px; padding:26px 18px;
+  border-radius:16px; padding:20px 14px;
   cursor:pointer; transition:all .18s; text-align:center;
   position:relative; overflow:hidden;
 }
@@ -97,9 +97,9 @@ canvas { display:block; }
 .up-card::before { content:''; position:absolute; inset:0; background:var(--glow,transparent); opacity:0; transition:opacity .18s; }
 .up-card:hover { transform:translateY(-5px); border-color:rgba(255,255,255,0.35); }
 .up-card:hover::before { opacity:1; }
-.uc-icon { font-size:42px; margin-bottom:12px; display:block; }
-.uc-name { font-size:14px; font-weight:700; color:#fff; margin-bottom:6px; }
-.uc-desc { font-size:11px; color:rgba(255,255,255,0.38); line-height:1.55; }
+.uc-icon { font-size:36px; margin-bottom:10px; display:block; }
+.uc-name { font-size:13px; font-weight:700; color:#fff; margin-bottom:5px; }
+.uc-desc { font-size:10px; color:rgba(255,255,255,0.38); line-height:1.5; }
 .uc-tag { display:inline-block; margin-top:11px; padding:3px 10px; border-radius:20px; font-size:9px; font-weight:800; letter-spacing:1.5px; background:var(--tag-bg,rgba(255,255,255,0.08)); color:var(--tag-col,rgba(255,255,255,0.4)); }
 .uc-synergy { font-size:10px; color:#ffd700; margin-top:6px; }
 .uc-lvbar { display:flex; gap:4px; justify-content:center; margin-top:10px; }
@@ -1358,7 +1358,7 @@ function buildUpgradePool(){
   const hiPri=shuffle(pool.filter(x=>x.rarity!=='evolved'&&(x.priority||1)>=2));
   const loPri=shuffle(pool.filter(x=>x.rarity!=='evolved'&&(x.priority||1)<2));
   const ordered=[...evoItems,...hiPri,...loPri];
-  return ordered.slice(0,4);
+  return ordered.slice(0,6);
 }
 
 function weaponLvDesc(id, lv){
@@ -1474,6 +1474,7 @@ function gainXP(amount){
     const mult = level < 7 ? 1.18 : level < 15 ? 1.28 : 1.40;
     xpToNext=Math.ceil(xpToNext*mult);
     level++; pendingUpgrades++;
+    player.hp = Math.min(player.maxHp, player.hp + player.maxHp * 0.5);
     SFX.levelUp(); flashScreen('#00ff88',.15);
     if(pendingUpgrades===1) showUpgrade();
   }
