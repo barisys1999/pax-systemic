@@ -633,51 +633,81 @@ function spawnBullet(x, y, angle, spd, dmg, color, r, pierce, type) {
   });
 }
 
+// ── LEVEL-BASED DIFFICULTY CONFIG ──
+// Her level için: { rate: spawn aralığı (frame), count: tek seferde kaç düşman, tankChance, fastChance, bossKillThreshold }
+function getDiffConfig() {
+  const lv = level;
+  // rate: kaç frame'de bir spawn (60 = 1 saniye). Düşük = daha hızlı spawn.
+  // count: her spawn tick'inde çıkan düşman sayısı
+  // hpScale/spdScale: düşman güç çarpanı
+  if (lv === 1)  return { rate: 120, count: 1, fastChance: 0,    tankChance: 0,    hpScale: 0.6, spdScale: 0.8 };
+  if (lv === 2)  return { rate: 100, count: 1, fastChance: 0,    tankChance: 0,    hpScale: 0.7, spdScale: 0.85 };
+  if (lv === 3)  return { rate: 90,  count: 1, fastChance: 0.1,  tankChance: 0,    hpScale: 0.8, spdScale: 0.9 };
+  if (lv === 4)  return { rate: 80,  count: 1, fastChance: 0.15, tankChance: 0,    hpScale: 0.9, spdScale: 0.92 };
+  if (lv === 5)  return { rate: 72,  count: 2, fastChance: 0.18, tankChance: 0.05, hpScale: 1.0, spdScale: 0.95 };
+  if (lv === 6)  return { rate: 65,  count: 2, fastChance: 0.2,  tankChance: 0.08, hpScale: 1.1, spdScale: 0.97 };
+  if (lv === 7)  return { rate: 58,  count: 2, fastChance: 0.22, tankChance: 0.1,  hpScale: 1.2, spdScale: 1.0 };
+  if (lv === 8)  return { rate: 52,  count: 2, fastChance: 0.25, tankChance: 0.12, hpScale: 1.3, spdScale: 1.02 };
+  if (lv === 9)  return { rate: 46,  count: 3, fastChance: 0.28, tankChance: 0.14, hpScale: 1.45, spdScale: 1.05 };
+  if (lv === 10) return { rate: 40,  count: 3, fastChance: 0.3,  tankChance: 0.15, hpScale: 1.6, spdScale: 1.08 };
+  // lv 11+: giderek sertleşir
+  const extra = lv - 10;
+  return {
+    rate:       Math.max(20, 40 - extra * 1.5),
+    count:      Math.min(6, 3 + Math.floor(extra / 3)),
+    fastChance: Math.min(0.35, 0.3 + extra * 0.01),
+    tankChance: Math.min(0.25, 0.15 + extra * 0.01),
+    hpScale:    1.6 + extra * 0.18,
+    spdScale:   1.08 + extra * 0.03,
+  };
+}
+
 function spawnEnemy() {
   if (state !== 'playing') return;
   const side = 0|Math.random()*4;
   const pad = 30;
   let ex, ey;
-  if (side===0){ ex=-pad;              ey=Math.random()*H; }
-  if (side===1){ ex=W+pad;             ey=Math.random()*H; }
-  if (side===2){ ey=-pad;              ex=Math.random()*W; }
-  if (side===3){ ey=H+pad;             ex=Math.random()*W; }
+  if (side===0){ ex=-pad;   ey=Math.random()*H; }
+  if (side===1){ ex=W+pad;  ey=Math.random()*H; }
+  if (side===2){ ey=-pad;   ex=Math.random()*W; }
+  if (side===3){ ey=H+pad;  ex=Math.random()*W; }
 
-  const wave = Math.floor(gameTime / 20);  // wave every 20s
-  const isBoss = kills > 0 && kills % 30 === 0 && Math.random() < 0.05;
+  const cfg = getDiffConfig();
+  const { hpScale, spdScale, fastChance, tankChance } = cfg;
 
-  const hpScale = 1 + wave * 0.3 + Math.floor(gameTime / 60) * 0.5;
-  const spdScale = 1 + wave * 0.04 + Math.floor(gameTime / 90) * 0.08;
+  // Boss: her 30 öldürmede bir, level 5'ten itibaren
+  const isBoss = level >= 5 && kills > 0 && kills % 30 === 0 && Math.random() < 0.06;
 
   if (isBoss) {
     enemies.push({ x:ex, y:ey, hp: 400*hpScale, maxHp: 400*hpScale, speed: 0.7*spdScale,
-      radius: 24, color: '#ff0066', dead: false, type:'boss', flashTimer:0, dmgAcc:0 });
+      radius: 24, color: '#ff0066', dead: false, type:'boss', flashTimer:0 });
+    return;
+  }
+
+  const roll = Math.random();
+  if (roll < tankChance) {
+    // Tank
+    enemies.push({ x:ex, y:ey, hp: 100*hpScale, maxHp: 100*hpScale, speed: 0.65*spdScale,
+      radius: 17, color: '#8855ff', dead: false, type:'tank', flashTimer:0 });
+  } else if (roll < tankChance + fastChance) {
+    // Fast
+    enemies.push({ x:ex, y:ey, hp: 18*hpScale, maxHp: 18*hpScale, speed: 1.9*spdScale,
+      radius: 8, color: '#ff9900', dead: false, type:'fast', flashTimer:0 });
   } else {
-    // Rotate enemy types
-    const types = ['basic','fast','tank'];
-    const roll = Math.random();
-    if (roll < 0.6) {
-      enemies.push({ x:ex, y:ey, hp: 35*hpScale, maxHp: 35*hpScale, speed: 1.2*spdScale,
-        radius: 11, color: '#ff4455', dead: false, type:'basic', flashTimer:0, dmgAcc:0 });
-    } else if (roll < 0.82) {
-      enemies.push({ x:ex, y:ey, hp: 18*hpScale, maxHp: 18*hpScale, speed: 1.9*spdScale,
-        radius: 8, color: '#ff9900', dead: false, type:'fast', flashTimer:0, dmgAcc:0 });
-    } else {
-      enemies.push({ x:ex, y:ey, hp: 100*hpScale, maxHp: 100*hpScale, speed: 0.65*spdScale,
-        radius: 17, color: '#8855ff', dead: false, type:'tank', flashTimer:0, dmgAcc:0 });
-    }
+    // Basic
+    enemies.push({ x:ex, y:ey, hp: 35*hpScale, maxHp: 35*hpScale, speed: 1.2*spdScale,
+      radius: 11, color: '#ff4455', dead: false, type:'basic', flashTimer:0 });
   }
 }
 
 let spawnTimer = 0;
 function tickSpawn(dt) {
   if (state !== 'playing') return;
-  const rate = Math.max(0.4, 1.6 - gameTime * 0.008);  // faster over time, min 0.4s
+  const cfg = getDiffConfig();
   spawnTimer += dt;
-  const count = 1 + Math.floor(gameTime / 40);  // more per tick over time
-  while (spawnTimer >= rate) {
-    spawnTimer -= rate;
-    for (let i = 0; i < count; i++) spawnEnemy();
+  while (spawnTimer >= cfg.rate) {
+    spawnTimer -= cfg.rate;
+    for (let i = 0; i < cfg.count; i++) spawnEnemy();
   }
 }
 
