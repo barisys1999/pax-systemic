@@ -294,8 +294,8 @@ canvas { display:block; image-rendering:pixelated; }
       <p>Kuleye tık = yükselt/sat. Her dalga sonrası özel yetenek mağazası açılır!</p>
     </div>
     <div class="howto-card">
-      <h3>💰 EKONOMİ</h3>
-      <p>Altın Madeni pahalıdır ama düzenli gelir sağlar. Çok maden = az savunma dengesi kurmalısın!</p>
+      <h3>⚡ ÖZEL YETENEKLERm</h3>
+      <p>Q=Hava Saldırısı, W=Buz Fırtınası, E=Altın Acil. Savaş boyunca hazır oldukça kullan!</p>
     </div>
     <div class="howto-card">
       <h3>🔥 KOMBo</h3>
@@ -340,6 +340,25 @@ canvas { display:block; image-rendering:pixelated; }
   <div id="sidebar">
     <div class="sidebar-title">🗼 KULELER</div>
     <div id="tower-buttons"></div>
+    <div class="sidebar-sep"></div>
+    <div class="sidebar-title">⚡ YETENEKLERm</div>
+    <div class="ability-row">
+      <div class="ability-btn" id="ab-airstrike" onclick="useAbility('airstrike')">
+        <span class="ab-icon">💥</span>
+        <span style="font-size:5px">Q</span>
+        <span class="ab-cd" id="cd-airstrike">Hazır</span>
+      </div>
+      <div class="ability-btn" id="ab-blizzard" onclick="useAbility('blizzard')">
+        <span class="ab-icon">🌨️</span>
+        <span style="font-size:5px">W</span>
+        <span class="ab-cd" id="cd-blizzard">Hazır</span>
+      </div>
+      <div class="ability-btn" id="ab-goldrush" onclick="useAbility('goldrush')">
+        <span class="ab-icon">💎</span>
+        <span style="font-size:5px">E</span>
+        <span class="ab-cd" id="cd-goldrush">Hazır</span>
+      </div>
+    </div>
     <div class="sidebar-sep"></div>
     <div class="sidebar-title">SEÇİLİ KULE</div>
     <div id="selected-panel">
@@ -678,6 +697,9 @@ function init(){
   document.addEventListener('keydown', e=>{
     const k=e.key.toLowerCase();
     if(k==='escape'){clearSelection(); return;}
+    if(k==='q'){useAbility('airstrike'); return;}
+    if(k==='w'){useAbility('blizzard'); return;}
+    if(k==='e'){useAbility('goldrush'); return;}
     TOWER_DEFS.forEach(td=>{if(td.hotkey===e.key) selectTowerType(td.id);});
   });
 }
