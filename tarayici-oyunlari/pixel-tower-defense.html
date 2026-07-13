@@ -294,8 +294,8 @@ canvas { display:block; image-rendering:pixelated; }
       <p>Kuleye tık = yükselt/sat. Her dalga sonrası özel yetenek mağazası açılır!</p>
     </div>
     <div class="howto-card">
-      <h3>⚡ ÖZEL YETENEKLERm</h3>
-      <p>Q=Hava Saldırısı, W=Buz Fırtınası, E=Altın Acil. Savaş boyunca hazır oldukça kullan!</p>
+      <h3>⚡ STRATEJİ</h3>
+      <p>Buz kulesi yavaşlatır, bomba alan hasarı verir, lazer zırh deler. Dengeyi iyi kur!</p>
     </div>
     <div class="howto-card">
       <h3>🔥 KOMBo</h3>
@@ -340,25 +340,6 @@ canvas { display:block; image-rendering:pixelated; }
   <div id="sidebar">
     <div class="sidebar-title">🗼 KULELER</div>
     <div id="tower-buttons"></div>
-    <div class="sidebar-sep"></div>
-    <div class="sidebar-title">⚡ YETENEKLERm</div>
-    <div class="ability-row">
-      <div class="ability-btn" id="ab-airstrike" onclick="useAbility('airstrike')">
-        <span class="ab-icon">💥</span>
-        <span style="font-size:5px">Q</span>
-        <span class="ab-cd" id="cd-airstrike">Hazır</span>
-      </div>
-      <div class="ability-btn" id="ab-blizzard" onclick="useAbility('blizzard')">
-        <span class="ab-icon">🌨️</span>
-        <span style="font-size:5px">W</span>
-        <span class="ab-cd" id="cd-blizzard">Hazır</span>
-      </div>
-      <div class="ability-btn" id="ab-goldrush" onclick="useAbility('goldrush')">
-        <span class="ab-icon">💎</span>
-        <span style="font-size:5px">E</span>
-        <span class="ab-cd" id="cd-goldrush">Hazır</span>
-      </div>
-    </div>
     <div class="sidebar-sep"></div>
     <div class="sidebar-title">SEÇİLİ KULE</div>
     <div id="selected-panel">
@@ -443,74 +424,74 @@ const PATH_CELLS = [
 
 const TOWER_DEFS = [
   {
-    id:'arrow', name:'Ok Kulesi', icon:'🏹', cost:50, hotkey:'1',
+    id:'arrow', name:'Ok Kulesi', icon:'🏹', cost:65, hotkey:'1',
     desc:'Hızlı ateşler,\ntek hedefe',
-    color:'#88cc44', range:3, dmg:12, rate:60, proj:'arrow', slow:0,
+    color:'#88cc44', range:3, dmg:11, rate:65, proj:'arrow', slow:0,
     upgrades:[
-      {name:'Keskin Okçu', cost:60, dmg:20, rate:50, desc:'Daha güçlü oklar'},
-      {name:'Fırtına Okçu', cost:100, dmg:30, rate:32, range:3.5, desc:'Çok hızlı ateş'},
+      {name:'Keskin Okçu', cost:80, dmg:18, rate:55, desc:'Daha güçlü oklar'},
+      {name:'Fırtına Okçu', cost:140, dmg:28, rate:36, range:3.5, desc:'Çok hızlı ateş'},
     ]
   },
   {
-    id:'mage', name:'Büyücü Kulesi', icon:'🔮', cost:100, hotkey:'2',
+    id:'mage', name:'Büyücü Kulesi', icon:'🔮', cost:130, hotkey:'2',
     desc:'Güçlü büyüler,\nyavaş ateş',
-    color:'#aa44ff', range:3.5, dmg:45, rate:120, proj:'magic', slow:0,
+    color:'#aa44ff', range:3.5, dmg:40, rate:130, proj:'magic', slow:0,
     upgrades:[
-      {name:'Usta Büyücü', cost:120, dmg:75, rate:100, desc:'Daha güçlü büyü'},
-      {name:'Arkaen Üstadı', cost:200, dmg:120, rate:80, range:4, desc:'Büyük menzil & hasar'},
+      {name:'Usta Büyücü', cost:150, dmg:68, rate:110, desc:'Daha güçlü büyü'},
+      {name:'Arkaen Üstadı', cost:260, dmg:108, rate:88, range:4, desc:'Büyük menzil & hasar'},
     ]
   },
   {
-    id:'bomb', name:'Bomba Kulesi', icon:'💣', cost:125, hotkey:'3',
+    id:'bomb', name:'Bomba Kulesi', icon:'💣', cost:160, hotkey:'3',
     desc:'Alan hasarı,\nyavaş ateş',
-    color:'#ff6622', range:2.5, dmg:60, rate:150, proj:'bomb', aoe:1.5, slow:0,
+    color:'#ff6622', range:2.5, dmg:55, rate:160, proj:'bomb', aoe:1.5, slow:0,
     upgrades:[
-      {name:'Roket Topu', cost:150, dmg:90, aoe:2, desc:'Daha büyük patlama'},
-      {name:'Nükleer Top', cost:250, dmg:150, aoe:2.8, rate:130, desc:'DEV patlama'},
+      {name:'Roket Topu', cost:190, dmg:82, aoe:2, desc:'Daha büyük patlama'},
+      {name:'Nükleer Top', cost:320, dmg:135, aoe:2.8, rate:140, desc:'DEV patlama'},
     ]
   },
   {
-    id:'ice', name:'Buz Kulesi', icon:'❄️', cost:80, hotkey:'4',
+    id:'ice', name:'Buz Kulesi', icon:'❄️', cost:100, hotkey:'4',
     desc:'Yavaşlatır,\norta hasar',
-    color:'#44ccff', range:3, dmg:15, rate:90, proj:'ice', slow:0.45,
+    color:'#44ccff', range:3, dmg:13, rate:95, proj:'ice', slow:0.38,
     upgrades:[
-      {name:'Derin Dondurucu', cost:90, dmg:22, slow:0.6, desc:'Çok daha yavaşlatır'},
-      {name:'Buzul Fırtınası', cost:160, dmg:35, slow:0.7, rate:75, range:3.5, desc:'Dondurucu fırtına'},
+      {name:'Derin Dondurucu', cost:115, dmg:20, slow:0.52, desc:'Çok daha yavaşlatır'},
+      {name:'Buzul Fırtınası', cost:200, dmg:30, slow:0.63, rate:80, range:3.5, desc:'Dondurucu fırtına'},
     ]
   },
   {
-    id:'gold', name:'Altın Madeni', icon:'💰', cost:300, hotkey:'5',
+    id:'gold', name:'Altın Madeni', icon:'💰', cost:2000, hotkey:'5',
     desc:'Para üretir,\n5s\'de bir',
-    color:'#ffd700', range:0, dmg:0, rate:0, proj:'none', slow:0, goldGen:4,
+    color:'#ffd700', range:0, dmg:0, rate:0, proj:'none', slow:0, goldGen:5,
     upgrades:[
-      {name:'Zengin Maden', cost:300, goldGen:7, desc:'Daha fazla altın'},
-      {name:'Hazine Odası', cost:500, goldGen:12, desc:'Çok daha fazla altın'},
+      {name:'Zengin Maden', cost:600, goldGen:9, desc:'Daha fazla altın'},
+      {name:'Hazine Odası', cost:1000, goldGen:15, desc:'Çok daha fazla altın'},
     ]
   },
   {
-    id:'laser', name:'Lazer Kulesi', icon:'⚡', cost:200, hotkey:'6',
+    id:'laser', name:'Lazer Kulesi', icon:'⚡', cost:250, hotkey:'6',
     desc:'Sürekli hasar,\npenetrasyonlu',
-    color:'#ff0055', range:4, dmg:8, rate:15, proj:'laser', slow:0, piercing:true,
+    color:'#ff0055', range:4, dmg:7, rate:16, proj:'laser', slow:0, piercing:true,
     upgrades:[
-      {name:'Mega Lazer', cost:180, dmg:14, rate:12, desc:'Daha güçlü lazer'},
-      {name:'Plazma Topu', cost:280, dmg:22, rate:10, range:4.5, desc:'Plazma akışı'},
+      {name:'Mega Lazer', cost:220, dmg:12, rate:13, desc:'Daha güçlü lazer'},
+      {name:'Plazma Topu', cost:350, dmg:19, rate:11, range:4.5, desc:'Plazma akışı'},
     ]
   },
   {
-    id:'poison', name:'Zehir Kulesi', icon:'☠️', cost:110, hotkey:'7',
+    id:'poison', name:'Zehir Kulesi', icon:'☠️', cost:140, hotkey:'7',
     desc:'Zehirler,\nalan etkili',
-    color:'#44ff22', range:2.8, dmg:8, rate:100, proj:'poison', aoe:1.2, slow:0, poisonDmg:4, poisonDur:180,
+    color:'#44ff22', range:2.8, dmg:7, rate:105, proj:'poison', aoe:1.2, slow:0, poisonDmg:3, poisonDur:180,
     upgrades:[
-      {name:'Asit Bombası', cost:120, dmg:12, poisonDmg:7, aoe:1.6, desc:'Daha güçlü zehir'},
-      {name:'Biyolojik Silah', cost:200, dmg:18, poisonDmg:12, aoe:2.2, poisonDur:240, desc:'Ölümcül zehir'},
+      {name:'Asit Bombası', cost:150, dmg:10, poisonDmg:6, aoe:1.6, desc:'Daha güçlü zehir'},
+      {name:'Biyolojik Silah', cost:260, dmg:16, poisonDmg:10, aoe:2.2, poisonDur:240, desc:'Ölümcül zehir'},
     ]
   },
 ];
 
 const DIFFS = {
-  easy:   {lives:30, gold:250, enemyHpMult:0.65, goldMult:1.3},
-  normal: {lives:20, gold:130, enemyHpMult:1.0,  goldMult:1.0},
-  hard:   {lives:12, gold:80,  enemyHpMult:1.4,  goldMult:0.85},
+  easy:   {lives:20, gold:150, enemyHpMult:0.8,  goldMult:1.1},
+  normal: {lives:15, gold:100, enemyHpMult:1.15, goldMult:0.9},
+  hard:   {lives:10, gold:60,  enemyHpMult:1.6,  goldMult:0.75},
 };
 
 // ═══════════════════════════════════════════
@@ -697,9 +678,6 @@ function init(){
   document.addEventListener('keydown', e=>{
     const k=e.key.toLowerCase();
     if(k==='escape'){clearSelection(); return;}
-    if(k==='q'){useAbility('airstrike'); return;}
-    if(k==='w'){useAbility('blizzard'); return;}
-    if(k==='e'){useAbility('goldrush'); return;}
     TOWER_DEFS.forEach(td=>{if(td.hotkey===e.key) selectTowerType(td.id);});
   });
 }
@@ -825,6 +803,7 @@ function renderSelectedPanel(){
 // ABILITIES
 // ═══════════════════════════════════════════
 function useAbility(id){
+  return; // Yetenekler devre dışı
   if(!running||!waveActive) return;
   const ab=ABILITIES[id];
   if(ab.timer>0) return;
@@ -924,6 +903,7 @@ function startGame(){
   document.getElementById('wave-btn').disabled=false;
   document.getElementById('speed-btn').textContent='▶▶ 2×';
   document.getElementById('speed-btn').className='';
+  // Yetenekler devre dışı - UI güncellemesi yok
 
   if(raf) cancelAnimationFrame(raf);
   let last=0;
@@ -950,9 +930,7 @@ function update(dt){
     if(gen>0){ G.gold+=gen; spawnFloatie('+'+gen+'💰',COLS*CELL-60,24,'#ffd700'); sfxGold(); }
   }
 
-  // Abilities cooldown
-  Object.values(ABILITIES).forEach(ab=>{ if(ab.timer>0) ab.timer=Math.max(0,ab.timer-dt); });
-  updateAbilityUI();
+  // Abilities devre dışı
 
   // Combo decay
   if(comboTimer>0){
@@ -1187,14 +1165,14 @@ function spawnEnemy(typeId, returnRef=false){
   const def=ENEMY_TYPES[typeId];
   // Daha dengeli HP scaling: her dalga ~%7 artar → 20. dalgada ~3.6x, 30'da ~7x
   // Ayrıca ödül de düşman güçlenmesiyle orantılı artıyor
-  const hpScale = Math.pow(1.07, waveNum - 1);
-  const rewardScale = Math.pow(1.04, waveNum - 1); // ödül de artsın ama daha yavaş
+  const hpScale = Math.pow(1.10, waveNum - 1);
+  const rewardScale = Math.pow(1.025, waveNum - 1); // ödül çok yavaş artsın
   const hp=Math.round(def.hp * G.enemyHpMult * hpScale);
   const scaledReward = Math.round(def.reward * rewardScale);
   const e={
     typeId, px:pathCoords[0].x, py:pathCoords[0].y,
     pathIdx:1, hp, maxHp:hp,
-    speed:def.speed * (1 + Math.min(0.35, waveNum * 0.012)), reward:scaledReward,
+    speed:def.speed * (1 + Math.min(0.5, waveNum * 0.018)), reward:scaledReward,
     color:def.color, size:def.size, armor:def.armor||0,
     slowTimer:0, slowAmt:0, dmgFlash:0,
     heals:def.heals||false, healTimer:0,
@@ -1233,7 +1211,7 @@ function waveComplete(){
   wavePerfect=(G.lives===livesAtWaveStart);
   // Sonsuz mod: hiç bitmez
   // Dalga bonusu sabit - geç dalga altın enflasyonunu engeller
-  const bonus = Math.min(30 + waveNum * 2, 80); // max 80 altın, erken dalgada az
+  const bonus = Math.min(20 + waveNum * 1, 55); // max 55 altın, erken dalgada az
   G.gold+=bonus; G.score+=bonus*2;
   spawnFloatie('+'+bonus+'💰 DALGA BONUSU',COLS*CELL/2-60,40,'#ffd700');
   showWaveBanner(`✅ DALGA ${waveNum} TAMAM!`);
