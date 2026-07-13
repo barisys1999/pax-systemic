@@ -263,6 +263,147 @@ window.addEventListener('resize', () => {
 });
 
 // ════════════════════════════════════════════════════
+// AUDIO ENGINE
+// ════════════════════════════════════════════════════
+let audioCtx = null;
+
+function getAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+// Genel ses çalma yardımcısı: osilatörler + zarf
+function playTone({ freq = 440, freq2, type = 'square', gainPeak = 0.18, attack = 0.005, decay = 0.08, sustain = 0, release = 0.05, duration = 0.15, detune = 0, filterFreq, filterQ } = {}) {
+  try {
+    const ac = getAudio();
+    const now = ac.currentTime;
+
+    const osc = ac.createOscillator();
+    const gain = ac.createGain();
+
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, now);
+    if (freq2) osc.frequency.linearRampToValueAtTime(freq2, now + duration);
+    if (detune) osc.detune.setValueAtTime(detune, now);
+
+    // Filtre (isteğe bağlı)
+    let lastNode = osc;
+    if (filterFreq) {
+      const filter = ac.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(filterFreq, now);
+      if (filterQ) filter.Q.setValueAtTime(filterQ, now);
+      osc.connect(filter);
+      filter.connect(gain);
+    } else {
+      osc.connect(gain);
+    }
+
+    // ADSR zarf
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(gainPeak, now + attack);
+    gain.gain.linearRampToValueAtTime(gainPeak * sustain, now + attack + decay);
+    gain.gain.linearRampToValueAtTime(0, now + attack + decay + release);
+
+    gain.connect(ac.destination);
+    osc.start(now);
+    osc.stop(now + attack + decay + release + 0.01);
+  } catch(e) {}
+}
+
+// Gürültü patlaması (patlama sesi için)
+function playNoise({ gainPeak = 0.15, attack = 0.002, decay = 0.12, release = 0.06, filterFreq = 800 } = {}) {
+  try {
+    const ac = getAudio();
+    const now = ac.currentTime;
+    const bufSize = ac.sampleRate * 0.25;
+    const buf = ac.createBuffer(1, bufSize, ac.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+
+    const src = ac.createBufferSource();
+    src.buffer = buf;
+
+    const filter = ac.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(filterFreq, now);
+
+    const gain = ac.createGain();
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(gainPeak, now + attack);
+    gain.gain.linearRampToValueAtTime(0, now + attack + decay + release);
+
+    src.connect(filter);
+    filter.connect(gain);
+    gain.connect(ac.destination);
+    src.start(now);
+    src.stop(now + attack + decay + release + 0.05);
+  } catch(e) {}
+}
+
+// ── Ses efektleri ──
+const SFX = {
+  // Bıçak atışı: kısa, keskin tık
+  shoot() {
+    playTone({ freq: 880, freq2: 440, type: 'square', gainPeak: 0.08, attack: 0.002, decay: 0.04, release: 0.02, duration: 0.06, filterFreq: 2000 });
+  },
+  // Balta fırlatma: daha ağır, dönen his
+  axeThrow() {
+    playTone({ freq: 220, freq2: 110, type: 'sawtooth', gainPeak: 0.1, attack: 0.005, decay: 0.1, release: 0.05, duration: 0.15, filterFreq: 600 });
+  },
+  // Düşman ölümü (küçük)
+  enemyDie() {
+    playNoise({ gainPeak: 0.1, attack: 0.002, decay: 0.07, release: 0.04, filterFreq: 600 });
+    playTone({ freq: 180, freq2: 80, type: 'square', gainPeak: 0.07, attack: 0.002, decay: 0.06, release: 0.03, duration: 0.09 });
+  },
+  // Boss ölümü: büyük patlama
+  bossDie() {
+    playNoise({ gainPeak: 0.3, attack: 0.003, decay: 0.3, release: 0.15, filterFreq: 400 });
+    playTone({ freq: 120, freq2: 40, type: 'sawtooth', gainPeak: 0.2, attack: 0.005, decay: 0.25, release: 0.1, duration: 0.35, filterFreq: 300 });
+  },
+  // Oyuncuya hasar: düşük, sert vuruş
+  playerHit() {
+    playNoise({ gainPeak: 0.2, attack: 0.001, decay: 0.06, release: 0.03, filterFreq: 300 });
+    playTone({ freq: 90, freq2: 60, type: 'sawtooth', gainPeak: 0.12, attack: 0.001, decay: 0.05, release: 0.03, duration: 0.08 });
+  },
+  // Level atlama: yükselen melodik arpej
+  levelUp() {
+    [523, 659, 784, 1047].forEach((f, i) => {
+      setTimeout(() => playTone({ freq: f, type: 'sine', gainPeak: 0.18, attack: 0.01, decay: 0.12, release: 0.08, duration: 0.2 }), i * 70);
+    });
+  },
+  // XP toplama: küçük pling
+  xpPick() {
+    playTone({ freq: 1200, freq2: 1600, type: 'sine', gainPeak: 0.05, attack: 0.003, decay: 0.04, release: 0.02, duration: 0.06 });
+  },
+  // Yıldırım: elektrik çatırtısı
+  lightning() {
+    playNoise({ gainPeak: 0.22, attack: 0.001, decay: 0.05, release: 0.04, filterFreq: 3000 });
+    playTone({ freq: 600, freq2: 200, type: 'sawtooth', gainPeak: 0.1, attack: 0.001, decay: 0.04, release: 0.03, duration: 0.07, detune: 50 });
+  },
+  // Upgrade seçimi: onay sesi
+  upgrade() {
+    playTone({ freq: 440, freq2: 880, type: 'sine', gainPeak: 0.15, attack: 0.01, decay: 0.15, release: 0.1, duration: 0.25 });
+  },
+  // Game over: düşen ses
+  gameOver() {
+    [440, 330, 220, 110].forEach((f, i) => {
+      setTimeout(() => playTone({ freq: f, type: 'sawtooth', gainPeak: 0.15, attack: 0.01, decay: 0.2, release: 0.1, duration: 0.3 }), i * 120);
+    });
+  },
+};
+
+// Shoot sesi throttle (çok sık tetiklenmesin)
+let _lastShootSfx = 0;
+function sfxShoot(type) {
+  const now = Date.now();
+  if (now - _lastShootSfx < 60) return;
+  _lastShootSfx = now;
+  if (type === 'axe') SFX.axeThrow(); else SFX.shoot();
+}
+
+// ════════════════════════════════════════════════════
 // STATE
 // ════════════════════════════════════════════════════
 let state = 'menu'; // menu | playing | upgrade | gameover
@@ -631,6 +772,7 @@ function spawnBullet(x, y, angle, spd, dmg, color, r, pierce, type) {
     dmg, color, r, pierce: pierce||0, type,
     hit: new Set(), dead: false, life: 0
   });
+  sfxShoot(type);
 }
 
 // ── LEVEL-BASED DIFFICULTY CONFIG ──
@@ -720,6 +862,7 @@ function spawnParticle(x, y, vx, vy, color, life, r) {
 }
 
 function spawnLightning(x1,y1,x2,y2) {
+  SFX.lightning();
   // Draw a lightning bolt as temporary particles
   const steps = 8;
   let px=x1,py=y1;
@@ -752,6 +895,7 @@ function killEnemy(idx) {
   e.dead = true;
   kills++;
   score += e.type === 'boss' ? 100 : e.type === 'tank' ? 30 : e.type === 'fast' ? 15 : 10;
+  if (e.type === 'boss') SFX.bossDie(); else SFX.enemyDie();
 
   // Particles
   const count = e.type==='boss' ? 20 : e.type==='tank' ? 10 : 6;
@@ -769,6 +913,7 @@ function damagePlayer(dmg) {
   if (player.invincible > 0) return;
   player.hp -= dmg;
   player.invincible = 30;
+  SFX.playerHit();
   flashScreen('#ff3333', 0.12);
   if (player.hp <= 0) { player.hp = 0; endGame(); }
 }
@@ -797,6 +942,7 @@ function showDmgNum(x, y, dmg) {
 // GAME LIFECYCLE
 // ════════════════════════════════════════════════════
 function startGame() {
+  getAudio(); // kullanıcı etkileşimiyle AudioContext'i aç
   state = 'playing';
   score = 0; kills = 0; level = 1; xp = 0; xpToNext = 12;
   gameTime = 0; spawnTimer = 0; pendingUpgrades = 0;
@@ -821,6 +967,7 @@ function startGame() {
 
 function endGame() {
   state = 'gameover';
+  SFX.gameOver();
   document.getElementById('go-score').textContent = score.toLocaleString();
   document.getElementById('go-level').textContent = level;
   document.getElementById('go-kills').textContent = kills;
@@ -852,6 +999,7 @@ function showUpgrade() {
 window.pickUpgrade = function(i) {
   const c = window._upgradeChoices[i];
   if (!c) return;
+  SFX.upgrade();
   c.apply();
   document.getElementById('upgrade-screen').classList.add('hidden');
   pendingUpgrades--;
@@ -870,6 +1018,10 @@ function gainXP(amount) {
     xpToNext = Math.ceil(xpToNext * 1.25);
     level++;
     pendingUpgrades++;
+    // Level atlarken can tamamen yenilenir
+    player.hp = player.maxHp;
+    SFX.levelUp();
+    flashScreen('#00ff88', 0.18);
     if (pendingUpgrades === 1) showUpgrade();
   }
 }
@@ -988,6 +1140,7 @@ function update(dt) {
     }
     if (gd < player.radius + 8) {
       gainXP(g.value);
+      SFX.xpPick();
       g.dead = true;
       xpGems.splice(i,1);
     }
