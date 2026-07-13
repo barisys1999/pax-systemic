@@ -535,25 +535,28 @@ const WEAPONS = {
     evolveWith:'pummarola',
     evolvedName:'Kıyamet Çiçeği', evolvedEmoji:'🌸',
     maxLevel:8,
-    init(w){ w.cd=0; w.maxCd=1; w.dmg=4.5; w.radius=82; w.knockback=1.6; },
+    init(w){ w.cd=0; w.maxCd=1; w.dmg=3.5; w.radius=75; w.knockback=0.5; },
     levelUp(w,lv){
-      if(lv===2){w.radius+=18;}
-      if(lv===3){w.dmg+=3.5;}
-      if(lv===4){w.radius+=22; w.knockback+=.6;}
-      if(lv===5){w.dmg+=5.5;}
-      if(lv===6){w.radius+=28;}
-      if(lv===7){w.dmg+=7.5; w.knockback+=.6;}
-      if(lv===8){w.radius+=38; w.dmg+=14; w.knockback+=1.2;}
+      if(lv===2){w.radius+=12;}
+      if(lv===3){w.dmg+=2.5;}
+      if(lv===4){w.radius+=15; w.knockback+=.2;}
+      if(lv===5){w.dmg+=3.5;}
+      if(lv===6){w.radius+=18;}
+      if(lv===7){w.dmg+=5; w.knockback+=.2;}
+      if(lv===8){w.radius+=22; w.dmg+=9; w.knockback+=.4;}
     },
     tick(w,dt){
       for(let j=enemies.length-1;j>=0;j--){
         const e=enemies[j]; if(e.dead)continue;
         const d=Math.hypot(e.x-player.x,e.y-player.y);
         if(d<w.radius){
-          damageEnemy(j,w.dmg*dt*(w.evolved?4.5:3.2));
-          const a=Math.atan2(e.y-player.y,e.x-player.x);
-          e.x+=Math.cos(a)*w.knockback*dt;
-          e.y+=Math.sin(a)*w.knockback*dt;
+          damageEnemy(j,w.dmg*dt*(w.evolved?3.5:2.4));
+          // Knockback sadece çok yakınsa devreye girer, düşmanı tamamen durdurmaz
+          if(d < w.radius * 0.5){
+            const a=Math.atan2(e.y-player.y,e.x-player.x);
+            e.x+=Math.cos(a)*w.knockback*dt;
+            e.y+=Math.sin(a)*w.knockback*dt;
+          }
           if(Math.random()<.04) spawnParticle(e.x+randn(8),e.y+randn(8),randn(2),randn(2),w.evolved?'#ccff44':'#aaee44',.3,3);
         }
       }
@@ -704,9 +707,9 @@ const PASSIVES = {
   },
   armor: {
     id:'armor', name:'Zırh', emoji:'🛡️', color:'#88ccff',
-    desc:'Hasar azaltma (+8% / lv, max %48)',
-    pairsWith:null, maxLevel:6,
-    apply(lv){ player.dmgReduce=Math.min(.48,lv*.08); }
+    desc:'Hasar azaltma (+6% / lv, max %30)',
+    pairsWith:null, maxLevel:5,
+    apply(lv){ player.dmgReduce=Math.min(.30,lv*.06); }
   },
   wings: {
     id:'wings', name:'Kanatlar', emoji:'🪽', color:'#aaffee',
