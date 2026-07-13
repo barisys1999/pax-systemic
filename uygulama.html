@@ -225,6 +225,7 @@
         <button class="admin-tab" onclick="switchAdminTab('oyunlar', this)">🎮 Oyunlar</button>
         <button class="admin-tab" onclick="switchAdminTab('androidUygulamalar', this)">📱 Android Uygulamalar</button>
         <button class="admin-tab" onclick="switchAdminTab('siteler', this)">🌐 Siteler</button>
+        <button class="admin-tab" onclick="switchAdminTab('tarayiciOyunlari', this)">🕹️ Tarayıcı Oyunları</button>
     </div>
 
     <!-- ══ GELEN KUTUSU ══ -->
@@ -304,6 +305,18 @@
             <div class="loading-state" id="loadingSiteler"><span class="spinner"></span> Siteler yükleniyor...</div>
             <div class="cms-grid" id="cmsGridSiteler"></div>
             <div class="empty-state" id="emptySiteler"><div class="empty-state__icon">🌐</div><p>Henüz site eklenmemiş.</p></div>
+        </div>
+
+    <!-- ══ TARAYICI OYUNLARI ══ -->
+    <div id="tab-tarayiciOyunlari" class="tab-content">
+        <div class="admin-body">
+            <div class="toolbar">
+                <h2>Tarayıcı Oyunları</h2>
+                <button class="toolbar-btn" style="background:#E05C3F;color:#fff;border-color:#E05C3F;" onclick="openCmsModal('tarayiciOyunlari')">+ Yeni Tarayıcı Oyunu</button>
+            </div>
+            <div class="loading-state" id="loadingTarayiciOyunlari"><span class="spinner"></span> Tarayıcı oyunları yükleniyor...</div>
+            <div class="cms-grid" id="cmsGridTarayiciOyunlari"></div>
+            <div class="empty-state" id="emptyTarayiciOyunlari"><div class="empty-state__icon">🕹️</div><p>Henüz tarayıcı oyunu eklenmemiş.</p></div>
         </div>
     </div>
 </div>
@@ -393,6 +406,7 @@ window.switchAdminTab = function(name, btn) {
     if (name === 'oyunlar')             loadCmsItems('oyunlar');
     if (name === 'androidUygulamalar')  loadCmsItems('androidUygulamalar');
     if (name === 'siteler')             loadCmsItems('siteler');
+    if (name === 'tarayiciOyunlari')    loadCmsItems('tarayiciOyunlari');
 };
 
 // ═══════════════════════════════════════
@@ -574,11 +588,13 @@ window.openCmsModal = function(col, data = null, docId = null) {
     const isGame  = col === 'oyunlar';
     const isAndroid = col === 'androidUygulamalar';
     const isSite    = col === 'siteler';
+    const isBrowser = col === 'tarayiciOyunlari';
     const newTitleMap = {
         yazilimlar: 'Yeni Yazılım Ekle',
         oyunlar: 'Yeni Oyun Ekle',
         androidUygulamalar: 'Yeni Android Uygulama Ekle',
-        siteler: 'Yeni Site Ekle'
+        siteler: 'Yeni Site Ekle',
+        tarayiciOyunlari: 'Yeni Tarayıcı Oyunu Ekle'
     };
     document.getElementById('modalTitle').textContent = docId
         ? `Düzenle — ${data?.title || ''}`
@@ -596,6 +612,12 @@ window.openCmsModal = function(col, data = null, docId = null) {
            <option value="eglence">Eğlence / Medya</option>
            <option value="arac">Araçlar</option>
            <option value="oyun">Mobil Oyun</option>`
+        : isBrowser
+        ? `<option value="aksiyon">Aksiyon / Nişancı</option>
+           <option value="beceri">Beceri / Refleks</option>
+           <option value="bulmaca">Bulmaca</option>
+           <option value="strateji">Strateji</option>
+           <option value="eglence">Eğlence / Diğer</option>`
         : isSite
         ? `<option value="kurumsal">Kurumsal Site</option>
            <option value="eticaret">E-Ticaret</option>
@@ -608,6 +630,17 @@ window.openCmsModal = function(col, data = null, docId = null) {
 
     const featuresHtml = (data?.features || ['']).map(f => featureRow(f)).join('');
     const changelogHtml = (data?.changelog || []).map(cl => changelogBlock(cl)).join('');
+
+    // ── Tarayıcı Oyunu için form ────────────
+    if (isBrowser) {
+        document.getElementById('modalBody').innerHTML = buildBrowserGameForm(data);
+        if (data?.category) {
+            const sel = document.getElementById('fi_category');
+            if (sel) sel.value = data.category;
+        }
+        document.getElementById('cmsModal').classList.add('open');
+        return;
+    }
 
     // ── Site için ayrı popup ──────────────
     if (isSite) {
@@ -769,9 +802,10 @@ window.updateCatName = function(sel) {
         guvenlik:'Güvenlik Araçları', korku:'Korku / Gerilim', arcade:'Arcade / Mobil',
         macera:'Aksiyon / Macera', strateji:'Strateji', puzzle:'Puzzle',
         uretkenlik:'Üretkenlik', eglence:'Eğlence / Medya', arac:'Araçlar', oyun:'Mobil Oyun',
-        kurumsal:'Kurumsal Site', eticaret:'E-Ticaret', portal:'Portal', portfoy:'Portföy / Blog'
+        kurumsal:'Kurumsal Site', eticaret:'E-Ticaret', portal:'Portal', portfoy:'Portföy / Blog',
+        aksiyon:'Aksiyon / Nişancı', beceri:'Beceri / Refleks', bulmaca:'Bulmaca', eglence:'Eğlence / Diğer'
     };
-    const inp = document.getElementById('fi_catName');
+    const inp = document.getElementById('fi_catName') || document.getElementById('bg_catName');
     if (inp && map[sel.value]) inp.value = map[sel.value];
 };
 
@@ -804,7 +838,8 @@ window.previewIconFromPath = function(path) {
 
 // ── Save ──────────────────────────────
 window.saveCmsItem = async function() {
-    if (cmsCollection === 'siteler') { await saveSiteItem(); return; }
+    if (cmsCollection === 'tarayiciOyunlari') { await saveBrowserGameItem(); return; }
+        if (cmsCollection === 'siteler') { await saveSiteItem(); return; }
 
     const btn   = document.getElementById('modalSaveBtn');
     const title = document.getElementById('fi_title')?.value.trim();
@@ -926,6 +961,116 @@ window.showToast = function(msg, type='') {
 // ══════════════════════════════════════════════════════
 // SİTE FORMU
 // ══════════════════════════════════════════════════════
+
+// ── Tarayıcı Oyunu Form ───────────────
+function buildBrowserGameForm(data) {
+    const catOptions = `
+        <option value="aksiyon">Aksiyon / Nişancı</option>
+        <option value="beceri">Beceri / Refleks</option>
+        <option value="bulmaca">Bulmaca</option>
+        <option value="strateji">Strateji</option>
+        <option value="eglence">Eğlence / Diğer</option>`;
+    return `
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Oyun Adı *</label>
+                <input type="text" class="form-input" id="bg_title" value="${esc(data?.title||'')}" placeholder="ör. Aim Trainer">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Emoji İkonu</label>
+                <input type="text" class="form-input" id="bg_iconEmoji" value="${esc(data?.iconEmoji||'🕹️')}" placeholder="🕹️">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Kategori</label>
+                <select class="form-select" id="fi_category" onchange="updateCatName(this)">${catOptions}</select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Kategori Adı <span>(otomatik dolar)</span></label>
+                <input type="text" class="form-input" id="bg_catName" value="${esc(data?.catName||'')}" placeholder="ör. Aksiyon / Nişancı">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Kısa Açıklama *</label>
+            <input type="text" class="form-input" id="bg_shortDesc" value="${esc(data?.shortDesc||'')}" placeholder="Katalog kartında görünür, 1-2 cümle">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Oyun Dosyası (gameUrl) *</label>
+            <input type="text" class="form-input" id="bg_gameUrl" value="${esc(data?.gameUrl||'')}" placeholder="ör. aim-trainer.html  ya da  https://...">
+            <small style="color:var(--fog);font-size:0.75rem;margin-top:4px;display:block;">tarayici-oyunlari/ klasöründeki .html dosyasının adı, ya da tam URL</small>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Etiket 1</label>
+                <input type="text" class="form-input" id="bg_tag1" value="${esc((data?.tags||[])[0]||'')}" placeholder="ör. Nişancı">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Etiket 2</label>
+                <input type="text" class="form-input" id="bg_tag2" value="${esc((data?.tags||[])[1]||'')}" placeholder="ör. Refleks">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Meta Bilgisi</label>
+                <input type="text" class="form-input" id="bg_meta" value="${esc(data?.meta||'⚡ Anında oynanır')}" placeholder="⚡ Anında oynanır">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Sıra (order)</label>
+                <input type="number" class="form-input" id="bg_order" value="${data?.order ?? 99}" min="0">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group" style="display:flex;align-items:flex-end;gap:16px;padding-bottom:2px;">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.85rem;font-weight:600;color:var(--slate);">
+                    <input type="checkbox" id="bg_isDev" ${data?.isDev?'checked':''} style="width:16px;height:16px;"> Geliştiriliyor
+                </label>
+            </div>
+        </div>`;
+}
+
+window.saveBrowserGameItem = async function() {
+    const btn   = document.getElementById('modalSaveBtn');
+    const title = document.getElementById('bg_title')?.value.trim();
+    const gameUrl = document.getElementById('bg_gameUrl')?.value.trim();
+    if (!title)   { showToast('Oyun adı zorunludur!', 'error'); return; }
+    if (!gameUrl) { showToast('Oyun dosyası (gameUrl) zorunludur!', 'error'); return; }
+
+    btn.disabled = true; btn.textContent = 'Kaydediliyor...';
+    try {
+        const tag1 = document.getElementById('bg_tag1')?.value.trim();
+        const tag2 = document.getElementById('bg_tag2')?.value.trim();
+        const catEl = document.getElementById('fi_category');
+        const data = {
+            title,
+            iconEmoji:  document.getElementById('bg_iconEmoji')?.value.trim() || '🕹️',
+            category:   catEl?.value || 'eglence',
+            catName:    document.getElementById('bg_catName')?.value.trim() || '',
+            shortDesc:  document.getElementById('bg_shortDesc')?.value.trim() || '',
+            gameUrl,
+            tags:       [tag1, tag2].filter(Boolean),
+            meta:       document.getElementById('bg_meta')?.value.trim() || '⚡ Anında oynanır',
+            order:      parseInt(document.getElementById('bg_order')?.value) || 99,
+            isDev:      document.getElementById('bg_isDev')?.checked || false,
+            updatedAt:  Timestamp.now()
+        };
+        if (editingDocId) {
+            await updateDoc(doc(db, 'tarayiciOyunlari', editingDocId), data);
+            showToast('Güncellendi!', 'success');
+        } else {
+            data.createdAt = Timestamp.now();
+            await addDoc(collection(db, 'tarayiciOyunlari'), data);
+            showToast('Eklendi!', 'success');
+        }
+        closeCmsModal();
+        loadCmsItems('tarayiciOyunlari');
+    } catch(e) {
+        console.error(e);
+        showToast('Hata: ' + e.message, 'error');
+        btn.disabled = false;
+        btn.textContent = editingDocId ? 'Güncelle' : 'Kaydet';
+    }
+};
 
 function buildSiteForm(data) {
     const catOptions = `
