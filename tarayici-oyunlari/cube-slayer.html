@@ -589,7 +589,7 @@ function shuffle(arr) { for (let i=arr.length-1;i>0;i--){const j=0|Math.random()
 function randn(n) { return (Math.random()-0.5)*2*n; }
 function clamp(v,mn,mx) { return Math.max(mn,Math.min(mx,v)); }
 function angleDiff(a,b) { let d=a-b; while(d>Math.PI)d-=Math.PI*2; while(d<-Math.PI)d+=Math.PI*2; return d; }
-function fmtTime(s) { return `${0|s/60}:${String(0|s%60).padStart(2,'0')}; }
+function fmtTime(s) { return `${0|s/60}:${String(0|s%60).padStart(2,'0')}`; }
 
 // ════════════════════════════════════════════════════
 // WEAPON MANAGEMENT
@@ -1148,17 +1148,6 @@ drawFrame();
 
 // Fix fmtTime (template literal was broken, redefine)
 </script>
-<script>
-// ── Redefine helpers that had broken template literals ──
-function fmtTime(s) {
-  s = Math.floor(s);
-  return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
-}
-// Patch into global scope used by update()
-window.fmtTime = fmtTime;
 
-// Override the broken one in loop (patch via monkey-patch on update cycle)
-const _origUpdate = window.update || null;
-</script>
 </body>
 </html>
