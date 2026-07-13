@@ -775,34 +775,32 @@ function spawnLightning(x1,y1,x2,y2,big=false){
 */
 
 const MILESTONES = [
-  { t:45,  msg:'🔴 Yoğunluk artıyor!',   sub:'Düşmanlar hızlandı', spawnBonus:10 },
-  { t:90,  msg:'💜 Elite akını!',         sub:'Elit düşmanlar geliyor', spawnBonus:8 },
-  { t:150, msg:'🟠 Tank sürüsü!',         sub:'Zırhlılar yaklaşıyor', spawnBonus:12 },
-  { t:210, msg:'⚡ Yıldırım hızı!',       sub:'Hızlılar saldırıyor', spawnBonus:15 },
-  { t:270, msg:'☠️ Cehennem başlıyor!',   sub:'Tüm türler artık aktif', spawnBonus:20 },
-  { t:360, msg:'💀 KAOS MODU!',           sub:'Geri dönüş yok...', spawnBonus:30 },
+  { t:30,  msg:'🔴 Yoğunluk artıyor!',   sub:'Düşmanlar hızlandı', spawnBonus:8 },
+  { t:60,  msg:'💜 Elite akını!',         sub:'Elit düşmanlar geliyor', spawnBonus:10 },
+  { t:100, msg:'🟠 Tank sürüsü!',         sub:'Zırhlılar yaklaşıyor', spawnBonus:12 },
+  { t:150, msg:'⚡ Yıldırım hızı!',       sub:'Hızlılar saldırıyor', spawnBonus:14 },
+  { t:210, msg:'☠️ Cehennem başlıyor!',   sub:'Tüm türler artık aktif', spawnBonus:18 },
+  { t:300, msg:'💀 KAOS MODU!',           sub:'Geri dönüş yok...', spawnBonus:25 },
 ];
-const BOSS_TIMES = [60, 120, 180, 240, 300, 420]; // seconds
+const BOSS_TIMES = [45, 90, 150, 210, 270, 360]; // seconds
 let triggeredMilestones = new Set();
 let triggeredBosses = new Set();
 let bossWarningShown = false;
 
 function getSpawnConfig(t) {
-  // Smooth curves instead of per-wave steps
   const minutes = t / 60;
   return {
-    // Spawn interval decreases smoothly: starts ~90 frames, goes to ~18
-    spawnRate: Math.max(18, 95 - minutes * 12),
-    // Count per spawn: 1→8 over 5 minutes
-    count: Math.min(8, 1 + Math.floor(minutes * 1.4)),
+    // Spawn interval: starts very slow (150 frames = 2.5s), drops to 18
+    spawnRate: Math.max(18, 150 - minutes * 22),
+    // Count per spawn: 1→8 over 6 minutes
+    count: Math.min(8, 1 + Math.floor(minutes * 1.2)),
     hpMult: 1 + minutes * 0.65,
     spdMult: Math.min(2.5, 1 + minutes * 0.08),
-    // Enemy type probabilities unlock by time
-    fastChance:   t > 20  ? Math.min(0.35, (t-20)/400) : 0,
-    tankChance:   t > 60  ? Math.min(0.22, (t-60)/500) : 0,
-    eliteChance:  t > 80  ? Math.min(0.15, (t-80)/600) : 0,
-    swarmChance:  t > 100 ? Math.min(0.20, (t-100)/500) : 0,
-    ghostChance:  t > 180 ? Math.min(0.12, (t-180)/700) : 0,
+    fastChance:   t > 30  ? Math.min(0.35, (t-30)/350) : 0,
+    tankChance:   t > 70  ? Math.min(0.22, (t-70)/450) : 0,
+    eliteChance:  t > 90  ? Math.min(0.15, (t-90)/550) : 0,
+    swarmChance:  t > 110 ? Math.min(0.20, (t-110)/450) : 0,
+    ghostChance:  t > 160 ? Math.min(0.12, (t-160)/600) : 0,
   };
 }
 
@@ -966,11 +964,14 @@ function killEnemy(idx){
   enemies.splice(idx,1);
 }
 
+let _lastHitSfx=0;
 function damagePlayer(dmg){
-  if(player.invincible>0)return;
   dmg*=(1-(player.dmgReduce||0));
-  player.hp-=dmg; player.invincible=18;
-  SFX.hit(); flashScreen('#ff3333',.12);
+  if(dmg<=0)return;
+  player.hp-=dmg;
+  const now=Date.now();
+  if(now-_lastHitSfx>200){SFX.hit();_lastHitSfx=now;}
+  flashScreen('#ff3333',.06);
   if(player.hp<=0){player.hp=0; endGame();}
 }
 
@@ -1431,7 +1432,14 @@ function update(dt){
       for(let k=0;k<4;k++) spawnOneEnemy(cfg,'elite');
     }
     const touch=Math.hypot(e.x-player.x,e.y-player.y)<e.radius+player.radius;
-    if(touch) damagePlayer((e.dmgPerSec||8)*dt/60);
+    if(touch){
+      if(!e.dmgCd || e.dmgCd<=0){
+        // dmgPerSec / 3 = her 0.3 saniyede bir tick hasar
+        damagePlayer((e.dmgPerSec||8)/3);
+        e.dmgCd=18;
+      }
+    }
+    if(e.dmgCd>0) e.dmgCd-=dt;
   }
 
   // XP gems
