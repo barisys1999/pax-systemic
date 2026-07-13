@@ -479,12 +479,12 @@ const TOWER_DEFS = [
     ]
   },
   {
-    id:'gold', name:'Altın Madeni', icon:'💰', cost:2000, hotkey:'5',
+    id:'gold', name:'Altın Madeni', icon:'💰', cost:300, hotkey:'5',
     desc:'Para üretir,\n5s\'de bir',
-    color:'#ffd700', range:0, dmg:0, rate:0, proj:'none', slow:0, goldGen:5,
+    color:'#ffd700', range:0, dmg:0, rate:0, proj:'none', slow:0, goldGen:4,
     upgrades:[
-      {name:'Zengin Maden', cost:500, goldGen:10, desc:'Daha fazla altın'},
-      {name:'Hazine Odası', cost:900, goldGen:18, desc:'Çok daha fazla altın'},
+      {name:'Zengin Maden', cost:300, goldGen:7, desc:'Daha fazla altın'},
+      {name:'Hazine Odası', cost:500, goldGen:12, desc:'Çok daha fazla altın'},
     ]
   },
   {
@@ -508,9 +508,9 @@ const TOWER_DEFS = [
 ];
 
 const DIFFS = {
-  easy:   {lives:30, gold:200, enemyHpMult:0.7, goldMult:1.3},
-  normal: {lives:20, gold:100, enemyHpMult:1.0, goldMult:1.0},
-  hard:   {lives:12, gold:75,  enemyHpMult:1.5, goldMult:0.8},
+  easy:   {lives:30, gold:250, enemyHpMult:0.65, goldMult:1.3},
+  normal: {lives:20, gold:130, enemyHpMult:1.0,  goldMult:1.0},
+  hard:   {lives:12, gold:80,  enemyHpMult:1.4,  goldMult:0.85},
 };
 
 // ═══════════════════════════════════════════
@@ -532,21 +532,21 @@ let wavePerfect = false, maxCombo = 1, bossKills = 0, totalTowersBuilt = 0;
 // ABILITIES
 // ═══════════════════════════════════════════
 const ABILITIES = {
-  airstrike: {name:'Hava Saldırısı', cooldown:900, timer:0, unlocked:true},
-  blizzard:  {name:'Buz Fırtınası',  cooldown:720, timer:0, unlocked:true},
-  goldrush:  {name:'Altın Acil',     cooldown:1200, timer:0, unlocked:true},
+  airstrike: {name:'Hava Saldırısı', cooldown:1500, timer:0, unlocked:true},
+  blizzard:  {name:'Buz Fırtınası',  cooldown:1200, timer:0, unlocked:true},
+  goldrush:  {name:'Altın Acil',     cooldown:1800, timer:0, unlocked:true},
 };
 
 // ═══════════════════════════════════════════
 // SHOP ITEMS
 // ═══════════════════════════════════════════
 const SHOP_ITEMS = [
-  {id:'double_income', name:'Çift Gelir',  icon:'💹', desc:'Tüm gelir %30 artar',      cost:150, effect:()=>{G.goldMult*=1.3;},             oneTime:true},
-  {id:'tower_discount',name:'İndirim',     icon:'🏷️', desc:'Kuleler %15 ucuz',          cost:120, effect:()=>{G.towerDiscount=(G.towerDiscount||0)+0.15;}, oneTime:false},
+  {id:'double_income', name:'Çift Gelir',  icon:'💹', desc:'Tüm gelir %20 artar',      cost:150, effect:()=>{G.goldMult=Math.min(G.goldMult*1.2, 2.0);},             oneTime:true},
+  {id:'tower_discount',name:'İndirim',     icon:'🏷️', desc:'Kuleler %15 ucuz (max %30)', cost:120, effect:()=>{G.towerDiscount=Math.min(0.30,(G.towerDiscount||0)+0.15);}, oneTime:false},
   {id:'extra_life',    name:'Can Elması',  icon:'🍎', desc:'+2 can kazan',              cost:100, effect:()=>{G.lives+=2; updateHUD();},       oneTime:false},
-  {id:'damage_boost',  name:'Güç Artışı', icon:'⚔️', desc:'Tüm kule hasarı +15%',      cost:180, effect:()=>{G.dmgMult=(G.dmgMult||1)*1.15;},oneTime:false},
-  {id:'speed_boost',   name:'Ateş Hızı',  icon:'⚡', desc:'Tüm kuleler %10 hızlı ateş',cost:160, effect:()=>{G.rateMult=(G.rateMult||1)*0.9;},oneTime:false},
-  {id:'gold_bonus',    name:'Altın Yağmuru',icon:'🌧️',desc:'+60 altın',               cost:0,   effect:()=>{G.gold+=60; sfxGold();},          oneTime:false},
+  {id:'damage_boost',  name:'Güç Artışı', icon:'⚔️', desc:'Tüm kule hasarı +12% (max x2)', cost:200, effect:()=>{G.dmgMult=Math.min((G.dmgMult||1)*1.12, 2.0);},oneTime:false},
+  {id:'speed_boost',   name:'Ateş Hızı',  icon:'⚡', desc:'Tüm kuleler %8 hızlı ateş (max x0.65)',cost:180, effect:()=>{G.rateMult=Math.max((G.rateMult||1)*0.92, 0.65);},oneTime:false},
+  {id:'gold_bonus',    name:'Altın Yağmuru',icon:'🌧️',desc:'+50 altın',               cost:0,   effect:()=>{G.gold+=50; sfxGold();},          oneTime:false},
 ];
 
 // ═══════════════════════════════════════════
@@ -560,9 +560,9 @@ const ENEMY_TYPES = {
   healer:    {name:'Şifacı',      icon:'💚', hp:120, speed:0.9, reward:25, color:'#44ff88', size:14, armor:0, heals:true},
   stealth:   {name:'Gizli',       icon:'👤', hp:90,  speed:1.3, reward:22, color:'#8888cc', size:13, armor:0, stealth:true},
   splitter:  {name:'Bölücü',      icon:'🔀', hp:200, speed:0.8, reward:35, color:'#ff88ff', size:16, armor:0, splits:true},
-  boss_mini: {name:'Mini Boss',   icon:'👹', hp:500, speed:0.7, reward:80, color:'#ff44aa', size:20, armor:0.3},
-  boss:      {name:'Boss',        icon:'🐉', hp:1200,speed:0.55,reward:200,color:'#ff2200', size:26, armor:0.4, isBoss:true},
-  boss_final:{name:'FINAL BOSS',  icon:'💀', hp:3500,speed:0.5, reward:600,color:'#aa00ff', size:34, armor:0.5, isBoss:true, regen:5},
+  boss_mini: {name:'Mini Boss',   icon:'👹', hp:420, speed:0.7, reward:75, color:'#ff44aa', size:20, armor:0.25},
+  boss:      {name:'Boss',        icon:'🐉', hp:1000,speed:0.55,reward:180,color:'#ff2200', size:26, armor:0.35, isBoss:true},
+  boss_final:{name:'FINAL BOSS',  icon:'💀', hp:2800,speed:0.5, reward:500,color:'#aa00ff', size:34, armor:0.45, isBoss:true, regen:3},
 };
 
 // ═══════════════════════════════════════════
@@ -596,20 +596,20 @@ function getWave(n){
   const tier = Math.floor((n-21)/5); // her 5 dalgada bir zorluk kademesi artar
   const scale = n - 20; // ne kadar ilerlediğimiz
   const rng = (min,max) => Math.floor(min + (max-min)*(0.5+0.5*Math.sin(n*1.7+tier)));
-  // Giderek artan sayılar
-  const basicCount  = Math.min(8  + scale*2, 40);
-  const fastCount   = Math.min(6  + scale*2, 35);
-  const tankCount   = Math.min(3  + Math.floor(scale/2), 18);
-  const armoredCount= Math.min(4  + scale,   30);
-  const healerCount = Math.min(2  + Math.floor(scale/2), 12);
-  const stealthCount= Math.min(3  + scale,   25);
-  const splitterCnt = Math.min(2  + Math.floor(scale/2), 12);
-  const miniCount   = Math.min(1  + Math.floor(scale/3), 6);
-  const bossCount   = Math.min(Math.floor(scale/4)+1, 4);
-  // Spawn hızı giderek artar (delay azalır), minimum 18
-  const delayFast   = Math.max(18, 38 - scale*1.5);
-  const delayMed    = Math.max(25, 55 - scale*1.5);
-  const delaySlow   = Math.max(40, 80 - scale*2);
+  // Daha yavaş artan sayılar - HP zaten scale olduğu için sayıyı çok artırmaya gerek yok
+  const basicCount  = Math.min(6  + Math.floor(scale*1.2), 25);
+  const fastCount   = Math.min(5  + Math.floor(scale*1.2), 22);
+  const tankCount   = Math.min(2  + Math.floor(scale*0.4), 10);
+  const armoredCount= Math.min(3  + Math.floor(scale*0.7), 18);
+  const healerCount = Math.min(2  + Math.floor(scale*0.3), 8);
+  const stealthCount= Math.min(3  + Math.floor(scale*0.6), 16);
+  const splitterCnt = Math.min(2  + Math.floor(scale*0.3), 8);
+  const miniCount   = Math.min(1  + Math.floor(scale*0.2), 4);
+  const bossCount   = Math.min(Math.floor(scale/5)+1, 3);
+  // Spawn hızı çok az azalır - minimum 28 frame (daha az kalabalık)
+  const delayFast   = Math.max(28, 42 - scale*0.8);
+  const delayMed    = Math.max(38, 62 - scale*0.8);
+  const delaySlow   = Math.max(55, 90 - scale*1.2);
   // Her 5 dalgada bir boss gelsin, her 10'da çift boss
   const isBossWave = (n % 5 === 0);
   const isDoubleBoss = (n % 10 === 0);
@@ -832,13 +832,14 @@ function useAbility(id){
   sfxAbility();
   if(id==='airstrike'){
     // Random enemy carpet bomb
-    let targets=[...enemies].filter(e=>!e.dead).sort(()=>Math.random()-0.5).slice(0,5);
+    let targets=[...enemies].filter(e=>!e.dead).sort(()=>Math.random()-0.5).slice(0,4);
     targets.forEach((e,i)=>{
       setTimeout(()=>{
         spawnFloatie('💥BOMBA!',e.px,e.py-20,'#ff6622');
         enemies.forEach(en=>{
-          if(!en.dead && Math.hypot(en.px-e.px,en.py-e.py)<70){
-            damageEnemy(en,150);
+          if(!en.dead && Math.hypot(en.px-e.px,en.py-e.py)<60){
+            // Dalga sayısına göre sabit hasar - çok güçlü olmasın
+            damageEnemy(en, Math.round(en.maxHp * 0.35));
             for(let k=0;k<8;k++) spawnParticle2(e.px+randn(20),e.py+randn(20),'#ff6622');
           }
         });
@@ -848,7 +849,7 @@ function useAbility(id){
     if(targets.length===0) spawnFloatie('💥 BOMBARDIMAN!',COLS*CELL/2,ROWS*CELL/2-40,'#ff6622');
   } else if(id==='blizzard'){
     enemies.forEach(e=>{
-      if(!e.dead){ e.slowTimer=300; e.slowAmt=0.75; spawnParticle2(e.px,e.py,'#88ddff'); }
+      if(!e.dead){ e.slowTimer=180; e.slowAmt=0.55; spawnParticle2(e.px,e.py,'#88ddff'); }
     });
     spawnFloatie('❄️ BUZ FIRTINASI!',COLS*CELL/2,ROWS*CELL/2-40,'#88ddff');
   } else if(id==='goldrush'){
@@ -902,6 +903,7 @@ function startGame(){
     lives: cfg.lives, gold: cfg.gold,
     goldMult: cfg.goldMult, enemyHpMult: cfg.enemyHpMult,
     score: 0, towerDiscount:0, dmgMult:1, rateMult:1,
+    dmgMultCap: 2.5, goldMultCap: 2.0, // Caps to prevent stacking exploits
   };
   G.pathSet=new Set(PATH_CELLS.map(([x,y])=>`${x},${y}`));
   placedTowers=[]; enemies=[]; projectiles=[]; floaties=[]; particles2=[];
@@ -1183,13 +1185,16 @@ function fire(tower,target){
 
 function spawnEnemy(typeId, returnRef=false){
   const def=ENEMY_TYPES[typeId];
-  // Exponential HP scaling: her dalga ~%12 artar → 20. dalgada ~9x, 30'da ~23x
-  const hpScale = Math.pow(1.12, waveNum - 1);
+  // Daha dengeli HP scaling: her dalga ~%7 artar → 20. dalgada ~3.6x, 30'da ~7x
+  // Ayrıca ödül de düşman güçlenmesiyle orantılı artıyor
+  const hpScale = Math.pow(1.07, waveNum - 1);
+  const rewardScale = Math.pow(1.04, waveNum - 1); // ödül de artsın ama daha yavaş
   const hp=Math.round(def.hp * G.enemyHpMult * hpScale);
+  const scaledReward = Math.round(def.reward * rewardScale);
   const e={
     typeId, px:pathCoords[0].x, py:pathCoords[0].y,
     pathIdx:1, hp, maxHp:hp,
-    speed:def.speed * (1 + Math.min(0.5, waveNum * 0.018)), reward:def.reward,
+    speed:def.speed * (1 + Math.min(0.35, waveNum * 0.012)), reward:scaledReward,
     color:def.color, size:def.size, armor:def.armor||0,
     slowTimer:0, slowAmt:0, dmgFlash:0,
     heals:def.heals||false, healTimer:0,
@@ -1227,8 +1232,8 @@ function waveComplete(){
   waveActive=false;
   wavePerfect=(G.lives===livesAtWaveStart);
   // Sonsuz mod: hiç bitmez
-  // Dalga bonusu sabit tutuldu - çok altın birikimine yol açmasın
-  const bonus=20+waveNum*5;
+  // Dalga bonusu sabit - geç dalga altın enflasyonunu engeller
+  const bonus = Math.min(30 + waveNum * 2, 80); // max 80 altın, erken dalgada az
   G.gold+=bonus; G.score+=bonus*2;
   spawnFloatie('+'+bonus+'💰 DALGA BONUSU',COLS*CELL/2-60,40,'#ffd700');
   showWaveBanner(`✅ DALGA ${waveNum} TAMAM!`);
