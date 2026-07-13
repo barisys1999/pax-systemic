@@ -14,6 +14,19 @@
         .stat-num { transition: opacity 0.3s; }
         .stat-num.loading { opacity: 0.3; }
         .app-chip.skeleton { background: rgba(255,255,255,0.08); color: transparent; border-color: transparent; width: 80px; border-radius: 20px; }
+
+        /* Tarayıcı Oyunları kartı — turuncu ton */
+        :root {
+            --orange:      #E05C3F;
+            --orange-ink:  #B8441F;
+            --orange-soft: rgba(224, 92, 63, 0.08);
+            --orange-line: rgba(224, 92, 63, 0.28);
+        }
+        .line-card--orange:hover        { border-color: var(--orange-line); }
+        .line-card--orange::before      { background: radial-gradient(circle, var(--orange-soft) 0%, transparent 70%); }
+        .line-card--orange .line-card__icon    { background: var(--orange-soft); }
+        .line-card--orange .line-card__eyebrow { color: var(--orange); }
+        .line-card--orange .line-card__cta    { background: var(--orange); color: #fff; }
     </style>
 
     <script type="application/ld+json">
@@ -39,6 +52,7 @@
         <a href="oyunlar/index.html">Oyunlar</a>
         <a href="siteler/index.html">Yapılan Siteler</a>
         <a href="android-uygulamalar/index.html">Android Uygulamalar</a>
+        <a href="tarayici-oyunlari/index.html">🕹️ Tarayıcı Oyunları</a>
         <a href="oneri.html">💬 Talep & Öneri</a>
     </div>
 </header>
@@ -136,6 +150,20 @@
             <span class="line-card__cta">Uygulamaları Gör →</span>
         </a>
 
+        <!-- Tarayıcı Oyunları -->
+        <a href="tarayici-oyunlari/index.html" class="line-card line-card--orange">
+            <div class="line-card__icon">🕹️</div>
+            <div class="line-card__eyebrow">BarisByte Browser</div>
+            <h2>Tarayıcı<br>Oyunları</h2>
+            <p>Kurulum yok, indirme yok — sadece tıkla ve oyna. Pax Systemic'in tarayıcı tabanlı oyunları her cihazdan anında erişilebilir.</p>
+            <div class="line-card__apps">
+                <span class="app-chip">Aim Trainer</span>
+                <span class="app-chip">+Yeni Oyunlar</span>
+            </div>
+            <div class="line-card__count">Tarayıcıdan oyna · Ücretsiz</div>
+            <span class="line-card__cta">Oynamaya Başla →</span>
+        </a>
+
     </section>
 
     <!-- ── Value Props ───────────────────── -->
@@ -183,6 +211,7 @@
                     <a href="oyunlar/index.html#cosmohop">CosmoHop!</a>
                     <a href="oyunlar/index.html#nexus">Project: Nexus</a>
                     <a href="oyunlar/index.html#sessizev">Sessiz Ev</a>
+                    <a href="tarayici-oyunlari/index.html">🕹️ Tarayıcı Oyunları</a>
                 </div>
                 <div class="footer-col">
                     <h5>Kurumsal</h5>
