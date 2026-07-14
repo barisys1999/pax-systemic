@@ -1,0 +1,343 @@
+/* =============================================
+   PAX SYSTEMIC — Dark Space Theme Override
+   Anasayfa temasını tüm sayfalara uygular.
+   global.css ve catalog.css'ten SONRA yükle.
+   ============================================= */
+
+/* ── CSS Değişkenleri (Dark override) ─────── */
+:root {
+    --bg:        #05060e;
+    --bg2:       #080a16;
+
+    /* Renkler anasayfayla aynı */
+    --paper:     #05060e;
+    --mist:      rgba(255,255,255,.028);
+    --surface:   rgba(255,255,255,.024);
+
+    --ink:       #dde4f7;
+    --slate:     rgba(180,200,240,.65);
+    --fog:       rgba(140,165,220,.45);
+
+    --line:      rgba(255,255,255,.065);
+    --line-strong: rgba(255,255,255,.10);
+
+    --shadow-sm: 0 2px 12px rgba(0,0,0,.35);
+    --shadow-md: 0 8px 32px rgba(0,0,0,.45);
+    --shadow-lg: 0 20px 60px rgba(0,0,0,.55);
+}
+
+/* ── Body & Arka Plan ──────────────────────── */
+body {
+    background: var(--bg) !important;
+    color: var(--ink) !important;
+}
+
+/* ── Space Canvas ──────────────────────────── */
+#space-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── Nebula katmanları ─────────────────────── */
+.nbl { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; }
+.n1  { width:800px; height:500px; background:radial-gradient(ellipse,rgba(59,130,246,.04) 0%,transparent 70%); top:-10%; left:-12%; filter:blur(30px); }
+.n2  { width:600px; height:400px; background:radial-gradient(ellipse,rgba(109,40,217,.03) 0%,transparent 70%); bottom:5%; right:-8%; filter:blur(30px); }
+.n3  { width:500px; height:350px; background:radial-gradient(ellipse,rgba(13,148,136,.025) 0%,transparent 70%); top:40%; left:30%; filter:blur(30px); }
+
+/* ── Header (site-header) ──────────────────── */
+.site-header {
+    background: rgba(5,6,14,.80) !important;
+    border-bottom: 1px solid rgba(255,255,255,.07) !important;
+    box-shadow: none !important;
+    backdrop-filter: blur(24px) !important;
+    position: fixed !important;
+    top: 0; left: 0; right: 0;
+}
+
+/* z-index: header üstte kalmalı */
+.site-header { z-index: 1000 !important; }
+
+/* Body içerik header altına gelmesin */
+body > *:not(#space-canvas):not(.nbl):not(#page-transition):not(.site-header) {
+    position: relative;
+    z-index: 1;
+}
+
+/* Wrap padding - header için alan aç */
+.wrap, body > div:not(#page-transition):not(#space-canvas) {
+    padding-top: 64px;
+}
+
+/* ── Logo ──────────────────────────────────── */
+.logo { color: #dde4f7 !important; }
+.logo em { color: #3b82f6 !important; }
+.logo:hover { opacity: .75 !important; }
+
+/* ── Nav linkleri ──────────────────────────── */
+.nav-link {
+    color: rgba(140,165,220,.5) !important;
+}
+.nav-link:hover {
+    color: #dde4f7 !important;
+    background: rgba(255,255,255,.06) !important;
+}
+.nav-link.is-active-blue   { color: #60a5fa !important; background: rgba(59,130,246,.13) !important; }
+.nav-link.is-active-violet { color: #a78bfa !important; background: rgba(109,40,217,.13) !important; }
+.nav-link.is-active-teal   { color: #2dd4bf !important; background: rgba(13,148,136,.12) !important; }
+.nav-link.is-active-green  { color: #4ade80 !important; background: rgba(21,128,61,.13) !important; }
+.nav-link.is-active-orange { color: #fb923c !important; background: rgba(194,65,12,.13) !important; }
+
+/* ── Geri butonu (btn-ghost) ───────────────── */
+.btn-ghost {
+    background: rgba(255,255,255,.04) !important;
+    color: rgba(180,200,240,.6) !important;
+    border: 1px solid rgba(255,255,255,.1) !important;
+    box-shadow: none !important;
+}
+.btn-ghost:hover {
+    background: rgba(255,255,255,.08) !important;
+    color: #dde4f7 !important;
+    border-color: rgba(255,255,255,.18) !important;
+}
+
+/* ── Catalog hero ──────────────────────────── */
+.catalog-hero h1 {
+    color: #dde4f7 !important;
+}
+.catalog-hero p {
+    color: rgba(180,200,240,.62) !important;
+}
+.eyebrow { color: rgba(140,165,220,.55) !important; }
+.eyebrow.is-blue   { color: #60a5fa !important; }
+.eyebrow.is-violet { color: #a78bfa !important; }
+.eyebrow.is-teal   { color: #2dd4bf !important; }
+.eyebrow.is-green  { color: #4ade80 !important; }
+.eyebrow.is-orange { color: #fb923c !important; }
+
+/* ── Search & Filtre ───────────────────────── */
+.search-input {
+    background: rgba(255,255,255,.035) !important;
+    border: 1px solid rgba(255,255,255,.1) !important;
+    color: #dde4f7 !important;
+    box-shadow: none !important;
+}
+.search-input::placeholder { color: rgba(140,165,220,.4) !important; }
+.search-input:focus {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 3px var(--accent-soft) !important;
+}
+.search-wrap svg { color: rgba(140,165,220,.4) !important; }
+
+.filter-btn {
+    background: rgba(255,255,255,.03) !important;
+    border: 1px solid rgba(255,255,255,.09) !important;
+    color: rgba(180,200,240,.55) !important;
+}
+.filter-btn:hover {
+    color: #dde4f7 !important;
+    border-color: rgba(255,255,255,.2) !important;
+    background: rgba(255,255,255,.07) !important;
+}
+.filter-btn.active {
+    background: var(--accent) !important;
+    border-color: var(--accent) !important;
+    color: #fff !important;
+}
+
+/* ── Uygulama Kartları (app-card) ──────────── */
+.app-card {
+    background: rgba(255,255,255,.025) !important;
+    border: 1px solid rgba(255,255,255,.07) !important;
+    box-shadow: none !important;
+}
+.app-card:hover {
+    background: rgba(255,255,255,.04) !important;
+    border-color: var(--accent-line) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,.4) !important;
+}
+.app-card__name  { color: #dde4f7 !important; }
+.app-card__desc  { color: rgba(180,200,240,.6) !important; }
+.app-card__icon  {
+    background: rgba(255,255,255,.04) !important;
+    border: 1px solid rgba(255,255,255,.08) !important;
+}
+.badge-dev {
+    background: rgba(255,255,255,.04) !important;
+    border: 1px solid rgba(255,255,255,.09) !important;
+    color: rgba(140,165,220,.5) !important;
+}
+
+/* ── Yükleniyor ────────────────────────────── */
+.page-loading { color: rgba(140,165,220,.5) !important; }
+#no-results   { color: rgba(140,165,220,.45) !important; }
+
+/* ── Detail View ───────────────────────────── */
+#detail-view { background: transparent !important; }
+
+.back-btn {
+    background: rgba(255,255,255,.04) !important;
+    border: 1px solid rgba(255,255,255,.1) !important;
+    color: rgba(180,200,240,.7) !important;
+}
+.back-btn:hover {
+    background: rgba(255,255,255,.08) !important;
+    color: #dde4f7 !important;
+    border-color: rgba(255,255,255,.2) !important;
+}
+
+.det-header {
+    border-bottom: 1px solid rgba(255,255,255,.07) !important;
+}
+.det-header__text h2  { color: #dde4f7 !important; }
+.det-header__text h4  { color: rgba(180,200,240,.55) !important; }
+.det-header__icon {
+    background: rgba(255,255,255,.04) !important;
+    border: 1px solid rgba(255,255,255,.08) !important;
+}
+
+.meta-chip {
+    background: rgba(255,255,255,.04) !important;
+    border: 1px solid rgba(255,255,255,.09) !important;
+    color: rgba(180,200,240,.6) !important;
+}
+.meta-chip.is-live { color: #4ade80 !important; background: rgba(21,128,61,.12) !important; border-color: rgba(74,222,128,.22) !important; }
+.meta-chip.is-dev  { color: var(--accent) !important; background: var(--accent-soft) !important; border-color: var(--accent-line) !important; }
+
+/* ── Tabs ──────────────────────────────────── */
+.det-tabs { border-bottom: 1px solid rgba(255,255,255,.07) !important; }
+.d-tab { color: rgba(140,165,220,.45) !important; }
+.d-tab:hover { color: #dde4f7 !important; }
+.d-tab.active { color: var(--accent) !important; border-bottom-color: var(--accent) !important; }
+
+/* ── Detay metin ───────────────────────────── */
+.det-text p { color: rgba(180,200,240,.65) !important; }
+.feature-list li { color: #dde4f7 !important; }
+.feature-list li::before {
+    background-color: var(--accent-soft) !important;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2393c5fd' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>") !important;
+}
+
+/* ── Media viewer ──────────────────────────── */
+.det-media {
+    background: rgba(255,255,255,.03) !important;
+    border: 1px solid rgba(255,255,255,.07) !important;
+    color: rgba(140,165,220,.4) !important;
+}
+.slider-btn {
+    background: rgba(30,35,60,.85) !important;
+    color: #dde4f7 !important;
+    border: 1px solid rgba(255,255,255,.12) !important;
+}
+.slider-btn:hover {
+    background: var(--accent) !important;
+    color: #fff !important;
+    border-color: var(--accent) !important;
+}
+
+/* ── Changelog ─────────────────────────────── */
+.timeline { border-left: 2px solid rgba(255,255,255,.08) !important; }
+.tl-item::before { background: var(--bg) !important; border-color: var(--accent) !important; }
+.tl-version { color: #dde4f7 !important; }
+.tl-date    { color: rgba(140,165,220,.45) !important; }
+.tl-notes li { color: rgba(180,200,240,.65) !important; }
+.tl-notes li::before { color: rgba(140,165,220,.3) !important; }
+
+/* ── Download section ──────────────────────── */
+.download-section {
+    background: rgba(255,255,255,.02) !important;
+    border: 1px solid rgba(255,255,255,.07) !important;
+}
+.download-section p { color: rgba(180,200,240,.6) !important; }
+.btn-download.disabled {
+    background: rgba(255,255,255,.06) !important;
+    color: rgba(140,165,220,.35) !important;
+}
+.btn-download.request {
+    background: transparent !important;
+    color: var(--accent) !important;
+    border: 2px solid var(--accent) !important;
+}
+
+/* ── Siteler özel elemanları ───────────────── */
+.site-visit-btn {
+    background: var(--accent-soft) !important;
+    color: var(--accent) !important;
+    border: 1px solid var(--accent-line) !important;
+}
+.tech-tag {
+    background: var(--accent-soft) !important;
+    color: var(--accent) !important;
+}
+
+/* ── Tarayıcı oyunları özel kartları ──────── */
+.game-card {
+    background: rgba(255,255,255,.025) !important;
+    border: 1px solid rgba(255,255,255,.07) !important;
+}
+.game-card:hover {
+    background: rgba(255,255,255,.04) !important;
+    border-color: var(--accent-line) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,.4) !important;
+}
+.game-card__name { color: #dde4f7 !important; }
+.game-card__desc { color: rgba(180,200,240,.6) !important; }
+.game-badge {
+    background: rgba(255,255,255,.04) !important;
+    border: 1px solid rgba(255,255,255,.09) !important;
+    color: rgba(140,165,220,.5) !important;
+}
+.no-install-badge {
+    background: var(--accent-soft) !important;
+    border-color: var(--accent-line) !important;
+    color: var(--accent) !important;
+}
+
+/* ── Footer ────────────────────────────────── */
+.site-footer {
+    background: rgba(3,4,10,.95) !important;
+    border-top: 1px solid rgba(255,255,255,.065) !important;
+    color: rgba(180,200,240,.45) !important;
+}
+.footer-brand .logo { color: rgba(220,230,255,.9) !important; }
+.footer-brand .logo em { color: #6b9fff !important; }
+.footer-brand p { color: rgba(140,165,220,.28) !important; }
+.footer-col h5  { color: rgba(255,255,255,.22) !important; }
+.footer-col a   { color: rgba(155,175,220,.38) !important; }
+.footer-col a:hover { color: #dde4f7 !important; }
+.footer-bottom  { border-top: 1px solid rgba(255,255,255,.065) !important; color: rgba(255,255,255,.16) !important; }
+
+/* ── Portal.css sayfaları (siteler) ───────── */
+.portal-hero h1    { color: #dde4f7 !important; }
+.portal-hero p     { color: rgba(180,200,240,.6) !important; }
+.portal-card       { background: rgba(255,255,255,.025) !important; border: 1px solid rgba(255,255,255,.07) !important; }
+.portal-card:hover { background: rgba(255,255,255,.04) !important; }
+.portal-card h3    { color: #dde4f7 !important; }
+.portal-card p     { color: rgba(180,200,240,.6) !important; }
+
+/* ── Sayfa geçiş overlay (BUG FIX) ─────────
+   Back navigation'da overlay ekranda kalmasın.
+   pageshow eventi hem normal yüklemede hem
+   bfcache'den geri gelince tetiklenir.         */
+#page-transition {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--bg);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .38s ease;
+}
+#page-transition.fade-out {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* ── Scrollbar ─────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: #060810; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.18); }

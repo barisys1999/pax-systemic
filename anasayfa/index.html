@@ -861,19 +861,25 @@ window.addEventListener('scroll',()=>{
 /* ══ Sayfa geçiş efekti ══ */
 (function(){
     const overlay=document.getElementById('page-transition');
-    // Sayfa yüklenince fade-in
-    window.addEventListener('load',()=>{
+    // Sayfa yüklenince veya bfcache'den geri gelince fade-in
+    // (pageshow hem normal load'da hem back/forward'da çalışır)
+    window.addEventListener('pageshow',function(){
+        overlay.style.transition='none';
         overlay.style.opacity='0';
+        overlay.style.pointerEvents='none';
+        overlay.classList.remove('fade-out');
+        requestAnimationFrame(()=>{ overlay.style.transition='opacity .38s ease'; });
     });
     // Tüm dahili linklere fade-out ekle
     document.addEventListener('click',function(e){
         const a=e.target.closest('a');
         if(!a||!a.href)return;
-        const url=new URL(a.href,location.href);
+        try { var url=new URL(a.href,location.href); } catch(err){ return; }
         // Aynı origin, yeni sekme değil, hash değil
         if(url.origin!==location.origin)return;
         if(a.target==='_blank')return;
         if(url.href===location.href)return;
+        if(a.href.startsWith('mailto:'))return;
         e.preventDefault();
         overlay.classList.add('fade-out');
         setTimeout(()=>{ location.href=a.href; },380);
