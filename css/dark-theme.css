@@ -62,14 +62,20 @@ body {
 .site-header { z-index: 1000 !important; }
 
 /* Body içerik header altına gelmesin */
-body > *:not(#space-canvas):not(.nbl):not(#page-transition):not(.site-header) {
+body > *:not(#space-canvas):not(.nbl):not(#page-transition):not(.site-header):not(.game-modal-backdrop) {
     position: relative;
     z-index: 1;
 }
 
 /* Wrap padding - header için alan aç */
-.wrap, body > div:not(#page-transition):not(#space-canvas) {
+.wrap, body > div:not(#page-transition):not(#space-canvas):not(.game-modal-backdrop) {
     padding-top: 64px;
+}
+
+/* Modal backdrop her zaman fixed ve tam ekran */
+.game-modal-backdrop {
+    position: fixed !important;
+    padding-top: 0 !important;
 }
 
 /* ── Logo ──────────────────────────────────── */
