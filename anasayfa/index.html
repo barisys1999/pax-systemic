@@ -24,26 +24,30 @@
         html { scroll-behavior: smooth; }
 
         :root {
-            --bg:        #04060f;
-            --bg2:       #080b18;
-            --violet:    #7c3aed;
-            --violet-l:  #a78bfa;
-            --blue:      #2563eb;
-            --blue-l:    #60a5fa;
+            --bg:        #070910;
+            --bg2:       #0c0f1a;
+            --accent:    #3b82f6;
+            --accent-d:  #2563eb;
+            --accent-gl: rgba(59,130,246,0.12);
             --teal:      #0d9488;
-            --teal-l:    #34d399;
+            --teal-l:    #2dd4bf;
             --green:     #16a34a;
             --green-l:   #4ade80;
             --orange:    #ea580c;
             --orange-l:  #fb923c;
-            --text:      #e8eeff;
-            --muted:     rgba(160,180,220,0.55);
-            --line:      rgba(255,255,255,0.08);
-            --line2:     rgba(255,255,255,0.13);
+            --violet:    #7c3aed;
+            --violet-l:  #a78bfa;
+            --text:      #e2e8f8;
+            --text-sub:  rgba(180,195,230,0.65);
+            --muted:     rgba(150,170,215,0.45);
+            --line:      rgba(255,255,255,0.07);
+            --line2:     rgba(255,255,255,0.11);
+            --card-bg:   rgba(255,255,255,0.028);
+            --card-hov:  rgba(255,255,255,0.048);
             --font-disp: 'Space Grotesk', system-ui, sans-serif;
             --font-body: 'Inter', system-ui, sans-serif;
-            --radius-lg: 20px;
-            --radius-md: 12px;
+            --radius-lg: 18px;
+            --radius-md: 10px;
         }
 
         body {
@@ -55,594 +59,429 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ── Canvas ── */
+        /* ── Ambient background ── */
         #star-canvas {
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
+            position: fixed; inset: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
         }
-
-        /* ── Nebulae ── */
-        .nebula {
-            position: fixed;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
-        }
-        .nb1 { width: 600px; height: 400px; background: rgba(124,58,237,0.10); filter: blur(90px); top: -10%; left: -10%; }
-        .nb2 { width: 500px; height: 350px; background: rgba(37,99,235,0.08); filter: blur(100px); top: 20%; right: -12%; }
-        .nb3 { width: 400px; height: 300px; background: rgba(180,40,100,0.07); filter: blur(80px); bottom: 10%; left: 30%; }
-        .nb4 { width: 350px; height: 250px; background: rgba(13,148,136,0.07); filter: blur(80px); bottom: -5%; right: 15%; }
+        .nb { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; }
+        .nb1 { width: 700px; height: 450px; background: rgba(59,130,246,0.055); filter: blur(110px); top: -8%; left: -8%; }
+        .nb2 { width: 500px; height: 350px; background: rgba(13,148,136,0.04); filter: blur(100px); top: 30%; right: -10%; }
+        .nb3 { width: 400px; height: 300px; background: rgba(124,58,237,0.035); filter: blur(90px); bottom: 5%; left: 25%; }
 
         /* ── Header ── */
         .site-header {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: 62px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            position: fixed; top: 0; left: 0; right: 0;
+            height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
             padding: 0 48px;
-            background: rgba(4,6,15,0.75);
+            background: rgba(7,9,16,0.82);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--line);
             z-index: 1000;
         }
         .logo {
             font-family: var(--font-disp);
-            font-size: 1.1rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            text-decoration: none;
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 1rem; font-weight: 700;
+            letter-spacing: 2.5px; text-transform: uppercase;
+            text-decoration: none; color: var(--text);
+            display: flex; align-items: center; gap: 10px;
         }
-        .logo em { color: var(--violet-l); font-style: normal; }
-        .logo-mark { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; }
-        .logo-mark img { width: 34px; height: 34px; object-fit: contain; }
-        .nav {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
+        .logo em { color: var(--accent); font-style: normal; }
+        .logo-mark img { width: 32px; height: 32px; object-fit: contain; display: block; }
+        .nav { display: flex; align-items: center; gap: 2px; }
         .nav a {
-            font-size: 0.83rem;
-            font-weight: 500;
-            text-decoration: none;
-            color: var(--muted);
-            padding: 6px 13px;
-            border-radius: 30px;
+            font-size: 0.82rem; font-weight: 500;
+            text-decoration: none; color: var(--muted);
+            padding: 6px 13px; border-radius: 30px;
             transition: all 0.18s;
         }
-        .nav a:hover { color: var(--text); background: rgba(255,255,255,0.07); }
+        .nav a:hover { color: var(--text); background: rgba(255,255,255,0.06); }
         .nav .nav-cta {
-            background: rgba(124,58,237,0.25);
-            border: 1px solid rgba(167,139,250,0.3);
-            color: var(--violet-l);
+            background: rgba(59,130,246,0.14);
+            border: 1px solid rgba(96,165,250,0.28);
+            color: #93c5fd;
         }
-        .nav .nav-cta:hover { background: rgba(124,58,237,0.45); color: #fff; }
+        .nav .nav-cta:hover { background: rgba(59,130,246,0.28); color: #fff; }
 
-        /* ── Main wrap ── */
-        .wrap {
-            position: relative;
-            z-index: 10;
-            padding-top: 62px;
-        }
+        /* ── Wrap ── */
+        .wrap { position: relative; z-index: 10; padding-top: 60px; }
 
         /* ── Hero ── */
         .hero {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 96px 24px 72px;
+            display: flex; flex-direction: column;
+            align-items: center; text-align: center;
+            padding: 88px 24px 64px;
+            animation: fadeUp 0.55s ease both;
         }
         .hero-eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-family: var(--font-body);
-            font-size: 0.68rem;
-            font-weight: 600;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            color: rgba(160,180,255,0.55);
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 0.67rem; font-weight: 600;
+            letter-spacing: 2.5px; text-transform: uppercase;
+            color: var(--muted);
             border: 1px solid var(--line2);
-            background: rgba(255,255,255,0.04);
-            padding: 7px 18px;
-            border-radius: 30px;
-            margin-bottom: 28px;
+            background: rgba(255,255,255,0.03);
+            padding: 7px 18px; border-radius: 30px;
+            margin-bottom: 30px;
         }
         .pulse-dot {
-            width: 7px; height: 7px;
-            border-radius: 50%;
-            background: #4ade80;
-            box-shadow: 0 0 8px rgba(74,222,128,0.6);
-            animation: pulse 2.2s infinite;
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #34d399;
+            box-shadow: 0 0 6px rgba(52,211,153,0.5);
+            animation: pulse 2.4s infinite;
         }
         @keyframes pulse {
             0%,100% { opacity:1; transform:scale(1); }
-            50%      { opacity:0.5; transform:scale(1.5); }
+            50%      { opacity:0.4; transform:scale(1.5); }
         }
         .hero h1 {
             font-family: var(--font-disp);
-            font-size: clamp(2.6rem, 5.5vw, 4rem);
-            font-weight: 700;
-            line-height: 1.08;
-            letter-spacing: -1.5px;
-            margin-bottom: 20px;
+            font-size: clamp(2.4rem, 5vw, 3.6rem);
+            font-weight: 700; line-height: 1.1;
+            letter-spacing: -1.5px; margin-bottom: 18px;
         }
         .hero h1 .line1 { color: var(--text); display: block; }
         .hero h1 .line2 {
             display: block;
-            background: linear-gradient(135deg, var(--violet-l) 0%, var(--blue-l) 50%, var(--teal-l) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            background: linear-gradient(130deg, #60a5fa 0%, #34d399 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
         }
         .hero p {
-            font-size: 1.05rem;
-            color: var(--muted);
-            max-width: 480px;
-            line-height: 1.75;
-            margin-bottom: 36px;
+            font-size: 1rem; color: var(--text-sub);
+            max-width: 460px; line-height: 1.8; margin-bottom: 36px;
         }
         .hero-btns {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-bottom: 72px;
+            display: flex; gap: 12px; flex-wrap: wrap;
+            justify-content: center; margin-bottom: 72px;
         }
         .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--violet);
-            color: #fff;
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--accent); color: #fff;
             text-decoration: none;
-            font-family: var(--font-body);
-            font-size: 0.9rem;
-            font-weight: 700;
-            padding: 13px 28px;
-            border-radius: var(--radius-md);
-            border: 1px solid rgba(167,139,250,0.3);
+            font-size: 0.9rem; font-weight: 600;
+            padding: 12px 26px; border-radius: var(--radius-md);
+            border: 1px solid rgba(96,165,250,0.25);
             transition: all 0.2s;
-            box-shadow: 0 0 28px rgba(124,58,237,0.3);
+            box-shadow: 0 4px 20px rgba(59,130,246,0.25);
         }
-        .btn-primary:hover { background: #6d28d9; transform: translateY(-2px); box-shadow: 0 0 36px rgba(124,58,237,0.45); }
+        .btn-primary:hover { background: var(--accent-d); transform: translateY(-2px); box-shadow: 0 6px 28px rgba(59,130,246,0.35); }
         .btn-ghost {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255,255,255,0.05);
-            color: rgba(200,215,255,0.8);
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.04); color: var(--text-sub);
             text-decoration: none;
-            font-family: var(--font-body);
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 13px 28px;
-            border-radius: var(--radius-md);
+            font-size: 0.9rem; font-weight: 500;
+            padding: 12px 26px; border-radius: var(--radius-md);
             border: 1px solid var(--line2);
             transition: all 0.2s;
         }
-        .btn-ghost:hover { background: rgba(255,255,255,0.10); color: #fff; }
+        .btn-ghost:hover { background: rgba(255,255,255,0.08); color: var(--text); }
 
         /* ── Stats ── */
         .stats {
-            display: flex;
-            justify-content: center;
-            gap: 0;
+            display: flex; justify-content: center;
             border-top: 1px solid var(--line);
             border-bottom: 1px solid var(--line);
-            background: rgba(255,255,255,0.02);
+            background: rgba(255,255,255,0.015);
             margin-bottom: 80px;
+            animation: fadeUp 0.55s 0.1s ease both;
         }
         .stat-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            padding: 28px 48px;
+            display: flex; flex-direction: column; align-items: center;
+            gap: 5px; padding: 26px 48px;
             border-right: 1px solid var(--line);
-            flex: 1;
-            max-width: 200px;
+            flex: 1; max-width: 200px;
         }
         .stat-item:last-child { border-right: none; }
         .stat-num {
             font-family: var(--font-disp);
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--text);
-            letter-spacing: -1px;
+            font-size: 1.9rem; font-weight: 700;
+            color: var(--text); letter-spacing: -1px;
             transition: opacity 0.3s;
         }
-        .stat-num.loading { opacity: 0.25; }
+        .stat-num.loading { opacity: 0.2; }
         .stat-label {
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            color: rgba(140,160,210,0.45);
-            text-transform: uppercase;
-            white-space: nowrap;
+            font-size: 0.63rem; font-weight: 700;
+            letter-spacing: 1.5px; color: var(--muted);
+            text-transform: uppercase; white-space: nowrap;
         }
 
-        /* ── Slider section ── */
+        /* ── Catalog section ── */
         .catalog-section {
             padding: 0 24px 80px;
-            max-width: 1300px;
+            max-width: 1360px;
             margin: 0 auto;
+            animation: fadeUp 0.55s 0.18s ease both;
+        }
+        .section-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 28px; padding: 0 8px;
         }
         .section-label {
-            font-family: var(--font-body);
-            font-size: 0.68rem;
-            font-weight: 700;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            color: rgba(160,180,255,0.4);
-            text-align: center;
-            margin-bottom: 32px;
-        }
-        .slider-wrap {
-            position: relative;
-            padding: 0 54px;
-        }
-        .slider-outer { overflow: hidden; border-radius: var(--radius-lg); }
-        .slider-track {
-            display: flex;
-            gap: 18px;
-            transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
-            align-items: stretch;
-        }
-
-        /* ── Line Card ── */
-        .line-card {
-            flex: 0 0 calc(50% - 9px);
-            background: rgba(255,255,255,0.033);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: var(--radius-lg);
-            padding: 32px 28px;
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-            transition: border-color 0.25s, transform 0.25s, background 0.25s;
-            min-height: 360px;
-        }
-        .line-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255,255,255,0.052);
-        }
-        .line-card::before {
-            content: '';
-            position: absolute;
-            top: 0; right: 0;
-            width: 200px; height: 200px;
-            border-radius: 50%;
-            transform: translate(50%,-50%);
-            pointer-events: none;
-            opacity: 0.6;
-            transition: opacity 0.3s;
-        }
-        .line-card:hover::before { opacity: 1; }
-
-        .line-card--violet { border-top: 2px solid rgba(167,139,250,0.5); }
-        .line-card--violet::before { background: radial-gradient(circle, rgba(124,58,237,0.22) 0%, transparent 70%); }
-        .line-card--violet:hover { border-color: rgba(167,139,250,0.45); }
-
-        .line-card--blue { border-top: 2px solid rgba(96,165,250,0.5); }
-        .line-card--blue::before { background: radial-gradient(circle, rgba(59,130,246,0.2) 0%, transparent 70%); }
-        .line-card--blue:hover { border-color: rgba(96,165,250,0.45); }
-
-        .line-card--teal { border-top: 2px solid rgba(52,211,153,0.5); }
-        .line-card--teal::before { background: radial-gradient(circle, rgba(16,185,129,0.2) 0%, transparent 70%); }
-        .line-card--teal:hover { border-color: rgba(52,211,153,0.45); }
-
-        .line-card--green { border-top: 2px solid rgba(74,222,128,0.5); }
-        .line-card--green::before { background: radial-gradient(circle, rgba(34,197,94,0.2) 0%, transparent 70%); }
-        .line-card--green:hover { border-color: rgba(74,222,128,0.45); }
-
-        .line-card--orange { border-top: 2px solid rgba(251,146,60,0.5); }
-        .line-card--orange::before { background: radial-gradient(circle, rgba(249,115,22,0.2) 0%, transparent 70%); }
-        .line-card--orange:hover { border-color: rgba(251,146,60,0.45); }
-
-        .line-card__icon {
-            width: 52px; height: 52px;
-            border-radius: var(--radius-md);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 24px;
-            position: relative; z-index: 1;
-        }
-        .line-card--violet .line-card__icon { background: rgba(124,58,237,0.18); }
-        .line-card--blue   .line-card__icon { background: rgba(59,130,246,0.18); }
-        .line-card--teal   .line-card__icon { background: rgba(16,185,129,0.18); }
-        .line-card--green  .line-card__icon { background: rgba(34,197,94,0.18); }
-        .line-card--orange .line-card__icon { background: rgba(249,115,22,0.18); }
-
-        .line-card__eyebrow {
-            font-family: var(--font-body);
-            font-size: 0.62rem;
-            font-weight: 700;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            position: relative; z-index: 1;
-        }
-        .line-card--violet .line-card__eyebrow { color: var(--violet-l); }
-        .line-card--blue   .line-card__eyebrow { color: var(--blue-l); }
-        .line-card--teal   .line-card__eyebrow { color: var(--teal-l); }
-        .line-card--green  .line-card__eyebrow { color: var(--green-l); }
-        .line-card--orange .line-card__eyebrow { color: var(--orange-l); }
-
-        .line-card h2 {
-            font-family: var(--font-disp);
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--text);
-            letter-spacing: -0.4px;
-            line-height: 1.12;
-            margin-bottom: 12px;
-            position: relative; z-index: 1;
-        }
-        .line-card p {
-            font-size: 0.88rem;
+            font-size: 0.67rem; font-weight: 700;
+            letter-spacing: 2.5px; text-transform: uppercase;
             color: var(--muted);
-            line-height: 1.7;
-            margin-bottom: 24px;
-            position: relative; z-index: 1;
-            flex: 1;
         }
-        .line-card__apps {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 7px;
-            margin-bottom: 14px;
-            position: relative; z-index: 1;
+        .slider-nav {
+            display: flex; gap: 8px;
         }
-        .app-chip {
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 4px 11px;
-            border-radius: 20px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: rgba(180,200,240,0.7);
-            white-space: nowrap;
-        }
-        .app-chip.skeleton {
-            background: rgba(255,255,255,0.04);
-            color: transparent;
-            border-color: transparent;
-            width: 80px;
-            border-radius: 20px;
-            animation: shimmer 1.4s infinite;
-        }
-        @keyframes shimmer {
-            0%,100% { opacity: 0.3; }
-            50%      { opacity: 0.7; }
-        }
-        .line-card__count {
-            font-family: var(--font-body);
-            font-size: 0.72rem;
-            font-weight: 600;
-            color: rgba(140,160,200,0.4);
-            letter-spacing: 0.5px;
-            margin-bottom: 20px;
-            position: relative; z-index: 1;
-        }
-        .line-card__cta {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            font-size: 0.86rem;
-            font-weight: 700;
-            padding: 11px 22px;
-            border-radius: var(--radius-md);
-            transition: all 0.2s;
-            border: none;
-            cursor: pointer;
-            position: relative; z-index: 1;
-            align-self: flex-start;
-            text-decoration: none;
-        }
-        .line-card--violet .line-card__cta { background: rgba(124,58,237,0.85); color: #fff; }
-        .line-card--blue   .line-card__cta { background: rgba(37,99,235,0.85);  color: #fff; }
-        .line-card--teal   .line-card__cta { background: rgba(13,148,136,0.85); color: #fff; }
-        .line-card--green  .line-card__cta { background: rgba(22,163,74,0.85);  color: #fff; }
-        .line-card--orange .line-card__cta { background: rgba(234,88,12,0.85);  color: #fff; }
-        .line-card:hover .line-card__cta { transform: translateX(4px); }
-
-        /* ── Slider arrows ── */
         .slider-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 20;
-            width: 44px; height: 44px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.12);
-            color: rgba(200,215,255,0.8);
-            font-size: 18px;
-            cursor: pointer;
+            width: 38px; height: 38px; border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--line2);
+            color: var(--text-sub);
+            font-size: 16px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s;
+            transition: all 0.18s;
         }
         .slider-arrow:hover:not(:disabled) {
-            background: rgba(124,58,237,0.5);
-            border-color: rgba(167,139,250,0.5);
+            background: rgba(59,130,246,0.18);
+            border-color: rgba(96,165,250,0.35);
             color: #fff;
         }
-        .slider-arrow:disabled { opacity: 0.2; cursor: default; }
-        .slider-arrow--left  { left: 0; }
-        .slider-arrow--right { right: 0; }
+        .slider-arrow:disabled { opacity: 0.22; cursor: default; }
 
+        /* 4 visible cards layout */
+        .slider-outer { overflow: hidden; }
+        .slider-track {
+            display: flex; gap: 16px;
+            transition: transform 0.42s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        /* ── Product Card ── */
+        .prod-card {
+            flex: 0 0 calc(25% - 12px);
+            background: var(--card-bg);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            padding: 28px 24px 24px;
+            text-decoration: none; color: inherit;
+            display: flex; flex-direction: column;
+            position: relative; overflow: hidden;
+            transition: border-color 0.22s, transform 0.22s, background 0.22s;
+            min-height: 300px;
+        }
+        .prod-card:hover {
+            transform: translateY(-4px);
+            background: var(--card-hov);
+        }
+        /* subtle top accent line per category */
+        .prod-card--blue   { border-top: 2px solid rgba(96,165,250,0.4); }
+        .prod-card--blue:hover { border-color: rgba(96,165,250,0.55); }
+        .prod-card--teal   { border-top: 2px solid rgba(45,212,191,0.4); }
+        .prod-card--teal:hover { border-color: rgba(45,212,191,0.55); }
+        .prod-card--green  { border-top: 2px solid rgba(74,222,128,0.4); }
+        .prod-card--green:hover { border-color: rgba(74,222,128,0.55); }
+        .prod-card--orange { border-top: 2px solid rgba(251,146,60,0.4); }
+        .prod-card--orange:hover { border-color: rgba(251,146,60,0.55); }
+        .prod-card--violet { border-top: 2px solid rgba(167,139,250,0.4); }
+        .prod-card--violet:hover { border-color: rgba(167,139,250,0.55); }
+
+        /* card icon */
+        .prod-card__icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; margin-bottom: 18px;
+        }
+        .prod-card--blue   .prod-card__icon { background: rgba(59,130,246,0.14); }
+        .prod-card--teal   .prod-card__icon { background: rgba(13,148,136,0.14); }
+        .prod-card--green  .prod-card__icon { background: rgba(22,163,74,0.14); }
+        .prod-card--orange .prod-card__icon { background: rgba(234,88,12,0.14); }
+        .prod-card--violet .prod-card__icon { background: rgba(124,58,237,0.14); }
+
+        .prod-card__eyebrow {
+            font-size: 0.6rem; font-weight: 700;
+            letter-spacing: 2px; text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .prod-card--blue   .prod-card__eyebrow { color: #60a5fa; }
+        .prod-card--teal   .prod-card__eyebrow { color: var(--teal-l); }
+        .prod-card--green  .prod-card__eyebrow { color: var(--green-l); }
+        .prod-card--orange .prod-card__eyebrow { color: var(--orange-l); }
+        .prod-card--violet .prod-card__eyebrow { color: var(--violet-l); }
+
+        .prod-card h3 {
+            font-family: var(--font-disp);
+            font-size: 1.25rem; font-weight: 700;
+            color: var(--text); letter-spacing: -0.3px;
+            line-height: 1.2; margin-bottom: 10px;
+        }
+        .prod-card p {
+            font-size: 0.83rem; color: var(--text-sub);
+            line-height: 1.65; margin-bottom: 18px; flex: 1;
+        }
+        .prod-card__chips {
+            display: flex; flex-wrap: wrap; gap: 6px;
+            margin-bottom: 10px;
+        }
+        .chip {
+            font-size: 0.68rem; font-weight: 500;
+            padding: 3px 10px; border-radius: 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.09);
+            color: rgba(180,200,235,0.65);
+        }
+        .chip.skeleton {
+            background: rgba(255,255,255,0.04);
+            color: transparent; border-color: transparent;
+            width: 72px; animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0%,100% { opacity:0.25; } 50% { opacity:0.6; }
+        }
+        .prod-card__meta {
+            font-size: 0.7rem; color: var(--muted);
+            letter-spacing: 0.3px; margin-bottom: 18px;
+        }
+        .prod-card__cta {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 0.82rem; font-weight: 600;
+            padding: 9px 18px; border-radius: 8px;
+            transition: all 0.18s; align-self: flex-start;
+            text-decoration: none; border: none; cursor: pointer;
+        }
+        .prod-card--blue   .prod-card__cta { background: rgba(59,130,246,0.18); color: #93c5fd; }
+        .prod-card--teal   .prod-card__cta { background: rgba(13,148,136,0.18); color: var(--teal-l); }
+        .prod-card--green  .prod-card__cta { background: rgba(22,163,74,0.18);  color: var(--green-l); }
+        .prod-card--orange .prod-card__cta { background: rgba(234,88,12,0.18);  color: var(--orange-l); }
+        .prod-card--violet .prod-card__cta { background: rgba(124,58,237,0.18); color: var(--violet-l); }
+        .prod-card:hover .prod-card__cta { filter: brightness(1.15); }
+
+        /* dots */
         .slider-dots {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 22px;
+            display: flex; justify-content: center; gap: 7px;
+            margin-top: 20px;
         }
         .slider-dot {
-            width: 7px; height: 7px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            transition: all 0.25s;
+            width: 6px; height: 6px; border-radius: 50%;
+            border: none; cursor: pointer; padding: 0;
+            transition: all 0.22s;
         }
-        .slider-dot.active { background: var(--violet-l); transform: scale(1.4); }
-        .slider-dot.inactive { background: rgba(255,255,255,0.2); }
+        .slider-dot.active { background: #60a5fa; transform: scale(1.5); }
+        .slider-dot.inactive { background: rgba(255,255,255,0.18); }
 
         /* ── Value props ── */
         .props-section {
             border-top: 1px solid var(--line);
-            background: rgba(255,255,255,0.02);
-            padding: 64px 24px;
+            background: rgba(255,255,255,0.015);
+            padding: 60px 24px;
         }
         .props-grid {
             display: grid;
             grid-template-columns: repeat(3,1fr);
-            max-width: 960px;
+            max-width: 900px;
             margin: 0 auto;
-            gap: 0;
         }
         .prop-item {
-            padding: 32px 40px;
+            padding: 30px 36px;
             border-right: 1px solid var(--line);
             text-align: center;
         }
         .prop-item:last-child { border-right: none; }
-        .prop-icon { font-size: 1.6rem; margin-bottom: 14px; display: block; }
+        .prop-icon { font-size: 1.4rem; margin-bottom: 12px; display: block; }
         .prop-item h4 {
             font-family: var(--font-disp);
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 8px;
+            font-size: 0.95rem; font-weight: 700;
+            color: var(--text); margin-bottom: 7px;
         }
-        .prop-item p { font-size: 0.85rem; color: var(--muted); line-height: 1.65; }
-
-        /* ── Music pill ── */
-        .music-pill {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 500;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(8,11,24,0.85);
-            border: 1px solid rgba(167,139,250,0.25);
-            border-radius: 30px;
-            padding: 9px 18px;
-            cursor: pointer;
-            transition: all 0.2s;
-            backdrop-filter: blur(12px);
-        }
-        .music-pill:hover { background: rgba(124,58,237,0.25); border-color: rgba(167,139,250,0.5); }
-        .music-eq { display: flex; gap: 2px; align-items: flex-end; height: 14px; }
-        .music-bar-el {
-            width: 3px; border-radius: 2px;
-            background: var(--violet-l);
-            animation: eq 0.8s infinite ease-in-out;
-        }
-        .music-bar-el:nth-child(1) { height: 5px;  animation-delay: 0.00s; }
-        .music-bar-el:nth-child(2) { height: 11px; animation-delay: 0.12s; }
-        .music-bar-el:nth-child(3) { height: 7px;  animation-delay: 0.28s; }
-        .music-bar-el:nth-child(4) { height: 13px; animation-delay: 0.08s; }
-        .music-bar-el:nth-child(5) { height: 4px;  animation-delay: 0.22s; }
-        @keyframes eq {
-            0%,100% { transform: scaleY(1); }
-            50%      { transform: scaleY(2); }
-        }
-        .music-pill.paused .music-bar-el { animation-play-state: paused; opacity: 0.4; }
-        .music-label { font-size: 0.72rem; font-weight: 600; color: rgba(167,139,250,0.8); letter-spacing: 0.4px; white-space: nowrap; }
+        .prop-item p { font-size: 0.83rem; color: var(--muted); line-height: 1.65; }
 
         /* ── Footer ── */
         .site-footer {
-            background: rgba(2,3,10,0.9);
+            background: rgba(4,5,12,0.95);
             border-top: 1px solid var(--line);
-            padding: 64px 0 32px;
+            padding: 60px 0 28px;
         }
         .footer-inner { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
         .footer-grid {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 48px;
-            margin-bottom: 48px;
+            gap: 48px; margin-bottom: 44px;
         }
-        .footer-brand .logo { margin-bottom: 14px; }
-        .footer-brand p { font-size: 0.83rem; color: rgba(160,180,220,0.35); line-height: 1.7; max-width: 260px; }
+        .footer-brand .logo { margin-bottom: 12px; }
+        .footer-brand p { font-size: 0.82rem; color: rgba(160,180,220,0.3); line-height: 1.7; max-width: 240px; }
         .footer-col h5 {
             font-family: var(--font-disp);
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.25);
-            margin-bottom: 14px;
+            font-size: 0.68rem; font-weight: 700;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            color: rgba(255,255,255,0.22); margin-bottom: 12px;
         }
         .footer-col a {
-            display: block;
-            font-size: 0.86rem;
-            color: rgba(160,180,220,0.5);
-            text-decoration: none;
-            margin-bottom: 9px;
+            display: block; font-size: 0.84rem;
+            color: rgba(160,180,220,0.42);
+            text-decoration: none; margin-bottom: 8px;
             transition: color 0.18s;
         }
         .footer-col a:hover { color: var(--text); }
         .footer-bottom {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-top: 24px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding-top: 22px;
             border-top: 1px solid var(--line);
-            font-size: 0.78rem;
-            color: rgba(255,255,255,0.2);
+            font-size: 0.76rem;
+            color: rgba(255,255,255,0.18);
         }
 
+        /* ── Music pill ── */
+        .music-pill {
+            position: fixed; bottom: 22px; right: 22px;
+            z-index: 500;
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(7,9,16,0.88);
+            border: 1px solid var(--line2);
+            border-radius: 30px; padding: 8px 16px;
+            cursor: pointer; transition: all 0.2s;
+            backdrop-filter: blur(12px);
+        }
+        .music-pill:hover { background: rgba(59,130,246,0.12); border-color: rgba(96,165,250,0.3); }
+        .music-eq { display: flex; gap: 2px; align-items: flex-end; height: 13px; }
+        .music-bar-el {
+            width: 3px; border-radius: 2px;
+            background: #60a5fa;
+            animation: eq 0.85s infinite ease-in-out;
+        }
+        .music-bar-el:nth-child(1) { height: 5px;  animation-delay: 0s; }
+        .music-bar-el:nth-child(2) { height: 10px; animation-delay: 0.12s; }
+        .music-bar-el:nth-child(3) { height: 7px;  animation-delay: 0.28s; }
+        .music-bar-el:nth-child(4) { height: 12px; animation-delay: 0.08s; }
+        .music-bar-el:nth-child(5) { height: 4px;  animation-delay: 0.22s; }
+        @keyframes eq {
+            0%,100% { transform: scaleY(1); }
+            50%      { transform: scaleY(2); }
+        }
+        .music-pill.paused .music-bar-el { animation-play-state: paused; opacity: 0.35; }
+        .music-label { font-size: 0.7rem; font-weight: 600; color: rgba(147,197,253,0.75); white-space: nowrap; }
+
         /* ── Responsive ── */
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
+            .prod-card { flex: 0 0 calc(50% - 8px); }
+        }
+        @media (max-width: 700px) {
             .site-header { padding: 0 20px; }
             .nav { display: none; }
-            .line-card { flex: 0 0 calc(85vw); }
+            .prod-card { flex: 0 0 calc(82vw); }
             .stats { flex-wrap: wrap; }
-            .stat-item { padding: 20px 28px; border-right: none; border-bottom: 1px solid var(--line); }
+            .stat-item { padding: 18px 24px; border-right: none; border-bottom: 1px solid var(--line); max-width: 100%; }
             .props-grid { grid-template-columns: 1fr; }
             .prop-item { border-right: none; border-bottom: 1px solid var(--line); }
             .footer-grid { grid-template-columns: 1fr 1fr; }
             .footer-brand { grid-column: 1/-1; }
-            .slider-wrap { padding: 0 40px; }
         }
 
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(18px); }
             to   { opacity: 1; transform: translateY(0); }
         }
-        .hero    { animation: fadeUp 0.6s ease both; }
-        .stats   { animation: fadeUp 0.6s 0.1s ease both; }
-        .catalog-section { animation: fadeUp 0.6s 0.2s ease both; }
     </style>
 </head>
 <body>
 
 <canvas id="star-canvas"></canvas>
-<div class="nebula nb1"></div>
-<div class="nebula nb2"></div>
-<div class="nebula nb3"></div>
-<div class="nebula nb4"></div>
+<div class="nb nb1"></div>
+<div class="nb nb2"></div>
+<div class="nb nb3"></div>
 
-<!-- ── Header ── -->
+<!-- Header -->
 <header class="site-header">
     <a href="index.html" class="logo">
         <span class="logo-mark"><img src="../paxsystemiclogo.webp" alt="Pax Systemic Logo"></span>
@@ -654,17 +493,17 @@
         <a href="../siteler/index.html">Yapılan Siteler</a>
         <a href="../android-uygulamalar/index.html">Android Uygulamalar</a>
         <a href="../tarayici-oyunlari/index.html">Tarayıcı Oyunları</a>
-        <a href="../oneri.html" class="nav-cta">💬 Talep & Öneri</a>
+        <a href="../oneri.html" class="nav-cta">Talep &amp; Öneri</a>
     </nav>
 </header>
 
 <div class="wrap">
 
-    <!-- ── Hero ── -->
+    <!-- Hero -->
     <section class="hero">
         <div class="hero-eyebrow">
             <span class="pulse-dot"></span>
-            Dijital Stüdyo · Ankara, TR
+            Dijital Stüdyo &middot; Ankara, TR
         </div>
         <h1>
             <span class="line1">Yazılım Üretiyor,</span>
@@ -677,7 +516,7 @@
         </div>
     </section>
 
-    <!-- ── Stats ── -->
+    <!-- Stats -->
     <div class="stats">
         <div class="stat-item">
             <span class="stat-num loading" id="statYazilim">—</span>
@@ -697,114 +536,116 @@
         </div>
     </div>
 
-    <!-- ── Catalog Slider ── -->
+    <!-- Catalog Slider — 4 visible, arrows on sides -->
     <section class="catalog-section">
-        <div class="section-label">— Ürün Kataloğu —</div>
-
-        <div class="slider-wrap">
-            <button class="slider-arrow slider-arrow--left" id="sliderPrev" aria-label="Önceki">&#8592;</button>
-            <div class="slider-outer">
-                <div class="slider-track" id="sliderTrack">
-
-                    <!-- Yazılımlar -->
-                    <a href="../yazilimlar/index.html" class="line-card line-card--violet">
-                        <div class="line-card__icon">⚙️</div>
-                        <div class="line-card__eyebrow">Systemic Software</div>
-                        <h2>Yazılım<br>Kataloğu</h2>
-                        <p>Sistem optimizasyonundan şifre güvenliğine, medya yönetiminden otomasyon araçlarına — her biri kendi alanında özelleşmiş Windows uygulamaları.</p>
-                        <div class="line-card__apps" id="yazilimChips">
-                            <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                            <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                            <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                        </div>
-                        <div class="line-card__count" id="yazilimCount">Yükleniyor...</div>
-                        <span class="line-card__cta">Yazılımları Gör →</span>
-                    </a>
-
-                    <!-- Oyunlar -->
-                    <a href="../oyunlar/index.html" class="line-card line-card--blue">
-                        <div class="line-card__icon">🎮</div>
-                        <div class="line-card__eyebrow">BarisByte Games</div>
-                        <h2>Android - PC<br>Oyun Kataloğu</h2>
-                        <p>Atmosferik korku, mobil arcade ve açık dünya macerası — BarisByte Games, her türden indie oyuncuya hitap eden projeler üretiyor.</p>
-                        <div class="line-card__apps" id="oyunChips">
-                            <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                            <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                        </div>
-                        <div class="line-card__count" id="oyunCount">Yükleniyor...</div>
-                        <span class="line-card__cta">Oyunları Gör →</span>
-                    </a>
-
-                    <!-- Siteler -->
-                    <a href="../siteler/index.html" class="line-card line-card--teal">
-                        <div class="line-card__icon">🌐</div>
-                        <div class="line-card__eyebrow">Pax Systemic Web</div>
-                        <h2>Yapılan<br>Siteler</h2>
-                        <p>Kurumsal siteler, portallar ve müşteri projeleri — geliştirdiğimiz web sitelerinin tamamını burada keşfedin.</p>
-                        <div class="line-card__apps">
-                            <span class="app-chip">Yakında</span>
-                        </div>
-                        <div class="line-card__count">Proje vitrini hazırlanıyor</div>
-                        <span class="line-card__cta">Siteleri Gör →</span>
-                    </a>
-
-                    <!-- Android -->
-                    <a href="../android-uygulamalar/index.html" class="line-card line-card--green">
-                        <div class="line-card__icon">📱</div>
-                        <div class="line-card__eyebrow">Pax Systemic Mobile</div>
-                        <h2>Android<br>Uygulamalar</h2>
-                        <p>Cebinizde çalışan araçlardan mobil oyunlara — Android için geliştirdiğimiz uygulamaların kataloğu burada.</p>
-                        <div class="line-card__apps">
-                            <span class="app-chip">Yakında</span>
-                        </div>
-                        <div class="line-card__count">Proje vitrini hazırlanıyor</div>
-                        <span class="line-card__cta">Uygulamaları Gör →</span>
-                    </a>
-
-                    <!-- Tarayıcı -->
-                    <a href="../tarayici-oyunlari/index.html" class="line-card line-card--orange">
-                        <div class="line-card__icon">🕹️</div>
-                        <div class="line-card__eyebrow">BarisByte Browser</div>
-                        <h2>Tarayıcı<br>Oyunları</h2>
-                        <p>Kurulum gerektirmeyen, tarayıcıda anında oynayabileceğin mini oyunlar — arcade'den bulmacaya her türden eğlence burada.</p>
-                        <div class="line-card__apps">
-                            <span class="app-chip">2048</span>
-                            <span class="app-chip">Cube Slayer</span>
-                            <span class="app-chip">+3 daha</span>
-                        </div>
-                        <div class="line-card__count">5 oyun · Tarayıcıda Oyna</div>
-                        <span class="line-card__cta">Oyunları Oyna →</span>
-                    </a>
-
-                </div>
+        <div class="section-header">
+            <span class="section-label">Ürün Kataloğu</span>
+            <div class="slider-nav">
+                <button class="slider-arrow" id="sliderPrev" aria-label="Önceki">&#8592;</button>
+                <button class="slider-arrow" id="sliderNext" aria-label="Sonraki">&#8594;</button>
             </div>
-            <button class="slider-arrow slider-arrow--right" id="sliderNext" aria-label="Sonraki">&#8594;</button>
-            <div class="slider-dots" id="sliderDots"></div>
         </div>
+
+        <div class="slider-outer">
+            <div class="slider-track" id="sliderTrack">
+
+                <!-- Yazılımlar -->
+                <a href="../yazilimlar/index.html" class="prod-card prod-card--blue">
+                    <div class="prod-card__icon">⚙️</div>
+                    <div class="prod-card__eyebrow">Systemic Software</div>
+                    <h3>Yazılım Kataloğu</h3>
+                    <p>Sistem optimizasyonundan şifre güvenliğine, medya yönetiminden otomasyon araçlarına — Windows için özelleşmiş uygulamalar.</p>
+                    <div class="prod-card__chips" id="yazilimChips">
+                        <span class="chip skeleton">&nbsp;</span>
+                        <span class="chip skeleton">&nbsp;</span>
+                        <span class="chip skeleton">&nbsp;</span>
+                    </div>
+                    <div class="prod-card__meta" id="yazilimCount">Yükleniyor…</div>
+                    <span class="prod-card__cta">Yazılımları Gör →</span>
+                </a>
+
+                <!-- Oyunlar -->
+                <a href="../oyunlar/index.html" class="prod-card prod-card--violet">
+                    <div class="prod-card__icon">🎮</div>
+                    <div class="prod-card__eyebrow">BarisByte Games</div>
+                    <h3>Android &amp; PC Oyunlar</h3>
+                    <p>Atmosferik korku, mobil arcade ve açık dünya macerası — her türden indie oyuncuya hitap eden projeler.</p>
+                    <div class="prod-card__chips" id="oyunChips">
+                        <span class="chip skeleton">&nbsp;</span>
+                        <span class="chip skeleton">&nbsp;</span>
+                    </div>
+                    <div class="prod-card__meta" id="oyunCount">Yükleniyor…</div>
+                    <span class="prod-card__cta">Oyunları Gör →</span>
+                </a>
+
+                <!-- Siteler -->
+                <a href="../siteler/index.html" class="prod-card prod-card--teal">
+                    <div class="prod-card__icon">🌐</div>
+                    <div class="prod-card__eyebrow">Pax Systemic Web</div>
+                    <h3>Yapılan Siteler</h3>
+                    <p>Kurumsal siteler, portallar ve müşteri projeleri — geliştirdiğimiz web sitelerinin tamamını burada keşfedin.</p>
+                    <div class="prod-card__chips">
+                        <span class="chip">Yakında</span>
+                    </div>
+                    <div class="prod-card__meta">Proje vitrini hazırlanıyor</div>
+                    <span class="prod-card__cta">Siteleri Gör →</span>
+                </a>
+
+                <!-- Android -->
+                <a href="../android-uygulamalar/index.html" class="prod-card prod-card--green">
+                    <div class="prod-card__icon">📱</div>
+                    <div class="prod-card__eyebrow">Pax Systemic Mobile</div>
+                    <h3>Android Uygulamalar</h3>
+                    <p>Cebinizde çalışan araçlardan mobil oyunlara — Android için geliştirdiğimiz uygulamaların kataloğu.</p>
+                    <div class="prod-card__chips">
+                        <span class="chip">Yakında</span>
+                    </div>
+                    <div class="prod-card__meta">Proje vitrini hazırlanıyor</div>
+                    <span class="prod-card__cta">Uygulamaları Gör →</span>
+                </a>
+
+                <!-- Tarayıcı -->
+                <a href="../tarayici-oyunlari/index.html" class="prod-card prod-card--orange">
+                    <div class="prod-card__icon">🕹️</div>
+                    <div class="prod-card__eyebrow">BarisByte Browser</div>
+                    <h3>Tarayıcı Oyunları</h3>
+                    <p>Kurulum gerektirmeyen, tarayıcıda anında oynayabileceğin mini oyunlar — arcade'den bulmacaya her türden eğlence.</p>
+                    <div class="prod-card__chips">
+                        <span class="chip">2048</span>
+                        <span class="chip">Cube Slayer</span>
+                        <span class="chip">+3 daha</span>
+                    </div>
+                    <div class="prod-card__meta">5 oyun · Tarayıcıda Oyna</div>
+                    <span class="prod-card__cta">Oyunları Oyna →</span>
+                </a>
+
+            </div>
+        </div>
+        <div class="slider-dots" id="sliderDots"></div>
     </section>
 
-    <!-- ── Value Props ── -->
+    <!-- Value Props -->
     <section class="props-section">
         <div class="props-grid">
             <div class="prop-item">
                 <span class="prop-icon">🔒</span>
-                <h4>Yerel & Güvenli</h4>
-                <p>Uygulamalar verilerinizi cihazınızda tutar. Bulut bağımlılığı yok, reklam yok, izleme yok.</p>
+                <h4>Yerel &amp; Güvenli</h4>
+                <p>Verileriniz cihazınızda kalır. Bulut bağımlılığı yok, reklam yok, izleme yok.</p>
             </div>
             <div class="prop-item">
                 <span class="prop-icon">⚡</span>
                 <h4>Kaynak Dostu</h4>
-                <p>Minimalist mimari. Düşük CPU ve RAM tüketimiyle arka planda sessizce çalışır.</p>
+                <p>Minimalist mimari ile düşük CPU ve RAM tüketimiyle arka planda sessizce çalışır.</p>
             </div>
             <div class="prop-item">
                 <span class="prop-icon">🛠</span>
                 <h4>Aktif Geliştirme</h4>
-                <p>Tüm ürünler sürekli güncellenir. Kullanıcı geri bildirimleri doğrudan yol haritasını şekillendirir.</p>
+                <p>Tüm ürünler sürekli güncellenir. Kullanıcı geri bildirimleri yol haritasını şekillendirir.</p>
             </div>
         </div>
     </section>
 
-    <!-- ── Footer ── -->
+    <!-- Footer -->
     <footer class="site-footer">
         <div class="footer-inner">
             <div class="footer-grid">
@@ -817,10 +658,10 @@
                 </div>
                 <div class="footer-col">
                     <h5>Yazılımlar</h5>
+                    <a href="../yazilimlar/index.html">B-Streamer</a>
+                    <a href="../yazilimlar/index.html">NetKasa Pro</a>
                     <a href="../yazilimlar/index.html">Systemic Pro</a>
-                    <a href="../yazilimlar/index.html">Password Vault</a>
                     <a href="../yazilimlar/index.html">Pomodoro Pro</a>
-                    <a href="../yazilimlar/index.html">Audio Editor</a>
                 </div>
                 <div class="footer-col">
                     <h5>Oyunlar</h5>
@@ -831,7 +672,7 @@
                 </div>
                 <div class="footer-col">
                     <h5>Kurumsal</h5>
-                    <a href="../oneri.html">💬 Talep & Öneri</a>
+                    <a href="../oneri.html">Talep &amp; Öneri</a>
                     <a href="https://github.com/barisys1999/pax-systemic" target="_blank" rel="noopener">GitHub</a>
                 </div>
             </div>
@@ -844,7 +685,7 @@
 
 </div>
 
-<!-- ── Music Pill ── -->
+<!-- Music pill -->
 <div class="music-pill" id="musicPill" title="Müziği aç/kapat">
     <div class="music-eq">
         <div class="music-bar-el"></div>
@@ -853,31 +694,31 @@
         <div class="music-bar-el"></div>
         <div class="music-bar-el"></div>
     </div>
-    <span class="music-label" id="musicLabel">♪ Space Ambient · Çalıyor</span>
+    <span class="music-label" id="musicLabel">Space Ambient · Çalıyor</span>
 </div>
 
-<!-- ── Scripts ── -->
+<!-- Scripts -->
 <script>
-/* Stars */
+/* Stars — daha sade, az twinkle */
 (function(){
     const c=document.getElementById('star-canvas'),ctx=c.getContext('2d');
     function resize(){c.width=window.innerWidth;c.height=window.innerHeight}
     resize();window.addEventListener('resize',resize);
     const stars=[];
-    for(let i=0;i<300;i++)stars.push({
+    for(let i=0;i<220;i++)stars.push({
         x:Math.random()*c.width,y:Math.random()*c.height,
-        r:Math.random()*1.4+0.2,
-        speed:Math.random()*0.08+0.02,
+        r:Math.random()*1.1+0.15,
+        speed:Math.random()*0.06+0.015,
         tw:Math.random()*Math.PI*2,
-        ts:Math.random()*0.02+0.006
+        ts:Math.random()*0.015+0.004
     });
     function draw(){
         ctx.clearRect(0,0,c.width,c.height);
         stars.forEach(s=>{
             s.tw+=s.ts;
-            const a=0.3+Math.sin(s.tw)*0.35;
+            const a=0.2+Math.sin(s.tw)*0.22;
             ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-            ctx.fillStyle=`rgba(210,225,255,${a})`;ctx.fill();
+            ctx.fillStyle=`rgba(200,220,255,${a})`;ctx.fill();
             s.y-=s.speed;
             if(s.y<0){s.y=c.height;s.x=Math.random()*c.width}
         });
@@ -894,22 +735,24 @@
     pill.addEventListener('click',function(){
         playing=!playing;
         pill.classList.toggle('paused',!playing);
-        label.textContent=playing?'♪ Space Ambient · Çalıyor':'♪ Space Ambient · Durduruldu';
+        label.textContent=playing?'Space Ambient · Çalıyor':'Space Ambient · Durduruldu';
     });
 })();
 
-/* Slider */
+/* Slider — 4 kart görünür, 1 adım kayar */
 (function(){
     const track=document.getElementById('sliderTrack');
     const prev=document.getElementById('sliderPrev');
     const next=document.getElementById('sliderNext');
     const dotsEl=document.getElementById('sliderDots');
-    const cards=track.querySelectorAll('.line-card');
+    const cards=track.querySelectorAll('.prod-card');
     const total=cards.length;
     let cur=0;
 
     function getVisible(){
-        return window.innerWidth<=900?1:2;
+        if(window.innerWidth<=700) return 1;
+        if(window.innerWidth<=1100) return 2;
+        return 4;
     }
     function maxIdx(){ return Math.max(0,total-getVisible()); }
 
@@ -931,8 +774,9 @@
     }
     function goTo(idx){
         cur=Math.max(0,Math.min(idx,maxIdx()));
+        const gap=16;
         const cardW=cards[0].getBoundingClientRect().width;
-        track.style.transform=`translateX(-${cur*(cardW+18)}px)`;
+        track.style.transform=`translateX(-${cur*(cardW+gap)}px)`;
         prev.disabled=cur===0;
         next.disabled=cur>=maxIdx();
         updateDots();
@@ -956,30 +800,6 @@
     window.addEventListener('resize',()=>{buildDots();goTo(Math.min(cur,maxIdx()));});
     buildDots();goTo(0);
 })();
-
-/* Stat counter animation */
-(function(){
-    function animCount(el,target){
-        let start=0;const dur=1200;const step=16;
-        const inc=target/(dur/step);
-        const t=setInterval(()=>{
-            start=Math.min(start+inc,target);
-            el.textContent=Math.round(start);
-            if(start>=target)clearInterval(t);
-        },step);
-    }
-    const observer=new IntersectionObserver(entries=>{
-        entries.forEach(e=>{
-            if(e.isIntersecting){
-                const el=e.target;
-                const val=parseInt(el.dataset.target||'0');
-                if(val)animCount(el,val);
-                observer.unobserve(el);
-            }
-        });
-    },{threshold:0.5});
-    document.querySelectorAll('.stat-num[data-target]').forEach(el=>observer.observe(el));
-})();
 </script>
 
 <!-- Firebase -->
@@ -1000,57 +820,38 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
 
-const FALLBACK_YAZ = {
-    count: 10,
-    chips: `<span class="app-chip">B-Streamer</span><span class="app-chip">NetKasa Pro</span><span class="app-chip">Systemic Pro</span><span class="app-chip">+7 daha</span>`,
-    label: '10 uygulama · Windows'
-};
-const FALLBACK_OYUN = {
-    count: 4,
-    chips: `<span class="app-chip">Karanlıktan Işığa</span><span class="app-chip">CosmoHop!</span><span class="app-chip">+2 daha</span>`,
-    label: '4 proje · PC & Mobil'
-};
-
 function applyYazilim(list){
-    const count=list.length||FALLBACK_YAZ.count;
+    const count=list.length||10;
     const el=document.getElementById('statYazilim');
     el.textContent=count; el.classList.remove('loading');
-    el.dataset.target=count;
     const chips=list.length>0
-        ? list.slice(0,4).map(p=>`<span class="app-chip">${p.title}</span>`).join('')
-          +(list.length>4?`<span class="app-chip">+${list.length-4} daha</span>`:'')
-        : FALLBACK_YAZ.chips;
+        ? list.slice(0,4).map(p=>`<span class="chip">${p.title}</span>`).join('')
+          +(list.length>4?`<span class="chip">+${list.length-4} daha</span>`:'')
+        : `<span class="chip">B-Streamer</span><span class="chip">NetKasa Pro</span><span class="chip">+8 daha</span>`;
     document.getElementById('yazilimChips').innerHTML=chips;
-    document.getElementById('yazilimCount').textContent=list.length>0?`${count} uygulama · Windows`:FALLBACK_YAZ.label;
+    document.getElementById('yazilimCount').textContent=`${count} uygulama · Windows`;
 }
 
 function applyOyun(list){
-    const count=list.length||FALLBACK_OYUN.count;
+    const count=list.length||4;
     const el=document.getElementById('statOyun');
     el.textContent=count; el.classList.remove('loading');
-    el.dataset.target=count;
     const chips=list.length>0
-        ? list.slice(0,3).map(p=>`<span class="app-chip">${p.title}</span>`).join('')
-          +(list.length>3?`<span class="app-chip">+${list.length-3} daha</span>`:'')
-        : FALLBACK_OYUN.chips;
+        ? list.slice(0,3).map(p=>`<span class="chip">${p.title}</span>`).join('')
+          +(list.length>3?`<span class="chip">+${list.length-3} daha</span>`:'')
+        : `<span class="chip">Karanlıktan Işığa</span><span class="chip">CosmoHop!</span><span class="chip">+2 daha</span>`;
     document.getElementById('oyunChips').innerHTML=chips;
-    document.getElementById('oyunCount').textContent=list.length>0?`${count} proje · PC & Mobil`:FALLBACK_OYUN.label;
+    document.getElementById('oyunCount').textContent=`${count} proje · PC & Mobil`;
 }
 
 try {
     const ys=await getDocs(query(collection(db,'yazilimlar'),orderBy('order','asc')));
     applyYazilim(ys.docs.map(d=>d.data()));
-} catch(e) {
-    console.warn(e);
-    applyYazilim([]);
-}
+} catch(e) { applyYazilim([]); }
 try {
     const os=await getDocs(query(collection(db,'oyunlar'),orderBy('order','asc')));
     applyOyun(os.docs.map(d=>d.data()));
-} catch(e) {
-    console.warn(e);
-    applyOyun([]);
-}
+} catch(e) { applyOyun([]); }
 </script>
 
 </body>
