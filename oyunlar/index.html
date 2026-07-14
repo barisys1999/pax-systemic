@@ -129,7 +129,7 @@
 
     <div class="download-section">
         <p>Bu oyunu cihazınıza indirin.</p>
-        <a href="#" id="det-btn" class="btn-download">↓ İndir</a>
+        <a href="#" id="det-btn" class="btn-download" target="_blank" rel="noopener">↓ İndir</a>
     </div>
 
 </div>
@@ -332,7 +332,10 @@
         if(url.origin!==location.origin)return;
         if(a.target==='_blank')return;
         if(url.href===location.href)return;
+        if(url.pathname===location.pathname && url.hash)return;
         if(a.href.startsWith('mailto:'))return;
+        if(a.hasAttribute('download'))return;
+        if(!a.href||a.getAttribute('href')==='#'||a.getAttribute('href')==='')return;
         e.preventDefault();
         overlay.classList.add('fade-out');
         setTimeout(()=>{ location.href=a.href; },380);

@@ -259,7 +259,7 @@
         </div>
         <div class="game-modal__frame">
             <iframe id="gameFrame" src="" allowfullscreen
-                sandbox="allow-scripts allow-same-origin allow-pointer-lock"></iframe>
+                sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-forms allow-downloads allow-modals"></iframe>
         </div>
         <div class="game-modal__actions">
             <span>ESC veya ✕ ile kapat</span>
@@ -528,7 +528,10 @@ loadGames();
         if(url.origin!==location.origin)return;
         if(a.target==='_blank')return;
         if(url.href===location.href)return;
+        if(url.pathname===location.pathname && url.hash)return;
         if(a.href.startsWith('mailto:'))return;
+        if(a.hasAttribute('download'))return;
+        if(!a.href||a.getAttribute('href')==='#'||a.getAttribute('href')==='')return;
         e.preventDefault();
         overlay.classList.add('fade-out');
         setTimeout(()=>{ location.href=a.href; },380);

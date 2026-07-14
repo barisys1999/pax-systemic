@@ -197,7 +197,8 @@ function setImg(idx, e) {
 function openLightbox() {
     if (!currentImages.length) return;
     const lb = document.getElementById('lightbox');
-    let html = `<img id="lb-img" src="${currentImages[currentImgIdx]}" loading="lazy" onclick="event.stopPropagation()">`;
+    let html = `<button onclick="closeLightbox()" style="position:fixed;top:16px;right:20px;background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:1.4rem;width:36px;height:36px;border-radius:50%;cursor:pointer;z-index:10001;">✕</button>
+                <img id="lb-img" src="${currentImages[currentImgIdx]}" loading="lazy" onclick="event.stopPropagation()">`;
     if (currentImages.length > 1) {
         html += `<button class="slider-btn prev" style="position:fixed;left:4%"  onclick="changeLbImg(-1,event)">&#10094;</button>
                  <button class="slider-btn next" style="position:fixed;right:4%" onclick="changeLbImg( 1,event)">&#10095;</button>`;
@@ -205,6 +206,19 @@ function openLightbox() {
     lb.innerHTML = html;
     lb.style.display = 'flex';
 }
+
+function closeLightbox() {
+    const lb = document.getElementById('lightbox');
+    if (lb) lb.style.display = 'none';
+}
+
+document.addEventListener('keydown', function(e) {
+    const lb = document.getElementById('lightbox');
+    if (!lb || lb.style.display === 'none') return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft')  changeLbImg(-1, e);
+    if (e.key === 'ArrowRight') changeLbImg( 1, e);
+});
 
 function changeLbImg(dir, e) {
     if (e) e.stopPropagation();

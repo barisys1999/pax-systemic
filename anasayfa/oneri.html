@@ -426,6 +426,9 @@
         if(!a||!a.href)return;
         try{var url=new URL(a.href,location.href);}catch(err){return;}
         if(url.origin!==location.origin||a.target==='_blank'||url.href===location.href||a.href.startsWith('mailto:'))return;
+        if(a.hasAttribute('download'))return;
+        if(!a.getAttribute('href')||a.getAttribute('href')==='#'||a.getAttribute('href')==='')return;
+        if(url.pathname===location.pathname&&url.hash)return;
         e.preventDefault();overlay.classList.add('fade-out');setTimeout(()=>{location.href=a.href;},380);
     });
 })();
