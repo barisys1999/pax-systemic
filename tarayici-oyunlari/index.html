@@ -142,10 +142,11 @@
         /* ── Modal ── */
         .game-modal-backdrop {
             position: fixed; inset: 0; background: rgba(8, 11, 20, 0.82);
-            z-index: 5000; display: none;
+            z-index: 99999; display: none;
             align-items: center; justify-content: center; padding: 24px;
+            pointer-events: none;
         }
-        .game-modal-backdrop.open { display: flex; }
+        .game-modal-backdrop.open { display: flex; pointer-events: all; }
         .game-modal {
             background: var(--paper); border: 1px solid var(--line);
             border-radius: var(--radius-xl);
@@ -476,7 +477,14 @@ window.filterGames = function() {
 // ── Modal ──────────────────────────────────
 window.openGame = function(gameUrl, title) {
     // Göreceli ya da tam URL otomatik algıla
-    const src = gameUrl.startsWith('http') ? gameUrl : gameUrl;
+    let src;
+    if (gameUrl.startsWith('http') || gameUrl.startsWith('/')) {
+        src = gameUrl;
+    } else {
+        // Göreceli URL'yi index.html'nin bulunduğu klasöre göre çöz
+        const base = window.location.href.replace(/\/[^\/]*$/, '/');
+        src = base + gameUrl;
+    }
     document.getElementById('modalTitle').textContent = title;
     document.getElementById('gameFrame').src = src;
     document.getElementById('gameModal').classList.add('open');
@@ -609,6 +617,8 @@ loadGames();
         requestAnimationFrame(()=>{ overlay.style.transition='opacity .38s ease'; });
     });
     document.addEventListener('click',function(e){
+        // Modal açıkken sayfa geçişini engelleme
+        if(document.getElementById('gameModal').classList.contains('open'))return;
         const a=e.target.closest('a');
         if(!a||!a.href)return;
         try { var url=new URL(a.href,location.href); } catch(err){ return; }
@@ -624,23 +634,6 @@ loadGames();
         setTimeout(()=>{ location.href=a.href; },380);
     });
 })();
-</script>
-
-<div id="gameOverlay" style="position:fixed;inset:0;display:none;background:#000;z-index:999999">
-<button onclick="closeGame()" style="position:absolute;top:10px;left:10px;z-index:2;padding:10px 16px">← Geri</button>
-<iframe id="gameFrame" style="width:100%;height:100%;border:none"></iframe>
-</div>
-<script>
-function playGame(url){
- document.getElementById("gameFrame").src=url;
- document.getElementById("gameOverlay").style.display="block";
- document.body.style.overflow="hidden";
-}
-function closeGame(){
- document.getElementById("gameOverlay").style.display="none";
- document.getElementById("gameFrame").src="";
- document.body.style.overflow="";
-}
 </script>
 </body>
 </html>
