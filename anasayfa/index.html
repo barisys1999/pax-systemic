@@ -5,977 +5,536 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="../favicon.png">
     <title>Pax Systemic | Dijital Yazılım & Oyun Stüdyosu</title>
-    <meta name="description" content="Pax Systemic: Masaüstü yazılımları ve indie oyunlar geliştiren bağımsız bir dijital stüdyo.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap">
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Pax Systemic","url":"https://barisys1999.github.io/pax-systemic/","founder":{"@type":"Person","name":"Barış Yurdunuseven"}}</script>
+    <meta name="description" content="Pax Systemic: Masaüstü yazılımları ve indie oyunlar geliştiren bağımsız bir dijital stüdyo. Barış Yurdunuseven tarafından kuruldu.">
+
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/portal.css">
+
     <style>
-        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-        html{scroll-behavior:smooth}
-        :root{
-            --bg:#05060e;
-            --bg2:#080a16;
-            --blue:#3b82f6;
-            --blue-d:#1d4ed8;
-            --blue-gl:rgba(59,130,246,.13);
-            --teal:#0d9488;
-            --teal-l:#2dd4bf;
-            --green:#15803d;
-            --green-l:#4ade80;
-            --orange:#c2410c;
-            --orange-l:#fb923c;
-            --violet:#6d28d9;
-            --violet-l:#a78bfa;
-            --text:#dde4f7;
-            --text-sub:rgba(180,200,240,.6);
-            --muted:rgba(140,165,220,.38);
-            --line:rgba(255,255,255,.065);
-            --line2:rgba(255,255,255,.1);
-            --card:rgba(255,255,255,.024);
-            --card-h:rgba(255,255,255,.042);
-            --font-d:'Space Grotesk',system-ui,sans-serif;
-            --font-b:'Inter',system-ui,sans-serif;
-            --r-lg:16px;
-            --r-md:10px;
-        }
-        body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-
-        /* ── Space canvas ── */
-        #space-canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
-
-        /* ── Nebulae ── */
-        .nbl{position:fixed;border-radius:50%;pointer-events:none;z-index:0}
-        .n1{width:800px;height:500px;background:radial-gradient(ellipse,rgba(59,130,246,.045) 0%,transparent 70%);top:-10%;left:-12%;filter:blur(30px)}
-        .n2{width:600px;height:400px;background:radial-gradient(ellipse,rgba(109,40,217,.035) 0%,transparent 70%);bottom:5%;right:-8%;filter:blur(30px)}
-        .n3{width:500px;height:350px;background:radial-gradient(ellipse,rgba(13,148,136,.03) 0%,transparent 70%);top:40%;left:30%;filter:blur(30px)}
-
-        /* ── Header ── */
-        .hdr{
-            position:fixed;top:0;left:0;right:0;height:58px;
-            display:flex;align-items:center;justify-content:space-between;
-            padding:0 48px;
-            background:rgba(5,6,14,.78);
-            backdrop-filter:blur(24px);
-            border-bottom:1px solid var(--line);
-            z-index:1000;
-            transition:background .3s;
-        }
-        .hdr.scrolled{background:rgba(5,6,14,.92)}
-        .logo{
-            font-family:var(--font-d);font-size:.96rem;font-weight:700;
-            letter-spacing:2.5px;text-transform:uppercase;
-            text-decoration:none;color:var(--text);
-            display:flex;align-items:center;gap:10px;
-        }
-        .logo em{color:var(--blue);font-style:normal}
-        .logo img{width:30px;height:30px;object-fit:contain;display:block}
-        .nav{display:flex;align-items:center;gap:2px}
-        .nav a{
-            font-size:.8rem;font-weight:500;text-decoration:none;
-            color:var(--muted);padding:5px 12px;border-radius:30px;
-            transition:all .18s;
-        }
-        .nav a:hover{color:var(--text);background:rgba(255,255,255,.055)}
-        .nav .cta{
-            background:rgba(59,130,246,.12);
-            border:1px solid rgba(96,165,250,.22);
-            color:#93c5fd;
-        }
-        .nav .cta:hover{background:rgba(59,130,246,.24);color:#fff}
-
-        /* ── Wrap ── */
-        .wrap{position:relative;z-index:10;padding-top:58px}
-
-        /* ── Hero ── */
-        .hero{
-            display:flex;flex-direction:column;align-items:center;
-            text-align:center;padding:100px 24px 80px;
-            min-height:90vh;justify-content:center;
-            position:relative;overflow:hidden;
-        }
-        /* Gezegen arka plan efekti */
-        .hero-planet{
-            position:absolute;
-            right:-80px;top:50%;transform:translateY(-50%);
-            width:420px;height:420px;border-radius:50%;
-            background:radial-gradient(circle at 35% 35%,
-                rgba(59,130,246,.18) 0%,
-                rgba(109,40,217,.12) 40%,
-                rgba(13,148,136,.06) 70%,
-                transparent 100%);
-            box-shadow:
-                inset -30px -20px 60px rgba(0,0,0,.6),
-                inset 15px 15px 40px rgba(59,130,246,.08),
-                0 0 80px rgba(59,130,246,.06),
-                0 0 160px rgba(109,40,217,.04);
-            pointer-events:none;z-index:0;
-            animation:planetDrift 20s ease-in-out infinite;
-            opacity:.65;
-        }
-        .hero-planet::before{
-            content:'';position:absolute;inset:-2px;border-radius:50%;
-            background:conic-gradient(from 200deg,transparent 0%,rgba(96,165,250,.08) 20%,transparent 40%);
-            animation:planetRing 20s linear infinite;
-        }
-        .hero-planet-ring{
-            position:absolute;
-            right:-130px;top:50%;
-            width:520px;height:120px;
-            border-radius:50%;
-            border:1px solid rgba(96,165,250,.1);
-            transform:translateY(-50%) rotateX(75deg);
-            pointer-events:none;z-index:0;
-            box-shadow:0 0 30px rgba(59,130,246,.04);
-            animation:planetDrift 20s ease-in-out infinite;
-            opacity:.5;
-        }
-        @keyframes planetDrift{0%,100%{transform:translateY(-50%) translateX(0)}50%{transform:translateY(-52%) translateX(-8px)}}
-        @keyframes planetRing{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-
-        /* Hero içerik z-index */
-        .hero .eyebrow,.hero h1,.hero p,.hbtns,.scroll-hint{position:relative;z-index:2}
-        .eyebrow{
-            display:inline-flex;align-items:center;gap:8px;
-            font-size:.65rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;
-            color:var(--muted);border:1px solid var(--line2);
-            background:rgba(255,255,255,.025);
-            padding:7px 18px;border-radius:30px;margin-bottom:32px;
-            opacity:0;animation:fadeUp .7s .1s ease forwards;
-        }
-        .pdot{width:6px;height:6px;border-radius:50%;background:#34d399;box-shadow:0 0 7px rgba(52,211,153,.55);animation:pulse 2.5s infinite}
-        @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.6)}}
-        .hero h1{
-            font-family:var(--font-d);
-            font-size:clamp(2.8rem,5.5vw,4.2rem);
-            font-weight:700;line-height:1.07;letter-spacing:-2px;
-            margin-bottom:20px;
-            opacity:0;animation:fadeUp .7s .2s ease forwards;
-        }
-        .h-line1{color:var(--text);display:block}
-        .h-line2{
-            display:block;
-            background:linear-gradient(125deg,#60a5fa 0%,#38bdf8 45%,#34d399 100%);
-            -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-        }
-        .hero p{
-            font-size:1.02rem;color:var(--text-sub);max-width:450px;
-            line-height:1.8;margin-bottom:38px;
-            opacity:0;animation:fadeUp .7s .3s ease forwards;
-        }
-        .hbtns{
-            display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
-            opacity:0;animation:fadeUp .7s .4s ease forwards;
-        }
-        .btn-p{
-            display:inline-flex;align-items:center;gap:8px;
-            background:var(--blue);color:#fff;text-decoration:none;
-            font-size:.88rem;font-weight:600;
-            padding:12px 26px;border-radius:var(--r-md);
-            border:1px solid rgba(96,165,250,.2);
-            transition:all .2s;
-            box-shadow:0 4px 22px rgba(59,130,246,.22);
-        }
-        .btn-p:hover{background:var(--blue-d);transform:translateY(-2px);box-shadow:0 6px 30px rgba(59,130,246,.32)}
-        .btn-g{
-            display:inline-flex;align-items:center;gap:8px;
-            background:rgba(255,255,255,.04);color:var(--text-sub);
-            text-decoration:none;font-size:.88rem;font-weight:500;
-            padding:12px 26px;border-radius:var(--r-md);
-            border:1px solid var(--line2);transition:all .2s;
-        }
-        .btn-g:hover{background:rgba(255,255,255,.08);color:var(--text)}
-
-        /* ── Scroll indicator ── */
-        .scroll-hint{
-            position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
-            display:flex;flex-direction:column;align-items:center;gap:8px;
-            opacity:0;animation:fadeUp .7s .8s ease forwards;
-        }
-        .scroll-hint span{font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
-        .scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,rgba(96,165,250,.5),transparent);animation:scrollPulse 2s infinite}
-        @keyframes scrollPulse{0%,100%{opacity:.3;transform:scaleY(1)}50%{opacity:.8;transform:scaleY(.6)}}
-
-        /* ── Stats bar ── */
-        .stats{
-            display:flex;justify-content:center;
-            border-top:1px solid var(--line);border-bottom:1px solid var(--line);
-            background:rgba(255,255,255,.012);
-        }
-        .stat{
-            display:flex;flex-direction:column;align-items:center;
-            gap:5px;padding:24px 44px;
-            border-right:1px solid var(--line);
-            flex:1;max-width:200px;
-        }
-        .stat:last-child{border-right:none}
-        .stat-n{
-            font-family:var(--font-d);font-size:1.85rem;font-weight:700;
-            color:var(--text);letter-spacing:-1px;transition:opacity .3s;
-        }
-        .stat-n.ld{opacity:.18}
-        .stat-l{font-size:.62rem;font-weight:700;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;white-space:nowrap}
-
-        /* ── Catalog ── */
-        .catalog{padding:72px 24px 80px;max-width:1380px;margin:0 auto}
-        .sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px;padding:0 4px}
-        .sec-lbl{font-size:.65rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted)}
-        .s-nav{display:flex;gap:8px}
-        .sarr{
-            width:36px;height:36px;border-radius:50%;
-            background:rgba(255,255,255,.042);border:1px solid var(--line2);
-            color:var(--text-sub);font-size:15px;cursor:pointer;
-            display:flex;align-items:center;justify-content:center;
-            transition:all .18s;
-        }
-        .sarr:hover:not(:disabled){background:rgba(59,130,246,.18);border-color:rgba(96,165,250,.3);color:#fff}
-        .sarr:disabled{opacity:.18;cursor:default}
-
-        .s-outer{overflow:hidden}
-        .s-track{display:flex;gap:16px;transition:transform .44s cubic-bezier(.4,0,.2,1)}
-
-        /* ── Product card ── */
-        .pcard{
-            flex:0 0 calc(25% - 12px);
-            background:var(--card);
-            border:1px solid var(--line);
-            border-radius:var(--r-lg);
-            padding:26px 22px 22px;
-            text-decoration:none;color:inherit;
-            display:flex;flex-direction:column;
-            position:relative;overflow:hidden;
-            transition:border-color .22s,transform .22s,background .22s;
-            min-height:290px;
-        }
-        .pcard::after{
-            content:'';position:absolute;inset:0;
-            background:radial-gradient(ellipse 60% 40% at 80% 10%,var(--glow,transparent),transparent 70%);
-            pointer-events:none;opacity:0;transition:opacity .3s;
-        }
-        .pcard:hover{transform:translateY(-5px);background:var(--card-h)}
-        .pcard:hover::after{opacity:1}
-
-        .pcard.c-blue{border-top:2px solid rgba(96,165,250,.38);--glow:rgba(59,130,246,.08)}
-        .pcard.c-blue:hover{border-color:rgba(96,165,250,.55)}
-        .pcard.c-violet{border-top:2px solid rgba(167,139,250,.38);--glow:rgba(109,40,217,.08)}
-        .pcard.c-violet:hover{border-color:rgba(167,139,250,.55)}
-        .pcard.c-teal{border-top:2px solid rgba(45,212,191,.35);--glow:rgba(13,148,136,.07)}
-        .pcard.c-teal:hover{border-color:rgba(45,212,191,.5)}
-        .pcard.c-green{border-top:2px solid rgba(74,222,128,.35);--glow:rgba(21,128,61,.08)}
-        .pcard.c-green:hover{border-color:rgba(74,222,128,.5)}
-        .pcard.c-orange{border-top:2px solid rgba(251,146,60,.35);--glow:rgba(194,65,12,.08)}
-        .pcard.c-orange:hover{border-color:rgba(251,146,60,.5)}
-
-        .pcard-ico{width:42px;height:42px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;margin-bottom:16px}
-        .c-blue  .pcard-ico{background:rgba(59,130,246,.13)}
-        .c-violet .pcard-ico{background:rgba(109,40,217,.13)}
-        .c-teal  .pcard-ico{background:rgba(13,148,136,.13)}
-        .c-green .pcard-ico{background:rgba(21,128,61,.13)}
-        .c-orange .pcard-ico{background:rgba(194,65,12,.13)}
-
-        .pcard-ey{font-size:.58rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:7px}
-        .c-blue   .pcard-ey{color:#60a5fa}
-        .c-violet .pcard-ey{color:var(--violet-l)}
-        .c-teal   .pcard-ey{color:var(--teal-l)}
-        .c-green  .pcard-ey{color:var(--green-l)}
-        .c-orange .pcard-ey{color:var(--orange-l)}
-
-        .pcard h3{
-            font-family:var(--font-d);font-size:1.18rem;font-weight:700;
-            color:var(--text);letter-spacing:-.2px;line-height:1.22;
-            margin-bottom:9px;
-        }
-        .pcard p{font-size:.8rem;color:var(--text-sub);line-height:1.65;margin-bottom:16px;flex:1}
-
-        .pcard-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
-        .chip{
-            font-size:.66rem;font-weight:500;
-            padding:3px 9px;border-radius:20px;
-            background:rgba(255,255,255,.044);
-            border:1px solid rgba(255,255,255,.08);
-            color:rgba(170,195,240,.6);
-        }
-        .chip.sk{background:rgba(255,255,255,.03);color:transparent;border-color:transparent;width:68px;animation:shim 1.5s infinite}
-        @keyframes shim{0%,100%{opacity:.2}50%{opacity:.55}}
-        .pcard-meta{font-size:.68rem;color:var(--muted);margin-bottom:16px}
-        .pcard-cta{
-            display:inline-flex;align-items:center;gap:6px;
-            font-size:.79rem;font-weight:600;
-            padding:8px 16px;border-radius:7px;
-            transition:all .18s;align-self:flex-start;
-            text-decoration:none;border:none;cursor:pointer;
-        }
-        .c-blue   .pcard-cta{background:rgba(59,130,246,.16);color:#93c5fd}
-        .c-violet .pcard-cta{background:rgba(109,40,217,.16);color:var(--violet-l)}
-        .c-teal   .pcard-cta{background:rgba(13,148,136,.16);color:var(--teal-l)}
-        .c-green  .pcard-cta{background:rgba(21,128,61,.16);color:var(--green-l)}
-        .c-orange .pcard-cta{background:rgba(194,65,12,.16);color:var(--orange-l)}
-        .pcard:hover .pcard-cta{filter:brightness(1.18)}
-
-        .s-dots{display:flex;justify-content:center;gap:7px;margin-top:18px}
-        .sdot{width:5px;height:5px;border-radius:50%;border:none;cursor:pointer;padding:0;transition:all .22s}
-        .sdot.on{background:#60a5fa;transform:scale(1.6)}
-        .sdot.off{background:rgba(255,255,255,.18)}
-
-        /* ── Value props ── */
-        .props{
-            border-top:1px solid var(--line);
-            background:rgba(255,255,255,.01);
-            padding:56px 24px;
-        }
-        .props-g{display:grid;grid-template-columns:repeat(3,1fr);max-width:860px;margin:0 auto}
-        .prop{padding:28px 32px;border-right:1px solid var(--line);text-align:center}
-        .prop:last-child{border-right:none}
-        .prop-ico{font-size:1.35rem;margin-bottom:11px;display:block}
-        .prop h4{font-family:var(--font-d);font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:6px}
-        .prop p{font-size:.8rem;color:var(--muted);line-height:1.65}
-
-        /* ── Footer ── */
-        .ftr{background:rgba(3,4,10,.95);border-top:1px solid var(--line);padding:56px 0 26px}
-        .ftr-in{max-width:1060px;margin:0 auto;padding:0 40px}
-        .ftr-g{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:44px;margin-bottom:40px}
-        .ftr-brand .logo{margin-bottom:11px}
-        .ftr-brand p{font-size:.8rem;color:rgba(160,180,220,.28);line-height:1.7;max-width:230px}
-        .ftr-col h5{
-            font-family:var(--font-d);font-size:.65rem;font-weight:700;
-            letter-spacing:1.5px;text-transform:uppercase;
-            color:rgba(255,255,255,.2);margin-bottom:12px;
-        }
-        .ftr-col a{
-            display:block;font-size:.82rem;
-            color:rgba(155,175,220,.38);
-            text-decoration:none;margin-bottom:7px;transition:color .18s;
-        }
-        .ftr-col a:hover{color:var(--text)}
-        .ftr-bot{
-            display:flex;align-items:center;justify-content:space-between;
-            padding-top:20px;border-top:1px solid var(--line);
-            font-size:.74rem;color:rgba(255,255,255,.16);
-        }
-
-
-
-        /* ── Scroll reveal ── */
-        .reveal{opacity:0;transform:translateY(22px);transition:opacity .65s ease,transform .65s ease}
-        .reveal.in{opacity:1;transform:translateY(0)}
-
-        /* ── Hamburger ── */
-        .hbg{
-            display:none;flex-direction:column;justify-content:center;gap:5px;
-            width:36px;height:36px;background:none;border:none;cursor:pointer;padding:4px;z-index:1100;
-        }
-        .hbg span{display:block;height:2px;border-radius:2px;background:var(--text-sub);transition:all .28s cubic-bezier(.4,0,.2,1);transform-origin:center}
-        .hbg.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-        .hbg.open span:nth-child(2){opacity:0;transform:scaleX(0)}
-        .hbg.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-
-        /* ── Mobile nav drawer ── */
-        .mob-nav{
-            display:none;
-            position:fixed;top:58px;left:0;right:0;bottom:0;z-index:999;
-            background:rgba(5,6,14,.97);
-            backdrop-filter:blur(28px);
-            flex-direction:column;align-items:center;justify-content:center;gap:6px;
-            opacity:0;pointer-events:none;
-            transition:opacity .3s ease;
-        }
-        .mob-nav.open{opacity:1;pointer-events:all}
-        .mob-nav a{
-            font-family:var(--font-d);font-size:1.35rem;font-weight:600;
-            text-decoration:none;color:var(--text-sub);
-            padding:14px 32px;border-radius:12px;width:80%;text-align:center;
-            border:1px solid transparent;
-            transition:all .2s;
-            transform:translateY(20px);opacity:0;
-            transition:transform .35s ease, opacity .35s ease, background .2s, color .2s, border-color .2s;
-        }
-        .mob-nav.open a{transform:translateY(0);opacity:1}
-        .mob-nav.open a:nth-child(1){transition-delay:.05s}
-        .mob-nav.open a:nth-child(2){transition-delay:.1s}
-        .mob-nav.open a:nth-child(3){transition-delay:.15s}
-        .mob-nav.open a:nth-child(4){transition-delay:.2s}
-        .mob-nav.open a:nth-child(5){transition-delay:.25s}
-        .mob-nav.open a:nth-child(6){transition-delay:.3s}
-        .mob-nav a:hover{color:var(--text);background:rgba(255,255,255,.055);border-color:var(--line2)}
-        .mob-nav a.cta{
-            background:rgba(59,130,246,.12);border-color:rgba(96,165,250,.22);
-            color:#93c5fd;margin-top:8px;
-        }
-        .mob-nav a.cta:hover{background:rgba(59,130,246,.24);color:#fff}
-
-        /* ── Responsive ── */
-        @media(max-width:1100px){.pcard{flex:0 0 calc(50% - 8px)}}
-        @media(max-width:680px){
-            .hdr{padding:0 18px}
-            .nav{display:none}
-            .hbg{display:flex}
-            .mob-nav{display:flex}
-            .pcard{flex:0 0 80vw}
-            .stats{flex-wrap:wrap}
-            .stat{padding:16px 22px;border-right:none;border-bottom:1px solid var(--line);max-width:100%}
-            .props-g{grid-template-columns:1fr}
-            .prop{border-right:none;border-bottom:1px solid var(--line)}
-            .ftr-g{grid-template-columns:1fr 1fr}
-            .ftr-brand{grid-column:1/-1}
-            .hero h1{letter-spacing:-1px}
-        }
-
-        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-
-        /* ── Sayfa geçiş overlay ── */
-        #page-transition{
-            position:fixed;inset:0;z-index:9999;
-            background:var(--bg);
-            pointer-events:none;
-            opacity:0;
-            transition:opacity .38s ease;
-        }
-        #page-transition.fade-out{opacity:1;pointer-events:all}
-
-        /* ── Kart shimmer (ışık tarama) efekti ── */
-        .pcard::before{
-            content:'';
-            position:absolute;top:0;left:-100%;width:60%;height:100%;
-            background:linear-gradient(
-                105deg,
-                transparent 40%,
-                rgba(255,255,255,.045) 50%,
-                transparent 60%
-            );
-            transition:left .55s ease;
-            z-index:1;pointer-events:none;
-        }
-        .pcard:hover::before{left:160%}
-
-        /* Kart içerik z-index */
-        .pcard-ico,.pcard-ey,.pcard h3,.pcard p,.pcard-chips,.pcard-meta,.pcard-cta{position:relative;z-index:2}
-
-        /* Kart hover border glow */
-        .pcard.c-blue:hover{box-shadow:0 8px 32px rgba(59,130,246,.15),0 0 0 1px rgba(96,165,250,.2)}
-        .pcard.c-violet:hover{box-shadow:0 8px 32px rgba(109,40,217,.15),0 0 0 1px rgba(167,139,250,.2)}
-        .pcard.c-teal:hover{box-shadow:0 8px 32px rgba(13,148,136,.15),0 0 0 1px rgba(45,212,191,.2)}
-        .pcard.c-green:hover{box-shadow:0 8px 32px rgba(21,128,61,.15),0 0 0 1px rgba(74,222,128,.2)}
-        .pcard.c-orange:hover{box-shadow:0 8px 32px rgba(194,65,12,.15),0 0 0 1px rgba(251,146,60,.2)}
+        .stat-num { transition: opacity 0.3s; }
+        .stat-num.loading { opacity: 0.3; }
+        .app-chip.skeleton { background: rgba(255,255,255,0.08); color: transparent; border-color: transparent; width: 80px; border-radius: 20px; }
     </style>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Pax Systemic",
+      "url": "https://barisys1999.github.io/pax-systemic/",
+      "founder": { "@type": "Person", "name": "Barış Yurdunuseven" }
+    }
+    </script>
 </head>
-<body>
+<body class="portal-page">
 
-<canvas id="space-canvas"></canvas>
-<div class="nbl n1"></div>
-<div class="nbl n2"></div>
-<div class="nbl n3"></div>
-
-<div id="page-transition"></div>
-
-<header class="hdr" id="hdr">
-    <a href="index.html" class="logo">
-        <img src="../paxsystemiclogo.webp" alt="Pax Systemic Logo">
+<!-- ── Header ───────────────────────────── -->
+<header class="portal-header">
+    <div class="logo">
+        <span class="logo-mark"><img src="../paxsystemiclogo.webp" alt="Pax Systemic Logo"></span>
         PAX <em>SYSTEMIC</em>
-    </a>
-    <nav class="nav">
+    </div>
+    <div class="portal-header-right">
         <a href="../yazilimlar/index.html">Yazılımlar</a>
         <a href="../oyunlar/index.html">Oyunlar</a>
         <a href="../siteler/index.html">Yapılan Siteler</a>
-        <a href="../android-uygulamalar/index.html">Android</a>
-        <a href="../tarayici-oyunlari/index.html">Tarayıcı Oyunları</a>
-        <a href="../oneri.html" class="cta">Talep &amp; Öneri</a>
-    </nav>
-    <button class="hbg" id="hbg" aria-label="Menüyü aç">
-        <span></span><span></span><span></span>
-    </button>
+        <a href="../android-uygulamalar/index.html">Android Uygulamalar</a>
+        <a href="../oneri.html">💬 Talep & Öneri</a>
+    </div>
 </header>
 
-<!-- Mobil tam ekran menü -->
-<nav class="mob-nav" id="mobNav">
-    <a href="../yazilimlar/index.html">Yazılımlar</a>
-    <a href="../oyunlar/index.html">Oyunlar</a>
-    <a href="../siteler/index.html">Yapılan Siteler</a>
-    <a href="../android-uygulamalar/index.html">Android</a>
-    <a href="../tarayici-oyunlari/index.html">Tarayıcı Oyunları</a>
-    <a href="../oneri.html" class="cta">Talep &amp; Öneri</a>
-</nav>
+<div class="portal-wrap">
 
-<div class="wrap">
-
-    <section class="hero">
-        <!-- Dekoratif gezegen -->
-        <div class="hero-planet"></div>
-        <div class="hero-planet-ring"></div>
-        <div class="eyebrow"><span class="pdot"></span> Dijital Stüdyo &middot; Ankara, TR</div>
-        <h1>
-            <span class="h-line1">Yazılım Üretiyor,</span>
-            <span class="h-line2">Oyun Tasarlıyoruz</span>
-        </h1>
-        <p>Masaüstü araçlarından indie oyun projelerine — Pax Systemic, her ürününü bir mühendislik disipliniyle inşa eder.</p>
-        <div class="hbtns">
-            <a href="../yazilimlar/index.html" class="btn-p">Yazılımları Keşfet →</a>
-            <a href="../oyunlar/index.html" class="btn-g">Oyunları İncele</a>
-        </div>
-        <div class="scroll-hint">
-            <span>Kaydır</span>
-            <div class="scroll-line"></div>
+    <!-- ── Hero ─────────────────────────── -->
+    <section class="portal-hero">
+        <div class="portal-hero__inner">
+            <div class="portal-hero__eyebrow">
+                <span class="dot"></span>
+                Dijital Stüdyo · Ankara, TR
+            </div>
+            <h1>Yazılım Üretiyor,<br><span>Oyun Tasarlıyoruz</span></h1>
+            <p>Masaüstü araçlarından indie oyun projelerine — Pax Systemic, her ürününü bir mühendislik disipliniyle inşa eder.</p>
+            <div class="portal-hero__ctas">
+                <a href="../yazilimlar/index.html" class="portal-cta-blue">
+                    Yazılımları Keşfet →
+                </a>
+                <a href="../oyunlar/index.html" class="portal-cta-violet">
+                    Oyunları İncele →
+                </a>
+            </div>
         </div>
     </section>
 
-    <div class="stats reveal">
-        <div class="stat"><span class="stat-n ld" id="sY">—</span><span class="stat-l">Yazılım Ürünü</span></div>
-        <div class="stat"><span class="stat-n ld" id="sO">—</span><span class="stat-l">Oyun Projesi</span></div>
-        <div class="stat"><span class="stat-n">2026</span><span class="stat-l">Güncel Yıl</span></div>
-        <div class="stat"><span class="stat-n">Windows</span><span class="stat-l">Platform</span></div>
+    <!-- ── Stats ────────────────────────── -->
+    <div class="portal-stats">
+        <div class="stat-item">
+            <span class="stat-num loading" id="statYazilim">—</span>
+            <span class="stat-label">Yazılım Ürünü</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-num loading" id="statOyun">—</span>
+            <span class="stat-label">Oyun Projesi</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-num">2026</span>
+            <span class="stat-label">Güncel Yıl</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-num">Windows</span>
+            <span class="stat-label">Platform</span>
+        </div>
     </div>
 
-    <section class="catalog reveal">
-        <div class="sec-hdr">
-            <span class="sec-lbl">Ürün Kataloğu</span>
-            <div class="s-nav">
-                <button class="sarr" id="sPrev" aria-label="Önceki">&#8592;</button>
-                <button class="sarr" id="sNext" aria-label="Sonraki">&#8594;</button>
-            </div>
-        </div>
-        <div class="s-outer">
-            <div class="s-track" id="sTrack">
+    <!-- ── Product Lines Slider ─────────── -->
+    <section class="portal-lines-wrapper">
 
-                <a href="../yazilimlar/index.html" class="pcard c-blue">
-                    <div class="pcard-ico">⚙️</div>
-                    <div class="pcard-ey">Systemic Software</div>
-                    <h3>Yazılım Kataloğu</h3>
-                    <p>Sistem optimizasyonundan şifre güvenliğine, medya yönetiminden otomasyon araçlarına — Windows için özelleşmiş uygulamalar.</p>
-                    <div class="pcard-chips" id="yChips"><span class="chip sk">&nbsp;</span><span class="chip sk">&nbsp;</span><span class="chip sk">&nbsp;</span></div>
-                    <div class="pcard-meta" id="yMeta">Yükleniyor…</div>
-                    <span class="pcard-cta">Yazılımları Gör →</span>
+        <button class="slider-arrow slider-arrow--left" id="sliderPrev" aria-label="Önceki">&#8592;</button>
+
+        <div class="portal-lines-track-outer">
+            <div class="portal-lines-track" id="sliderTrack">
+
+                <!-- Software Line -->
+                <a href="../yazilimlar/index.html" class="line-card line-card--blue">
+                    <div class="line-card__icon">⚙️</div>
+                    <div class="line-card__eyebrow">Systemic Software</div>
+                    <h2>Yazılım<br>Kataloğu</h2>
+                    <p>Sistem optimizasyonundan şifre güvenliğine, medya yönetiminden otomasyon araçlarına — her biri kendi alanında özelleşmiş Windows uygulamaları.</p>
+                    <div class="line-card__apps" id="yazilimChips">
+                        <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    </div>
+                    <div class="line-card__count" id="yazilimCount">Yükleniyor...</div>
+                    <span class="line-card__cta">Yazılımları Gör →</span>
                 </a>
 
-                <a href="../oyunlar/index.html" class="pcard c-violet">
-                    <div class="pcard-ico">🎮</div>
-                    <div class="pcard-ey">BarisByte Games</div>
-                    <h3>Android &amp; PC Oyunlar</h3>
-                    <p>Atmosferik korku, mobil arcade ve açık dünya macerası — her türden indie oyuncuya hitap eden projeler.</p>
-                    <div class="pcard-chips" id="oChips"><span class="chip sk">&nbsp;</span><span class="chip sk">&nbsp;</span></div>
-                    <div class="pcard-meta" id="oMeta">Yükleniyor…</div>
-                    <span class="pcard-cta">Oyunları Gör →</span>
+                <!-- Games Line -->
+                <a href="../oyunlar/index.html" class="line-card line-card--violet">
+                    <div class="line-card__icon">🎮</div>
+                    <div class="line-card__eyebrow">BarisByte Games</div>
+                    <h2>Android - PC<br>Oyun Kataloğu</h2>
+                    <p>Atmosferik korku, mobil arcade ve açık dünya macerası — BarisByte Games, her türden indie oyuncuya hitap eden projeler üretiyor.</p>
+                    <div class="line-card__apps" id="oyunChips">
+                        <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    </div>
+                    <div class="line-card__count" id="oyunCount">Yükleniyor...</div>
+                    <span class="line-card__cta">Oyunları Gör →</span>
                 </a>
 
-                <a href="../siteler/index.html" class="pcard c-teal">
-                    <div class="pcard-ico">🌐</div>
-                    <div class="pcard-ey">Pax Systemic Web</div>
-                    <h3>Yapılan Siteler</h3>
+                <!-- Websites Line -->
+                <a href="../siteler/index.html" class="line-card line-card--teal">
+                    <div class="line-card__icon">🌐</div>
+                    <div class="line-card__eyebrow">Pax Systemic Web</div>
+                    <h2>Yapılan<br>Siteler</h2>
                     <p>Kurumsal siteler, portallar ve müşteri projeleri — geliştirdiğimiz web sitelerinin tamamını burada keşfedin.</p>
-                    <div class="pcard-chips"><span class="chip">Yakında</span></div>
-                    <div class="pcard-meta">Proje vitrini hazırlanıyor</div>
-                    <span class="pcard-cta">Siteleri Gör →</span>
+                    <div class="line-card__apps">
+                        <span class="app-chip">Yakında</span>
+                    </div>
+                    <div class="line-card__count">Proje vitrini hazırlanıyor</div>
+                    <span class="line-card__cta">Siteleri Gör →</span>
                 </a>
 
-                <a href="../android-uygulamalar/index.html" class="pcard c-green">
-                    <div class="pcard-ico">📱</div>
-                    <div class="pcard-ey">Pax Systemic Mobile</div>
-                    <h3>Android Uygulamalar</h3>
-                    <p>Cebinizde çalışan araçlardan mobil oyunlara — Android için geliştirdiğimiz uygulamaların kataloğu.</p>
-                    <div class="pcard-chips"><span class="chip">Yakında</span></div>
-                    <div class="pcard-meta">Proje vitrini hazırlanıyor</div>
-                    <span class="pcard-cta">Uygulamaları Gör →</span>
+                <!-- Android Apps Line -->
+                <a href="../android-uygulamalar/index.html" class="line-card line-card--green">
+                    <div class="line-card__icon">📱</div>
+                    <div class="line-card__eyebrow">Pax Systemic Mobile</div>
+                    <h2>Android<br>Uygulamalar</h2>
+                    <p>Cebinizde çalışan araçlardan mobil oyunlara — Android için geliştirdiğimiz uygulamaların kataloğu burada.</p>
+                    <div class="line-card__apps">
+                        <span class="app-chip">Yakında</span>
+                    </div>
+                    <div class="line-card__count">Proje vitrini hazırlanıyor</div>
+                    <span class="line-card__cta">Uygulamaları Gör →</span>
                 </a>
 
-                <a href="../tarayici-oyunlari/index.html" class="pcard c-orange">
-                    <div class="pcard-ico">🕹️</div>
-                    <div class="pcard-ey">BarisByte Browser</div>
-                    <h3>Tarayıcı Oyunları</h3>
-                    <p>Kurulum gerektirmeyen, tarayıcıda anında oynayabileceğin mini oyunlar — arcade'den bulmacaya her türden eğlence.</p>
-                    <div class="pcard-chips"><span class="chip">2048</span><span class="chip">Cube Slayer</span><span class="chip">+3 daha</span></div>
-                    <div class="pcard-meta">5 oyun · Tarayıcıda Oyna</div>
-                    <span class="pcard-cta">Oyunları Oyna →</span>
+                <!-- Browser Games Line -->
+                <a href="../tarayici-oyunlari/index.html" class="line-card line-card--orange">
+                    <div class="line-card__icon">🕹️</div>
+                    <div class="line-card__eyebrow">BarisByte Browser</div>
+                    <h2>Tarayıcı<br>Oyunları</h2>
+                    <p>Kurulum gerektirmeyen, tarayıcıda anında oynayabileceğin mini oyunlar — arcade'den bulmacaya her türden eğlence burada.</p>
+                    <div class="line-card__apps">
+                        <span class="app-chip">2048</span>
+                        <span class="app-chip">Cube Slayer</span>
+                        <span class="app-chip">+3 daha</span>
+                    </div>
+                    <div class="line-card__count">5 oyun · Tarayıcıda Oyna</div>
+                    <span class="line-card__cta">Oyunları Oyna →</span>
                 </a>
 
             </div>
         </div>
-        <div class="s-dots" id="sDots"></div>
+
+        <button class="slider-arrow slider-arrow--right" id="sliderNext" aria-label="Sonraki">&#8594;</button>
+
+        <!-- Dots -->
+        <div class="slider-dots" id="sliderDots"></div>
+
     </section>
 
-    <section class="props reveal">
-        <div class="props-g">
-            <div class="prop">
-                <span class="prop-ico">🔒</span>
-                <h4>Yerel &amp; Güvenli</h4>
-                <p>Verileriniz cihazınızda kalır. Bulut bağımlılığı yok, reklam yok, izleme yok.</p>
+    <style>
+        /* ── Slider Wrapper ───────────────────────────── */
+        .portal-lines-wrapper {
+            position: relative;
+            padding: 0 56px;
+            margin: 0 auto 2rem;
+            max-width: 1400px;
+        }
+
+        .portal-lines-track-outer {
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        .portal-lines-track {
+            display: flex;
+            gap: 20px;
+            transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+            align-items: stretch;
+        }
+
+        /* Each card: fixed width so 4 show at once */
+        .portal-lines-track .line-card {
+            flex: 0 0 calc(25% - 15px);
+            min-width: 0;
+            box-sizing: border-box;
+        }
+
+        /* ── Arrow Buttons ───────────────────────────── */
+        .slider-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-60%);
+            z-index: 10;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid rgba(99, 102, 241, 0.35);
+            background: rgba(255, 255, 255, 0.9);
+            color: #6366f1;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, border-color 0.2s, opacity 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+        }
+
+        .slider-arrow:hover:not(:disabled) {
+            background: #6366f1;
+            color: #fff;
+            border-color: #6366f1;
+            box-shadow: 0 4px 18px rgba(99,102,241,0.28);
+        }
+
+        .slider-arrow:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+        }
+
+        .slider-arrow--left  { left: 0; }
+        .slider-arrow--right { right: 0; }
+
+        /* ── Dots ────────────────────────────────────── */
+        .slider-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .slider-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(99, 102, 241, 0.25);
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: background 0.25s, transform 0.25s;
+        }
+
+        .slider-dot.active {
+            background: #6366f1;
+            transform: scale(1.35);
+        }
+
+        /* ── Responsive ──────────────────────────────── */
+        @media (max-width: 1100px) {
+            .portal-lines-track .line-card {
+                flex: 0 0 calc(33.333% - 14px);
+            }
+        }
+
+        @media (max-width: 750px) {
+            .portal-lines-wrapper { padding: 0 44px; }
+            .portal-lines-track .line-card {
+                flex: 0 0 calc(100% - 0px);
+            }
+        }
+    </style>
+
+    <script>
+    (function() {
+        const track  = document.getElementById('sliderTrack');
+        const prev   = document.getElementById('sliderPrev');
+        const next   = document.getElementById('sliderNext');
+        const dotsEl = document.getElementById('sliderDots');
+
+        function getVisible() {
+            const w = window.innerWidth;
+            if (w <= 750)  return 1;
+            if (w <= 1100) return 3;
+            return 4;
+        }
+
+        const cards     = track.querySelectorAll('.line-card');
+        const total     = cards.length;
+        let   current   = 0;
+
+        function maxIndex() { return Math.max(0, total - getVisible()); }
+
+        // Build dots
+        function buildDots() {
+            dotsEl.innerHTML = '';
+            const steps = maxIndex() + 1;
+            for (let i = 0; i < steps; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'slider-dot' + (i === current ? ' active' : '');
+                btn.setAttribute('aria-label', `Kart ${i + 1}`);
+                btn.addEventListener('click', () => goTo(i));
+                dotsEl.appendChild(btn);
+            }
+        }
+
+        function updateDots() {
+            dotsEl.querySelectorAll('.slider-dot').forEach((d, i) => {
+                d.classList.toggle('active', i === current);
+            });
+        }
+
+        function goTo(idx) {
+            current = Math.max(0, Math.min(idx, maxIndex()));
+            const cardWidth = cards[0].getBoundingClientRect().width;
+            const gap = 20;
+            track.style.transform = `translateX(-${current * (cardWidth + gap)}px)`;
+            prev.disabled = current === 0;
+            next.disabled = current >= maxIndex();
+            updateDots();
+        }
+
+        prev.addEventListener('click', () => goTo(current - 1));
+        next.addEventListener('click', () => goTo(current + 1));
+
+        // Touch/swipe support
+        let touchStartX = 0;
+        track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+        track.addEventListener('touchend', e => {
+            const diff = touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 50) goTo(current + (diff > 0 ? 1 : -1));
+        }, { passive: true });
+
+        // Keyboard
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft')  goTo(current - 1);
+            if (e.key === 'ArrowRight') goTo(current + 1);
+        });
+
+        window.addEventListener('resize', () => {
+            buildDots();
+            goTo(Math.min(current, maxIndex()));
+        });
+
+        buildDots();
+        goTo(0);
+    })();
+    </script>
+
+    <!-- ── Value Props ───────────────────── -->
+    <section class="portal-props">
+        <div class="portal-props__grid">
+            <div class="prop-item">
+                <span class="prop-item__icon">🔒</span>
+                <h4>Yerel & Güvenli</h4>
+                <p>Uygulamalar verilerinizi cihazınızda tutar. Bulut bağımlılığı yok, reklam yok, izleme yok.</p>
             </div>
-            <div class="prop">
-                <span class="prop-ico">⚡</span>
+            <div class="prop-item">
+                <span class="prop-item__icon">⚡</span>
                 <h4>Kaynak Dostu</h4>
-                <p>Minimalist mimari ile düşük CPU ve RAM tüketimiyle arka planda sessizce çalışır.</p>
+                <p>Minimalist mimari. Düşük CPU ve RAM tüketimiyle arka planda sessizce çalışır.</p>
             </div>
-            <div class="prop">
-                <span class="prop-ico">🛠</span>
+            <div class="prop-item">
+                <span class="prop-item__icon">🛠</span>
                 <h4>Aktif Geliştirme</h4>
-                <p>Tüm ürünler sürekli güncellenir. Geri bildirimler yol haritasını doğrudan etkiler.</p>
+                <p>Tüm ürünler sürekli güncellenir. Kullanıcı geri bildirimleri doğrudan yol haritasını şekillendirir.</p>
             </div>
         </div>
     </section>
 
-    <footer class="ftr reveal">
-        <div class="ftr-in">
-            <div class="ftr-g">
-                <div class="ftr-brand">
-                    <a href="index.html" class="logo" style="margin-bottom:12px;display:flex">
-                        <img src="../paxsystemiclogo.webp" alt="Logo" style="width:28px;height:28px;margin-right:10px">
-                        PAX <em style="color:var(--blue);font-style:normal;margin-left:4px">SYSTEMIC</em>
+    <!-- ── Footer ───────────────────────── -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="logo">
+                        <span class="logo-mark"><img src="../paxsystemiclogo.webp" alt="Pax Systemic Logo"></span>
+                        PAX <em>SYSTEMIC</em>
                     </a>
                     <p>Masaüstü yazılımları ve indie oyunlar geliştiren bağımsız bir dijital stüdyo. Barış Yurdunuseven tarafından kuruldu.</p>
                 </div>
-                <div class="ftr-col">
+                <div class="footer-col">
                     <h5>Yazılımlar</h5>
-                    <a href="../yazilimlar/index.html">B-Streamer</a>
-                    <a href="../yazilimlar/index.html">NetKasa Pro</a>
-                    <a href="../yazilimlar/index.html">Systemic Pro</a>
-                    <a href="../yazilimlar/index.html">Pomodoro Pro</a>
+                    <a href="../yazilimlar/index.html#systemic">Systemic Pro</a>
+                    <a href="../yazilimlar/index.html#paxvault">Password Vault</a>
+                    <a href="../yazilimlar/index.html#pomodoropro">Pomodoro Pro</a>
+                    <a href="../yazilimlar/index.html#audiopro">Audio Editor</a>
                 </div>
-                <div class="ftr-col">
+                <div class="footer-col">
                     <h5>Oyunlar</h5>
-                    <a href="../oyunlar/index.html">Karanlıktan Işığa</a>
-                    <a href="../oyunlar/index.html">CosmoHop!</a>
-                    <a href="../oyunlar/index.html">Project: Nexus</a>
-                    <a href="../oyunlar/index.html">Sessiz Ev</a>
+                    <a href="../oyunlar/index.html#karanliktan">Karanlıktan Işığa</a>
+                    <a href="../oyunlar/index.html#cosmohop">CosmoHop!</a>
+                    <a href="../oyunlar/index.html#nexus">Project: Nexus</a>
+                    <a href="../oyunlar/index.html#sessizev">Sessiz Ev</a>
                 </div>
-                <div class="ftr-col">
+                <div class="footer-col">
                     <h5>Kurumsal</h5>
-                    <a href="../oneri.html">Talep &amp; Öneri</a>
+                    <a href="../oneri.html">💬 Talep & Öneri</a>
                     <a href="https://github.com/barisys1999/pax-systemic" target="_blank" rel="noopener">GitHub</a>
                 </div>
             </div>
-            <div class="ftr-bot">
+            <div class="footer-bottom">
                 <span>© 2026 Pax Systemic. Tüm hakları saklıdır.</span>
                 <span>Kurucu: Barış Yurdunuseven</span>
             </div>
         </div>
     </footer>
 
-</div>
-
-
-
-<script>
-/* ══════════════════════════════════════════
-   SPACE CANVAS — Stars + Shooting Stars + Meteors
-   ══════════════════════════════════════════ */
-(function(){
-    const c=document.getElementById('space-canvas');
-    const ctx=c.getContext('2d');
-    let W,H;
-    function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
-    resize();
-    window.addEventListener('resize',resize);
-
-    /* ── Static stars (3 depth layers) ── */
-    function mkStars(n,rMin,rMax,sMin,sMax){
-        return Array.from({length:n},()=>({
-            x:Math.random()*W,y:Math.random()*H,
-            r:Math.random()*(rMax-rMin)+rMin,
-            speed:Math.random()*(sMax-sMin)+sMin,
-            tw:Math.random()*Math.PI*2,
-            ts:Math.random()*.018+.004,
-            a:Math.random()*.5+.15
-        }));
-    }
-    let L1=mkStars(160,.2,.6,.025,.055);   /* tiny, slow */
-    let L2=mkStars(80,.5,1.1,.05,.1);      /* medium */
-    let L3=mkStars(30,.9,1.6,.08,.15);     /* bright, fast */
-
-    window.addEventListener('resize',()=>{
-        L1=mkStars(160,.2,.6,.025,.055);
-        L2=mkStars(80,.5,1.1,.05,.1);
-        L3=mkStars(30,.9,1.6,.08,.15);
-    });
-
-    /* ── Shooting stars ── */
-    const shooters=[];
-    function spawnShooter(){
-        const fromLeft=Math.random()>.5;
-        const angle=(fromLeft?1:-1)*(Math.PI/7+Math.random()*Math.PI/12);
-        const speed=Math.random()*4+5;
-        shooters.push({
-            x:fromLeft?-60:W+60,
-            y:Math.random()*H*.55,
-            vx:Math.cos(angle)*speed*(fromLeft?1:-1),
-            vy:Math.sin(Math.abs(angle))*speed,
-            len:Math.random()*120+80,
-            life:1,fade:.012+Math.random()*.008,
-            w:Math.random()*1.5+.8,
-            clr:`rgba(160,210,255,`
-        });
-    }
-    setInterval(spawnShooter,1800+Math.random()*2200);
-
-    /* ── Meteors (bigger, fiery) ── */
-    const meteors=[];
-    function spawnMeteor(){
-        const x=Math.random()*W;
-        const angle=Math.PI/4+Math.random()*Math.PI/6;
-        const speed=Math.random()*3+6;
-        meteors.push({
-            x,y:-20,
-            vx:Math.cos(angle)*speed,
-            vy:Math.sin(angle)*speed,
-            len:Math.random()*220+140,
-            life:1,fade:.009+Math.random()*.007,
-            w:Math.random()*2.2+1.2,
-            /* fiery: white core → orange → transparent */
-            r1:255,g1:240,b1:220,
-            r2:255,g2:120,b2:40
-        });
-    }
-    setInterval(spawnMeteor,5500+Math.random()*4000);
-
-    /* ── Mouse parallax offset ── */
-    let mx=0,my=0,ox=0,oy=0;
-    window.addEventListener('mousemove',e=>{
-        mx=(e.clientX/window.innerWidth-.5)*18;
-        my=(e.clientY/window.innerHeight-.5)*10;
-    });
-
-    /* ── Draw loop ── */
-    function draw(){
-        ctx.clearRect(0,0,W,H);
-        ox+=(mx-ox)*.04; oy+=(my-oy)*.04;
-
-        /* Layer 1 — distant */
-        L1.forEach(s=>{
-            s.tw+=s.ts;
-            const a=s.a+Math.sin(s.tw)*.12;
-            ctx.beginPath();
-            ctx.arc(s.x+ox*.2,s.y+oy*.2,s.r,0,Math.PI*2);
-            ctx.fillStyle=`rgba(190,210,255,${a})`;
-            ctx.fill();
-            s.y+=s.speed; if(s.y>H){s.y=0;s.x=Math.random()*W}
-        });
-
-        /* Layer 2 — mid */
-        L2.forEach(s=>{
-            s.tw+=s.ts;
-            const a=s.a+Math.sin(s.tw)*.18;
-            ctx.beginPath();
-            ctx.arc(s.x+ox*.5,s.y+oy*.5,s.r,0,Math.PI*2);
-            ctx.fillStyle=`rgba(210,225,255,${a})`;
-            ctx.fill();
-            s.y+=s.speed; if(s.y>H){s.y=0;s.x=Math.random()*W}
-        });
-
-        /* Layer 3 — bright foreground */
-        L3.forEach(s=>{
-            s.tw+=s.ts;
-            const a=s.a+Math.sin(s.tw)*.25;
-            ctx.beginPath();
-            ctx.arc(s.x+ox,s.y+oy,s.r,0,Math.PI*2);
-            ctx.fillStyle=`rgba(230,240,255,${a})`;
-            ctx.fill();
-            /* tiny glow on brightest */
-            if(a>.55){
-                ctx.beginPath();
-                ctx.arc(s.x+ox,s.y+oy,s.r*2.5,0,Math.PI*2);
-                ctx.fillStyle=`rgba(180,210,255,${a*.12})`;
-                ctx.fill();
-            }
-            s.y+=s.speed; if(s.y>H){s.y=0;s.x=Math.random()*W}
-        });
-
-        /* ── Shooting stars ── */
-        for(let i=shooters.length-1;i>=0;i--){
-            const s=shooters[i];
-            const tx=s.x-s.vx/Math.hypot(s.vx,s.vy)*s.len;
-            const ty=s.y-s.vy/Math.hypot(s.vx,s.vy)*s.len;
-            const g=ctx.createLinearGradient(s.x,s.y,tx,ty);
-            g.addColorStop(0,s.clr+(s.life*.9)+')');
-            g.addColorStop(1,s.clr+'0)');
-            ctx.beginPath();
-            ctx.moveTo(s.x,s.y);ctx.lineTo(tx,ty);
-            ctx.strokeStyle=g;
-            ctx.lineWidth=s.w*s.life;
-            ctx.lineCap='round';
-            ctx.stroke();
-            s.x+=s.vx;s.y+=s.vy;s.life-=s.fade;
-            if(s.life<=0||s.x>W+200||s.x<-200)shooters.splice(i,1);
-        }
-
-        /* ── Meteors ── */
-        for(let i=meteors.length-1;i>=0;i--){
-            const m=meteors[i];
-            const tx=m.x-m.vx/Math.hypot(m.vx,m.vy)*m.len;
-            const ty=m.y-m.vy/Math.hypot(m.vx,m.vy)*m.len;
-            const g=ctx.createLinearGradient(m.x,m.y,tx,ty);
-            g.addColorStop(0,`rgba(${m.r1},${m.g1},${m.b1},${m.life})`);
-            g.addColorStop(.3,`rgba(${m.r2},${m.g2},${m.b2},${m.life*.7})`);
-            g.addColorStop(1,`rgba(${m.r2},${m.g2},${m.b2},0)`);
-            ctx.beginPath();
-            ctx.moveTo(m.x,m.y);ctx.lineTo(tx,ty);
-            ctx.strokeStyle=g;
-            ctx.lineWidth=m.w*m.life;
-            ctx.lineCap='round';
-            ctx.stroke();
-            /* fiery glow at head */
-            const gw=ctx.createRadialGradient(m.x,m.y,0,m.x,m.y,m.w*4);
-            gw.addColorStop(0,`rgba(255,200,100,${m.life*.5})`);
-            gw.addColorStop(1,'rgba(255,100,30,0)');
-            ctx.beginPath();
-            ctx.arc(m.x,m.y,m.w*4,0,Math.PI*2);
-            ctx.fillStyle=gw;
-            ctx.fill();
-            m.x+=m.vx;m.y+=m.vy;m.life-=m.fade;
-            if(m.life<=0||m.y>H+100)meteors.splice(i,1);
-        }
-
-        requestAnimationFrame(draw);
-    }
-    draw();
-
-    /* click anywhere on hero spawns a shooting star */
-    document.querySelector('.hero').addEventListener('click',function(e){
-        shooters.push({
-            x:e.clientX,y:e.clientY,
-            vx:(Math.random()-.5)*8,vy:-(Math.random()*5+3),
-            len:150,life:1,fade:.015,w:1.5,
-            clr:'rgba(200,230,255,'
-        });
-    });
-})();
-
-/* ══ Header scroll shadow ══ */
-window.addEventListener('scroll',()=>{
-    document.getElementById('hdr').classList.toggle('scrolled',window.scrollY>20);
-});
-
-/* ══ Hamburger menü ══ */
-(function(){
-    const btn=document.getElementById('hbg');
-    const nav=document.getElementById('mobNav');
-    let open=false;
-    function toggle(){
-        open=!open;
-        btn.classList.toggle('open',open);
-        nav.classList.toggle('open',open);
-        document.body.style.overflow=open?'hidden':'';
-    }
-    btn.addEventListener('click',toggle);
-    // Menü linkine tıklayınca kapat
-    nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
-        open=false;btn.classList.remove('open');nav.classList.remove('open');
-        document.body.style.overflow='';
-    }));
-})();
-
-/* ══ Sayfa geçiş efekti ══ */
-(function(){
-    const overlay=document.getElementById('page-transition');
-    // Sayfa yüklenince veya bfcache'den geri gelince fade-in
-    // (pageshow hem normal load'da hem back/forward'da çalışır)
-    window.addEventListener('pageshow',function(){
-        overlay.style.transition='none';
-        overlay.style.opacity='0';
-        overlay.style.pointerEvents='none';
-        overlay.classList.remove('fade-out');
-        requestAnimationFrame(()=>{ overlay.style.transition='opacity .38s ease'; });
-    });
-    // Tüm dahili linklere fade-out ekle
-    document.addEventListener('click',function(e){
-        const a=e.target.closest('a');
-        if(!a||!a.href)return;
-        try { var url=new URL(a.href,location.href); } catch(err){ return; }
-        // Aynı origin, yeni sekme değil, hash değil
-        if(url.origin!==location.origin)return;
-        if(a.target==='_blank')return;
-        if(url.href===location.href)return;
-        if(url.pathname===location.pathname && url.hash)return;
-        if(a.href.startsWith('mailto:'))return;
-        if(a.hasAttribute('download'))return;
-        if(!a.href||a.getAttribute('href')==='#'||a.getAttribute('href')==='')return;
-        e.preventDefault();
-        overlay.classList.add('fade-out');
-        setTimeout(()=>{ location.href=a.href; },380);
-    });
-})();
-
-
-
-/* ══ Scroll reveal ══ */
-(function(){
-    const io=new IntersectionObserver(entries=>{
-        entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}});
-    },{threshold:.12});
-    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-})();
-
-/* ══ Slider — 4 visible, 1 step ══ */
-(function(){
-    const track=document.getElementById('sTrack');
-    const prev=document.getElementById('sPrev');
-    const next=document.getElementById('sNext');
-    const dotsEl=document.getElementById('sDots');
-    const cards=track.querySelectorAll('.pcard');
-    const total=cards.length;
-    let cur=0;
-    function vis(){return window.innerWidth<=680?1:window.innerWidth<=1100?2:4}
-    function maxI(){return Math.max(0,total-vis())}
-    function buildDots(){
-        dotsEl.innerHTML='';
-        for(let i=0;i<=maxI();i++){
-            const b=document.createElement('button');
-            b.className='sdot '+(i===cur?'on':'off');
-            b.setAttribute('aria-label','Sayfa '+(i+1));
-            b.onclick=()=>go(i);
-            dotsEl.appendChild(b);
-        }
-    }
-    function updDots(){dotsEl.querySelectorAll('.sdot').forEach((d,i)=>d.className='sdot '+(i===cur?'on':'off'))}
-    function go(idx){
-        cur=Math.max(0,Math.min(idx,maxI()));
-        const w=cards[0].getBoundingClientRect().width;
-        track.style.transform=`translateX(-${cur*(w+16)}px)`;
-        prev.disabled=cur===0;next.disabled=cur>=maxI();
-        updDots();
-    }
-    prev.onclick=()=>go(cur-1);next.onclick=()=>go(cur+1);
-    let tx=0;
-    track.addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
-    track.addEventListener('touchend',e=>{const d=tx-e.changedTouches[0].clientX;if(Math.abs(d)>50)go(cur+(d>0?1:-1))},{passive:true});
-    document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')go(cur-1);if(e.key==='ArrowRight')go(cur+1)});
-    window.addEventListener('resize',()=>{buildDots();go(Math.min(cur,maxI()))});
-    buildDots();go(0);
-})();
-</script>
+</div><!-- /.portal-wrap -->
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
 import { getFirestore, collection, getDocs, query, orderBy }
     from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
-const app=initializeApp({
-    apiKey:"AIzaSyAKVWcyice-3w2Ua7xiNnYh5ZGVdBl8qWA",
-    authDomain:"paxsystemic-f4aca.firebaseapp.com",
-    projectId:"paxsystemic-f4aca",
-    storageBucket:"paxsystemic-f4aca.firebasestorage.app",
-    messagingSenderId:"193147885737",
-    appId:"1:193147885737:web:aae1ec4c0b1c31bd0271b8"
-});
-const db=getFirestore(app);
+const firebaseConfig = {
+    apiKey: "AIzaSyAKVWcyice-3w2Ua7xiNnYh5ZGVdBl8qWA",
+    authDomain: "paxsystemic-f4aca.firebaseapp.com",
+    projectId: "paxsystemic-f4aca",
+    storageBucket: "paxsystemic-f4aca.firebasestorage.app",
+    messagingSenderId: "193147885737",
+    appId: "1:193147885737:web:aae1ec4c0b1c31bd0271b8"
+};
 
-function applyY(list){
-    const n=list.length||10;
-    const el=document.getElementById('sY');
-    el.textContent=n;el.classList.remove('ld');
-    const chips=list.length>0
-        ?list.slice(0,4).map(p=>`<span class="chip">${p.title}</span>`).join('')+(list.length>4?`<span class="chip">+${list.length-4} daha</span>`:'')
-        :`<span class="chip">B-Streamer</span><span class="chip">NetKasa Pro</span><span class="chip">+8 daha</span>`;
-    document.getElementById('yChips').innerHTML=chips;
-    document.getElementById('yMeta').textContent=`${n} uygulama · Windows`;
-}
-function applyO(list){
-    const n=list.length||4;
-    const el=document.getElementById('sO');
-    el.textContent=n;el.classList.remove('ld');
-    const chips=list.length>0
-        ?list.slice(0,3).map(p=>`<span class="chip">${p.title}</span>`).join('')+(list.length>3?`<span class="chip">+${list.length-3} daha</span>`:'')
-        :`<span class="chip">Karanlıktan Işığa</span><span class="chip">CosmoHop!</span><span class="chip">+2 daha</span>`;
-    document.getElementById('oChips').innerHTML=chips;
-    document.getElementById('oMeta').textContent=`${n} proje · PC & Mobil`;
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+async function loadStats() {
+    // Statik fallback değerleri
+    const FALLBACK_YAZ = {
+        count: 10,
+        chips: `<span class="app-chip">B-Streamer</span>
+                <span class="app-chip">NetKasa Pro</span>
+                <span class="app-chip">Systemic Pro</span>
+                <span class="app-chip">+7 daha</span>`,
+        label: '10 uygulama · Windows'
+    };
+    const FALLBACK_OYUN = {
+        count: 4,
+        chips: `<span class="app-chip">Karanlıktan Işığa</span>
+                <span class="app-chip">CosmoHop!</span>
+                <span class="app-chip">+2 daha</span>`,
+        label: '4 proje · PC & Mobil'
+    };
+
+    function applyYazilim(list) {
+        const count = list.length;
+        document.getElementById('statYazilim').textContent = count;
+        document.getElementById('statYazilim').classList.remove('loading');
+        if (count > 0) {
+            const shown = list.slice(0, 4);
+            const rest  = count - shown.length;
+            document.getElementById('yazilimChips').innerHTML =
+                shown.map(p => `<span class="app-chip">${p.title}</span>`).join('') +
+                (rest > 0 ? `<span class="app-chip">+${rest} daha</span>` : '');
+            document.getElementById('yazilimCount').textContent = `${count} uygulama · Windows`;
+        } else {
+            // Firebase boş — statik fallback
+            document.getElementById('statYazilim').textContent = FALLBACK_YAZ.count;
+            document.getElementById('yazilimChips').innerHTML  = FALLBACK_YAZ.chips;
+            document.getElementById('yazilimCount').textContent = FALLBACK_YAZ.label;
+        }
+    }
+
+    function applyOyun(list) {
+        const count = list.length;
+        document.getElementById('statOyun').textContent = count;
+        document.getElementById('statOyun').classList.remove('loading');
+        if (count > 0) {
+            const shown = list.slice(0, 4);
+            const rest  = count - shown.length;
+            document.getElementById('oyunChips').innerHTML =
+                shown.map(p => `<span class="app-chip">${p.title}</span>`).join('') +
+                (rest > 0 ? `<span class="app-chip">+${rest} daha</span>` : '');
+            document.getElementById('oyunCount').textContent = `${count} proje · PC & Mobil`;
+        } else {
+            // Firebase boş — statik fallback
+            document.getElementById('statOyun').textContent = FALLBACK_OYUN.count;
+            document.getElementById('oyunChips').innerHTML  = FALLBACK_OYUN.chips;
+            document.getElementById('oyunCount').textContent = FALLBACK_OYUN.label;
+        }
+    }
+
+    // Yazılımlar
+    try {
+        const yazSnap = await getDocs(query(collection(db, 'yazilimlar'), orderBy('order', 'asc')));
+        applyYazilim(yazSnap.docs.map(d => d.data()));
+    } catch(err) {
+        console.warn('Yazılım Firestore hatası:', err);
+        document.getElementById('statYazilim').textContent = FALLBACK_YAZ.count;
+        document.getElementById('statYazilim').classList.remove('loading');
+        document.getElementById('yazilimChips').innerHTML  = FALLBACK_YAZ.chips;
+        document.getElementById('yazilimCount').textContent = FALLBACK_YAZ.label;
+    }
+
+    // Oyunlar
+    try {
+        const oyunSnap = await getDocs(query(collection(db, 'oyunlar'), orderBy('order', 'asc')));
+        applyOyun(oyunSnap.docs.map(d => d.data()));
+    } catch(err) {
+        console.warn('Oyun Firestore hatası:', err);
+        document.getElementById('statOyun').textContent = FALLBACK_OYUN.count;
+        document.getElementById('statOyun').classList.remove('loading');
+        document.getElementById('oyunChips').innerHTML  = FALLBACK_OYUN.chips;
+        document.getElementById('oyunCount').textContent = FALLBACK_OYUN.label;
+    }
 }
 
-try{const s=await getDocs(query(collection(db,'yazilimlar'),orderBy('order','asc')));applyY(s.docs.map(d=>d.data()))}catch{applyY([])}
-try{const s=await getDocs(query(collection(db,'oyunlar'),orderBy('order','asc')));applyO(s.docs.map(d=>d.data()))}catch{applyO([])}
+loadStats();
+</script>
+
+</body>
+</html>statOyun').textContent = FALLBACK_OYUN.count;
+        document.getElementById('statOyun').classList.remove('loading');
+        document.getElementById('oyunChips').innerHTML  = FALLBACK_OYUN.chips;
+        document.getElementById('oyunCount').textContent = FALLBACK_OYUN.label;
+    }
+}
+
+loadStats();
+</script>
+
+</body>
+</html>statOyun').textContent = FALLBACK_OYUN.count;
+        document.getElementById('statOyun').classList.remove('loading');
+        document.getElementById('oyunChips').innerHTML  = FALLBACK_OYUN.chips;
+        document.getElementById('oyunCount').textContent = FALLBACK_OYUN.label;
+    }
+}
+
+loadStats();
 </script>
 
 </body>
