@@ -90,8 +90,50 @@
         .hero{
             display:flex;flex-direction:column;align-items:center;
             text-align:center;padding:100px 24px 80px;
-            min-height:80vh;justify-content:center;
+            min-height:90vh;justify-content:center;
+            position:relative;overflow:hidden;
         }
+        /* Gezegen arka plan efekti */
+        .hero-planet{
+            position:absolute;
+            right:-80px;top:50%;transform:translateY(-50%);
+            width:420px;height:420px;border-radius:50%;
+            background:radial-gradient(circle at 35% 35%,
+                rgba(59,130,246,.18) 0%,
+                rgba(109,40,217,.12) 40%,
+                rgba(13,148,136,.06) 70%,
+                transparent 100%);
+            box-shadow:
+                inset -30px -20px 60px rgba(0,0,0,.6),
+                inset 15px 15px 40px rgba(59,130,246,.08),
+                0 0 80px rgba(59,130,246,.06),
+                0 0 160px rgba(109,40,217,.04);
+            pointer-events:none;z-index:0;
+            animation:planetDrift 20s ease-in-out infinite;
+            opacity:.65;
+        }
+        .hero-planet::before{
+            content:'';position:absolute;inset:-2px;border-radius:50%;
+            background:conic-gradient(from 200deg,transparent 0%,rgba(96,165,250,.08) 20%,transparent 40%);
+            animation:planetRing 20s linear infinite;
+        }
+        .hero-planet-ring{
+            position:absolute;
+            right:-130px;top:50%;
+            width:520px;height:120px;
+            border-radius:50%;
+            border:1px solid rgba(96,165,250,.1);
+            transform:translateY(-50%) rotateX(75deg);
+            pointer-events:none;z-index:0;
+            box-shadow:0 0 30px rgba(59,130,246,.04);
+            animation:planetDrift 20s ease-in-out infinite;
+            opacity:.5;
+        }
+        @keyframes planetDrift{0%,100%{transform:translateY(-50%) translateX(0)}50%{transform:translateY(-52%) translateX(-8px)}}
+        @keyframes planetRing{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+        /* Hero içerik z-index */
+        .hero .eyebrow,.hero h1,.hero p,.hbtns,.scroll-hint{position:relative;z-index:2}
         .eyebrow{
             display:inline-flex;align-items:center;gap:8px;
             font-size:.65rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;
@@ -310,37 +352,63 @@
             font-size:.74rem;color:rgba(255,255,255,.16);
         }
 
-        /* ── Music pill ── */
-        .mpill{
-            position:fixed;bottom:20px;right:20px;z-index:500;
-            display:flex;align-items:center;gap:9px;
-            background:rgba(5,6,14,.88);
-            border:1px solid var(--line2);
-            border-radius:30px;padding:7px 15px;
-            cursor:pointer;transition:all .2s;
-            backdrop-filter:blur(14px);
-        }
-        .mpill:hover{background:rgba(59,130,246,.1);border-color:rgba(96,165,250,.28)}
-        .meq{display:flex;gap:2px;align-items:flex-end;height:12px}
-        .mb{width:3px;border-radius:2px;background:#60a5fa;animation:eq .88s infinite ease-in-out}
-        .mb:nth-child(1){height:4px;animation-delay:0s}
-        .mb:nth-child(2){height:9px;animation-delay:.12s}
-        .mb:nth-child(3){height:6px;animation-delay:.28s}
-        .mb:nth-child(4){height:11px;animation-delay:.08s}
-        .mb:nth-child(5){height:3px;animation-delay:.22s}
-        @keyframes eq{0%,100%{transform:scaleY(1)}50%{transform:scaleY(2.2)}}
-        .mpill.paused .mb{animation-play-state:paused;opacity:.3}
-        .mlbl{font-size:.68rem;font-weight:600;color:rgba(147,197,253,.72);white-space:nowrap}
+
 
         /* ── Scroll reveal ── */
         .reveal{opacity:0;transform:translateY(22px);transition:opacity .65s ease,transform .65s ease}
         .reveal.in{opacity:1;transform:translateY(0)}
+
+        /* ── Hamburger ── */
+        .hbg{
+            display:none;flex-direction:column;justify-content:center;gap:5px;
+            width:36px;height:36px;background:none;border:none;cursor:pointer;padding:4px;z-index:1100;
+        }
+        .hbg span{display:block;height:2px;border-radius:2px;background:var(--text-sub);transition:all .28s cubic-bezier(.4,0,.2,1);transform-origin:center}
+        .hbg.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+        .hbg.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+        .hbg.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+        /* ── Mobile nav drawer ── */
+        .mob-nav{
+            display:none;
+            position:fixed;top:58px;left:0;right:0;bottom:0;z-index:999;
+            background:rgba(5,6,14,.97);
+            backdrop-filter:blur(28px);
+            flex-direction:column;align-items:center;justify-content:center;gap:6px;
+            opacity:0;pointer-events:none;
+            transition:opacity .3s ease;
+        }
+        .mob-nav.open{opacity:1;pointer-events:all}
+        .mob-nav a{
+            font-family:var(--font-d);font-size:1.35rem;font-weight:600;
+            text-decoration:none;color:var(--text-sub);
+            padding:14px 32px;border-radius:12px;width:80%;text-align:center;
+            border:1px solid transparent;
+            transition:all .2s;
+            transform:translateY(20px);opacity:0;
+            transition:transform .35s ease, opacity .35s ease, background .2s, color .2s, border-color .2s;
+        }
+        .mob-nav.open a{transform:translateY(0);opacity:1}
+        .mob-nav.open a:nth-child(1){transition-delay:.05s}
+        .mob-nav.open a:nth-child(2){transition-delay:.1s}
+        .mob-nav.open a:nth-child(3){transition-delay:.15s}
+        .mob-nav.open a:nth-child(4){transition-delay:.2s}
+        .mob-nav.open a:nth-child(5){transition-delay:.25s}
+        .mob-nav.open a:nth-child(6){transition-delay:.3s}
+        .mob-nav a:hover{color:var(--text);background:rgba(255,255,255,.055);border-color:var(--line2)}
+        .mob-nav a.cta{
+            background:rgba(59,130,246,.12);border-color:rgba(96,165,250,.22);
+            color:#93c5fd;margin-top:8px;
+        }
+        .mob-nav a.cta:hover{background:rgba(59,130,246,.24);color:#fff}
 
         /* ── Responsive ── */
         @media(max-width:1100px){.pcard{flex:0 0 calc(50% - 8px)}}
         @media(max-width:680px){
             .hdr{padding:0 18px}
             .nav{display:none}
+            .hbg{display:flex}
+            .mob-nav{display:flex}
             .pcard{flex:0 0 80vw}
             .stats{flex-wrap:wrap}
             .stat{padding:16px 22px;border-right:none;border-bottom:1px solid var(--line);max-width:100%}
@@ -352,6 +420,41 @@
         }
 
         @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+        /* ── Sayfa geçiş overlay ── */
+        #page-transition{
+            position:fixed;inset:0;z-index:9999;
+            background:var(--bg);
+            pointer-events:none;
+            opacity:0;
+            transition:opacity .38s ease;
+        }
+        #page-transition.fade-out{opacity:1;pointer-events:all}
+
+        /* ── Kart shimmer (ışık tarama) efekti ── */
+        .pcard::before{
+            content:'';
+            position:absolute;top:0;left:-100%;width:60%;height:100%;
+            background:linear-gradient(
+                105deg,
+                transparent 40%,
+                rgba(255,255,255,.045) 50%,
+                transparent 60%
+            );
+            transition:left .55s ease;
+            z-index:1;pointer-events:none;
+        }
+        .pcard:hover::before{left:160%}
+
+        /* Kart içerik z-index */
+        .pcard-ico,.pcard-ey,.pcard h3,.pcard p,.pcard-chips,.pcard-meta,.pcard-cta{position:relative;z-index:2}
+
+        /* Kart hover border glow */
+        .pcard.c-blue:hover{box-shadow:0 8px 32px rgba(59,130,246,.15),0 0 0 1px rgba(96,165,250,.2)}
+        .pcard.c-violet:hover{box-shadow:0 8px 32px rgba(109,40,217,.15),0 0 0 1px rgba(167,139,250,.2)}
+        .pcard.c-teal:hover{box-shadow:0 8px 32px rgba(13,148,136,.15),0 0 0 1px rgba(45,212,191,.2)}
+        .pcard.c-green:hover{box-shadow:0 8px 32px rgba(21,128,61,.15),0 0 0 1px rgba(74,222,128,.2)}
+        .pcard.c-orange:hover{box-shadow:0 8px 32px rgba(194,65,12,.15),0 0 0 1px rgba(251,146,60,.2)}
     </style>
 </head>
 <body>
@@ -360,6 +463,8 @@
 <div class="nbl n1"></div>
 <div class="nbl n2"></div>
 <div class="nbl n3"></div>
+
+<div id="page-transition"></div>
 
 <header class="hdr" id="hdr">
     <a href="index.html" class="logo">
@@ -374,11 +479,27 @@
         <a href="../tarayici-oyunlari/index.html">Tarayıcı Oyunları</a>
         <a href="../oneri.html" class="cta">Talep &amp; Öneri</a>
     </nav>
+    <button class="hbg" id="hbg" aria-label="Menüyü aç">
+        <span></span><span></span><span></span>
+    </button>
 </header>
+
+<!-- Mobil tam ekran menü -->
+<nav class="mob-nav" id="mobNav">
+    <a href="../yazilimlar/index.html">Yazılımlar</a>
+    <a href="../oyunlar/index.html">Oyunlar</a>
+    <a href="../siteler/index.html">Yapılan Siteler</a>
+    <a href="../android-uygulamalar/index.html">Android</a>
+    <a href="../tarayici-oyunlari/index.html">Tarayıcı Oyunları</a>
+    <a href="../oneri.html" class="cta">Talep &amp; Öneri</a>
+</nav>
 
 <div class="wrap">
 
-    <section class="hero" style="position:relative">
+    <section class="hero">
+        <!-- Dekoratif gezegen -->
+        <div class="hero-planet"></div>
+        <div class="hero-planet-ring"></div>
         <div class="eyebrow"><span class="pdot"></span> Dijital Stüdyo &middot; Ankara, TR</div>
         <h1>
             <span class="h-line1">Yazılım Üretiyor,</span>
@@ -527,10 +648,7 @@
 
 </div>
 
-<div class="mpill" id="mpill">
-    <div class="meq"><div class="mb"></div><div class="mb"></div><div class="mb"></div><div class="mb"></div><div class="mb"></div></div>
-    <span class="mlbl" id="mlbl">Space Ambient · Çalıyor</span>
-</div>
+
 
 <script>
 /* ══════════════════════════════════════════
@@ -721,12 +839,48 @@ window.addEventListener('scroll',()=>{
     document.getElementById('hdr').classList.toggle('scrolled',window.scrollY>20);
 });
 
-/* ══ Music pill ══ */
+/* ══ Hamburger menü ══ */
 (function(){
-    const p=document.getElementById('mpill'),l=document.getElementById('mlbl');
-    let on=true;
-    p.addEventListener('click',()=>{on=!on;p.classList.toggle('paused',!on);l.textContent=on?'Space Ambient · Çalıyor':'Space Ambient · Durduruldu'});
+    const btn=document.getElementById('hbg');
+    const nav=document.getElementById('mobNav');
+    let open=false;
+    function toggle(){
+        open=!open;
+        btn.classList.toggle('open',open);
+        nav.classList.toggle('open',open);
+        document.body.style.overflow=open?'hidden':'';
+    }
+    btn.addEventListener('click',toggle);
+    // Menü linkine tıklayınca kapat
+    nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+        open=false;btn.classList.remove('open');nav.classList.remove('open');
+        document.body.style.overflow='';
+    }));
 })();
+
+/* ══ Sayfa geçiş efekti ══ */
+(function(){
+    const overlay=document.getElementById('page-transition');
+    // Sayfa yüklenince fade-in
+    window.addEventListener('load',()=>{
+        overlay.style.opacity='0';
+    });
+    // Tüm dahili linklere fade-out ekle
+    document.addEventListener('click',function(e){
+        const a=e.target.closest('a');
+        if(!a||!a.href)return;
+        const url=new URL(a.href,location.href);
+        // Aynı origin, yeni sekme değil, hash değil
+        if(url.origin!==location.origin)return;
+        if(a.target==='_blank')return;
+        if(url.href===location.href)return;
+        e.preventDefault();
+        overlay.classList.add('fade-out');
+        setTimeout(()=>{ location.href=a.href; },380);
+    });
+})();
+
+
 
 /* ══ Scroll reveal ══ */
 (function(){
