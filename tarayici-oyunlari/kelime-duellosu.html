@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KELİME DÜELLOSU - Düzeltilmiş</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0e14;
+  --surface: #16161f;
+  --surface2: #1e1e2e;
+  --border: #2a2a3e;
+  --correct: #22c55e;
+  --correct-bg: #14532d;
+  --present: #eab308;
+  --present-bg: #713f12;
+  --absent: #374151;
+  --absent-bg: #1f2937;
+  --text: #f0f0f8;
+  --dim: #6b7280;
+  --accent: #818cf8;
+  --accent2: #c084fc;
+  --danger: #f43f5e;
+  --gold: #fbbf24;
+  --tile-size: 52px;
+  --tile-gap: 5px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { height:100%; background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-serif; overflow:hidden; }
+.screen { position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:10; }
+.screen.hidden { display:none; }
+#menu { background: radial-gradient(ellipse at 50% 0%, rgba(129,140,248,0.15) 0%, transparent 60%), var(--bg); }
+.logo-wrap { text-align:center; margin-bottom:36px; }
+.logo-icon { font-size:52px; display:block; margin-bottom:12px; filter:drop-shadow(0 0 20px rgba(129,140,248,0.6)); }
+.logo-title {
+  font-family:'Space Mono',monospace; font-size:clamp(20px,5vw,36px); font-weight:700;
+  letter-spacing:6px; text-transform:uppercase;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.logo-sub { font-size:10px; color:var(--dim); letter-spacing:4px; margin-top:6px; text-transform:uppercase; }
+.streak-badge {
+  display:flex; align-items:center; gap:8px; margin-bottom:28px;
+  background:rgba(251,191,36,0.1); border:1px solid rgba(251,191,36,0.3);
+  padding:8px 20px; font-size:11px; color:var(--gold); letter-spacing:2px;
+}
+.streak-badge.hidden { display:none; }
+.menu-stats { display:flex; gap:20px; margin-bottom:36px; }
+.stat-box {
+  background:var(--surface); border:1px solid var(--border);
+  padding:14px 22px; text-align:center; min-width:86px; position:relative;
+}
+.stat-box::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--accent),var(--accent2)); }
+.stat-num { font-family:'Space Mono',monospace; font-size:22px; font-weight:700; color:var(--accent); }
+.stat-lbl { font-size:9px; color:var(--dim); letter-spacing:2px; margin-top:4px; text-transform:uppercase; }
+.menu-btns { display:flex; flex-direction:column; gap:10px; width:240px; }
+.btn-primary {
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:none; color:#fff; font-family:'Space Grotesk',sans-serif;
+  font-size:13px; font-weight:700; letter-spacing:3px; text-transform:uppercase;
+  padding:14px; cursor:pointer; transition:all .15s;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+}
+.btn-primary:hover { transform:translateY(-2px); filter:brightness(1.15); }
+.btn-secondary {
+  background:transparent; border:1px solid var(--border); color:var(--dim);
+  font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:600;
+  letter-spacing:2px; text-transform:uppercase; padding:12px; cursor:pointer; transition:all .15s;
+}
+.btn-secondary:hover { border-color:var(--accent); color:var(--accent); }
+#game { background:var(--bg); justify-content:flex-start; overflow-y:auto; }
+.game-header {
+  width:100%; max-width:520px; display:flex; align-items:center;
+  justify-content:space-between; padding:14px 16px;
+  border-bottom:1px solid var(--border); flex-shrink:0;
+}
+.game-title { font-family:'Space Mono',monospace; font-size:12px; letter-spacing:4px; color:var(--accent); }
+.hud-row { display:flex; gap:16px; align-items:center; }
+.hud-item { text-align:center; }
+.hud-val { font-family:'Space Mono',monospace; font-size:16px; font-weight:700; }
+.hud-val.timer-val { color:var(--accent); }
+.hud-val.timer-val.urgent { color:var(--danger); animation:timerPulse .5s infinite alternate; }
+@keyframes timerPulse { from{opacity:1} to{opacity:.4} }
+.hud-val.score-val { color:var(--gold); }
+.hud-lbl { font-size:8px; color:var(--dim); letter-spacing:2px; text-transform:uppercase; margin-top:1px; }
+.back-btn {
+  background:transparent; border:1px solid var(--border); color:var(--dim);
+  font-family:'Space Mono',monospace; font-size:10px; padding:6px 10px;
+  cursor:pointer; letter-spacing:1px; transition:all .12s;
+}
+.back-btn:hover { border-color:var(--danger); color:var(--danger); }
+.game-body { flex:1; display:flex; flex-direction:column; align-items:center; padding:10px 16px 6px; width:100%; max-width:520px; align-self:center; }
+.timer-bar-wrap { width:100%; max-width:360px; height:3px; background:var(--border); margin-bottom:16px; }
+.timer-bar { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width 1s linear, background .5s; }
+.timer-bar.urgent { background:var(--danger); }
+.board {
+  display:grid; grid-template-columns:repeat(5,var(--tile-size));
+  gap:var(--tile-gap); margin-bottom:14px;
+}
+.tile {
+  width:var(--tile-size); height:var(--tile-size);
+  border:2px solid var(--border); display:flex; align-items:center; justify-content:center;
+  font-family:'Space Mono',monospace; font-size:20px; font-weight:700;
+  text-transform:uppercase; transition:all .15s; user-select:none;
+}
+.tile.filled { border-color:var(--dim); animation:tilePop .1s ease; }
+@keyframes tilePop { 0%{transform:scale(1)} 50%{transform:scale(1.12)} 100%{transform:scale(1)} }
+.tile.correct { background:var(--correct-bg); border-color:var(--correct); color:var(--correct); }
+.tile.present { background:var(--present-bg); border-color:var(--present); color:var(--present); }
+.tile.absent  { background:var(--absent-bg);  border-color:var(--absent);  color:var(--dim); }
+.tile.active { border-color:var(--accent); box-shadow:0 0 0 1px rgba(129,140,248,.3); }
+.tile.shake { animation:tileShake .4s ease; }
+@keyframes tileShake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+.tile.bounce { animation:tileBounce .6s ease; }
+@keyframes tileBounce { 0%,100%{transform:translateY(0)} 30%{transform:translateY(-14px)} 60%{transform:translateY(-6px)} }
+.keyboard { display:flex; flex-direction:column; gap:6px; align-items:center; width:100%; max-width:480px; }
+.key-row { display:flex; gap:5px; justify-content:center; }
+.key {
+  background:var(--surface2); border:1px solid var(--border); color:var(--text);
+  font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:600;
+  min-width:32px; height:42px; padding:0 8px; cursor:pointer; transition:all .12s;
+}
+.key:hover { border-color:var(--accent); }
+.key.wide { min-width:56px; font-size:11px; letter-spacing:1px; }
+.key.correct { background:var(--correct); border-color:var(--correct); color:#fff; }
+.key.present { background:var(--present); border-color:var(--present); color:#000; }
+.key.absent { background:var(--absent); border-color:var(--absent); color:var(--dim); opacity:.6; }
+.lb-title { font-family:'Space Mono',monospace; font-size:16px; letter-spacing:4px; margin-bottom:20px; color:var(--accent); }
+.lb-table { width:100%; max-width:440px; }
+.lb-row { display:grid; grid-template-columns:40px 1fr 80px 80px; padding:11px 14px; border-bottom:1px solid var(--border); font-size:12px; align-items:center; gap:8px; }
+.lb-row.header { color:var(--dim); font-size:9px; letter-spacing:2px; text-transform:uppercase; border-bottom:2px solid var(--border); }
+.lb-row:not(.header):hover { background:var(--surface); }
+.lb-rank { font-family:'Space Mono',monospace; font-weight:700; color:var(--dim); }
+.lb-rank.gold { color:#fbbf24; } .lb-rank.silver { color:#9ca3af; } .lb-rank.bronze { color:#b45309; }
+.lb-score { font-family:'Space Mono',monospace; font-weight:700; color:var(--gold); text-align:right; }
+.lb-date { font-size:10px; color:var(--dim); text-align:right; }
+.lb-empty { text-align:center; color:var(--dim); font-size:12px; padding:40px; letter-spacing:2px; }
+.wc-card {
+  background:var(--surface2); border:1px solid var(--border);
+  padding:18px 12px; cursor:pointer; transition:all .15s; text-align:center;
+}
+.wc-card:hover { border-color:#10b981; background:rgba(16,185,129,0.1); transform:translateY(-2px); }
+.wc-num { font-family:'Space Mono',monospace; font-size:28px; font-weight:700; color:#10b981; }
+.wc-lbl { font-size:9px; color:var(--dim); letter-spacing:2px; margin-top:4px; text-transform:uppercase; }
+.mw-progress { display:flex; gap:6px; justify-content:center; margin-bottom:14px; flex-wrap:wrap; }
+.mw-dot { width:28px; height:6px; background:var(--border); border-radius:3px; transition:background .3s; }
+.mw-dot.done { background:var(--correct); }
+.mw-dot.current { background:var(--accent); box-shadow:0 0 8px rgba(129,140,248,.6); }
+.mw-dot.fail { background:var(--danger); }
+#message {
+  position:fixed; top:18%; left:50%; transform:translateX(-50%) translateY(-10px);
+  background:#1f1f2e; border:1px solid var(--border); color:var(--text);
+  padding:10px 18px; font-size:12px; letter-spacing:1px; font-weight:600;
+  opacity:0; pointer-events:none; transition:all .2s; z-index:100;
+}
+#message.show { opacity:1; transform:translateX(-50%) translateY(0); }
+.result-icon { font-size:56px; margin-bottom:12px; }
+.result-title { font-family:'Space Mono',monospace; font-size:22px; font-weight:700; letter-spacing:4px; margin-bottom:6px; }
+.result-word { font-size:13px; color:var(--dim); letter-spacing:2px; margin-bottom:22px; text-align:center; }
+.result-scores { display:flex; gap:14px; margin-bottom:28px; }
+.rscore { background:var(--surface); border:1px solid var(--border); padding:12px 18px; text-align:center; min-width:78px; }
+.rscore-val { font-family:'Space Mono',monospace; font-size:18px; font-weight:700; color:var(--accent); }
+.rscore-val.gold { color:var(--gold); }
+.rscore-lbl { font-size:8px; color:var(--dim); letter-spacing:2px; margin-top:3px; text-transform:uppercase; }
+.result-btns { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+@media (max-width:380px){ :root{--tile-size:44px} .key{min-width:28px} }
+</style>
+</head>
+<body>
+
+<div id="message"></div>
+
+<!-- MENU -->
+<div id="menu" class="screen">
+  <div class="logo-wrap">
+    <span class="logo-icon">🔠</span>
+    <div class="logo-title">KELİME DÜELLOSU</div>
+    <div class="logo-sub">Türkçe Kelime Tahmin Oyunu • V2 Düzeltilmiş</div>
+  </div>
+  <div class="streak-badge hidden" id="streak-badge">🔥 <span id="streak-num">0</span> GÜNLÜK SERİ</div>
+  <div class="menu-stats">
+    <div class="stat-box"><div class="stat-num" id="stat-played">0</div><div class="stat-lbl">Oyun</div></div>
+    <div class="stat-box"><div class="stat-num" id="stat-wins">0</div><div class="stat-lbl">Kazanma</div></div>
+    <div class="stat-box"><div class="stat-num" id="stat-best">—</div><div class="stat-lbl">En İyi</div></div>
+  </div>
+  <div class="menu-btns">
+    <button class="btn-primary" id="btn-daily" onclick="handleDailyClick()">📅 GÜNLÜK KELİME</button>
+    <button class="btn-primary" onclick="showWordSelector()" style="background:linear-gradient(135deg,#059669,#10b981)">🎮 PRATİK MOD</button>
+    <button class="btn-secondary" onclick="showLeaderboard()">🏆 SKOR TABLOSU</button>
+  </div>
+  <div id="daily-status" style="margin-top:14px;font-size:10px;color:var(--dim);letter-spacing:2px;text-align:center"></div>
+</div>
+
+<!-- GAME -->
+<div id="game" class="screen hidden">
+  <div class="game-header">
+    <button class="back-btn" onclick="confirmBack()">← GERİ</button>
+    <div>
+      <div class="game-title">KELİME DÜELLOSU</div>
+      <div id="mode-badge" style="font-size:8px;letter-spacing:2px;text-align:center;margin-top:2px;color:var(--dim)"></div>
+    </div>
+    <div class="hud-row">
+      <div class="hud-item">
+        <div class="hud-val timer-val" id="hud-timer">90</div>
+        <div class="hud-lbl">Süre</div>
+      </div>
+      <div class="hud-item">
+        <div class="hud-val score-val" id="hud-score">0</div>
+        <div class="hud-lbl">Puan</div>
+      </div>
+    </div>
+  </div>
+  <div class="game-body">
+    <div class="mw-progress" id="mw-progress"></div>
+    <div class="timer-bar-wrap"><div class="timer-bar" id="timer-bar"></div></div>
+    <div class="board" id="board"></div>
+    <div class="keyboard" id="keyboard"></div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result" class="screen hidden">
+  <div class="result-icon" id="res-icon">🏆</div>
+  <div class="result-title" id="res-title">TEBRİKLER!</div>
+  <div class="result-word" id="res-word"></div>
+  <div class="result-scores">
+    <div class="rscore"><div class="rscore-val gold" id="res-score">0</div><div class="rscore-lbl">Puan</div></div>
+    <div class="rscore"><div class="rscore-val" id="res-time">0s</div><div class="rscore-lbl">Süre</div></div>
+    <div class="rscore"><div class="rscore-val" id="res-guesses">0/6</div><div class="rscore-lbl">Tahmin</div></div>
+    <div class="rscore"><div class="rscore-val" id="res-best">—</div><div class="rscore-lbl">En İyi</div></div>
+  </div>
+  <div class="result-btns">
+    <button class="btn-primary" id="res-play-again" style="clip-path:none;padding:14px 28px">▶ TEKRAR</button>
+    <button class="btn-secondary" id="res-share" style="padding:14px 20px;display:none">📤 PAYLAŞ</button>
+    <button class="btn-secondary" onclick="showLeaderboard()" style="padding:14px 20px">🏆 TABLO</button>
+    <button class="btn-secondary" onclick="showMenu()" style="padding:14px 20px">MENÜ</button>
+  </div>
+</div>
+
+<!-- LEADERBOARD -->
+<div id="leaderboard" class="screen hidden">
+  <div class="lb-title">🏆 SKOR TABLOSU</div>
+  <div class="lb-table" id="lb-table"></div>
+  <button class="btn-secondary" onclick="showMenu()" style="margin-top:24px;padding:12px 32px">← GERİ</button>
+</div>
+
+<!-- WORD COUNT SELECTOR -->
+<div id="word-select" class="screen hidden" style="background:rgba(14,14,20,0.88);backdrop-filter:blur(8px)">
+  <div style="background:var(--surface);border:1px solid var(--border);padding:36px 32px;text-align:center;max-width:360px;width:90%;position:relative">
+    <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#10b981,#059669)"></div>
+    <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:4px;color:#10b981;margin-bottom:8px">🎮 PRATİK MOD</div>
+    <div style="font-size:13px;color:var(--dim);margin-bottom:24px;letter-spacing:1px">Kaç kelime peş peşe bulacaksın?<br><span style="font-size:10px">Her kelime = 6 hak + ek süre</span></div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px" id="word-count-grid"></div>
+    <button class="btn-secondary" onclick="showMenu()" style="width:100%;padding:11px">İPTAL</button>
+  </div>
+</div>
+
+<script>
+// ─── KELİME LİSTESİ - TEMİZLENMİŞ ───
+const RAW_WORDS = [
+  'ARABA','BALIK','CADDE','DENİZ','ELMAS','FENER','GÜNEŞ','HABER','IRMAK','İNSAN',
+  'KALEM','LİMAN','MEYVE','NEHİR','PAKET','SALON','ŞEKER','TABLO','UMUT','VAKİT',
+  'AĞAÇ','BİLGİ','ÇİLEK','DUMAN','EKMEK','GİTAR','HIZLI','KADER','LİMON','MÜZİK',
+  'NEFES','PERDE','RESİM','SİMİT','TAVAN','UZMAN','YAZAR','ZEMİN','ALEV','BEDEN',
+  'ÇANTA','DÖNEM','EYLEM','FIRIN','GÜZEL','HUZUR','KANAT','LÜTUF','MASAL','NİYET',
+  'OYUN','SİMİT','SINIR','TUZAK','UFUK','ZORLU','AKIL','BAYIR','DÜNYA','EKRAN',
+  'FAZLA','GÖRÜŞ','HÜZÜN','KURAL','MESAJ','NÖBET','PLAKA','ŞEHİR','TARAF','ÜZÜM',
+  'VURUŞ','YORUM','ALARM','BIÇAK','ÇİMEN','DEMİR','FİYAT','GÖVDE','İRADE','KÖPEK',
+  'MİRAS','NİSAN','ÖZLEM','PAZAR','SELAM','TAHİN','VATAN','YETİM','ARDIÇ','BOZUK',
+  'ÇEVRE','DİŞLİ','ERDEM','FACİA','KOŞUL','MORAL','NABIZ','OMLET','SABIR','TOKAT',
+  'UYSAL','YUMAK','ASLAN','BEYİN','CEVAP','DÖKÜM','ESNEK','FİKİR','GÖREV','KADIN',
+  'LİSAN','MEYDAN','NAMUS','ORMAN','PANEL','ROMAN','SÜPER','TAŞIT','ÜSTAT','VERİM',
+  'YOĞUN','ZİHİN','AKTAR','BORSA','ÇÖZÜM','DEVİR','GÖNÜL','HESAP','KISIM','LEZİZ',
+  'MARKA','NARİN','ÖNLEM','RADAR','SUNUM','TAHTA','VARLIK','YIKIM','ABONE','BANKA',
+  'COŞKU','DENGE','ETKEN','GÜNAH','HUKUK','KARAR','LİDER','MÜDÜR','NOKTA','ŞARKI',
+  'İKLİM','KİBİR','LATİF','MEŞRU','NUTUK','ÖFKEM','PAYDA','RAKİP','SEBEP','TESİR',
+  'YANIT','ZEKAT','AHVAL','BİTKİ','ÇORAP','DİLEK','FELEK','GİYSİ','HAMLE','KABİN',
+  'LOKAL','NİKAH','ORUÇ','PELİN','SÖZDE','TAKIN','ULEMA','VİZON','ANTEP','BURSA',
+  'CESUR','DAMAR','FİLİZ','GONCA','HASIM','İYİLİK','KAFES','LAMBA','MERAK','PARÇA',
+  'SEVGİ','TARİH','VAHAP','YENİK','SOKAK','YOLCU','KAĞIT','OKULA','KİTAP','DEFTER'
+];
+
+const WORD_LIST = [...new Set(
+  RAW_WORDS.map(w => w.toLocaleUpperCase('tr-TR').trim())
+           .filter(w => [...w].length === 5)
+)].sort();
+
+const KB_ROWS = [
+  ['Q','W','E','R','T','Y','U','I','O','P','Ğ','Ü'],
+  ['A','S','D','F','G','H','J','K','L','Ş','İ'],
+  ['ENTER','Z','X','C','V','B','N','M','Ö','Ç','⌫'],
+];
+
+const MAX_GUESSES = 6;
+
+// ─── STATE ───
+let target='', curRow=0, curCol=0, curGuess=[], gameOver=false;
+let timerInt=null, timeLeft=90, totalTime=90;
+let gameStartTime=0;
+let keyStates={};
+let gameMode='practice';
+let allGuessesHistory=[]; // [[{guess,result},...], ...] per word for share
+
+let mwTotal=1, mwCurrent=0, mwWords=[], mwScores=[], mwGuessesUsed=[];
+
+// ─── DAILY ───
+function getTodayStr(){ return new Date().toISOString().slice(0,10); }
+function getDailyWord(){
+  const dateStr=getTodayStr();
+  let hash=0;
+  for(let i=0;i<dateStr.length;i++) hash=(hash*31+dateStr.charCodeAt(i))>>>0;
+  return WORD_LIST[hash%WORD_LIST.length];
+}
+function loadDailyState(){
+  try{ return JSON.parse(localStorage.getItem('kd_daily_v2')||'null'); }
+  catch(e){ return null; }
+}
+function saveDailyState(state){ localStorage.setItem('kd_daily_v2',JSON.stringify(state)); }
+function hasDailyPlayed(){
+  const s=loadDailyState();
+  return s && s.date===getTodayStr() && s.played;
+}
+function loadStats(){
+  try{ return JSON.parse(localStorage.getItem('kd_stats')||'{"played":0,"wins":0,"streak":0,"lastWin":""}'); }
+  catch(e){ return {played:0,wins:0,streak:0,lastWin:''}; }
+}
+function saveStats(s){ localStorage.setItem('kd_stats',JSON.stringify(s)); }
+function loadScores(){
+  try{ return JSON.parse(localStorage.getItem('kd_scores_v2')||'[]'); }
+  catch(e){ return []; }
+}
+function saveScore(entry){
+  const scores=loadScores();
+  scores.push(entry);
+  scores.sort((a,b)=>b.score-a.score);
+  localStorage.setItem('kd_scores_v2',JSON.stringify(scores.slice(0,30)));
+}
+function getBest(){ const s=loadScores(); return s.length?s[0].score:null; }
+function yesterdayStr(){ const d=new Date(); d.setDate(d.getDate()-1); return d.toLocaleDateString('tr-TR'); }
+
+// ─── SCREENS ───
+function showScreen(id){
+  ['menu','game','result','leaderboard','word-select'].forEach(s=>{
+    document.getElementById(s).classList.toggle('hidden',s!==id);
+  });
+}
+function showMenu(){
+  showScreen('menu');
+  const st=loadStats();
+  document.getElementById('stat-played').textContent=st.played;
+  document.getElementById('stat-wins').textContent=st.wins;
+  const best=getBest();
+  document.getElementById('stat-best').textContent=best!==null?best:'—';
+  const badge=document.getElementById('streak-badge');
+  if(st.streak>1){ badge.classList.remove('hidden'); document.getElementById('streak-num').textContent=st.streak; }
+  else badge.classList.add('hidden');
+
+  const statusEl=document.getElementById('daily-status');
+  const btnDaily=document.getElementById('btn-daily');
+  if(hasDailyPlayed()){
+    const ds=loadDailyState();
+    statusEl.textContent = ds.won ? '✅ BUGÜN KAZANDIN — YARIN GEL' : '❌ BUGÜN OYNANDI — YARIN YENİ KELİME';
+    statusEl.style.color = ds.won ? 'var(--correct)' : 'var(--dim)';
+    btnDaily.textContent='📅 GÜNLÜK SONUÇ';
+    btnDaily.style.opacity='0.85';
+  } else {
+    statusEl.textContent='🔄 YENİ GÜNLÜK KELİME HAZIR!';
+    statusEl.style.color='var(--gold)';
+    btnDaily.textContent='📅 GÜNLÜK KELİME';
+    btnDaily.style.opacity='1';
+  }
+}
+function handleDailyClick(){
+  if(hasDailyPlayed()) showDailyResult();
+  else startGame('daily',1);
+}
+function showWordSelector(){
+  showScreen('word-select');
+  const grid=document.getElementById('word-count-grid');
+  grid.innerHTML='';
+  [{n:1,lbl:'Tek Atış'},{n:2,lbl:'Hızlı'},{n:3,lbl:'Normal'},{n:4,lbl:'Zorlu'},{n:5,lbl:'Uzman'},{n:6,lbl:'Efsane'}].forEach(o=>{
+    const card=document.createElement('div');
+    card.className='wc-card';
+    card.innerHTML=`<div class="wc-num">${o.n}</div><div class="wc-lbl">${o.lbl}</div><div style="font-size:9px;color:var(--dim);margin-top:4px">${90 + (o.n-1)*45}sn • ${o.n*6} hak</div>`;
+    card.addEventListener('click',()=>startGame('practice',o.n));
+    grid.appendChild(card);
+  });
+}
+function showLeaderboard(){
+  showScreen('leaderboard');
+  const scores=loadScores();
+  const table=document.getElementById('lb-table');
+  if(!scores.length){ table.innerHTML='<div class="lb-empty">HENÜZ SKOR YOK<br><br>İlk oyunu oynayın!</div>'; return; }
+  const rankCls=(i)=>i===0?'gold':i===1?'silver':i===2?'bronze':'';
+  const rankIcon=(i)=>i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1);
+  table.innerHTML=`<div class="lb-row header"><span>Sıra</span><span>Kelime(ler)</span><span>Puan</span><span>Tarih</span></div>`
+    +scores.map((s,i)=>`<div class="lb-row">
+      <span class="lb-rank ${rankCls(i)}">${rankIcon(i)}</span>
+      <span style="font-family:'Space Mono',monospace;letter-spacing:1px;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${(s.words||s.word||'?????')}</span>
+      <span class="lb-score">${s.score}</span>
+      <span class="lb-date">${s.date||''}</span>
+    </div>`).join('');
+}
+
+// ─── GAME START ───
+function startGame(mode='practice', wordCount=1){
+  gameMode=mode;
+  allGuessesHistory=[];
+  mwScores=[]; mwGuessesUsed=[];
+
+  if(mode==='daily'){
+    if(hasDailyPlayed()){ showDailyResult(); return; }
+    mwTotal=1; mwCurrent=0;
+    mwWords=[getDailyWord()];
+    totalTime=90;
+  } else {
+    mwTotal=Math.max(1,Math.min(6,wordCount));
+    mwCurrent=0;
+    const shuffled=[...WORD_LIST].sort(()=>Math.random()-0.5);
+    mwWords=shuffled.slice(0,mwTotal);
+    totalTime=90 + (mwTotal-1)*45; // 1=>90, 2=>135, 6=>315sn
+  }
+
+  timeLeft=totalTime;
+  gameStartTime=Date.now();
+  curRow=0; curCol=0; curGuess=[]; gameOver=false; keyStates={};
+  target = mwWords[0]; // <-- FIX: hedef kelimeyi ata
+
+  buildBoard();
+  buildKeyboard();
+  updateProgress();
+  updateModeBadge();
+  updateTimerUI();
+  document.getElementById('hud-score').textContent='0';
+  showScreen('game');
+
+  clearInterval(timerInt);
+  timerInt=setInterval(()=>{
+    timeLeft--;
+    updateTimerUI();
+    if(timeLeft<=0){ clearInterval(timerInt); endGame(false, true); }
+  },1000);
+}
+
+function buildBoard(){
+  const el=document.getElementById('board');
+  el.innerHTML='';
+  // Sadece aktif kelime için 6 satır göster, ama toplam progress üstte
+  const rows = MAX_GUESSES;
+  el.style.gridTemplateRows=`repeat(${rows},var(--tile-size))`;
+  for(let r=0;r<rows;r++){
+    for(let c=0;c<5;c++){
+      const t=document.createElement('div');
+      t.className='tile';
+      t.id=`t-${r}-${c}`;
+      el.appendChild(t);
+    }
+  }
+  // geçmiş denemeleri tekrar çiz (aynı kelime içinde)
+  const hist = allGuessesHistory[mwCurrent] || [];
+  hist.forEach((h, r)=>{
+    for(let c=0;c<5;c++) setTile(r,c,h.guess[c], h.result[c], false);
+  });
+  highlightActiveRow();
+}
+
+function setTile(r,c,letter,state, animate=true){
+  const t=document.getElementById(`t-${r}-${c}`);
+  if(!t) return;
+  t.textContent=letter||'';
+  let cls='tile';
+  if(letter) cls+=' filled';
+  if(state) cls+=' '+state;
+  if(r===curRow && !state) cls+=' active';
+  t.className=cls;
+}
+function highlightActiveRow(){
+  for(let r=0;r<MAX_GUESSES;r++){
+    for(let c=0;c<5;c++){
+      const t=document.getElementById(`t-${r}-${c}`);
+      if(!t) continue;
+      if(r===curRow && !t.classList.contains('correct') && !t.classList.contains('present') && !t.classList.contains('absent')){
+        t.classList.add('active');
+      } else {
+        t.classList.remove('active');
+      }
+    }
+  }
+}
+function updateCurrentRow(){
+  for(let c=0;c<5;c++){
+    const letter=curGuess[c]||'';
+    const t=document.getElementById(`t-${curRow}-${c}`);
+    if(!t) continue;
+    t.textContent=letter;
+    t.className='tile'+(letter?' filled active':' active');
+  }
+  // kalan boşları temizle
+  for(let c=curGuess.length;c<5;c++){
+    const t=document.getElementById(`t-${curRow}-${c}`);
+    if(t && !t.classList.contains('correct')) { t.textContent=''; t.className='tile active'; }
+  }
+}
+
+function buildKeyboard(){
+  const kb=document.getElementById('keyboard');
+  kb.innerHTML='';
+  KB_ROWS.forEach(row=>{
+    const rowEl=document.createElement('div');
+    rowEl.className='key-row';
+    row.forEach(key=>{
+      const btn=document.createElement('button');
+      btn.className='key'+(key.length>1?' wide':'');
+      if(keyStates[key]) btn.classList.add(keyStates[key]);
+      btn.textContent=key; btn.id='key-'+key;
+      btn.addEventListener('click',()=>handleKey(key));
+      rowEl.appendChild(btn);
+    });
+    kb.appendChild(rowEl);
+  });
+}
+function updateKey(letter,state){
+  const priority={correct:3,present:2,absent:1};
+  if((priority[state]||0) > (priority[keyStates[letter]]||0)){
+    keyStates[letter]=state;
+    const key=document.getElementById('key-'+letter);
+    if(key){
+      key.className='key'+(letter.length>1?' wide':'')+' '+state;
+    }
+  }
+}
+
+// ─── INPUT ───
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('game').classList.contains('hidden')) return;
+  if(e.ctrlKey||e.altKey||e.metaKey) return;
+  if(e.key==='Enter') handleKey('ENTER');
+  else if(e.key==='Backspace') handleKey('⌫');
+  else if(/^[a-zA-ZğüşıöçĞÜŞİÖÇ]$/.test(e.key)) handleKey(e.key.toLocaleUpperCase('tr-TR'));
+});
+function normLetter(ch){
+  return ch.toLocaleUpperCase('tr-TR');
+}
+function handleKey(key){
+  if(gameOver) return;
+  if(key==='⌫'){
+    if(curCol>0){ curCol--; curGuess.pop(); updateCurrentRow(); }
+  } else if(key==='ENTER'){
+    submitGuess();
+  } else {
+    if(curCol<5){
+      const ch=normLetter(key);
+      // sadece harf
+      if(!/^[A-ZĞÜŞİÖÇ]$/.test(ch)) return;
+      curGuess.push(ch);
+      curCol++;
+      updateCurrentRow();
+    }
+  }
+}
+
+// ─── GUESS LOGIC - DÜZELTİLDİ ───
+function submitGuess(){
+  if(curCol<5){ shakeRow(curRow); showMsg('5 HARF GEREKLİ'); return; }
+  const guess=curGuess.join('');
+  const result=evaluate(guess,target);
+  const won=result.every(r=>r==='correct');
+
+  // geçmişe ekle
+  if(!allGuessesHistory[mwCurrent]) allGuessesHistory[mwCurrent]=[];
+  allGuessesHistory[mwCurrent].push({guess, result: [...result]});
+
+  revealRow(curRow, guess, result);
+
+  if(won){
+    // kazandı
+    setTimeout(()=>{
+      bounceRow(curRow);
+      const guessesUsed = curRow+1;
+      const secondsPerWord = Math.round((Date.now()-gameStartTime)/1000 / (mwCurrent+1));
+      const roundScore = calcScore(guessesUsed, secondsPerWord);
+      mwScores.push(roundScore);
+      mwGuessesUsed.push(guessesUsed);
+      const totalScore = mwScores.reduce((a,b)=>a+b,0);
+      document.getElementById('hud-score').textContent=totalScore;
+
+      mwCurrent++;
+      if(mwCurrent>=mwTotal){
+        clearInterval(timerInt);
+        setTimeout(()=>endGame(true), 700);
+      } else {
+        // sıradaki kelime
+        showMsg(`✅ ${mwCurrent}. KELİME BULUNDU! SIRADAKİ →`);
+        target=mwWords[mwCurrent];
+        curRow=0; curCol=0; curGuess=[];
+        // klavye sıfırla ama yeşilleri koru? pratikte sıfırlamak daha adil
+        keyStates={};
+        buildKeyboard();
+        setTimeout(()=>{
+          buildBoard();
+          updateProgress();
+          updateModeBadge();
+        }, 400);
+      }
+    }, 350*5+120);
+  } else {
+    // yanlış tahmin
+    curRow++;
+    curCol=0; curGuess=[];
+    setTimeout(()=>{
+      if(curRow>=MAX_GUESSES){
+        clearInterval(timerInt);
+        endGame(false, false);
+      } else {
+        highlightActiveRow();
+        showMsg(`${MAX_GUESSES - curRow} HAK KALDI`);
+      }
+    }, 350*5+80);
+  }
+}
+
+function evaluate(guess,target){
+  const result=Array(5).fill('absent');
+  const tArr=[...target], gArr=[...guess];
+  const used=Array(5).fill(false);
+  for(let i=0;i<5;i++) if(gArr[i]===tArr[i]){ result[i]='correct'; used[i]=true; }
+  for(let i=0;i<5;i++){
+    if(result[i]==='correct') continue;
+    for(let j=0;j<5;j++){
+      if(!used[j] && gArr[i]===tArr[j]){ result[i]='present'; used[j]=true; break; }
+    }
+  }
+  return result;
+}
+function revealRow(row,guess,result){
+  [...guess].forEach((letter,col)=>{
+    setTimeout(()=>{
+      const tile=document.getElementById(`t-${row}-${col}`);
+      if(!tile) return;
+      tile.style.transition='transform 180ms';
+      tile.style.transform='scaleY(0)';
+      setTimeout(()=>{
+        setTile(row,col,letter,result[col]);
+        tile.style.transform='scaleY(1)';
+        updateKey(letter,result[col]);
+      },160);
+    }, col*140);
+  });
+}
+function shakeRow(row){
+  for(let c=0;c<5;c++){
+    const t=document.getElementById(`t-${row}-${c}`);
+    if(!t) continue;
+    t.classList.add('shake');
+    setTimeout(()=>t.classList.remove('shake'),400);
+  }
+}
+function bounceRow(row){
+  for(let c=0;c<5;c++){
+    setTimeout(()=>{
+      const t=document.getElementById(`t-${row}-${c}`);
+      if(!t) return;
+      t.classList.add('bounce');
+      setTimeout(()=>t.classList.remove('bounce'),600);
+    }, c*70);
+  }
+}
+function calcScore(guesses,seconds){
+  // 1000 base - tahmin cezası - süre cezası
+  const guessPenalty = (guesses-1)*140;
+  const timePenalty = Math.min(300, seconds*3);
+  return Math.max(100, 1000 - guessPenalty - timePenalty);
+}
+function updateTimerUI(){
+  const el=document.getElementById('hud-timer');
+  const bar=document.getElementById('timer-bar');
+  if(!el||!bar) return;
+  el.textContent=Math.max(0,timeLeft);
+  const pct = totalTime>0 ? (timeLeft/totalTime*100) : 0;
+  bar.style.width=pct+'%';
+  const urgent=timeLeft<=20;
+  el.className='hud-val timer-val'+(urgent?' urgent':'');
+  bar.className='timer-bar'+(urgent?' urgent':'');
+}
+function updateProgress(){
+  const prog=document.getElementById('mw-progress');
+  if(!prog) return;
+  if(mwTotal<=1){ prog.style.display='none'; return; }
+  prog.style.display='flex';
+  prog.innerHTML=Array(mwTotal).fill(0).map((_,i)=>{
+    let cls='mw-dot';
+    if(i<mwCurrent) cls+=' done';
+    else if(i===mwCurrent) cls+=' current';
+    return `<div class="${cls}"></div>`;
+  }).join('');
+}
+function updateModeBadge(){
+  const badge=document.getElementById('mode-badge');
+  if(!badge) return;
+  if(gameMode==='daily') badge.textContent='📅 GÜNLÜK MOD • 6 HAK';
+  else badge.textContent=mwTotal>1?`🎮 ${mwCurrent+1}/${mwTotal} KELİME • ${MAX_GUESSES} HAK`:`🎮 PRATİK • ${MAX_GUESSES} HAK`;
+}
+function confirmBack(){ clearInterval(timerInt); showMenu(); }
+
+// ─── END GAME - TAM DÜZELTME ───
+function endGame(won, isTimeUp=false){
+  gameOver=true;
+  clearInterval(timerInt);
+  const totalScore=mwScores.reduce((a,b)=>a+b,0) || 0;
+  const totalGuesses = mwGuessesUsed.reduce((a,b)=>a+b,0);
+  const timeTaken=Math.round((Date.now()-gameStartTime)/1000);
+  const todayStr=new Date().toLocaleDateString('tr-TR');
+  const failedWord = mwWords[mwCurrent] || mwWords[0];
+
+  if(gameMode==='daily'){
+    const lastRowCount = allGuessesHistory[0]?.length || (won?curRow:MAX_GUESSES);
+    saveDailyState({
+      date:getTodayStr(),
+      played:true,
+      won,
+      guesses:lastRowCount,
+      word:mwWords[0],
+      board: allGuessesHistory[0]?.map(h=>h.result) || [],
+      grid: allGuessesHistory
+    });
+  }
+
+  const stats=loadStats();
+  stats.played++;
+  if(won){
+    stats.wins++;
+    if(stats.lastWin===yesterdayStr()) stats.streak++;
+    else if(stats.lastWin!==todayStr) stats.streak=1;
+    stats.lastWin=todayStr;
+    saveScore({score:totalScore, words: mwWords.join(' • '), word: mwWords[0], date:todayStr, guesses: totalGuesses || (mwCurrent*MAX_GUESSES+curRow), time:timeTaken});
+  } else {
+    if(stats.lastWin!==todayStr) stats.streak=0;
+  }
+  saveStats(stats);
+
+  const best=getBest();
+  showScreen('result');
+  document.getElementById('res-icon').textContent=won?(gameMode==='daily'?'📅':'🏆'):'💀';
+  if(won){
+    document.getElementById('res-title').textContent = mwTotal>1 ? `${mwTotal} KELİME BİTTİ!` : 'TEBRİKLER!';
+  } else {
+    document.getElementById('res-title').textContent = isTimeUp ? 'SÜRE BİTTİ!' : 'BİLEMEDİN!';
+  }
+  document.getElementById('res-word').textContent = won ? mwWords.join(' • ') : `Kelime: ${failedWord}`;
+  document.getElementById('res-score').textContent=totalScore||0;
+  document.getElementById('res-time').textContent=timeTaken+'s';
+  if(mwTotal>1){
+    document.getElementById('res-guesses').textContent = won ? `${mwTotal}/${mwTotal}` : `${mwCurrent}/${mwTotal}`;
+  } else {
+    document.getElementById('res-guesses').textContent = (won ? (mwGuessesUsed[0]||curRow) : 'X') + '/6';
+  }
+  document.getElementById('res-best').textContent=best!==null?best:'—';
+
+  const replayBtn=document.getElementById('res-play-again');
+  const shareBtn=document.getElementById('res-share');
+  if(gameMode==='daily'){
+    replayBtn.textContent='🎮 PRATİK OYNA';
+    replayBtn.onclick=()=>showWordSelector();
+    shareBtn.style.display='';
+  } else {
+    replayBtn.textContent='▶ TEKRAR OYNA';
+    replayBtn.onclick=()=>showWordSelector();
+    shareBtn.style.display='none';
+  }
+}
+
+function showDailyResult(){
+  const ds=loadDailyState();
+  if(!ds){ showMenu(); return; }
+  const best=getBest();
+  showScreen('result');
+  document.getElementById('res-icon').textContent=ds.won?'📅':'💀';
+  document.getElementById('res-title').textContent=ds.won?'BUGÜN KAZANDIN!':'BUGÜN KAYBETTİN';
+  document.getElementById('res-word').textContent=ds.word||'?????';
+  document.getElementById('res-score').textContent='—';
+  document.getElementById('res-time').textContent='—';
+  document.getElementById('res-guesses').textContent=(ds.won?ds.guesses:'X')+'/6';
+  document.getElementById('res-best').textContent=best!==null?best:'—';
+  allGuessesHistory = ds.grid || [ ds.board?.map((r,i)=>({guess:'?????', result:r})) || [] ];
+  const replayBtn=document.getElementById('res-play-again');
+  replayBtn.textContent='🎮 PRATİK OYNA';
+  replayBtn.onclick=()=>showWordSelector();
+  document.getElementById('res-share').style.display='';
+}
+
+let msgTO=null;
+function showMsg(text){
+  const el=document.getElementById('message');
+  if(!el) return;
+  el.textContent=text; el.classList.add('show');
+  clearTimeout(msgTO);
+  msgTO=setTimeout(()=>el.classList.remove('show'),1700);
+}
+function shareResult(){
+  const ds=loadDailyState();
+  if(!ds || !ds.played){ showMsg('GÜNLÜK OYUN YOK'); return; }
+  const emojiMap={correct:'🟩',present:'🟨',absent:'⬛'};
+  let grid='';
+  if(ds.grid && ds.grid[0]){
+    grid = ds.grid[0].map(h=>h.result.map(r=>emojiMap[r]||'⬛').join('')).join('\n');
+  } else if(ds.board){
+    grid = ds.board.map(row=>row.map(r=>emojiMap[r]||'⬛').join('')).join('\n');
+  } else {
+    grid = allGuessesHistory[0]?.map(h=>h.result.map(r=>emojiMap[r]||'⬛').join('')).join('\n') || '';
+  }
+  const today=getTodayStr();
+  const scoreTxt = ds.won?`${ds.guesses}/6`:'X/6';
+  const text=`Kelime Düellosu 📅 ${today}\n${scoreTxt}\n\n${grid}\n\nkelime-duellosu.vercel.app`;
+  if(navigator.share){
+    navigator.share({text}).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(text).then(()=>showMsg('PANOYA KOPYALANDI!')).catch(()=>showMsg(text));
+  }
+}
+document.getElementById('res-share').addEventListener('click', shareResult);
+window.addEventListener('load', ()=>{
+  // versiyon migration: eski anahtarları temizle değil, sadece yeni kullan
+  showMenu();
+});
+</script>
+</body>
+</html>
