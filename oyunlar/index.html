@@ -9,6 +9,7 @@
 
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/catalog.css">
+    <link rel="stylesheet" href="../css/dark-theme.css">
 
     <style>
         :root {
@@ -33,6 +34,12 @@
     </style>
 </head>
 <body>
+
+<canvas id="space-canvas"></canvas>
+<div class="nbl n1"></div>
+<div class="nbl n2"></div>
+<div class="nbl n3"></div>
+<div id="page-transition"></div>
 
 <!-- ── HEADER ───────────────────────────── -->
 <header class="site-header">
@@ -122,7 +129,7 @@
 
     <div class="download-section">
         <p>Bu oyunu cihazınıza indirin.</p>
-        <a href="#" id="det-btn" class="btn-download">↓ İndir</a>
+        <a href="#" id="det-btn" class="btn-download" target="_blank" rel="noopener">↓ İndir</a>
     </div>
 
 </div>
@@ -224,5 +231,116 @@
     }
 </script>
 
+<script>
+/* ══ SPACE CANVAS ══ */
+(function(){
+    const c=document.getElementById('space-canvas');
+    const ctx=c.getContext('2d');
+    let W,H;
+    function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
+    resize();
+    window.addEventListener('resize',resize);
+    function mkStars(n,rMin,rMax,sMin,sMax){
+        return Array.from({length:n},()=>({
+            x:Math.random()*W,y:Math.random()*H,
+            r:Math.random()*(rMax-rMin)+rMin,
+            speed:Math.random()*(sMax-sMin)+sMin,
+            tw:Math.random()*Math.PI*2,
+            ts:Math.random()*.018+.004,
+            a:Math.random()*.5+.15
+        }));
+    }
+    let L1=mkStars(160,.2,.6,.025,.055);
+    let L2=mkStars(80,.5,1.1,.05,.1);
+    let L3=mkStars(30,.9,1.6,.08,.15);
+    window.addEventListener('resize',()=>{
+        L1=mkStars(160,.2,.6,.025,.055);
+        L2=mkStars(80,.5,1.1,.05,.1);
+        L3=mkStars(30,.9,1.6,.08,.15);
+    });
+    const shooters=[];
+    function spawnShooter(){
+        const fromLeft=Math.random()>.5;
+        const angle=(fromLeft?1:-1)*(Math.PI/7+Math.random()*Math.PI/12);
+        const speed=Math.random()*4+5;
+        shooters.push({
+            x:fromLeft?-60:W+60,
+            y:Math.random()*H*.55,
+            vx:Math.cos(angle)*speed*(fromLeft?1:-1),
+            vy:Math.sin(Math.abs(angle))*speed,
+            len:Math.random()*120+80,
+            life:1,fade:.012+Math.random()*.008,
+            w:Math.random()*1.5+.8,
+            clr:'rgba(160,210,255,'
+        });
+    }
+    setInterval(spawnShooter,1800+Math.random()*2200);
+    const meteors=[];
+    function spawnMeteor(){
+        const x=Math.random()*W;
+        const angle=Math.PI/4+Math.random()*Math.PI/6;
+        const speed=Math.random()*3+6;
+        meteors.push({
+            x,y:-20,
+            vx:Math.cos(angle)*speed,
+            vy:Math.sin(angle)*speed,
+            len:Math.random()*220+140,
+            life:1,fade:.009+Math.random()*.007,
+            w:Math.random()*2.2+1.2,
+            r1:255,g1:240,b1:220,
+            r2:255,g2:120,b2:40
+        });
+    }
+    setInterval(spawnMeteor,5500+Math.random()*4000);
+    let mx=0,my=0,ox=0,oy=0;
+    window.addEventListener('mousemove',e=>{
+        mx=(e.clientX/window.innerWidth-.5)*18;
+        my=(e.clientY/window.innerHeight-.5)*10;
+    });
+    function draw(){
+        ctx.clearRect(0,0,W,H);
+        ox+=(mx-ox)*.04; oy+=(my-oy)*.04;
+        L1.forEach(s=>{s.tw+=s.ts;const a=s.a+Math.sin(s.tw)*.12;ctx.beginPath();ctx.arc(s.x+ox*.2,s.y+oy*.2,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(190,210,255,${a})`;ctx.fill();s.y+=s.speed;if(s.y>H){s.y=0;s.x=Math.random()*W}});
+        L2.forEach(s=>{s.tw+=s.ts;const a=s.a+Math.sin(s.tw)*.18;ctx.beginPath();ctx.arc(s.x+ox*.5,s.y+oy*.5,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(210,225,255,${a})`;ctx.fill();s.y+=s.speed;if(s.y>H){s.y=0;s.x=Math.random()*W}});
+        L3.forEach(s=>{s.tw+=s.ts;const a=s.a+Math.sin(s.tw)*.25;ctx.beginPath();ctx.arc(s.x+ox,s.y+oy,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(230,240,255,${a})`;ctx.fill();if(a>.55){ctx.beginPath();ctx.arc(s.x+ox,s.y+oy,s.r*2.5,0,Math.PI*2);ctx.fillStyle=`rgba(180,210,255,${a*.12})`;ctx.fill()}s.y+=s.speed;if(s.y>H){s.y=0;s.x=Math.random()*W}});
+        for(let i=shooters.length-1;i>=0;i--){const s=shooters[i];const tx=s.x-s.vx/Math.hypot(s.vx,s.vy)*s.len;const ty=s.y-s.vy/Math.hypot(s.vx,s.vy)*s.len;const g=ctx.createLinearGradient(s.x,s.y,tx,ty);g.addColorStop(0,s.clr+(s.life*.9)+')');g.addColorStop(1,s.clr+'0)');ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(tx,ty);ctx.strokeStyle=g;ctx.lineWidth=s.w*s.life;ctx.lineCap='round';ctx.stroke();s.x+=s.vx;s.y+=s.vy;s.life-=s.fade;if(s.life<=0||s.x>W+200||s.x<-200)shooters.splice(i,1);}
+        for(let i=meteors.length-1;i>=0;i--){const m=meteors[i];const tx=m.x-m.vx/Math.hypot(m.vx,m.vy)*m.len;const ty=m.y-m.vy/Math.hypot(m.vx,m.vy)*m.len;const g=ctx.createLinearGradient(m.x,m.y,tx,ty);g.addColorStop(0,`rgba(${m.r1},${m.g1},${m.b1},${m.life})`);g.addColorStop(.3,`rgba(${m.r2},${m.g2},${m.b2},${m.life*.7})`);g.addColorStop(1,`rgba(${m.r2},${m.g2},${m.b2},0)`);ctx.beginPath();ctx.moveTo(m.x,m.y);ctx.lineTo(tx,ty);ctx.strokeStyle=g;ctx.lineWidth=m.w*m.life;ctx.lineCap='round';ctx.stroke();const gw=ctx.createRadialGradient(m.x,m.y,0,m.x,m.y,m.w*4);gw.addColorStop(0,`rgba(255,200,100,${m.life*.5})`);gw.addColorStop(1,'rgba(255,100,30,0)');ctx.beginPath();ctx.arc(m.x,m.y,m.w*4,0,Math.PI*2);ctx.fillStyle=gw;ctx.fill();m.x+=m.vx;m.y+=m.vy;m.life-=m.fade;if(m.life<=0||m.y>H+100)meteors.splice(i,1);}
+        requestAnimationFrame(draw);
+    }
+    draw();
+})();
+
+/* ══ Sayfa geçiş overlay — BFCache fix ══
+   Back/forward ile gelince bfcache devreye girer,
+   "load" çalışmaz ama "pageshow" her zaman çalışır. */
+(function(){
+    const overlay=document.getElementById('page-transition');
+    // Sayfa yüklenince veya bfcache'den gelince overlay'i kapat
+    window.addEventListener('pageshow',function(e){
+        overlay.style.transition='none';
+        overlay.style.opacity='0';
+        overlay.style.pointerEvents='none';
+        overlay.classList.remove('fade-out');
+        // Bir sonraki frame'de transition'ı geri aç
+        requestAnimationFrame(()=>{ overlay.style.transition='opacity .38s ease'; });
+    });
+    // Dahili linklere tıklayınca fade-out yap
+    document.addEventListener('click',function(e){
+        const a=e.target.closest('a');
+        if(!a||!a.href)return;
+        const url=new URL(a.href,location.href);
+        if(url.origin!==location.origin)return;
+        if(a.target==='_blank')return;
+        if(url.href===location.href)return;
+        if(url.pathname===location.pathname && url.hash)return;
+        if(a.href.startsWith('mailto:'))return;
+        if(a.hasAttribute('download'))return;
+        if(!a.href||a.getAttribute('href')==='#'||a.getAttribute('href')==='')return;
+        e.preventDefault();
+        overlay.classList.add('fade-out');
+        setTimeout(()=>{ location.href=a.href; },380);
+    });
+})();
+</script>
 </body>
 </html>
