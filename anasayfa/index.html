@@ -3,17 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="../favicon.png">
     <title>Pax Systemic | Dijital Yazılım & Oyun Stüdyosu</title>
     <meta name="description" content="Pax Systemic: Masaüstü yazılımları ve indie oyunlar geliştiren bağımsız bir dijital stüdyo. Barış Yurdunuseven tarafından kuruldu.">
 
-    <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="../css/portal.css">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/portal.css">
 
     <style>
         .stat-num { transition: opacity 0.3s; }
         .stat-num.loading { opacity: 0.3; }
         .app-chip.skeleton { background: rgba(255,255,255,0.08); color: transparent; border-color: transparent; width: 80px; border-radius: 20px; }
+
+        /* Tarayıcı Oyunları kartı — turuncu ton */
+        :root {
+            --orange:      #E05C3F;
+            --orange-ink:  #B8441F;
+            --orange-soft: rgba(224, 92, 63, 0.08);
+            --orange-line: rgba(224, 92, 63, 0.28);
+        }
+        .line-card--orange:hover        { border-color: var(--orange-line); }
+        .line-card--orange::before      { background: radial-gradient(circle, var(--orange-soft) 0%, transparent 70%); }
+        .line-card--orange .line-card__icon    { background: var(--orange-soft); }
+        .line-card--orange .line-card__eyebrow { color: var(--orange); }
+        .line-card--orange .line-card__cta    { background: var(--orange); color: #fff; }
     </style>
 
     <script type="application/ld+json">
@@ -31,15 +44,16 @@
 <!-- ── Header ───────────────────────────── -->
 <header class="portal-header">
     <div class="logo">
-        <span class="logo-mark"><img src="../paxsystemiclogo.webp" alt="Pax Systemic Logo"></span>
+        <span class="logo-mark"><img src="paxsystemiclogo.webp" alt="Pax Systemic Logo"></span>
         PAX <em>SYSTEMIC</em>
     </div>
     <div class="portal-header-right">
-        <a href="../yazilimlar/index.html">Yazılımlar</a>
-        <a href="../oyunlar/index.html">Oyunlar</a>
-        <a href="../siteler/index.html">Yapılan Siteler</a>
-        <a href="../android-uygulamalar/index.html">Android Uygulamalar</a>
-        <a href="../oneri.html">💬 Talep & Öneri</a>
+        <a href="yazilimlar/index.html">Yazılımlar</a>
+        <a href="oyunlar/index.html">Oyunlar</a>
+        <a href="siteler/index.html">Yapılan Siteler</a>
+        <a href="android-uygulamalar/index.html">Android Uygulamalar</a>
+        <a href="tarayici-oyunlari/index.html">🕹️ Tarayıcı Oyunları</a>
+        <a href="oneri.html">💬 Talep & Öneri</a>
     </div>
 </header>
 
@@ -54,14 +68,7 @@
             </div>
             <h1>Yazılım Üretiyor,<br><span>Oyun Tasarlıyoruz</span></h1>
             <p>Masaüstü araçlarından indie oyun projelerine — Pax Systemic, her ürününü bir mühendislik disipliniyle inşa eder.</p>
-            <div class="portal-hero__ctas">
-                <a href="../yazilimlar/index.html" class="portal-cta-blue">
-                    Yazılımları Keşfet →
-                </a>
-                <a href="../oyunlar/index.html" class="portal-cta-violet">
-                    Oyunları İncele →
-                </a>
-            </div>
+
         </div>
     </section>
 
@@ -69,27 +76,30 @@
     <div class="portal-stats">
         <div class="stat-item">
             <span class="stat-num loading" id="statYazilim">—</span>
-            <span class="stat-label">Yazılım Ürünü</span>
+            <span class="stat-label">⚙️ Yazılım Ürünü</span>
         </div>
         <div class="stat-item">
             <span class="stat-num loading" id="statOyun">—</span>
-            <span class="stat-label">Oyun Projesi</span>
+            <span class="stat-label">🎮 Oyun Projesi</span>
         </div>
         <div class="stat-item">
             <span class="stat-num">2026</span>
-            <span class="stat-label">Güncel Yıl</span>
+            <span class="stat-label">📅 Kuruluş</span>
         </div>
         <div class="stat-item">
-            <span class="stat-num">Windows</span>
-            <span class="stat-label">Platform</span>
+            <span class="stat-num" style="font-size:1.1rem;">Win & Android</span>
+            <span class="stat-label">💻 Platform</span>
         </div>
     </div>
 
-    <!-- ── Product Lines ────────────────── -->
-    <section class="portal-lines">
+    <!-- ── Product Lines — Carousel ─────── -->
+    <div class="portal-lines-wrapper">
+    <button class="carousel-btn carousel-btn--prev" id="carouselPrev" aria-label="Önceki">&#8592;</button>
+    <button class="carousel-btn carousel-btn--next" id="carouselNext" aria-label="Sonraki">&#8594;</button>
+    <section class="portal-lines" id="portalLines">
 
         <!-- Software Line -->
-        <a href="../yazilimlar/index.html" class="line-card line-card--blue">
+        <a href="yazilimlar/index.html" class="line-card line-card--blue">
             <div class="line-card__icon">⚙️</div>
             <div class="line-card__eyebrow">Systemic Software</div>
             <h2>Yazılım<br>Kataloğu</h2>
@@ -104,7 +114,7 @@
         </a>
 
         <!-- Games Line -->
-        <a href="../oyunlar/index.html" class="line-card line-card--violet">
+        <a href="oyunlar/index.html" class="line-card line-card--violet">
             <div class="line-card__icon">🎮</div>
             <div class="line-card__eyebrow">BarisByte Games</div>
             <h2>Android - PC<br>Oyun Kataloğu</h2>
@@ -118,7 +128,7 @@
         </a>
 
         <!-- Websites Line -->
-        <a href="../siteler/index.html" class="line-card line-card--teal">
+        <a href="siteler/index.html" class="line-card line-card--teal">
             <div class="line-card__icon">🌐</div>
             <div class="line-card__eyebrow">Pax Systemic Web</div>
             <h2>Yapılan<br>Siteler</h2>
@@ -131,7 +141,7 @@
         </a>
 
         <!-- Android Apps Line -->
-        <a href="../android-uygulamalar/index.html" class="line-card line-card--green">
+        <a href="android-uygulamalar/index.html" class="line-card line-card--green">
             <div class="line-card__icon">📱</div>
             <div class="line-card__eyebrow">Pax Systemic Mobile</div>
             <h2>Android<br>Uygulamalar</h2>
@@ -143,7 +153,23 @@
             <span class="line-card__cta">Uygulamaları Gör →</span>
         </a>
 
+        <!-- Tarayıcı Oyunları -->
+        <a href="tarayici-oyunlari/index.html" class="line-card line-card--orange">
+            <div class="line-card__icon">🕹️</div>
+            <div class="line-card__eyebrow">BarisByte Browser</div>
+            <h2>Tarayıcı<br>Oyunları</h2>
+            <p>Kurulum yok, indirme yok — sadece tıkla ve oyna. Pax Systemic'in tarayıcı tabanlı oyunları her cihazdan anında erişilebilir.</p>
+            <div class="line-card__apps">
+                <span class="app-chip">Aim Trainer</span>
+                <span class="app-chip">+Yeni Oyunlar</span>
+            </div>
+            <div class="line-card__count">Tarayıcıdan oyna · Ücretsiz</div>
+            <span class="line-card__cta">Oynamaya Başla →</span>
+        </a>
+
     </section>
+    <div class="carousel-dots" id="carouselDots"></div>
+    </div><!-- /.portal-lines-wrapper -->
 
     <!-- ── Value Props ───────────────────── -->
     <section class="portal-props">
@@ -172,28 +198,29 @@
             <div class="footer-grid">
                 <div class="footer-brand">
                     <a href="index.html" class="logo">
-                        <span class="logo-mark"><img src="../paxsystemiclogo.webp" alt="Pax Systemic Logo"></span>
+                        <span class="logo-mark"><img src="paxsystemiclogo.webp" alt="Pax Systemic Logo"></span>
                         PAX <em>SYSTEMIC</em>
                     </a>
                     <p>Masaüstü yazılımları ve indie oyunlar geliştiren bağımsız bir dijital stüdyo. Barış Yurdunuseven tarafından kuruldu.</p>
                 </div>
                 <div class="footer-col">
                     <h5>Yazılımlar</h5>
-                    <a href="../yazilimlar/index.html#systemic">Systemic Pro</a>
-                    <a href="../yazilimlar/index.html#paxvault">Password Vault</a>
-                    <a href="../yazilimlar/index.html#pomodoropro">Pomodoro Pro</a>
-                    <a href="../yazilimlar/index.html#audiopro">Audio Editor</a>
+                    <a href="yazilimlar/index.html#systemic">Systemic Pro</a>
+                    <a href="yazilimlar/index.html#paxvault">Password Vault</a>
+                    <a href="yazilimlar/index.html#pomodoropro">Pomodoro Pro</a>
+                    <a href="yazilimlar/index.html#audiopro">Audio Editor</a>
                 </div>
                 <div class="footer-col">
                     <h5>Oyunlar</h5>
-                    <a href="../oyunlar/index.html#karanliktan">Karanlıktan Işığa</a>
-                    <a href="../oyunlar/index.html#cosmohop">CosmoHop!</a>
-                    <a href="../oyunlar/index.html#nexus">Project: Nexus</a>
-                    <a href="../oyunlar/index.html#sessizev">Sessiz Ev</a>
+                    <a href="oyunlar/index.html#karanliktan">Karanlıktan Işığa</a>
+                    <a href="oyunlar/index.html#cosmohop">CosmoHop!</a>
+                    <a href="oyunlar/index.html#nexus">Project: Nexus</a>
+                    <a href="oyunlar/index.html#sessizev">Sessiz Ev</a>
+                    <a href="tarayici-oyunlari/index.html">🕹️ Tarayıcı Oyunları</a>
                 </div>
                 <div class="footer-col">
                     <h5>Kurumsal</h5>
-                    <a href="../oneri.html">💬 Talep & Öneri</a>
+                    <a href="oneri.html">💬 Talep & Öneri</a>
                     <a href="https://github.com/barisys1999/pax-systemic" target="_blank" rel="noopener">GitHub</a>
                 </div>
             </div>
@@ -205,6 +232,117 @@
     </footer>
 
 </div><!-- /.portal-wrap -->
+
+<script>
+// ── Carousel Logic ──────────────────────────────────────
+(function() {
+    const track   = document.getElementById('portalLines');
+    const btnPrev = document.getElementById('carouselPrev');
+    const btnNext = document.getElementById('carouselNext');
+    const dotsEl  = document.getElementById('carouselDots');
+
+    function getCardWidth() {
+        const card = track.querySelector('.line-card');
+        if (!card) return 300;
+        const style = window.getComputedStyle(track);
+        const gap   = parseFloat(style.gap) || 24;
+        return card.offsetWidth + gap;
+    }
+
+    function getVisibleCount() {
+        const card = track.querySelector('.line-card');
+        if (!card) return 1;
+        const style = window.getComputedStyle(track);
+        const gap   = parseFloat(style.gap) || 24;
+        return Math.round(track.offsetWidth / (card.offsetWidth + gap));
+    }
+
+    function getTotalCards() {
+        return track.querySelectorAll('.line-card').length;
+    }
+
+    function getCurrentIndex() {
+        const cardW = getCardWidth();
+        return Math.round(track.scrollLeft / cardW);
+    }
+
+    function scrollToIndex(idx) {
+        const total   = getTotalCards();
+        const visible = getVisibleCount();
+        const maxIdx  = Math.max(0, total - visible);
+        idx = Math.max(0, Math.min(idx, maxIdx));
+        track.scrollTo({ left: idx * getCardWidth(), behavior: 'smooth' });
+        updateUI(idx);
+    }
+
+    function updateUI(idx) {
+        const total   = getTotalCards();
+        const visible = getVisibleCount();
+        const maxIdx  = Math.max(0, total - visible);
+        btnPrev.disabled = idx <= 0;
+        btnNext.disabled = idx >= maxIdx;
+
+        // Dots: one per "page"
+        const pages = maxIdx + 1;
+        if (dotsEl.children.length !== pages) {
+            dotsEl.innerHTML = '';
+            for (let i = 0; i < pages; i++) {
+                const dot = document.createElement('button');
+                dot.className = 'carousel-dot' + (i === idx ? ' active' : '');
+                dot.setAttribute('aria-label', (i+1) + '. sayfa');
+                dot.addEventListener('click', () => scrollToIndex(i));
+                dotsEl.appendChild(dot);
+            }
+        } else {
+            Array.from(dotsEl.children).forEach((d, i) => {
+                d.classList.toggle('active', i === idx);
+            });
+        }
+    }
+
+    btnPrev.addEventListener('click', () => scrollToIndex(getCurrentIndex() - 1));
+    btnNext.addEventListener('click', () => scrollToIndex(getCurrentIndex() + 1));
+
+    // Drag-to-scroll (mouse)
+    let isDown = false, startX, scrollLeft;
+    track.addEventListener('mousedown', e => {
+        isDown = true;
+        track.classList.add('dragging');
+        startX = e.pageX - track.offsetLeft;
+        scrollLeft = track.scrollLeft;
+    });
+    document.addEventListener('mouseup', () => {
+        if (!isDown) return;
+        isDown = false;
+        track.classList.remove('dragging');
+        // Snap to nearest card
+        scrollToIndex(getCurrentIndex());
+    });
+    track.addEventListener('mousemove', e => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x    = e.pageX - track.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        track.scrollLeft = scrollLeft - walk;
+    });
+
+    // Scroll event → update dots/buttons
+    let scrollTimer;
+    track.addEventListener('scroll', () => {
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(() => {
+            updateUI(getCurrentIndex());
+        }, 80);
+    });
+
+    // Init after DOM paints
+    window.addEventListener('load', () => updateUI(0));
+    window.addEventListener('resize', () => {
+        dotsEl.innerHTML = ''; // force re-render
+        updateUI(getCurrentIndex());
+    });
+})();
+</script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
