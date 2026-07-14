@@ -386,7 +386,7 @@ const STATIC_GAMES = [
     }
 ];
 
-aasync function loadGames() {
+async function loadGames() {
     const grid = document.getElementById('catalog-grid');
     try {
         const snap = await getDocs(query(collection(db, 'tarayiciOyunlari'), orderBy('order', 'asc')));
