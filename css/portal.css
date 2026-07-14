@@ -355,10 +355,11 @@ body.portal-page {
     transform: translateY(-6px);
     box-shadow: var(--shadow-lg);
 }
-.line-card--blue:hover  { border-color: var(--blue-line); }
+.line-card--blue:hover   { border-color: var(--blue-line); }
 .line-card--violet:hover { border-color: var(--violet-line); }
-.line-card--teal:hover  { border-color: var(--teal-line); }
-.line-card--green:hover { border-color: var(--green-line); }
+.line-card--teal:hover   { border-color: var(--teal-line); }
+.line-card--green:hover  { border-color: var(--green-line); }
+.line-card--orange:hover { border-color: var(--orange-line); }
 
 /* Decorative corner gradient */
 .line-card::before {
@@ -376,6 +377,7 @@ body.portal-page {
 .line-card--violet::before { background: radial-gradient(circle, var(--violet-soft) 0%, transparent 70%); }
 .line-card--teal::before   { background: radial-gradient(circle, var(--teal-soft) 0%, transparent 70%); }
 .line-card--green::before  { background: radial-gradient(circle, var(--green-soft) 0%, transparent 70%); }
+.line-card--orange::before { background: radial-gradient(circle, var(--orange-soft) 0%, transparent 70%); }
 .line-card:hover::before   { opacity: 1; }
 
 .line-card__icon {
@@ -390,6 +392,7 @@ body.portal-page {
 .line-card--violet .line-card__icon { background: var(--violet-soft); }
 .line-card--teal   .line-card__icon { background: var(--teal-soft); }
 .line-card--green  .line-card__icon { background: var(--green-soft); }
+.line-card--orange .line-card__icon { background: var(--orange-soft); }
 
 .line-card__eyebrow {
     font-family: var(--font-mono);
@@ -403,6 +406,7 @@ body.portal-page {
 .line-card--violet .line-card__eyebrow { color: var(--violet); }
 .line-card--teal   .line-card__eyebrow { color: var(--teal); }
 .line-card--green  .line-card__eyebrow { color: var(--green); }
+.line-card--orange .line-card__eyebrow { color: var(--orange); }
 
 .line-card h2 {
     font-family: var(--font-display);
@@ -445,6 +449,7 @@ body.portal-page {
 .line-card--violet .line-card__cta { background: var(--violet); color: #fff; }
 .line-card--teal   .line-card__cta { background: var(--teal);   color: #fff; }
 .line-card--green  .line-card__cta { background: var(--green);  color: #fff; }
+.line-card--orange .line-card__cta { background: var(--orange); color: #fff; }
 .line-card:hover .line-card__cta { transform: translateX(4px); }
 
 /* App preview chips */
