@@ -353,11 +353,13 @@ function renderGames(games) {
         ).join('');
 
         const isDev = game.isDev;
+        const gameUrl  = String(game.gameUrl  || '');
+        const gameTitle = String(game.title   || '');
         const playBtn = isDev
             ? `<span class="dev-badge">🚧 Yakında</span>`
-            : `<span class="btn-play" onclick="event.stopPropagation(); openGame('${esc(game.gameUrl)}','${esc(game.title)}')">▶ Oyna</span>`;
+            : `<span class="btn-play js-play-btn" data-url="${esc(gameUrl)}" data-title="${esc(gameTitle)}">▶ Oyna</span>`;
 
-        const cardClick = isDev ? '' : `onclick="openGame('${esc(game.gameUrl)}','${esc(game.title)}')"`;
+        const cardClick = isDev ? '' : `data-url="${esc(gameUrl)}" data-title="${esc(gameTitle)}" data-card="true"`;
 
         return `
         <div class="game-card" data-category="${esc(game.category||'')}" data-title="${esc((game.title||'').toLowerCase())}" ${cardClick}>
@@ -429,6 +431,22 @@ window.goFullscreen = function() {
 };
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeGame(); });
+
+// ── Event delegation: kart ve buton tıklamaları ─────
+document.getElementById('catalog-grid').addEventListener('click', function(e) {
+    // "Oyna" butonuna tıklandıysa
+    const btn = e.target.closest('.js-play-btn');
+    if (btn) {
+        e.stopPropagation();
+        openGame(btn.dataset.url, btn.dataset.title);
+        return;
+    }
+    // Kart gövdesine tıklandıysa
+    const card = e.target.closest('[data-card="true"]');
+    if (card) {
+        openGame(card.dataset.url, card.dataset.title);
+    }
+});
 
 // Başlat
 loadGames();
