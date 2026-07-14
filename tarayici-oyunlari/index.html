@@ -625,5 +625,22 @@ loadGames();
     });
 })();
 </script>
+
+<div id="gameOverlay" style="position:fixed;inset:0;display:none;background:#000;z-index:999999">
+<button onclick="closeGame()" style="position:absolute;top:10px;left:10px;z-index:2;padding:10px 16px">← Geri</button>
+<iframe id="gameFrame" style="width:100%;height:100%;border:none"></iframe>
+</div>
+<script>
+function playGame(url){
+ document.getElementById("gameFrame").src=url;
+ document.getElementById("gameOverlay").style.display="block";
+ document.body.style.overflow="hidden";
+}
+function closeGame(){
+ document.getElementById("gameOverlay").style.display="none";
+ document.getElementById("gameFrame").src="";
+ document.body.style.overflow="";
+}
+</script>
 </body>
 </html>
