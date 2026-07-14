@@ -258,15 +258,81 @@ body.portal-page {
     white-space: nowrap;
 }
 
-/* ── Product Lines ────────────────────── */
-.portal-lines {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
+/* ── Product Lines — Carousel ─────────── */
+.portal-lines-wrapper {
     max-width: 1400px;
     margin: 64px auto;
     padding: 0 32px;
     animation: fadeUp 0.6s 0.15s ease both;
+    position: relative;
+}
+
+/* Navigation arrows */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+    transition: background 0.2s, box-shadow 0.2s, opacity 0.2s;
+    user-select: none;
+}
+.carousel-btn:hover {
+    background: var(--mist);
+    box-shadow: var(--shadow-lg);
+}
+.carousel-btn:disabled {
+    opacity: 0.25;
+    cursor: default;
+}
+.carousel-btn--prev { left: -24px; }
+.carousel-btn--next { right: -24px; }
+
+/* Dots indicator */
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 24px;
+}
+.carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--line);
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    padding: 0;
+}
+.carousel-dot.active {
+    background: var(--ink);
+    transform: scale(1.3);
+}
+
+/* Scrollable track */
+.portal-lines {
+    display: flex;
+    gap: 24px;
+    overflow: hidden;
+    scroll-behavior: smooth;
+    cursor: grab;
+    user-select: none;
+}
+.portal-lines.dragging {
+    cursor: grabbing;
+    scroll-behavior: auto;
 }
 
 .line-card {
@@ -281,6 +347,9 @@ body.portal-page {
     overflow: hidden;
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     box-shadow: var(--shadow-sm);
+    /* Carousel: fixed width per card */
+    flex: 0 0 calc(25% - 18px);
+    min-width: 260px;
 }
 .line-card:hover {
     transform: translateY(-6px);
@@ -441,17 +510,20 @@ body.portal-page {
 
 /* ── Tablet ───────────────────────────── */
 @media (max-width: 1100px) {
-    .portal-lines { grid-template-columns: 1fr 1fr; }
+    .line-card { flex: 0 0 calc(50% - 12px); }
+    .carousel-btn--prev { left: -16px; }
+    .carousel-btn--next { right: -16px; }
 }
 
 /* ── Mobile ───────────────────────────── */
 @media (max-width: 800px) {
-    .portal-lines { grid-template-columns: 1fr; padding: 0 20px; }
+    .portal-lines-wrapper { padding: 0 16px; }
+    .line-card { flex: 0 0 85vw; min-width: 0; padding: 28px 22px; }
+    .carousel-btn { display: none; }
     .portal-stats { flex-wrap: wrap; }
     .stat-item { padding: 16px 24px; border-right: none; border-bottom: 1px solid var(--line); }
     .portal-props__grid { grid-template-columns: 1fr; }
     .prop-item { border-right: none; border-bottom: 1px solid var(--line); }
     .portal-hero { padding: 56px 20px 52px; }
-    .line-card { padding: 32px 28px; }
     .portal-header { padding: 0 20px; }
 }
