@@ -85,65 +85,273 @@
         </div>
     </div>
 
-    <!-- ── Product Lines ────────────────── -->
-    <section class="portal-lines">
+    <!-- ── Product Lines Slider ─────────── -->
+    <section class="portal-lines-wrapper">
 
-        <!-- Software Line -->
-        <a href="../yazilimlar/index.html" class="line-card line-card--blue">
-            <div class="line-card__icon">⚙️</div>
-            <div class="line-card__eyebrow">Systemic Software</div>
-            <h2>Yazılım<br>Kataloğu</h2>
-            <p>Sistem optimizasyonundan şifre güvenliğine, medya yönetiminden otomasyon araçlarına — her biri kendi alanında özelleşmiş Windows uygulamaları.</p>
-            <div class="line-card__apps" id="yazilimChips">
-                <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            </div>
-            <div class="line-card__count" id="yazilimCount">Yükleniyor...</div>
-            <span class="line-card__cta">Yazılımları Gör →</span>
-        </a>
+        <button class="slider-arrow slider-arrow--left" id="sliderPrev" aria-label="Önceki">&#8592;</button>
 
-        <!-- Games Line -->
-        <a href="../oyunlar/index.html" class="line-card line-card--violet">
-            <div class="line-card__icon">🎮</div>
-            <div class="line-card__eyebrow">BarisByte Games</div>
-            <h2>Android - PC<br>Oyun Kataloğu</h2>
-            <p>Atmosferik korku, mobil arcade ve açık dünya macerası — BarisByte Games, her türden indie oyuncuya hitap eden projeler üretiyor.</p>
-            <div class="line-card__apps" id="oyunChips">
-                <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            </div>
-            <div class="line-card__count" id="oyunCount">Yükleniyor...</div>
-            <span class="line-card__cta">Oyunları Gör →</span>
-        </a>
+        <div class="portal-lines-track-outer">
+            <div class="portal-lines-track" id="sliderTrack">
 
-        <!-- Websites Line -->
-        <a href="../siteler/index.html" class="line-card line-card--teal">
-            <div class="line-card__icon">🌐</div>
-            <div class="line-card__eyebrow">Pax Systemic Web</div>
-            <h2>Yapılan<br>Siteler</h2>
-            <p>Kurumsal siteler, portallar ve müşteri projeleri — geliştirdiğimiz web sitelerinin tamamını burada keşfedin.</p>
-            <div class="line-card__apps">
-                <span class="app-chip">Yakında</span>
-            </div>
-            <div class="line-card__count">Proje vitrini hazırlanıyor</div>
-            <span class="line-card__cta">Siteleri Gör →</span>
-        </a>
+                <!-- Software Line -->
+                <a href="../yazilimlar/index.html" class="line-card line-card--blue">
+                    <div class="line-card__icon">⚙️</div>
+                    <div class="line-card__eyebrow">Systemic Software</div>
+                    <h2>Yazılım<br>Kataloğu</h2>
+                    <p>Sistem optimizasyonundan şifre güvenliğine, medya yönetiminden otomasyon araçlarına — her biri kendi alanında özelleşmiş Windows uygulamaları.</p>
+                    <div class="line-card__apps" id="yazilimChips">
+                        <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    </div>
+                    <div class="line-card__count" id="yazilimCount">Yükleniyor...</div>
+                    <span class="line-card__cta">Yazılımları Gör →</span>
+                </a>
 
-        <!-- Android Apps Line -->
-        <a href="../android-uygulamalar/index.html" class="line-card line-card--green">
-            <div class="line-card__icon">📱</div>
-            <div class="line-card__eyebrow">Pax Systemic Mobile</div>
-            <h2>Android<br>Uygulamalar</h2>
-            <p>Cebinizde çalışan araçlardan mobil oyunlara — Android için geliştirdiğimiz uygulamaların kataloğu burada.</p>
-            <div class="line-card__apps">
-                <span class="app-chip">Yakında</span>
+                <!-- Games Line -->
+                <a href="../oyunlar/index.html" class="line-card line-card--violet">
+                    <div class="line-card__icon">🎮</div>
+                    <div class="line-card__eyebrow">BarisByte Games</div>
+                    <h2>Android - PC<br>Oyun Kataloğu</h2>
+                    <p>Atmosferik korku, mobil arcade ve açık dünya macerası — BarisByte Games, her türden indie oyuncuya hitap eden projeler üretiyor.</p>
+                    <div class="line-card__apps" id="oyunChips">
+                        <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        <span class="app-chip skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    </div>
+                    <div class="line-card__count" id="oyunCount">Yükleniyor...</div>
+                    <span class="line-card__cta">Oyunları Gör →</span>
+                </a>
+
+                <!-- Websites Line -->
+                <a href="../siteler/index.html" class="line-card line-card--teal">
+                    <div class="line-card__icon">🌐</div>
+                    <div class="line-card__eyebrow">Pax Systemic Web</div>
+                    <h2>Yapılan<br>Siteler</h2>
+                    <p>Kurumsal siteler, portallar ve müşteri projeleri — geliştirdiğimiz web sitelerinin tamamını burada keşfedin.</p>
+                    <div class="line-card__apps">
+                        <span class="app-chip">Yakında</span>
+                    </div>
+                    <div class="line-card__count">Proje vitrini hazırlanıyor</div>
+                    <span class="line-card__cta">Siteleri Gör →</span>
+                </a>
+
+                <!-- Android Apps Line -->
+                <a href="../android-uygulamalar/index.html" class="line-card line-card--green">
+                    <div class="line-card__icon">📱</div>
+                    <div class="line-card__eyebrow">Pax Systemic Mobile</div>
+                    <h2>Android<br>Uygulamalar</h2>
+                    <p>Cebinizde çalışan araçlardan mobil oyunlara — Android için geliştirdiğimiz uygulamaların kataloğu burada.</p>
+                    <div class="line-card__apps">
+                        <span class="app-chip">Yakında</span>
+                    </div>
+                    <div class="line-card__count">Proje vitrini hazırlanıyor</div>
+                    <span class="line-card__cta">Uygulamaları Gör →</span>
+                </a>
+
+                <!-- Browser Games Line -->
+                <a href="../tarayici-oyunlari/index.html" class="line-card line-card--orange">
+                    <div class="line-card__icon">🕹️</div>
+                    <div class="line-card__eyebrow">BarisByte Browser</div>
+                    <h2>Tarayıcı<br>Oyunları</h2>
+                    <p>Kurulum gerektirmeyen, tarayıcıda anında oynayabileceğin mini oyunlar — arcade'den bulmacaya her türden eğlence burada.</p>
+                    <div class="line-card__apps">
+                        <span class="app-chip">2048</span>
+                        <span class="app-chip">Cube Slayer</span>
+                        <span class="app-chip">+3 daha</span>
+                    </div>
+                    <div class="line-card__count">5 oyun · Tarayıcıda Oyna</div>
+                    <span class="line-card__cta">Oyunları Oyna →</span>
+                </a>
+
             </div>
-            <div class="line-card__count">Proje vitrini hazırlanıyor</div>
-            <span class="line-card__cta">Uygulamaları Gör →</span>
-        </a>
+        </div>
+
+        <button class="slider-arrow slider-arrow--right" id="sliderNext" aria-label="Sonraki">&#8594;</button>
+
+        <!-- Dots -->
+        <div class="slider-dots" id="sliderDots"></div>
 
     </section>
+
+    <style>
+        /* ── Slider Wrapper ───────────────────────────── */
+        .portal-lines-wrapper {
+            position: relative;
+            padding: 0 56px;
+            margin: 0 auto 2rem;
+            max-width: 1400px;
+        }
+
+        .portal-lines-track-outer {
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        .portal-lines-track {
+            display: flex;
+            gap: 20px;
+            transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+            align-items: stretch;
+        }
+
+        /* Each card: fixed width so 4 show at once */
+        .portal-lines-track .line-card {
+            flex: 0 0 calc(25% - 15px);
+            min-width: 0;
+            box-sizing: border-box;
+        }
+
+        /* ── Arrow Buttons ───────────────────────────── */
+        .slider-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-60%);
+            z-index: 10;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid rgba(99, 102, 241, 0.35);
+            background: rgba(255, 255, 255, 0.9);
+            color: #6366f1;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, border-color 0.2s, opacity 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+        }
+
+        .slider-arrow:hover:not(:disabled) {
+            background: #6366f1;
+            color: #fff;
+            border-color: #6366f1;
+            box-shadow: 0 4px 18px rgba(99,102,241,0.28);
+        }
+
+        .slider-arrow:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+        }
+
+        .slider-arrow--left  { left: 0; }
+        .slider-arrow--right { right: 0; }
+
+        /* ── Dots ────────────────────────────────────── */
+        .slider-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .slider-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(99, 102, 241, 0.25);
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: background 0.25s, transform 0.25s;
+        }
+
+        .slider-dot.active {
+            background: #6366f1;
+            transform: scale(1.35);
+        }
+
+        /* ── Responsive ──────────────────────────────── */
+        @media (max-width: 1100px) {
+            .portal-lines-track .line-card {
+                flex: 0 0 calc(33.333% - 14px);
+            }
+        }
+
+        @media (max-width: 750px) {
+            .portal-lines-wrapper { padding: 0 44px; }
+            .portal-lines-track .line-card {
+                flex: 0 0 calc(100% - 0px);
+            }
+        }
+    </style>
+
+    <script>
+    (function() {
+        const track  = document.getElementById('sliderTrack');
+        const prev   = document.getElementById('sliderPrev');
+        const next   = document.getElementById('sliderNext');
+        const dotsEl = document.getElementById('sliderDots');
+
+        function getVisible() {
+            const w = window.innerWidth;
+            if (w <= 750)  return 1;
+            if (w <= 1100) return 3;
+            return 4;
+        }
+
+        const cards     = track.querySelectorAll('.line-card');
+        const total     = cards.length;
+        let   current   = 0;
+
+        function maxIndex() { return Math.max(0, total - getVisible()); }
+
+        // Build dots
+        function buildDots() {
+            dotsEl.innerHTML = '';
+            const steps = maxIndex() + 1;
+            for (let i = 0; i < steps; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'slider-dot' + (i === current ? ' active' : '');
+                btn.setAttribute('aria-label', `Kart ${i + 1}`);
+                btn.addEventListener('click', () => goTo(i));
+                dotsEl.appendChild(btn);
+            }
+        }
+
+        function updateDots() {
+            dotsEl.querySelectorAll('.slider-dot').forEach((d, i) => {
+                d.classList.toggle('active', i === current);
+            });
+        }
+
+        function goTo(idx) {
+            current = Math.max(0, Math.min(idx, maxIndex()));
+            const cardWidth = cards[0].getBoundingClientRect().width;
+            const gap = 20;
+            track.style.transform = `translateX(-${current * (cardWidth + gap)}px)`;
+            prev.disabled = current === 0;
+            next.disabled = current >= maxIndex();
+            updateDots();
+        }
+
+        prev.addEventListener('click', () => goTo(current - 1));
+        next.addEventListener('click', () => goTo(current + 1));
+
+        // Touch/swipe support
+        let touchStartX = 0;
+        track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+        track.addEventListener('touchend', e => {
+            const diff = touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 50) goTo(current + (diff > 0 ? 1 : -1));
+        }, { passive: true });
+
+        // Keyboard
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft')  goTo(current - 1);
+            if (e.key === 'ArrowRight') goTo(current + 1);
+        });
+
+        window.addEventListener('resize', () => {
+            buildDots();
+            goTo(Math.min(current, maxIndex()));
+        });
+
+        buildDots();
+        goTo(0);
+    })();
+    </script>
 
     <!-- ── Value Props ───────────────────── -->
     <section class="portal-props">
