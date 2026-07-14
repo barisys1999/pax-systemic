@@ -322,17 +322,88 @@ const db  = getFirestore(app);
 // ── Oyunları Firestore'dan çek ────────────
 let allGames = []; // filtre için hafızada tut
 
+// Statik fallback oyun listesi — Firestore boş/hatalı olursa kullanılır
+const STATIC_GAMES = [
+    {
+        _id: 'static-2048',
+        order: 1,
+        title: '2048',
+        shortDesc: 'Rakamları birleştirerek 2048'e ulaş! Klasik bulmaca oyunu.',
+        category: 'bulmaca',
+        tags: ['Bulmaca', 'Strateji'],
+        iconEmoji: '🔢',
+        gameUrl: '2048.html',
+        meta: '⚡ Anında oynanır',
+        isDev: false
+    },
+    {
+        _id: 'static-aim',
+        order: 2,
+        title: 'Aim Trainer',
+        shortDesc: 'Nişan alma hızını ve doğruluğunu geliştir. Ekrana çıkan hedeflere tıkla!',
+        category: 'beceri',
+        tags: ['Beceri', 'Aksiyon'],
+        iconEmoji: '🎯',
+        gameUrl: 'aim-trainer.html',
+        meta: '⚡ Anında oynanır',
+        isDev: false
+    },
+    {
+        _id: 'static-cube',
+        order: 3,
+        title: 'Cube Slayer',
+        shortDesc: 'Küpleri dilimle ve puan topla. Hızın arttıkça zorluk da artar!',
+        category: 'aksiyon',
+        tags: ['Aksiyon', 'Beceri'],
+        iconEmoji: '🟦',
+        gameUrl: 'cube-slayer.html',
+        meta: '⚡ Anında oynanır',
+        isDev: false
+    },
+    {
+        _id: 'static-kelime',
+        order: 4,
+        title: 'Kelime Düellosu',
+        shortDesc: 'Türkçe kelime bilgini sına. Gizli kelimeyi tahmin et!',
+        category: 'bulmaca',
+        tags: ['Bulmaca', 'Türkçe'],
+        iconEmoji: '📝',
+        gameUrl: 'kelime-duellosu.html',
+        meta: '⚡ Anında oynanır',
+        isDev: false
+    },
+    {
+        _id: 'static-pixel',
+        order: 5,
+        title: 'Pixel Tower Defense',
+        shortDesc: 'Kuleyi savun, düşmanları durdur! Klasik tower defense deneyimi.',
+        category: 'strateji',
+        tags: ['Strateji', 'Tower Defense'],
+        iconEmoji: '🏰',
+        gameUrl: 'pixel-tower-defense.html',
+        meta: '⚡ Anında oynanır',
+        isDev: false
+    }
+];
+
 async function loadGames() {
     const grid = document.getElementById('catalog-grid');
     try {
         const snap = await getDocs(query(collection(db, 'tarayiciOyunlari'), orderBy('order', 'asc')));
-        allGames = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+        const firestoreGames = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+
+        // Firestore boşsa statik listeyi kullan
+        if (firestoreGames.length === 0) {
+            console.info('Firestore koleksiyonu boş, statik liste kullanılıyor.');
+            allGames = STATIC_GAMES;
+        } else {
+            allGames = firestoreGames;
+        }
         renderGames(allGames);
     } catch (err) {
-        console.error('Firestore hatası:', err);
-        grid.innerHTML = `<div class="grid-loading" style="color:var(--fog)">
-            Oyunlar yüklenemedi. Lütfen daha sonra tekrar deneyin.
-        </div>`;
+        console.warn('Firestore hatası, statik liste kullanılıyor:', err);
+        allGames = STATIC_GAMES;
+        renderGames(allGames);
     }
 }
 
